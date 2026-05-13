@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('themes', function (Blueprint $table) {
+        Schema::create('fonts', function (Blueprint $table) {
             $table->id();
-            $table->string('accent_color');
+            $table->string('font_family');
             $table->timestamps();
         });
 
-        Schema::create('custom_themes', function (Blueprint $table) {
+        Schema::create('user_current_fonts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('background_color');
-            $table->string('text_color');
-            $table->string('accent_color');
+            $table->foreignId('font_id')->constrained('fonts')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['user_id', 'font_id']);
         });
     }
 
@@ -32,7 +31,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('themes');
-        Schema::dropIfExists('custom_themes');
+        Schema::dropIfExists('fonts');
+        Schema::dropIfExists('user_current_fonts');
     }
 };

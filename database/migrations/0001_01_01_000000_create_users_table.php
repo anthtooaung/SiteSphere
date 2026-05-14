@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('user_image')->nullable();
             $table->boolean('two_factor_enabled')->default(false);
             $table->boolean('is_verified')->default(true);
+            $table->integer('report_count')->default(0);
             $table->string('password');
             $table->timestamps();
         });

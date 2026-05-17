@@ -4,8 +4,89 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f558c6cfa37da872f609635f1f11b96a",
+    "content-hash": "851cfb9bb83339159add89698c864ef1",
     "packages": [
+        {
+            "name": "blade-ui-kit/blade-icons",
+            "version": "1.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/driesvints/blade-icons.git",
+                "reference": "74189a80bbaa4966aebaee54fec3a3c2ef0a5f3a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/driesvints/blade-icons/zipball/74189a80bbaa4966aebaee54fec3a3c2ef0a5f3a",
+                "reference": "74189a80bbaa4966aebaee54fec3a3c2ef0a5f3a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/filesystem": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/view": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": "^7.4|^8.0",
+                "symfony/console": "^5.3|^6.0|^7.0|^8.0",
+                "symfony/finder": "^5.3|^6.0|^7.0|^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.5.1",
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "phpunit/phpunit": "^9.0|^10.5|^11.0"
+            },
+            "bin": [
+                "bin/blade-icons-generate"
+            ],
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "BladeUI\\Icons\\BladeIconsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "BladeUI\\Icons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dries Vints",
+                    "homepage": "https://driesvints.com"
+                }
+            ],
+            "description": "A package to easily make use of icons in your Laravel Blade views.",
+            "homepage": "https://github.com/driesvints/blade-icons",
+            "keywords": [
+                "blade",
+                "icons",
+                "laravel",
+                "svg"
+            ],
+            "support": {
+                "issues": "https://github.com/driesvints/blade-icons/issues",
+                "source": "https://github.com/driesvints/blade-icons"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/driesvints",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.paypal.com/paypalme/driesvints",
+                    "type": "paypal"
+                }
+            ],
+            "time": "2026-04-23T19:03:45+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.14.8",
@@ -2535,6 +2616,66 @@
                 }
             ],
             "time": "2026-02-16T23:10:27+00:00"
+        },
+        {
+            "name": "owenvoke/blade-fontawesome",
+            "version": "v3.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/owenvoke/blade-fontawesome.git",
+                "reference": "5a199630dd70c5133d58c158a974e12bcd8b3a71"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/owenvoke/blade-fontawesome/zipball/5a199630dd70c5133d58c158a974e12bcd8b3a71",
+                "reference": "5a199630dd70c5133d58c158a974e12bcd8b3a71",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.8",
+                "illuminate/support": "^12.0|^13.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.25",
+                "orchestra/testbench": "^10.6|^11.0",
+                "pestphp/pest": "^4.1",
+                "phpstan/phpstan": "^2.1",
+                "symfony/var-dumper": "^7.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "OwenVoke\\BladeFontAwesome\\BladeFontAwesomeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "OwenVoke\\BladeFontAwesome\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A package to easily make use of Font Awesome in your Laravel Blade views",
+            "support": {
+                "issues": "https://github.com/owenvoke/blade-fontawesome/issues",
+                "source": "https://github.com/owenvoke/blade-fontawesome/tree/v3.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://ecologi.com/owenvoke?gift-trees",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/owenvoke",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-20T08:37:22+00:00"
         },
         {
             "name": "phpoption/phpoption",

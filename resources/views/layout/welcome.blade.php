@@ -3,5 +3,7 @@
     SiteSphere
 @endsection
 @section('content')
-    <h1>This is the Welcome Page of content Section</h1>
+    <x-layout.nav />
+    <div class="mt-20"></div>
+    <h1 >This is the Welcome Page of content Section</h1>
 @endsection

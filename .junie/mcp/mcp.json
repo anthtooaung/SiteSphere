@@ -1,0 +1,12 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "php",
+            "args": [
+                "artisan",
+                "boost:mcp"
+            ],
+            "cwd": "/home/pc/Documents/web-review"
+        }
+    }
+}

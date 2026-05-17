@@ -1,3 +1,3 @@
 <div {{$attributes}}>
-    SiteSphere
+    SS
 </div>

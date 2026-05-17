@@ -1,8 +1,2 @@
-@import "flowbite/src/themes/default.css";
-@plugin "flowbite/plugin";
-@source "../../node_modules/flowbite";
-
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('index.css');
+@import url('nav.css');

@@ -11,21 +11,28 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-
-#[Fillable(['name', 'email','slug', 'password'])]
+#[Fillable(['name', 'email', 'slug', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected  static function boot()
+    protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($user) {
             $user->slug = Str::slug($user->name);
         });
+    }
+
+    /**
+     * User settings relation
+     */
+    public function settings()
+    {
+        return $this->hasOne(Settings::class);
     }
 
     /**

@@ -7,7 +7,7 @@
         @yield('title', 'SiteSphere')
     </title>
     <link rel="shortcut icon" href="" type="image/x-icon">
-    @if(!empty($themeColors))
+    @auth(!empty($themeColors))
         <style>
             :root {
                 --accent-color: {{ $themeColors['accent'] ?? '#6c5ce7' }};
@@ -15,7 +15,9 @@
                 --text-color: {{ $themeColors['text'] ?? '#ffffff' }};
             }
         </style>
-    @else
+    @endauth
+    @guest
+
         <style>
             :root{
                 --accent-color: #6c5ce7;
@@ -23,8 +25,7 @@
                 --text-color: #0d1b2a;
             }
         </style>
-    @endif
-
+    @endguest
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('sweetalert2::index')
 

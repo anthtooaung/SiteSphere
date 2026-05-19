@@ -4,6 +4,6 @@
 @endsection
 @section('content')
     <x-layout.nav />
-    <div class="mt-20"></div>
+    <div class="mt-24"></div>
     <h1 >This is the Welcome Page of content Section</h1>
 @endsection

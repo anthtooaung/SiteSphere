@@ -28,10 +28,12 @@
     @endguest
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('sweetalert2::index')
+    @stack('styles')
 
 </head>
 <body class="m-0 box-border p-0 bg-[var(--background-color)] text-[var(--text-color)]">
     @yield('content')
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

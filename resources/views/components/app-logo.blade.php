@@ -1,3 +1,3 @@
 <div {{$attributes}}>
-    SS
+    S
 </div>

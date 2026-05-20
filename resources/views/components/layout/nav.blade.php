@@ -173,8 +173,13 @@
                 });
             }
 
-            document.querySelectorAll(".mobile-nav-item, .mobile-add-button").forEach((button) => {
+            const mobileButtons = document.querySelectorAll(".mobile-bottom-nav .mobile-nav-item, .mobile-bottom-nav .mobile-add-button");
+
+            mobileButtons.forEach((button) => {
                 button.addEventListener("click", () => {
+                    mobileButtons.forEach(btn => btn.classList.remove("active"));
+                    button.classList.add("active");
+
                     button.classList.add("is-pressed");
                     setTimeout(() => button.classList.remove("is-pressed"), 120);
                 });

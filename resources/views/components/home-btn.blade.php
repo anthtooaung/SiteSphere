@@ -1,7 +1,9 @@
 @desktop
 <a href="#" class="desktop-link" aria-current="page">
-    <x-fas-home class="icon"/>
-    <span>Home</span>
+    <div class="md:flex gap-2">
+        <x-fas-home class="icon"/>
+        <span>Home</span>
+    </div>
 </a>
 @enddesktop
 

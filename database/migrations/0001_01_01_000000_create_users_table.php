@@ -25,9 +25,9 @@ return new class extends Migration
             $table->boolean('is_verified')->default(true);
             $table->integer('report_count')->default(0);
             $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
-
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
@@ -37,6 +37,12 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
     }
 
     /**
@@ -45,6 +51,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
 };

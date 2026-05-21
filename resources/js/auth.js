@@ -87,7 +87,61 @@ document.addEventListener("DOMContentLoaded", () => {
     account: null,
     profile: {},
     profileImageDataUrl: "",
+    userId: null,
   };
+
+  const showAlert = (options) => {
+    return Swal.fire({
+      ...options,
+      background: 'var(--background-color, #0d1b2a)',
+      color: 'var(--text-color, #ffffff)',
+      confirmButtonColor: 'var(--accent-color, #6c5ce7)',
+    });
+  };
+
+  const showError = (inputName, message) => {
+    const input = document.querySelector(`input[name="${inputName}"], textarea[name="${inputName}"]`);
+    if (!input) return;
+
+    const fieldGroup = input.closest(".field-group");
+    if (!fieldGroup) return;
+
+    clearError(inputName);
+
+    input.classList.add("is-invalid");
+    const errorMsg = document.createElement("p");
+    errorMsg.className = "field-error-message";
+    errorMsg.textContent = message;
+
+    fieldGroup.appendChild(errorMsg);
+  };
+
+  const clearError = (inputName) => {
+    const input = document.querySelector(`input[name="${inputName}"], textarea[name="${inputName}"]`);
+    if (!input) return;
+
+    input.classList.remove("is-invalid");
+
+    const fieldGroup = input.closest(".field-group");
+    if (!fieldGroup) return;
+
+    const errorMsg = fieldGroup.querySelector(".field-error-message");
+    if (errorMsg) {
+      errorMsg.remove();
+    }
+  };
+
+  const clearAllErrors = () => {
+    document.querySelectorAll(".field-error-message").forEach(el => el.remove());
+    document.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
+  };
+
+  document.addEventListener("input", (event) => {
+    const target = event.target;
+    if (target.name && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
+      clearError(target.name);
+    }
+  });
 
   /*
     Keep the registration flow inside the register panel.
@@ -98,23 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     registrationModal.removeAttribute("aria-modal");
     registrationModal.setAttribute("role", "region");
   }
-
-  const showAlert = (options) => {
-    if (typeof Swal !== "undefined") {
-      return Swal.fire({
-        background: "#ffffff",
-        color: "#050816",
-        confirmButtonColor: "#356df3",
-        customClass: {
-          popup: "sitesphere-alert",
-        },
-        ...options,
-      });
-    }
-
-    alert(options.text || options.title || "Notification");
-    return Promise.resolve();
-  };
 
   const setModeControlsDisabled = (isDisabled) => {
     [showRegister, showLogin].forEach((button) => {
@@ -253,6 +290,9 @@ document.addEventListener("DOMContentLoaded", () => {
         mode === "register" ? "/register" : "/login",
       );
     }
+    if(updateUrl){
+
+    }
   };
 
   const escapeHtml = (value) =>
@@ -302,8 +342,8 @@ document.addEventListener("DOMContentLoaded", () => {
     syncOtpInput();
   };
 
-  const sendOtp = () => {
-    otpState.code = generateOtpCode();
+  const sendOtp = (backendOtp = null) => {
+    otpState.code = backendOtp || generateOtpCode();
     otpState.expiresAt = Date.now() + OTP_DURATION_MS;
 
     demoOtpCode.textContent = otpState.code;
@@ -349,11 +389,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }, STEP_ANIMATION_MS);
   };
 
-  const openRegistrationFlow = (account) => {
+  const openRegistrationFlow = (account, backendOtp = null) => {
     registrationData = {
       account,
       profile: {},
       profileImageDataUrl: "",
+      userId: account.userId,
     };
 
     otpEmailTarget.textContent = account.email;
@@ -362,7 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
     authShell.dataset.flowActive = "true";
 
     setFlowStep("otp");
-    sendOtp();
+    sendOtp(backendOtp);
     otpDigits[0]?.focus();
   };
 
@@ -495,67 +536,180 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Frontend demo only: replace with Laravel login POST and server-side validation.
-  loginForm.addEventListener("submit", (event) => {
+  // Backend login logic
+  loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    clearAllErrors();
 
     const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
 
-    showAlert({
-      title: "Login successful",
-      text: `${email || "Your account"} is ready for SiteSphere.`,
-      icon: "success",
-    });
+    try {
+      const response = await fetch(loginForm.action, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    loginForm.reset();
+      const data = await response.json();
+
+      if (response.ok) {
+        showAlert({
+          title: "Login successful",
+          text: `Welcome back! Redirecting...`,
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        }).then(() => {
+          window.location.href = data.redirect || "/dashboard";
+        });
+      } else {
+        if (response.status === 422 && data.errors) {
+          for (const [field, messages] of Object.entries(data.errors)) {
+            showError(field, messages[0]);
+          }
+        } else {
+          showAlert({
+            title: "Login failed",
+            text: data.message || "Invalid credentials. Please try again.",
+            icon: "error",
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert({
+        title: "Error",
+        text: "An error occurred during login. Please try again later.",
+        icon: "error",
+      });
+    }
   });
 
-  // Frontend demo only: Laravel must revalidate these fields before creating the user.
-  registerForm.addEventListener("submit", (event) => {
+  // Backend register initiate logic
+  registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    clearAllErrors();
 
-    const username = document.getElementById("reg-name").value.trim();
+    const name = document.getElementById("reg-name").value.trim();
     const email = document.getElementById("reg-email").value.trim();
     const password = document.getElementById("reg-password").value;
     const confirmPassword = document.getElementById("reg-confirm").value;
     const specialCharacterCount = (password.match(/[^A-Za-z0-9]/g) || [])
       .length;
 
-    if (!username || !email || !password || !confirmPassword) {
-      showAlert({
-        title: "Missing information",
-        text: "Please complete all required registration fields.",
-        icon: "error",
-      });
-      return;
+    let hasClientErrors = false;
+
+    if (!name) {
+      showError("name", "Username is required.");
+      hasClientErrors = true;
+    }
+    if (!email) {
+      showError("email", "Email address is required.");
+      hasClientErrors = true;
+    }
+    if (!password) {
+      showError("password", "Password is required.");
+      hasClientErrors = true;
     }
 
+    if (hasClientErrors) return;
+
     if (specialCharacterCount < 3) {
-      showAlert({
-        title: "Add more special characters",
-        text: "Your password needs at least 3 symbols like !, @, #, or $.",
-        icon: "error",
-      });
+      showError("password", "Your password needs at least 3 symbols like !, @, #, or $.");
       return;
     }
 
     if (password !== confirmPassword) {
-      showAlert({
-        title: "Passwords do not match",
-        text: "Please confirm your password and try again.",
-        icon: "error",
-      });
+      showError("password_confirmation", "Please confirm your password and try again.");
       return;
     }
 
-    openRegistrationFlow({ username, email });
+    try {
+      const response = await fetch("/register/initiate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        openRegistrationFlow({ username: name, email, userId: data.user_id }, data.otp);
+      } else {
+        if (response.status === 422 && data.errors) {
+          for (const [field, messages] of Object.entries(data.errors)) {
+            showError(field, messages[0]);
+          }
+        } else {
+          showAlert({
+            title: "Registration failed",
+            text: data.message || "An error occurred. Please try again.",
+            icon: "error",
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert({
+        title: "Error",
+        text: "An error occurred during registration. Please try again.",
+        icon: "error",
+      });
+    }
   });
 
   closeRegistrationFlow.addEventListener("click", hideRegistrationFlow);
 
-  resendOtpBtn.addEventListener("click", () => {
-    sendOtp();
-    otpDigits[0]?.focus();
+  resendOtpBtn.addEventListener("click", async () => {
+    if (!registrationData.userId) return;
+
+    try {
+      const response = await fetch("/register/resend-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({ user_id: registrationData.userId }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        sendOtp(data.otp);
+        otpDigits[0]?.focus();
+        showAlert({
+          title: "OTP Resent",
+          text: "A new OTP code has been logged/sent successfully.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        showAlert({
+          title: "Failed to resend OTP",
+          text: data.message || "An error occurred.",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert({
+        title: "Error",
+        text: "Could not resend OTP. Please try again.",
+        icon: "error",
+      });
+    }
   });
 
   otpDigits.forEach((input, index) => {
@@ -609,8 +763,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Frontend demo only: replace this comparison with Laravel OTP verification.
-  otpForm.addEventListener("submit", (event) => {
+  // Backend OTP verification logic
+  otpForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     syncOtpInput();
 
@@ -634,26 +788,50 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (otpInput.value.trim() !== otpState.code) {
+    try {
+      const response = await fetch("/register/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: registrationData.userId,
+          otp_code: otpInput.value.trim()
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        playOtpFeedback("is-otp-success");
+        clearOtpTimer();
+        clearOtpAdvance();
+
+        otpAdvanceTimer = setTimeout(() => {
+          otpAdvanceTimer = null;
+          if (authShell.dataset.flowActive !== "true") return;
+
+          setFlowStep("profile");
+        }, OTP_FEEDBACK_MS);
+      } else {
+        playOtpFeedback("is-otp-error");
+        showAlert({
+          title: "Invalid OTP",
+          text: data.message || "The entered OTP is incorrect or has expired.",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      console.error(error);
       playOtpFeedback("is-otp-error");
       showAlert({
-        title: "Invalid OTP",
-        text: "Use the newest OTP code. Old OTP codes stop working after resend.",
+        title: "Error",
+        text: "Could not verify OTP. Please try again.",
         icon: "error",
       });
-      return;
     }
-
-    playOtpFeedback("is-otp-success");
-    clearOtpTimer();
-    clearOtpAdvance();
-
-    otpAdvanceTimer = setTimeout(() => {
-      otpAdvanceTimer = null;
-      if (authShell.dataset.flowActive !== "true") return;
-
-      setFlowStep("profile");
-    }, OTP_FEEDBACK_MS);
   });
 
   profileImage.addEventListener("change", () => {
@@ -696,17 +874,65 @@ document.addEventListener("DOMContentLoaded", () => {
     setFlowStep("profile");
   });
 
-  // Frontend demo only: Laravel should finalize the account and persist profile data here.
-  confirmRegisterBtn.addEventListener("click", () => {
-    showAlert({
-      title: "Account ready",
-      text: "Registration confirmed. Redirecting to login.",
-      icon: "success",
-    }).then(() => {
-      hideRegistrationFlow();
-      registerForm.reset();
-      setMode("login");
-    });
+  // Backend finalize account logic
+  confirmRegisterBtn.addEventListener("click", async () => {
+    if (!registrationData.userId) return;
+
+    const formData = new FormData();
+    formData.append("user_id", registrationData.userId);
+    formData.append("user_dob", registrationData.profile.user_dob || "");
+    formData.append("user_phone", registrationData.profile.user_phone || "");
+    formData.append("user_bio", registrationData.profile.user_bio || "");
+    if (profileImage.files[0]) {
+      formData.append("user_image", profileImage.files[0]);
+    }
+
+    try {
+      const response = await fetch("/register/finalize", {
+        method: "POST",
+        headers: {
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
+          "Accept": "application/json",
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showAlert({
+          title: "Account ready",
+          text: "Registration confirmed. Redirecting to your dashboard...",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        }).then(() => {
+          hideRegistrationFlow();
+          registerForm.reset();
+          window.location.href = data.redirect || "/dashboard";
+        });
+      } else {
+        if (response.status === 422 && data.errors) {
+          setFlowStep("profile");
+          for (const [field, messages] of Object.entries(data.errors)) {
+            showError(field, messages[0]);
+          }
+        } else {
+          showAlert({
+            title: "Finalization failed",
+            text: data.message || "Could not complete account setup. Please try again.",
+            icon: "error",
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert({
+        title: "Error",
+        text: "An error occurred while setting up your account. Please try again.",
+        icon: "error",
+      });
+    }
   });
 
   const initialMode = window.location.pathname.includes("register") ? "register" : "login";

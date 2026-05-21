@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'slug', 'password'])]
+#[Fillable(['name', 'email', 'slug', 'password', 'user_dob', 'user_phone', 'user_bio', 'user_image', 'is_verified'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -25,6 +25,24 @@ class User extends Authenticatable
         static::creating(function ($user) {
             $user->slug = Str::slug($user->name);
         });
+    }
+
+    /**
+     * Determine if the user has verified their email address.
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        return (bool) $this->is_verified;
+    }
+
+    /**
+     * Mark the user's email as verified.
+     */
+    public function markEmailAsVerified(): bool
+    {
+        return $this->forceFill([
+            'is_verified' => true,
+        ])->save();
     }
 
     /**

@@ -7,7 +7,11 @@
         aria-label="Account menu"
         aria-expanded="false"
     >
-        <x-far-user class="icon" />
+        @if(Auth::user()->user_image)
+            <img src="{{ asset('storage/' . Auth::user()->user_image) }}" alt="{{ Auth::user()->name }}" class="size-8 rounded-full object-cover" />
+        @else
+            <x-far-user class="icon" />
+        @endif
         <span class="account-text">
             <span class="verified-label">
                 Verified <x-fas-check-circle class="inline-block size-3" style="color: var(--accent-color);" />
@@ -21,6 +25,6 @@
 @mobile
 <a href="#" {{ $attributes->merge(['class' => 'mobile-nav-item']) }}>
     <x-far-user class="icon"/>
-    <span>Profile</span>
+    <span class="account-name">Profile</span>
 </a>
 @endmobile

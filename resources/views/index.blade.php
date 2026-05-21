@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>
         @yield('title', 'SiteSphere')
     </title>
@@ -11,8 +12,8 @@
         <style>
             :root {
                 --accent-color: {{ $themeColors['accent'] ?? '#6c5ce7' }};
-                --background-color: {{ $themeColors['background'] ?? '#0d1b2a' }};
-                --text-color: {{ $themeColors['text'] ?? '#ffffff' }};
+                --background-color: {{ $themeColors['background'] ?? '#ffffff' }};
+                --text-color: {{ $themeColors['text'] ?? '#0d1b2a' }};
             }
         </style>
     @endauth

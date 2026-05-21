@@ -2506,3 +2506,30 @@ body.modal-open {
     padding: 0 2px;
   }
 }
+
+/* Inline Validation Styles */
+.input-wrap input.is-invalid,
+.plain-input.is-invalid,
+textarea.plain-input.is-invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
+}
+
+.field-error-message {
+  color: #ef4444;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin: 4px 0 0 4px;
+  animation: fieldErrorIn 0.2s ease-out;
+}
+
+@keyframes fieldErrorIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

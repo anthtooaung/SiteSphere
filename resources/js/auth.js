@@ -94,23 +94,39 @@ const init = () => {
     userId: null,
   };
 
-  const authAlertMixin = window.Swal?.mixin
-    ? window.Swal.mixin({
-        position: "top-right",
-        background: 'var(--background-color, #0d1b2a)',
-        color: 'var(--text-color, #ffffff)',
-        confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-        customClass: {
-          popup: "auth-swal-popup",
-          confirmButton: "auth-swal-confirm",
-        },
-      })
-    : null;
+  const createAuthAlertMixin = () => {
+    if (!window.Swal?.mixin) {
+      return null;
+    }
+
+    return window.Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = window.Swal.stopTimer;
+        toast.onmouseleave = window.Swal.resumeTimer;
+      },
+    });
+  };
 
   const showAlert = (options) => {
+    if (typeof window.authToast === "function") {
+      const toast = window.authToast(options);
+
+      if (toast) {
+        return toast;
+      }
+    }
+
+    const authAlertMixin = createAuthAlertMixin();
+
     if (authAlertMixin) {
       return authAlertMixin.fire({
         ...options,
+        showConfirmButton: false,
       });
     }
 
@@ -940,17 +956,9 @@ const init = () => {
       const data = await response.json();
 
       if (response.ok) {
-        showAlert({
-          title: "Account ready",
-          text: "Registration confirmed. Redirecting to your dashboard...",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        }).then(() => {
-          hideRegistrationFlow();
-          registerForm.reset();
-          window.location.href = data.redirect || "/dashboard";
-        });
+        hideRegistrationFlow();
+        registerForm.reset();
+        window.location.href = data.redirect || "/login";
       } else {
         if (response.status === 422 && data.errors) {
           setFlowStep("profile");

@@ -360,6 +360,11 @@ body.modal-open {
   box-shadow: 0 14px 28px rgba(53, 109, 243, 0.14);
 }
 
+.social-button:active {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: 0 8px 16px rgba(53, 109, 243, 0.12);
+}
+
 .social-button svg {
   width: 19px;
   height: 19px;
@@ -408,6 +413,9 @@ body.modal-open {
   font-size: 0.76rem;
   font-weight: 900;
   padding: 0;
+  transition:
+    color 180ms ease,
+    transform 120ms ease;
 }
 
 .text-button:hover,
@@ -415,6 +423,10 @@ body.modal-open {
   color: var(--blue-dark);
   outline: none;
   text-decoration: underline;
+}
+
+.text-button:active {
+  transform: translateY(1px) scale(0.97);
 }
 
 .input-wrap {
@@ -491,7 +503,8 @@ body.modal-open {
   transform: translateY(-50%);
   transition:
     background 180ms ease,
-    color 180ms ease;
+    color 180ms ease,
+    transform 120ms ease;
 }
 
 .password-toggle:hover,
@@ -499,6 +512,10 @@ body.modal-open {
   background: rgba(53, 109, 243, 0.1);
   color: var(--blue);
   outline: none;
+}
+
+.password-toggle:active {
+  transform: translateY(-50%) scale(0.92);
 }
 
 .password-toggle svg {
@@ -705,7 +722,9 @@ body.modal-open {
   font-weight: 900;
   transition:
     background 180ms ease,
-    border-color 180ms ease;
+    border-color 180ms ease,
+    transform 120ms ease,
+    box-shadow 180ms ease;
 }
 
 .secondary-button:hover,
@@ -713,6 +732,11 @@ body.modal-open {
   border-color: rgba(53, 109, 243, 0.4);
   background: var(--blue-soft);
   outline: none;
+}
+
+.secondary-button:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 8px 18px rgba(53, 109, 243, 0.12);
 }
 
 .file-input {
@@ -846,6 +870,11 @@ body.modal-open {
   outline: none;
   transform: translateY(-1px);
   box-shadow: 0 22px 40px rgba(33, 84, 216, 0.28);
+}
+
+.primary-button:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 10px 22px rgba(33, 84, 216, 0.22);
 }
 
 .slider-panel {
@@ -1118,6 +1147,10 @@ body.modal-open {
   color: var(--blue);
   outline: none;
   transform: translateY(-1px);
+}
+
+.ghost-button:active {
+  transform: translateY(1px) scale(0.98);
 }
 
 .auth-shell.is-sliding .ghost-button {

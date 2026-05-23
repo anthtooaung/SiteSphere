@@ -3,7 +3,7 @@
     <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between">
 {{--        left path--}}
         <div class="flex gap-3">
-            <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <a href="{{ route('welcome') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <x-app-logo></x-app-logo>
                 <span class="self-center text-xl text-heading font-semibold whitespace-nowrap " style="color: var(--accent-color, #6c5ce7);">SiteSphere</span>
             </a>
@@ -66,7 +66,7 @@
 @mobile
     <!-- Mobile Header -->
     <header class="mobile-header" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
-        <a href="#" class="brand">
+        <a href="{{ route('welcome') }}" class="brand">
             <x-app-logo class="size-6"></x-app-logo>
             <span>SiteSphere</span>
         </a>
@@ -101,7 +101,7 @@
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav" aria-label="Primary mobile navigation">
         <!-- Home Button -->
-        <x-home-btn class="active" />
+        <x-home-btn />
 
         @auth
             <!-- Categories Trigger -->

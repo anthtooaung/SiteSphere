@@ -24,13 +24,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share theme color values with all views so Blade can easily read them.
+        // Share user preference values with all views so Blade can easily read them.
         View::composer('*', function ($view) {
             $colors = [];
+            $toastPosition = 'top-end';
 
             if (Auth::check()) {
                 $user = Auth::user();
                 $settings = $user->settings()->with(['theme', 'customTheme'])->first();
+
+                if ($settings && in_array($settings->noti_location, ['top-start', 'top-end', 'bottom-end', 'bottom-start'], true)) {
+                    $toastPosition = $settings->noti_location;
+                }
 
                 if ($settings && $settings->custom_theme_id && $settings->customTheme) {
                     $colors = [
@@ -54,14 +59,15 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('themeColors', $colors);
+            $view->with('toastPosition', $toastPosition);
         });
 
         Blade::if('mobile', function () {
-            return (new Agent())->isMobile();
+            return (new Agent)->isMobile();
         });
 
         Blade::if('desktop', function () {
-            return (new Agent())->isDesktop();
+            return (new Agent)->isDesktop();
         });
     }
 }

@@ -18,10 +18,20 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use SweetAlert2\Laravel\Swal;
 use Throwable;
 
 class RegisteredUserController extends Controller
 {
+    private const DEFAULT_TOAST_POSITION = 'top-end';
+
+    private const TOAST_POSITIONS = [
+        'top-start',
+        'top-end',
+        'bottom-end',
+        'bottom-start',
+    ];
+
     /**
      * Display the registration view.
      */
@@ -234,7 +244,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Finalize registration, saving optional profile info and logging in.
+     * Finalize registration and save optional profile info.
      */
     public function finalize(Request $request): JsonResponse
     {
@@ -273,11 +283,42 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        $this->flashSuccessToast(
+            title: 'Account ready',
+            text: 'Registration confirmed. Please sign in to continue.',
+            position: $this->toastPositionFor($user),
+        );
 
         return response()->json([
             'success' => true,
-            'redirect' => route('dashboard', absolute: false),
+            'redirect' => route('login', absolute: false),
+        ]);
+    }
+
+    private function toastPositionFor(User $user): string
+    {
+        $position = $user->settings()->value('noti_location');
+
+        return in_array($position, self::TOAST_POSITIONS, true)
+            ? $position
+            : self::DEFAULT_TOAST_POSITION;
+    }
+
+    private function flashSuccessToast(string $title, string $text, string $position): void
+    {
+        Swal::fire([
+            'toast' => true,
+            'position' => $position,
+            'showConfirmButton' => false,
+            'timer' => 3000,
+            'timerProgressBar' => true,
+            'icon' => 'success',
+            'title' => $title,
+            'text' => $text,
+            'didOpen' => '(toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }',
         ]);
     }
 }

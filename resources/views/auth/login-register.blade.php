@@ -9,6 +9,33 @@
 @endpush
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const authToastPosition = {{ Illuminate\Support\Js::from($toastPosition ?? 'top-end') }};
+
+        window.authToast = (options = {}) => {
+            if (!window.Swal?.mixin) {
+                return null;
+            }
+
+            const toast = window.Swal.mixin({
+                toast: true,
+                position: authToastPosition,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toastElement) => {
+                    toastElement.onmouseenter = window.Swal.stopTimer;
+                    toastElement.onmouseleave = window.Swal.resumeTimer;
+                },
+            });
+
+            return toast.fire({
+                ...options,
+                showConfirmButton: false,
+            });
+        };
+    </script>
     @vite(['resources/js/auth.js'])
 @endpush
 

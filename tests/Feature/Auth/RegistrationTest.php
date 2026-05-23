@@ -3,10 +3,13 @@
 namespace Tests\Feature\Auth;
 
 use App\Mail\OtpVerificationMail;
+use App\Models\OtpVerifications;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use SweetAlert2\Laravel\Swal;
 use Symfony\Component\Mailer\Exception\TransportException;
 use Tests\TestCase;
 
@@ -109,5 +112,64 @@ class RegistrationTest extends TestCase
                 'otp_delivery_failed' => true,
             ])
             ->assertJsonMissingPath('otp');
+    }
+
+    public function test_registration_finalize_redirects_to_login_and_flashes_database_positioned_toast(): void
+    {
+        $user = User::factory()->unverified()->create([
+            'email' => 'test@example.com',
+        ]);
+        $this->createSettingsFor($user, 'bottom-end');
+
+        OtpVerifications::create([
+            'user_id' => $user->id,
+            'otp' => '123456',
+            'is_verified' => true,
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $response = $this->postJson('/register/finalize', [
+            'user_id' => $user->id,
+            'user_dob' => null,
+            'user_phone' => '',
+            'user_bio' => '',
+        ]);
+
+        $this->assertGuest();
+        $this->assertTrue((bool) $user->fresh()->is_verified);
+
+        $response
+            ->assertOk()
+            ->assertJson([
+                'success' => true,
+                'redirect' => route('login', absolute: false),
+            ])
+            ->assertSessionHas(Swal::SESSION_KEY, function (array $toast): bool {
+                return $toast['toast'] === true
+                    && $toast['position'] === 'bottom-end'
+                    && $toast['showConfirmButton'] === false
+                    && $toast['icon'] === 'success'
+                    && $toast['title'] === 'Account ready';
+            });
+    }
+
+    private function createSettingsFor(User $user, string $notificationLocation): void
+    {
+        $themeId = DB::table('themes')->insertGetId([
+            'accent_color' => '#6c5ce7',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('settings')->insert([
+            'user_id' => $user->id,
+            'menuBar_location' => 'right',
+            'noti_location' => $notificationLocation,
+            'dark_mode' => false,
+            'user_post_visible' => false,
+            'theme_id' => $themeId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

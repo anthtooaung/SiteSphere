@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OtpVerificationMail;
 use App\Models\OtpVerifications;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -12,9 +13,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Throwable;
 
 class RegisteredUserController extends Controller
 {
@@ -100,11 +104,37 @@ class RegisteredUserController extends Controller
         // Log OTP code
         Log::info("OTP verification code for {$user->email}: {$otpCode}");
 
+        $otpDeliveryFailed = false;
+        $deliveryMessage = null;
+        $mailPassword = (string) config('mail.mailers.smtp.password');
+
+        if ($mailPassword === '' || Str::contains($mailPassword, 'replace-with-gmail-app-password')) {
+            return response()->json([
+                'success' => true,
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'otp_delivery_failed' => true,
+                'message' => 'OTP created, but email is not configured. Set a real Gmail App Password in MAIL_PASSWORD and try Resend OTP.',
+            ]);
+        }
+
+        try {
+            Mail::to($user->email)->send(new OtpVerificationMail($otpCode));
+        } catch (Throwable $exception) {
+            $otpDeliveryFailed = true;
+            $deliveryMessage = $exception->getMessage();
+
+            report($exception);
+        }
+
         return response()->json([
             'success' => true,
             'user_id' => $user->id,
             'email' => $user->email,
-            'otp' => $otpCode,
+            'otp_delivery_failed' => $otpDeliveryFailed,
+            'message' => $otpDeliveryFailed
+                ? 'OTP created, but email delivery failed. '.$deliveryMessage
+                : null,
         ]);
     }
 
@@ -139,9 +169,33 @@ class RegisteredUserController extends Controller
         // Log OTP code
         Log::info("Resent OTP verification code for {$user->email}: {$otpCode}");
 
+        $otpDeliveryFailed = false;
+        $deliveryMessage = null;
+        $mailPassword = (string) config('mail.mailers.smtp.password');
+
+        if ($mailPassword === '' || Str::contains($mailPassword, 'replace-with-gmail-app-password')) {
+            return response()->json([
+                'success' => true,
+                'otp_delivery_failed' => true,
+                'message' => 'A new OTP was created, but email is not configured. Set a real Gmail App Password in MAIL_PASSWORD and try again.',
+            ]);
+        }
+
+        try {
+            Mail::to($user->email)->send(new OtpVerificationMail($otpCode));
+        } catch (Throwable $exception) {
+            $otpDeliveryFailed = true;
+            $deliveryMessage = $exception->getMessage();
+
+            report($exception);
+        }
+
         return response()->json([
             'success' => true,
-            'otp' => $otpCode,
+            'otp_delivery_failed' => $otpDeliveryFailed,
+            'message' => $otpDeliveryFailed
+                ? 'A new OTP was created, but email delivery failed. '.$deliveryMessage
+                : null,
         ]);
     }
 

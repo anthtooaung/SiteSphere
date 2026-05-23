@@ -24,7 +24,7 @@
 
                 <!-- Login Panel -->
                 <section class="form-panel login-panel" aria-labelledby="login-title">
-                    <form id="loginForm" class="auth-form" method="POST" action="{{ route('login.create') }}">
+                    <form id="loginForm" class="auth-form" method="POST" action="{{ route('login.store') }}">
                         @csrf
                         <div class="form-heading">
                             <p class="section-label">Welcome back</p>
@@ -57,7 +57,7 @@
                         <div class="divider"><span>or use your email</span></div>
 
                         <!-- Email input field -->
-                        <x-input-field id="login-email" name="email" label="Email address" plain="true" type="email" placeholder="name@email.com" autocomplete="email" required>
+                        <x-input-field id="login-email" name="email" label="Email address" plain="true" type="email" placeholder="name@email.com" autocomplete="email" :value="old('email')" bag="login" required>
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-9z"/>
                                 <path d="M5 8l7 5 7-5" />
@@ -65,7 +65,7 @@
                         </x-input-field>
 
                         <!-- Password input field -->
-                        <x-input-field id="login-password" name="password" plain="true" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+                        <x-input-field id="login-password" name="password" plain="true" type="password" placeholder="Enter your password" autocomplete="current-password" bag="login" required>
                             <x-slot:labelRow>
                                 <div class="label-row">
                                     <label for="login-password">Password</label>
@@ -100,7 +100,7 @@
 
                 <!-- Register Panel -->
                 <section class="form-panel register-panel" aria-labelledby="register-title">
-                    <form id="registerForm" class="auth-form" method="POST" action="{{ route('register') }}">
+                    <form id="registerForm" class="auth-form" method="POST" action="{{ route('register.initiate') }}" novalidate>
                         @csrf
                         <div class="form-heading">
                             <p class="section-label">Join SiteSphere</p>
@@ -236,12 +236,6 @@
                                 Resend OTP
                             </button>
                         </div>
-
-                        <p class="demo-note">
-                            Frontend-only demo OTP:
-                            <strong id="demoOtpCode">------</strong>
-                        </p>
-
                         <button type="submit" class="primary-button">Verify OTP</button>
                     </form>
                 </section>

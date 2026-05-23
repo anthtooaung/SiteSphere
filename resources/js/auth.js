@@ -4,8 +4,12 @@
   Required fields: user_email, password
 */
 
-document.addEventListener("DOMContentLoaded", () => {
+const init = () => {
   const authShell = document.getElementById("authShell");
+  if (!authShell) {
+    return;
+  }
+
   const loginForm = document.getElementById("loginForm");
   const registerForm = document.getElementById("registerForm");
   const registerPanel = document.querySelector(".register-panel");
@@ -30,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resendOtpBtn = document.getElementById("resendOtpBtn");
   const profileForm = document.getElementById("profileForm");
   const skipProfileBtn = document.getElementById("skipProfileBtn");
-  const profileActions = profileForm.querySelector(".flow-actions");
+  const profileActions = profileForm?.querySelector(".flow-actions");
   const profileDob = document.getElementById("profile-dob");
   const profilePhone = document.getElementById("profile-phone");
   const profileBio = document.getElementById("profile-bio");
@@ -90,23 +94,58 @@ document.addEventListener("DOMContentLoaded", () => {
     userId: null,
   };
 
+  const authAlertMixin = window.Swal?.mixin
+    ? window.Swal.mixin({
+        position: "top-right",
+        background: 'var(--background-color, #0d1b2a)',
+        color: 'var(--text-color, #ffffff)',
+        confirmButtonColor: 'var(--accent-color, #6c5ce7)',
+        customClass: {
+          popup: "auth-swal-popup",
+          confirmButton: "auth-swal-confirm",
+        },
+      })
+    : null;
+
   const showAlert = (options) => {
-    return Swal.fire({
-      ...options,
-      background: 'var(--background-color, #0d1b2a)',
-      color: 'var(--text-color, #ffffff)',
-      confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-    });
+    if (authAlertMixin) {
+      return authAlertMixin.fire({
+        ...options,
+      });
+    }
+
+    const title = options.title ? `${options.title}\n\n` : "";
+    const text = options.text || "";
+
+    window.alert(`${title}${text}`);
+
+    return Promise.resolve();
   };
 
-  const showError = (inputName, message) => {
-    const input = document.querySelector(`input[name="${inputName}"], textarea[name="${inputName}"]`);
+  const parseResponseData = async (response) => {
+    const responseText = await response.text();
+
+    if (!responseText) {
+      return {};
+    }
+
+    try {
+      return JSON.parse(responseText);
+    } catch (error) {
+      console.error("Failed to parse JSON response", error, responseText);
+
+      return {};
+    }
+  };
+
+  const showError = (inputName, message, container = document) => {
+    const input = container.querySelector(`input[name="${inputName}"], textarea[name="${inputName}"]`);
     if (!input) return;
 
     const fieldGroup = input.closest(".field-group");
     if (!fieldGroup) return;
 
-    clearError(inputName);
+    clearError(inputName, container);
 
     input.classList.add("is-invalid");
     const errorMsg = document.createElement("p");
@@ -116,8 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
     fieldGroup.appendChild(errorMsg);
   };
 
-  const clearError = (inputName) => {
-    const input = document.querySelector(`input[name="${inputName}"], textarea[name="${inputName}"]`);
+  const clearError = (inputName, container = document) => {
+    const input = container.querySelector(`input[name="${inputName}"], textarea[name="${inputName}"]`);
     if (!input) return;
 
     input.classList.remove("is-invalid");
@@ -139,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("input", (event) => {
     const target = event.target;
     if (target.name && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
-      clearError(target.name);
+      clearError(target.name, target.closest("form") || document);
     }
   });
 
@@ -175,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
       otpFeedbackTimer = null;
     }
 
-    otpForm.classList.remove("is-otp-error", "is-otp-success");
+    otpForm?.classList.remove("is-otp-error", "is-otp-success");
   };
 
   const clearOtpAdvance = () => {
@@ -186,6 +225,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const playOtpFeedback = (className) => {
+    if (!otpForm) {
+      return;
+    }
+
     clearOtpFeedback();
     void otpForm.offsetWidth;
 
@@ -275,6 +318,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const previousMode = authShell.dataset.mode || "login";
     const hasMode = Boolean(authShell.dataset.mode);
 
+    if (hasMode && previousMode !== mode) {
+      clearAllErrors();
+    }
+
     if (!hasMode || previousMode !== mode) {
       if (updateUrl) {
         playSliderAnimation(mode);
@@ -321,6 +368,10 @@ document.addEventListener("DOMContentLoaded", () => {
     String(Math.floor(100000 + Math.random() * 900000));
 
   const updateOtpTimer = () => {
+    if (!otpTimer) {
+      return;
+    }
+
     const remaining = otpState.expiresAt - Date.now();
 
     otpTimer.textContent = formatTime(remaining);
@@ -332,6 +383,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const syncOtpInput = () => {
+    if (!otpInput) {
+      return;
+    }
+
     otpInput.value = otpDigits.map((input) => input.value).join("");
   };
 
@@ -346,7 +401,9 @@ document.addEventListener("DOMContentLoaded", () => {
     otpState.code = backendOtp || generateOtpCode();
     otpState.expiresAt = Date.now() + OTP_DURATION_MS;
 
-    demoOtpCode.textContent = otpState.code;
+    if (demoOtpCode) {
+      demoOtpCode.textContent = otpState.code;
+    }
     clearOtpFeedback();
     clearOtpAdvance();
     clearOtpInputs();
@@ -390,6 +447,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const openRegistrationFlow = (account, backendOtp = null) => {
+    if (!registrationModal || !otpEmailTarget || !registerPanel) {
+      return;
+    }
+
     registrationData = {
       account,
       profile: {},
@@ -422,17 +483,21 @@ document.addEventListener("DOMContentLoaded", () => {
       profileImageDataUrl: "",
     };
 
-    otpForm.reset();
+    otpForm?.reset();
     clearOtpFeedback();
     clearOtpAdvance();
     clearOtpInputs();
-    profileForm.reset();
+    profileForm?.reset();
 
-    profileImageThumb.removeAttribute("src");
-    profileImagePreview.classList.add("is-hidden");
+    profileImageThumb?.removeAttribute("src");
+    profileImagePreview?.classList.add("is-hidden");
   };
 
   const hideRegistrationFlow = () => {
+    if (!registrationModal || !registerPanel) {
+      return;
+    }
+
     registrationModal.classList.add("is-hidden");
     registerPanel.classList.remove("is-flow-active");
 
@@ -443,9 +508,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const collectProfile = () => ({
-    user_dob: profileDob.value,
-    user_phone: profilePhone.value,
-    user_bio: profileBio.value.trim(),
+    user_dob: profileDob?.value ?? "",
+    user_phone: profilePhone?.value ?? "",
+    user_bio: profileBio?.value.trim() ?? "",
   });
 
   const renderConfirmation = () => {
@@ -490,27 +555,33 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   };
 
-  showRegister.addEventListener("click", () => {
-    setMode("register");
-  });
+  if (showRegister) {
+    showRegister.addEventListener("click", () => {
+      setMode("register");
+    });
+  }
 
-  showLogin.addEventListener("click", () => {
-    setMode("login");
-  });
+  if (showLogin) {
+    showLogin.addEventListener("click", () => {
+      setMode("login");
+    });
+  }
 
-  toggleLoginPassword.addEventListener("click", () => {
-    const isVisible = loginPassword.type === "text";
+  if (toggleLoginPassword && loginPassword) {
+    toggleLoginPassword.addEventListener("click", () => {
+      const isVisible = loginPassword.type === "text";
 
-    loginPassword.type = isVisible ? "password" : "text";
-    loginPassword.classList.toggle("is-visible-password", !isVisible);
+      loginPassword.type = isVisible ? "password" : "text";
+      loginPassword.classList.toggle("is-visible-password", !isVisible);
 
-    toggleLoginPassword.classList.toggle("is-visible", !isVisible);
-    toggleLoginPassword.setAttribute(
-      "aria-label",
-      isVisible ? "Show password" : "Hide password",
-    );
-    toggleLoginPassword.setAttribute("aria-pressed", String(!isVisible));
-  });
+      toggleLoginPassword.classList.toggle("is-visible", !isVisible);
+      toggleLoginPassword.setAttribute(
+        "aria-label",
+        isVisible ? "Show password" : "Hide password",
+      );
+      toggleLoginPassword.setAttribute("aria-pressed", String(!isVisible));
+    });
+  }
 
   socialButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -524,74 +595,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  forgotPasswordBtn.addEventListener("click", () => {
-    const email = document.getElementById("login-email").value.trim();
+  if (forgotPasswordBtn) {
+    forgotPasswordBtn.addEventListener("click", () => {
+      const email = document.getElementById("login-email").value.trim();
 
-    showAlert({
-      title: "Password reset",
-      text: email
-        ? `A reset link would be sent to ${email} when the backend is connected.`
-        : "Enter your email first, then this front-end action can show the reset flow.",
-      icon: "info",
-    });
-  });
-
-  // Backend login logic
-  loginForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    clearAllErrors();
-
-    const email = document.getElementById("login-email").value.trim();
-    const password = document.getElementById("login-password").value;
-
-    try {
-      const response = await fetch(loginForm.action, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        showAlert({
-          title: "Login successful",
-          text: `Welcome back! Redirecting...`,
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        }).then(() => {
-          window.location.href = data.redirect || "/dashboard";
-        });
-      } else {
-        if (response.status === 422 && data.errors) {
-          for (const [field, messages] of Object.entries(data.errors)) {
-            showError(field, messages[0]);
-          }
-        } else {
-          showAlert({
-            title: "Login failed",
-            text: data.message || "Invalid credentials. Please try again.",
-            icon: "error",
-          });
-        }
-      }
-    } catch (error) {
-      console.error(error);
       showAlert({
-        title: "Error",
-        text: "An error occurred during login. Please try again later.",
-        icon: "error",
+        title: "Password reset",
+        text: email
+          ? `A reset link would be sent to ${email} when the backend is connected.`
+          : "Enter your email first, then this front-end action can show the reset flow.",
+        icon: "info",
       });
-    }
-  });
+    });
+  }
+
+  // Login is handled by a standard form POST to the backend (no JS interception).
+  // Validation errors are returned by Laravel and displayed via Blade @error directives.
+
 
   // Backend register initiate logic
-  registerForm.addEventListener("submit", async (event) => {
+  registerForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     clearAllErrors();
 
@@ -605,27 +628,27 @@ document.addEventListener("DOMContentLoaded", () => {
     let hasClientErrors = false;
 
     if (!name) {
-      showError("name", "Username is required.");
+      showError("name", "Username is required.", registerForm);
       hasClientErrors = true;
     }
     if (!email) {
-      showError("email", "Email address is required.");
+      showError("email", "Email address is required.", registerForm);
       hasClientErrors = true;
     }
     if (!password) {
-      showError("password", "Password is required.");
+      showError("password", "Password is required.", registerForm);
       hasClientErrors = true;
     }
 
     if (hasClientErrors) return;
 
     if (specialCharacterCount < 3) {
-      showError("password", "Your password needs at least 3 symbols like !, @, #, or $.");
+      showError("password", "Your password needs at least 3 symbols like !, @, #, or $.", registerForm);
       return;
     }
 
     if (password !== confirmPassword) {
-      showError("password_confirmation", "Please confirm your password and try again.");
+      showError("password_confirmation", "Please confirm your password and try again.", registerForm);
       return;
     }
 
@@ -640,14 +663,22 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ name, email, password }),
       });
 
-      const data = await response.json();
+      const data = await parseResponseData(response);
 
       if (response.ok) {
         openRegistrationFlow({ username: name, email, userId: data.user_id }, data.otp);
+
+        if (data.otp_delivery_failed) {
+          showAlert({
+            title: "OTP created",
+            text: data.message || "We opened the OTP step, but the email could not be sent. Check mail settings and try resend OTP.",
+            icon: "warning",
+          });
+        }
       } else {
         if (response.status === 422 && data.errors) {
           for (const [field, messages] of Object.entries(data.errors)) {
-            showError(field, messages[0]);
+            showError(field, messages[0], registerForm);
           }
         } else {
           showAlert({
@@ -667,9 +698,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  closeRegistrationFlow.addEventListener("click", hideRegistrationFlow);
+  closeRegistrationFlow?.addEventListener("click", hideRegistrationFlow);
 
-  resendOtpBtn.addEventListener("click", async () => {
+  resendOtpBtn?.addEventListener("click", async () => {
     if (!registrationData.userId) return;
 
     try {
@@ -683,18 +714,27 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ user_id: registrationData.userId }),
       });
 
-      const data = await response.json();
+      const data = await parseResponseData(response);
 
       if (response.ok) {
         sendOtp(data.otp);
         otpDigits[0]?.focus();
-        showAlert({
-          title: "OTP Resent",
-          text: "A new OTP code has been logged/sent successfully.",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
+
+        if (data.otp_delivery_failed) {
+          showAlert({
+            title: "OTP created",
+            text: data.message || "A new OTP was created, but the email could not be sent. Check mail settings and try again.",
+            icon: "warning",
+          });
+        } else {
+          showAlert({
+            title: "OTP Resent",
+            text: "A new OTP code has been logged/sent successfully.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        }
       } else {
         showAlert({
           title: "Failed to resend OTP",
@@ -764,7 +804,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Backend OTP verification logic
-  otpForm.addEventListener("submit", async (event) => {
+  otpForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     syncOtpInput();
 
@@ -834,7 +874,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  profileImage.addEventListener("change", () => {
+  profileImage?.addEventListener("change", () => {
     const file = profileImage.files[0];
 
     if (!file) {
@@ -861,21 +901,21 @@ document.addEventListener("DOMContentLoaded", () => {
     setFlowStep("confirm");
   };
 
-  profileForm.addEventListener("submit", (event) => {
+  profileForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     continueToConfirmation();
   });
 
-  skipProfileBtn.addEventListener("click", () => {
+  skipProfileBtn?.addEventListener("click", () => {
     continueToConfirmation();
   });
 
-  backToProfileBtn.addEventListener("click", () => {
+  backToProfileBtn?.addEventListener("click", () => {
     setFlowStep("profile");
   });
 
   // Backend finalize account logic
-  confirmRegisterBtn.addEventListener("click", async () => {
+  confirmRegisterBtn?.addEventListener("click", async () => {
     if (!registrationData.userId) return;
 
     const formData = new FormData();
@@ -915,7 +955,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (response.status === 422 && data.errors) {
           setFlowStep("profile");
           for (const [field, messages] of Object.entries(data.errors)) {
-            showError(field, messages[0]);
+            showError(field, messages[0], profileForm);
           }
         } else {
           showAlert({
@@ -942,4 +982,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const mode = window.location.pathname.includes("register") ? "register" : "login";
     setMode(mode, false);
   });
-});
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}

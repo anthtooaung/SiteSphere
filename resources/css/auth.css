@@ -27,23 +27,73 @@
 }
 
 /* Tailwind utilities */
-.w-full { width: 100%; }
-.min-h-screen { min-height: 100vh; }
-.min-h-full { min-height: 100%; }
-.place-items-center { place-items: center; }
-.grid { display: grid; }
-.flex { display: flex; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.text-center { text-align: center; }
-.overflow-hidden { overflow: hidden; }
-.rounded-xl { border-radius: 1rem; }
-.rounded-2xl { border-radius: 1.25rem; }
-.bg-white { background-color: var(--white); }
-.text-black { color: var(--black); }
-.text-blue { color: var(--blue); }
-.bg-blue-soft { background: var(--blue-soft); }
-.shadow-xl { box-shadow: var(--shadow); }
+.w-full {
+  width: 100%;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.min-h-full {
+  min-height: 100%;
+}
+
+.place-items-center {
+  place-items: center;
+}
+
+.grid {
+  display: grid;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.rounded-xl {
+  border-radius: 1rem;
+}
+
+.rounded-2xl {
+  border-radius: 1.25rem;
+}
+
+.bg-white {
+  background-color: var(--white);
+}
+
+.text-black {
+  color: var(--black);
+}
+
+.text-blue {
+  color: var(--blue);
+}
+
+.bg-blue-soft {
+  background: var(--blue-soft);
+}
+
+.shadow-xl {
+  box-shadow: var(--shadow);
+}
 
 html {
   width: 100%;
@@ -59,11 +109,9 @@ body {
   color: var(--ink);
   font-family: "Inter", Arial, sans-serif;
   background:
-    radial-gradient(
-      circle at 16% 12%,
+    radial-gradient(circle at 16% 12%,
       rgba(53, 109, 243, 0.18),
-      transparent 32%
-    ),
+      transparent 32%),
     linear-gradient(135deg, #f6f8ff 0%, #e8f0ff 48%, #d8e4ff 100%);
 }
 
@@ -220,11 +268,31 @@ body.modal-open {
   place-items: center;
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 78px 50px 44px;
   transition:
     opacity 360ms ease,
     transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(53, 109, 243, 0.25) transparent;
+}
+
+.form-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.form-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-panel::-webkit-scrollbar-thumb {
+  background-color: rgba(53, 109, 243, 0.25);
+  border-radius: 20px;
+}
+
+.form-panel::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(53, 109, 243, 0.45);
 }
 
 .auth-form {
@@ -792,11 +860,9 @@ body.modal-open {
   overflow: hidden;
   border-radius: 14px;
   background:
-    radial-gradient(
-      circle at 70% 20%,
+    radial-gradient(circle at 70% 20%,
       rgba(255, 255, 255, 0.28),
-      transparent 28%
-    ),
+      transparent 28%),
     linear-gradient(145deg, #7ca2ff, var(--blue));
   color: var(--white);
   text-align: center;
@@ -961,30 +1027,12 @@ body.modal-open {
     transform 220ms ease;
 }
 
-.auth-shell[data-flow-step="otp"]
-  .register-timeline
-  li[data-guide="account"]
-  span,
-.auth-shell[data-flow-step="profile"]
-  .register-timeline
-  li[data-guide="account"]
-  span,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="account"]
-  span,
-.auth-shell[data-flow-step="profile"]
-  .register-timeline
-  li[data-guide="otp"]
-  span,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="otp"]
-  span,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="profile"]
-  span {
+.auth-shell[data-flow-step="otp"] .register-timeline li[data-guide="account"] span,
+.auth-shell[data-flow-step="profile"] .register-timeline li[data-guide="account"] span,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="account"] span,
+.auth-shell[data-flow-step="profile"] .register-timeline li[data-guide="otp"] span,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="otp"] span,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="profile"] span {
   background: var(--white);
   color: var(--blue);
   font-size: 0;
@@ -992,91 +1040,40 @@ body.modal-open {
   box-shadow: 0 10px 26px rgba(5, 8, 22, 0.18);
 }
 
-.auth-shell[data-flow-step="otp"]
-  .register-timeline
-  li[data-guide="account"]
-  span::before,
-.auth-shell[data-flow-step="profile"]
-  .register-timeline
-  li[data-guide="account"]
-  span::before,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="account"]
-  span::before,
-.auth-shell[data-flow-step="profile"]
-  .register-timeline
-  li[data-guide="otp"]
-  span::before,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="otp"]
-  span::before,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="profile"]
-  span::before {
+.auth-shell[data-flow-step="otp"] .register-timeline li[data-guide="account"] span::before,
+.auth-shell[data-flow-step="profile"] .register-timeline li[data-guide="account"] span::before,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="account"] span::before,
+.auth-shell[data-flow-step="profile"] .register-timeline li[data-guide="otp"] span::before,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="otp"] span::before,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="profile"] span::before {
   content: "\2713";
   font-size: 0.88rem;
   line-height: 1;
 }
 
-.auth-shell[data-flow-step="otp"]
-  .register-timeline
-  li[data-guide="account"]::after,
-.auth-shell[data-flow-step="profile"]
-  .register-timeline
-  li[data-guide="account"]::after,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="account"]::after,
-.auth-shell[data-flow-step="profile"]
-  .register-timeline
-  li[data-guide="otp"]::after,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="otp"]::after,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="profile"]::after {
+.auth-shell[data-flow-step="otp"] .register-timeline li[data-guide="account"]::after,
+.auth-shell[data-flow-step="profile"] .register-timeline li[data-guide="account"]::after,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="account"]::after,
+.auth-shell[data-flow-step="profile"] .register-timeline li[data-guide="otp"]::after,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="otp"]::after,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="profile"]::after {
   background: rgba(255, 255, 255, 0.68);
 }
 
-.auth-shell[data-flow-step="account"]
-  .register-timeline
-  li[data-guide="account"]
-  span,
+.auth-shell[data-flow-step="account"] .register-timeline li[data-guide="account"] span,
 .auth-shell[data-flow-step="otp"] .register-timeline li[data-guide="otp"] span,
-.auth-shell[data-flow-step="profile"]
-  .register-timeline
-  li[data-guide="profile"]
-  span,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="confirm"]
-  span {
+.auth-shell[data-flow-step="profile"] .register-timeline li[data-guide="profile"] span,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="confirm"] span {
   background: var(--white);
   color: var(--blue);
   animation: timelineActivePop 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
   box-shadow: 0 10px 26px rgba(5, 8, 22, 0.18);
 }
 
-.auth-shell[data-flow-step="account"]
-  .register-timeline
-  li[data-guide="account"]
-  strong,
-.auth-shell[data-flow-step="otp"]
-  .register-timeline
-  li[data-guide="otp"]
-  strong,
-.auth-shell[data-flow-step="profile"]
-  .register-timeline
-  li[data-guide="profile"]
-  strong,
-.auth-shell[data-flow-step="confirm"]
-  .register-timeline
-  li[data-guide="confirm"]
-  strong {
+.auth-shell[data-flow-step="account"] .register-timeline li[data-guide="account"] strong,
+.auth-shell[data-flow-step="otp"] .register-timeline li[data-guide="otp"] strong,
+.auth-shell[data-flow-step="profile"] .register-timeline li[data-guide="profile"] strong,
+.auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="confirm"] strong {
   color: var(--white);
 }
 
@@ -1161,7 +1158,8 @@ body.modal-open {
 }
 
 .auth-shell.is-register .register-panel {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding-block: 52px 30px;
 }
 
@@ -1281,6 +1279,7 @@ body.modal-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -1292,7 +1291,9 @@ body.modal-open {
 }
 
 @media (max-width: 760px) {
-  html, body {
+
+  html,
+  body {
     overflow-y: auto !important;
     height: auto !important;
   }
@@ -1519,6 +1520,7 @@ body.modal-open {
     text-align: left;
   }
 }
+
 .register-panel.is-flow-active {
   align-content: start;
   align-items: start;
@@ -1618,33 +1620,23 @@ body.modal-open {
   animation: otpBoxWave 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.register-panel
-  .flow-step[data-step="otp"].is-step-entering
-  .otp-digit:nth-child(2) {
+.register-panel .flow-step[data-step="otp"].is-step-entering .otp-digit:nth-child(2) {
   animation-delay: 35ms;
 }
 
-.register-panel
-  .flow-step[data-step="otp"].is-step-entering
-  .otp-digit:nth-child(3) {
+.register-panel .flow-step[data-step="otp"].is-step-entering .otp-digit:nth-child(3) {
   animation-delay: 70ms;
 }
 
-.register-panel
-  .flow-step[data-step="otp"].is-step-entering
-  .otp-digit:nth-child(4) {
+.register-panel .flow-step[data-step="otp"].is-step-entering .otp-digit:nth-child(4) {
   animation-delay: 105ms;
 }
 
-.register-panel
-  .flow-step[data-step="otp"].is-step-entering
-  .otp-digit:nth-child(5) {
+.register-panel .flow-step[data-step="otp"].is-step-entering .otp-digit:nth-child(5) {
   animation-delay: 140ms;
 }
 
-.register-panel
-  .flow-step[data-step="otp"].is-step-entering
-  .otp-digit:nth-child(6) {
+.register-panel .flow-step[data-step="otp"].is-step-entering .otp-digit:nth-child(6) {
   animation-delay: 175ms;
 }
 
@@ -1755,6 +1747,7 @@ body.modal-open {
 }
 
 @keyframes otpShake {
+
   0%,
   100% {
     transform: translateX(0);
@@ -1900,6 +1893,7 @@ body.modal-open {
 }
 
 @media (max-width: 900px) {
+
   html,
   body {
     width: 100%;
@@ -2040,8 +2034,7 @@ body.modal-open {
   }
 
   .auth-shell.is-mobile-to-register .slider-panel {
-    animation: mobileGuideToRegister 820ms cubic-bezier(0.22, 1, 0.36, 1)
-      both;
+    animation: mobileGuideToRegister 820ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .auth-shell.is-mobile-to-login .slider-panel {
@@ -2053,8 +2046,7 @@ body.modal-open {
   }
 
   .auth-shell.is-mobile-to-register .form-stage {
-    animation: mobileFormToRegister 820ms cubic-bezier(0.22, 1, 0.36, 1)
-      both;
+    animation: mobileFormToRegister 820ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .auth-shell.is-mobile-to-login .form-stage {
@@ -2068,8 +2060,7 @@ body.modal-open {
 
   .auth-shell.is-mobile-to-register.is-register .slider-register,
   .auth-shell.is-mobile-to-login:not(.is-register) .slider-login {
-    animation: mobileGuideContentIn 440ms cubic-bezier(0.22, 1, 0.36, 1)
-      both;
+    animation: mobileGuideContentIn 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .slider-content,
@@ -2267,37 +2258,25 @@ body.modal-open {
     font-size: 1rem;
   }
 }
+
 @media (max-width: 900px) {
   .auth-shell.is-register[data-flow-step="otp"] .register-panel {
     padding-top: 18px;
   }
 
-  .auth-shell.is-register[data-flow-step="otp"]
-    .register-panel
-    .flow-step[data-step="otp"] {
+  .auth-shell.is-register[data-flow-step="otp"] .register-panel .flow-step[data-step="otp"] {
     gap: 10px;
   }
 
-  .auth-shell.is-register[data-flow-step="otp"]
-    .register-panel
-    .flow-step[data-step="otp"]
-    .compact-heading {
+  .auth-shell.is-register[data-flow-step="otp"] .register-panel .flow-step[data-step="otp"] .compact-heading {
     margin-bottom: 0;
   }
 
-  .auth-shell.is-register[data-flow-step="otp"]
-    .register-panel
-    .flow-step[data-step="otp"]
-    .compact-heading
-    h2 {
+  .auth-shell.is-register[data-flow-step="otp"] .register-panel .flow-step[data-step="otp"] .compact-heading h2 {
     font-size: 1.32rem;
   }
 
-  .auth-shell.is-register[data-flow-step="otp"]
-    .register-panel
-    .flow-step[data-step="otp"]
-    .compact-heading
-    p:not(.section-label) {
+  .auth-shell.is-register[data-flow-step="otp"] .register-panel .flow-step[data-step="otp"] .compact-heading p:not(.section-label) {
     margin-top: 5px;
     font-size: 0.8rem;
     line-height: 1.4;
@@ -2330,9 +2309,7 @@ body.modal-open {
     transform-origin: left center;
   }
 
-  .auth-shell[data-flow-active="true"]
-    .register-timeline
-    li:not(:last-child)::after {
+  .auth-shell[data-flow-active="true"] .register-timeline li:not(:last-child)::after {
     animation-name: timelineLineDrawX;
   }
 
@@ -2381,59 +2358,36 @@ body.modal-open {
   padding-block: 28px;
 }
 
-.auth-shell.is-register[data-flow-step="profile"]
-  .register-panel
-  .flow-step[data-step="profile"],
-.auth-shell.is-register[data-flow-step="profile"]
-  .register-panel
-  .flow-step[data-step="profile"]
-  .flow-form {
+.auth-shell.is-register[data-flow-step="profile"] .register-panel .flow-step[data-step="profile"],
+.auth-shell.is-register[data-flow-step="profile"] .register-panel .flow-step[data-step="profile"] .flow-form {
   gap: 12px;
 }
 
-.auth-shell.is-register[data-flow-step="profile"]
-  .register-panel
-  .flow-step[data-step="profile"]
-  .compact-heading {
+.auth-shell.is-register[data-flow-step="profile"] .register-panel .flow-step[data-step="profile"] .compact-heading {
   margin-bottom: 4px;
 }
 
-.auth-shell.is-register[data-flow-step="profile"]
-  .register-panel
-  .flow-step[data-step="profile"]
-  .compact-heading
-  p:not(.section-label) {
+.auth-shell.is-register[data-flow-step="profile"] .register-panel .flow-step[data-step="profile"] .compact-heading p:not(.section-label) {
   margin-top: 4px;
 }
 
-.auth-shell.is-register[data-flow-step="profile"]
-  .register-panel
-  .flow-step[data-step="profile"]
-  .textarea-input {
+.auth-shell.is-register[data-flow-step="profile"] .register-panel .flow-step[data-step="profile"] .textarea-input {
   min-height: 76px;
 }
 
-.auth-shell.is-register[data-flow-step="profile"]
-  .register-panel
-  .flow-step[data-step="profile"]
-  .flow-actions {
+.auth-shell.is-register[data-flow-step="profile"] .register-panel .flow-step[data-step="profile"] .flow-actions {
   margin-top: 2px;
 }
 
 @media (min-width: 901px) {
-  .auth-shell.is-register[data-flow-step="profile"]
-    .register-panel
-    .flow-step[data-step="profile"]
-    .flow-actions {
+  .auth-shell.is-register[data-flow-step="profile"] .register-panel .flow-step[data-step="profile"] .flow-actions {
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: space-between;
   }
 
-  .auth-shell.is-register[data-flow-step="profile"]
-    .register-panel
-    #continueProfileBtn {
+  .auth-shell.is-register[data-flow-step="profile"] .register-panel #continueProfileBtn {
     display: inline-flex !important;
     min-width: 154px;
     align-items: center;
@@ -2444,6 +2398,7 @@ body.modal-open {
 }
 
 @media (max-width: 900px) {
+
   html,
   body {
     height: auto;
@@ -2483,9 +2438,7 @@ body.modal-open {
     padding-block: 22px max(64px, calc(42px + env(safe-area-inset-bottom)));
   }
 
-  .auth-shell.is-register[data-flow-step="profile"]
-    .register-panel
-    .flow-step[data-step="profile"] {
+  .auth-shell.is-register[data-flow-step="profile"] .register-panel .flow-step[data-step="profile"] {
     min-height: 0;
   }
 
@@ -2493,6 +2446,7 @@ body.modal-open {
     gap: 10px;
   }
 }
+
 @media (max-width: 430px) {
   .register-timeline {
     max-width: 340px;
@@ -2519,7 +2473,7 @@ textarea.plain-input.is-invalid {
   color: #ef4444;
   font-size: 0.78rem;
   font-weight: 700;
-  margin: 4px 0 0 4px;
+  margin: 0 0 0 4px;
   animation: fieldErrorIn 0.2s ease-out;
 }
 
@@ -2528,6 +2482,7 @@ textarea.plain-input.is-invalid {
     opacity: 0;
     transform: translateY(-4px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

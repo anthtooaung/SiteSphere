@@ -990,6 +990,22 @@ body.modal-open {
   display: none;
 }
 
+.slider-flow-kicker,
+.slider-flow-copy {
+  display: none;
+}
+
+.auth-shell[data-flow-active="true"] .slider-register > .slider-kicker:not(.slider-flow-kicker),
+.auth-shell[data-flow-active="true"] .slider-register > h2,
+.auth-shell[data-flow-active="true"] .slider-register > p:not(.slider-flow-copy) {
+  display: none;
+}
+
+.auth-shell[data-flow-active="true"] .slider-flow-kicker,
+.auth-shell[data-flow-active="true"] .slider-flow-copy {
+  display: block;
+}
+
 .register-timeline li {
   --timeline-delay: 0ms;
 

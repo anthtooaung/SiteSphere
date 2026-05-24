@@ -44,6 +44,8 @@ class LoginRegisterPageTest extends TestCase
             ->assertSee('id="profile-phone"', false)
             ->assertSee('data-phone-format', false)
             ->assertSee('placeholder="+95 9 123 456 789"', false)
+            ->assertSee('Create Your Account')
+            ->assertSee('Complete each step to finish setting up your SiteSphere account securely.')
             ->assertSee('id="confirmRegisterBtn"', false);
     }
 }

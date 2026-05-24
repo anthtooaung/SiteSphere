@@ -212,6 +212,8 @@
                     <p class="slider-kicker">WELCOME BACK</p>
                     <h2>Already have an account?</h2>
                     <p>Sign in to continue exploring tools, resources, and projects on SiteSphere.</p>
+                    <p class="slider-kicker slider-flow-kicker">Create Your Account</p>
+                    <p class="slider-flow-copy">Complete each step to finish setting up your SiteSphere account securely.</p>
                     <ol class="register-timeline" aria-label="Registration timeline">
                         <li data-guide="account">
                             <span>1</span>

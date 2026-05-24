@@ -201,16 +201,17 @@
             <!-- Slider Panel -->
             <aside class="slider-panel" aria-live="polite">
                 <div class="slider-content slider-login">
-                    <p class="slider-kicker">Hello, Welcome!</p>
-                    <h2>New here?</h2>
-                    <p>Register and start your SiteSphere workspace.</p>
+                    <p class="slider-kicker">WELCOME TO SITESPHERE</p>
+                    <h2>Discover Better Resources</h2>
+                    <p>Create your account and explore the best tools, websites, and technologies for your projects.</p>
                     <button type="button" class="ghost-button" id="showRegister">
-                        Register
+                        Create Account
                     </button>
                 </div>
                 <div class="slider-content slider-register">
-                    <p class="slider-kicker">Registration guide</p>
-                    <h2>Finish your setup</h2>
+                    <p class="slider-kicker">WELCOME BACK</p>
+                    <h2>Already have an account?</h2>
+                    <p>Sign in to continue exploring tools, resources, and projects on SiteSphere.</p>
                     <ol class="register-timeline" aria-label="Registration timeline">
                         <li data-guide="account">
                             <span>1</span>

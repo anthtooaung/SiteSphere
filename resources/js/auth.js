@@ -26,8 +26,6 @@ const init = () => {
   const toggleRegisterConfirmPassword = document.getElementById(
     "toggleRegisterConfirmPassword",
   );
-  const socialButtons = document.querySelectorAll(".social-button");
-
   const registrationModal = document.getElementById("registrationModal");
   const closeRegistrationFlow = document.getElementById(
     "closeRegistrationFlow",
@@ -620,18 +618,6 @@ const init = () => {
   initPasswordToggle(loginPassword, toggleLoginPassword);
   initPasswordToggle(registerPassword, toggleRegisterPassword);
   initPasswordToggle(registerConfirmPassword, toggleRegisterConfirmPassword);
-
-  socialButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const provider = button.dataset.provider;
-
-      showAlert({
-        title: `${provider} selected`,
-        text: "This is a front-end action. Backend OAuth can be connected later.",
-        icon: "info",
-      });
-    });
-  });
 
   if (forgotPasswordBtn) {
     forgotPasswordBtn.addEventListener("click", () => {

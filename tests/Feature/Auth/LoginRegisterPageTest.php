@@ -18,6 +18,8 @@ class LoginRegisterPageTest extends TestCase
             ->assertSee('Login')
             ->assertSee('id="authShell"', false)
             ->assertSee('id="loginForm"', false)
+            ->assertSee(route('social.redirect', 'google'), false)
+            ->assertSee(route('social.redirect', 'github'), false)
             ->assertSee('id="toggleLoginPassword"', false)
             ->assertSee('id="registerForm"', false)
             ->assertSee('id="showLogin"', false)

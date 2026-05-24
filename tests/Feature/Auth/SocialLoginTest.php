@@ -1,0 +1,125 @@
+<?php
+
+namespace Tests\Feature\Auth;
+
+use App\Models\SocialAccount;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User as SocialiteUser;
+use Tests\TestCase;
+
+class SocialLoginTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_social_redirect_sends_users_to_the_provider(): void
+    {
+        Socialite::fake('google');
+
+        $response = $this->get(route('social.redirect', 'google'));
+
+        $response->assertRedirect('https://socialite.fake/google/authorize');
+    }
+
+    public function test_social_callback_logs_in_an_existing_linked_account(): void
+    {
+        $user = User::factory()->create();
+
+        SocialAccount::query()->create([
+            'user_id' => $user->id,
+            'provider' => 'google',
+            'provider_id' => 'google-123',
+            'token' => null,
+        ]);
+
+        Socialite::fake('google', $this->socialiteUser(id: 'google-123', email: null));
+
+        $response = $this->get(route('social.callback', 'google'));
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_social_callback_links_an_existing_email_user(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'existing@example.com',
+        ]);
+
+        Socialite::fake('github', $this->socialiteUser(
+            id: 'github-123',
+            email: 'existing@example.com',
+            token: 'github-token',
+        ));
+
+        $response = $this->get(route('social.callback', 'github'));
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertDatabaseHas('socialAccounts', [
+            'user_id' => $user->id,
+            'provider' => 'github',
+            'provider_id' => 'github-123',
+            'token' => 'github-token',
+        ]);
+        $response->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_social_callback_creates_and_authenticates_a_new_user(): void
+    {
+        Socialite::fake('google', $this->socialiteUser(
+            id: 'google-456',
+            email: 'new@example.com',
+            name: 'New Social User',
+            avatar: 'https://example.com/avatar.png',
+        ));
+
+        $response = $this->get(route('social.callback', 'google'));
+
+        $user = User::query()->where('email', 'new@example.com')->first();
+
+        $this->assertNotNull($user);
+        $this->assertAuthenticatedAs($user);
+        $this->assertTrue($user->hasVerifiedEmail());
+        $this->assertDatabaseHas('socialAccounts', [
+            'user_id' => $user->id,
+            'provider' => 'google',
+            'provider_id' => 'google-456',
+        ]);
+        $response->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_social_callback_rejects_new_users_without_provider_email(): void
+    {
+        Socialite::fake('google', $this->socialiteUser(id: 'google-789', email: null));
+
+        $response = $this->get(route('social.callback', 'google'));
+
+        $this->assertGuest();
+        $response
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors('social');
+    }
+
+    public function test_unsupported_social_providers_are_not_routable(): void
+    {
+        $this->get('/auth/facebook/redirect')->assertNotFound();
+        $this->get('/auth/facebook/callback')->assertNotFound();
+    }
+
+    private function socialiteUser(
+        string $id,
+        ?string $email = 'social@example.com',
+        string $name = 'Social User',
+        ?string $token = null,
+        ?string $avatar = null,
+    ): SocialiteUser {
+        return (new SocialiteUser)->map([
+            'id' => $id,
+            'nickname' => 'socialuser',
+            'name' => $name,
+            'email' => $email,
+            'avatar' => $avatar,
+        ])->setToken($token);
+    }
+}

@@ -309,7 +309,7 @@
 
                         <div class="field-group">
                             <label for="profile-phone">Phone number</label>
-                            <input id="profile-phone" name="user_phone" class="plain-input" type="tel" placeholder="+95 9..." />
+                            <input id="profile-phone" name="user_phone" class="plain-input" type="tel" inputmode="tel" autocomplete="tel" maxlength="17" placeholder="+95 9 123 456 789" data-phone-format />
                         </div>
 
                         <div class="field-group">

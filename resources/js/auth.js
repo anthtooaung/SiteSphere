@@ -197,12 +197,48 @@ const init = () => {
     document.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
   };
 
+  const formatPhoneNumber = (value) => {
+    let digits = value.replace(/\D/g, "");
+
+    if (digits.startsWith("0095")) {
+      digits = digits.slice(2);
+    }
+
+    if (digits.startsWith("95")) {
+      digits = digits.slice(2);
+    } else if (digits.startsWith("0")) {
+      digits = digits.slice(1);
+    }
+
+    digits = digits.slice(0, 10);
+
+    if (!digits) {
+      return "";
+    }
+
+    const groups = [digits.slice(0, 1), digits.slice(1, 4), digits.slice(4, 7), digits.slice(7, 10)]
+      .filter(Boolean);
+
+    return `+95 ${groups.join(" ")}`;
+  };
+
+  const applyPhoneFormat = () => {
+    if (!profilePhone) {
+      return;
+    }
+
+    profilePhone.value = formatPhoneNumber(profilePhone.value);
+  };
+
   document.addEventListener("input", (event) => {
     const target = event.target;
     if (target.name && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
       clearError(target.name, target.closest("form") || document);
     }
   });
+
+  profilePhone?.addEventListener("input", applyPhoneFormat);
+  profilePhone?.addEventListener("blur", applyPhoneFormat);
 
   /*
     Keep the registration flow inside the register panel.
@@ -537,7 +573,7 @@ const init = () => {
 
   const collectProfile = () => ({
     user_dob: profileDob?.value ?? "",
-    user_phone: profilePhone?.value ?? "",
+    user_phone: profilePhone ? formatPhoneNumber(profilePhone.value) : "",
     user_bio: profileBio?.value.trim() ?? "",
   });
 

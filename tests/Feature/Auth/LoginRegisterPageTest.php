@@ -41,6 +41,9 @@ class LoginRegisterPageTest extends TestCase
             ->assertSee('id="toggleRegisterConfirmPassword"', false)
             ->assertSee('id="registrationModal"', false)
             ->assertSee('id="profileForm"', false)
+            ->assertSee('id="profile-phone"', false)
+            ->assertSee('data-phone-format', false)
+            ->assertSee('placeholder="+95 9 123 456 789"', false)
             ->assertSee('id="confirmRegisterBtn"', false);
     }
 }

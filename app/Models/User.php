@@ -73,4 +73,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the user's avatar URL.
+     */
+    public function getAvatarUrl(): string
+    {
+        if (! $this->user_image) {
+            return '';
+        }
+
+        if (Str::startsWith($this->user_image, ['http://', 'https://'])) {
+            return $this->user_image;
+        }
+
+        return asset('storage/'.$this->user_image);
+    }
 }

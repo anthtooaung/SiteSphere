@@ -8,7 +8,7 @@
         aria-expanded="false"
     >
         @if(Auth::user()->user_image)
-            <img src="{{ asset('storage/' . Auth::user()->user_image) }}" alt="{{ Auth::user()->name }}" class="size-8 rounded-full object-cover" />
+            <img src="{{ Auth::user()->getAvatarUrl() }}" alt="{{ Auth::user()->name }}" class="size-8 rounded-full object-cover" />
         @else
             <x-far-user class="icon" />
         @endif

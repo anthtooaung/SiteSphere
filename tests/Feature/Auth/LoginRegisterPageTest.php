@@ -14,6 +14,8 @@ class LoginRegisterPageTest extends TestCase
         $response = $this->get('/login');
 
         $response->assertOk()
+            ->assertSee('<title>', false)
+            ->assertSee('Login')
             ->assertSee('id="authShell"', false)
             ->assertSee('id="loginForm"', false)
             ->assertSee('id="toggleLoginPassword"', false)
@@ -29,6 +31,8 @@ class LoginRegisterPageTest extends TestCase
         $response = $this->get('/register');
 
         $response->assertOk()
+            ->assertSee('<title>', false)
+            ->assertSee('Register')
             ->assertSee('id="authShell"', false)
             ->assertSee('id="registerForm"', false)
             ->assertSee('id="toggleRegisterPassword"', false)

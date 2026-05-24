@@ -225,6 +225,10 @@ const init = () => {
     });
   };
 
+  const setAuthTitle = (mode) => {
+    document.title = mode === "register" ? "Register" : "Login";
+  };
+
   const clearOtpTimer = () => {
     if (otpState.timerId) {
       clearInterval(otpState.timerId);
@@ -341,6 +345,8 @@ const init = () => {
   const setMode = (mode, updateUrl = true) => {
     const previousMode = authShell.dataset.mode || "login";
     const hasMode = Boolean(authShell.dataset.mode);
+
+    setAuthTitle(mode);
 
     if (hasMode && previousMode !== mode) {
       clearAllErrors();

@@ -8,7 +8,7 @@ Route::get('/', function () {
 
 Route::get('/home', function () {
     return view('layout.home');
-})->middleware(['auth'])->name('home');
+})->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

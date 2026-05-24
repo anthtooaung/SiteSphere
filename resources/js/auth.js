@@ -18,6 +18,14 @@ const init = () => {
   const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
   const loginPassword = document.getElementById("login-password");
   const toggleLoginPassword = document.getElementById("toggleLoginPassword");
+  const registerPassword = document.getElementById("reg-password");
+  const toggleRegisterPassword = document.getElementById(
+    "toggleRegisterPassword",
+  );
+  const registerConfirmPassword = document.getElementById("reg-confirm");
+  const toggleRegisterConfirmPassword = document.getElementById(
+    "toggleRegisterConfirmPassword",
+  );
   const socialButtons = document.querySelectorAll(".social-button");
 
   const registrationModal = document.getElementById("registrationModal");
@@ -583,21 +591,29 @@ const init = () => {
     });
   }
 
-  if (toggleLoginPassword && loginPassword) {
-    toggleLoginPassword.addEventListener("click", () => {
-      const isVisible = loginPassword.type === "text";
+  const initPasswordToggle = (passwordInput, toggleButton) => {
+    if (!passwordInput || !toggleButton) {
+      return;
+    }
 
-      loginPassword.type = isVisible ? "password" : "text";
-      loginPassword.classList.toggle("is-visible-password", !isVisible);
+    toggleButton.addEventListener("click", () => {
+      const isVisible = passwordInput.type === "text";
 
-      toggleLoginPassword.classList.toggle("is-visible", !isVisible);
-      toggleLoginPassword.setAttribute(
+      passwordInput.type = isVisible ? "password" : "text";
+      passwordInput.classList.toggle("is-visible-password", !isVisible);
+
+      toggleButton.classList.toggle("is-visible", !isVisible);
+      toggleButton.setAttribute(
         "aria-label",
         isVisible ? "Show password" : "Hide password",
       );
-      toggleLoginPassword.setAttribute("aria-pressed", String(!isVisible));
+      toggleButton.setAttribute("aria-pressed", String(!isVisible));
     });
-  }
+  };
+
+  initPasswordToggle(loginPassword, toggleLoginPassword);
+  initPasswordToggle(registerPassword, toggleRegisterPassword);
+  initPasswordToggle(registerConfirmPassword, toggleRegisterConfirmPassword);
 
   socialButtons.forEach((button) => {
     button.addEventListener("click", () => {

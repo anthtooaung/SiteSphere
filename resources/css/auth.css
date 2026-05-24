@@ -997,7 +997,7 @@ body.modal-open {
   display: grid;
   grid-template-columns: 28px 1fr;
   gap: 12px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .register-timeline li:nth-child(2) {
@@ -1047,6 +1047,7 @@ body.modal-open {
   color: var(--white);
   font-size: 0.76rem;
   font-weight: 900;
+  line-height: 1;
   transform-origin: center;
   transition:
     background 220ms ease,
@@ -1076,6 +1077,10 @@ body.modal-open {
 .auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="otp"] span::before,
 .auth-shell[data-flow-step="confirm"] .register-timeline li[data-guide="profile"] span::before {
   content: "\2713";
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
   font-size: 0.88rem;
   line-height: 1;
 }

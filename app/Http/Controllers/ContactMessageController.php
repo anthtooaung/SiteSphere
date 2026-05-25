@@ -14,7 +14,7 @@ class ContactMessageController extends Controller
     public function store(StoreContactMessageRequest $request): RedirectResponse
     {
         $messageData = $request->validated();
-        $recipient = (string) config('mail.from.address');
+        $recipient = (string) config('mail.contact.recipient');
 
         try {
             Mail::to($recipient)->send(new ContactMessageMail($messageData));

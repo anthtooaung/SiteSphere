@@ -13,7 +13,7 @@ class ContactMessageTest extends TestCase
 {
     public function test_contact_message_can_be_sent(): void
     {
-        Config::set('mail.from.address', 'hello@sitesphere.test');
+        Config::set('mail.contact.recipient', 'anthtooaung2792005@outlook.com');
         Mail::fake();
 
         $response = $this->post(route('contact.store'), [
@@ -34,7 +34,7 @@ class ContactMessageTest extends TestCase
             });
 
         Mail::assertSent(ContactMessageMail::class, function (ContactMessageMail $mail): bool {
-            return $mail->hasTo('hello@sitesphere.test')
+            return $mail->hasTo('anthtooaung2792005@outlook.com')
                 && $mail->hasReplyTo('ant@example.com', 'Ant Aung')
                 && $mail->messageData['message'] === 'Please review my website.';
         });
@@ -62,11 +62,11 @@ class ContactMessageTest extends TestCase
 
     public function test_contact_message_preserves_input_when_mail_delivery_fails(): void
     {
-        Config::set('mail.from.address', 'hello@sitesphere.test');
+        Config::set('mail.contact.recipient', 'anthtooaung2792005@outlook.com');
 
         Mail::shouldReceive('to')
             ->once()
-            ->with('hello@sitesphere.test')
+            ->with('anthtooaung2792005@outlook.com')
             ->andReturnSelf();
 
         Mail::shouldReceive('send')

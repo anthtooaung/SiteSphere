@@ -95,9 +95,9 @@
                             <x-slot:labelRow>
                                 <div class="label-row">
                                     <label for="login-password">Password</label>
-                                    <button type="button" class="text-button" id="forgotPasswordBtn">
+                                    <a href="{{ route('password.request') }}" class="text-button" id="forgotPasswordBtn">
                                         Forgot password?
-                                    </button>
+                                    </a>
                                 </div>
                             </x-slot:labelRow>
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">

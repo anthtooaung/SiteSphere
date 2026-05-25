@@ -14,4 +14,17 @@ class OtpVerifications extends Model
         'is_verified',
         'expire_at',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_verified' => 'boolean',
+            'expire_at' => 'datetime',
+        ];
+    }
 }

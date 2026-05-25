@@ -15,7 +15,6 @@ const init = () => {
   const registerPanel = document.querySelector(".register-panel");
   const showRegister = document.getElementById("showRegister");
   const showLogin = document.getElementById("showLogin");
-  const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
   const loginPassword = document.getElementById("login-password");
   const toggleLoginPassword = document.getElementById("toggleLoginPassword");
   const registerPassword = document.getElementById("reg-password");
@@ -654,20 +653,6 @@ const init = () => {
   initPasswordToggle(loginPassword, toggleLoginPassword);
   initPasswordToggle(registerPassword, toggleRegisterPassword);
   initPasswordToggle(registerConfirmPassword, toggleRegisterConfirmPassword);
-
-  if (forgotPasswordBtn) {
-    forgotPasswordBtn.addEventListener("click", () => {
-      const email = document.getElementById("login-email").value.trim();
-
-      showAlert({
-        title: "Password reset",
-        text: email
-          ? `A reset link would be sent to ${email} when the backend is connected.`
-          : "Enter your email first, then this front-end action can show the reset flow.",
-        icon: "info",
-      });
-    });
-  }
 
   // Login is handled by a standard form POST to the backend (no JS interception).
   // Validation errors are returned by Laravel and displayed via Blade @error directives.

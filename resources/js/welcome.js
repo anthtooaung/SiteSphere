@@ -13,6 +13,22 @@ function initWelcomePage() {
         reviewsSection?.scrollIntoView({ behavior: 'smooth' });
     });
 
+    const connectSection = welcomeMain.querySelector('#welcome-connect-section');
+    const urlParameters = new URLSearchParams(window.location.search);
+
+    if (urlParameters.get('scroll') === 'contact') {
+        window.requestAnimationFrame(() => {
+            connectSection?.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    document.querySelectorAll('[data-welcome-connect-scroll]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            connectSection?.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
     const revealElements = welcomeMain.querySelectorAll('.welcome-reveal');
 
     const activateReveal = (element) => {

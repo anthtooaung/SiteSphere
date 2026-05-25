@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactMessageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,6 +10,10 @@ Route::get('/', function () {
 Route::get('/home', function () {
     return view('layout.home');
 })->name('home');
+
+Route::post('/contact', [ContactMessageController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

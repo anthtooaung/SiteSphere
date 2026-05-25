@@ -409,6 +409,14 @@
     resize: vertical;
 }
 
+.welcome-form-error {
+    margin: -0.2rem 0 0;
+    color: #dc2626;
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
 .welcome-submit-button {
     display: inline-flex;
     align-items: center;

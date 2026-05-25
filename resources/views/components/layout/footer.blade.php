@@ -68,7 +68,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="mailto:hello@sitesphere.test" class="group flex items-center gap-2.5 py-0.5 text-slate-400 transition-all duration-300 hover:translate-x-1.5 hover:text-white">
+                        <a href="{{ route('welcome', ['scroll' => 'contact']) }}" class="group flex items-center gap-2.5 py-0.5 text-slate-400 transition-all duration-300 hover:translate-x-1.5 hover:text-white" data-welcome-connect-scroll>
                             <x-fas-envelope class="w-4 text-center text-xs text-slate-600 transition-all group-hover:scale-110 group-hover:text-white" />
                             <span>Contact Us</span>
                         </a>
@@ -102,29 +102,18 @@
                 <div class="w-full text-center sm:text-left">
                     <h4 class="mb-4 text-xs font-bold uppercase tracking-widest text-white">Connect with Us</h4>
                     <div class="flex justify-center gap-3.5 sm:justify-start">
-                        <a href="https://www.linkedin.com" class="flex h-9 w-9 -translate-y-0 items-center justify-center rounded-xl bg-white/10 text-base text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-slate-900 hover:shadow-lg" aria-label="LinkedIn">
+                        <a href="https://www.linkedin.com/in/ant-htoo-aung-460006395" class="flex h-9 w-9 -translate-y-0 items-center justify-center rounded-xl bg-white/10 text-base text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-slate-900 hover:shadow-lg" aria-label="LinkedIn">
                             <x-fab-linkedin-in class="size-4" />
                         </a>
-                        <a href="https://telegram.org" class="flex h-9 w-9 -translate-y-0 items-center justify-center rounded-xl bg-white/10 text-base text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-slate-900 hover:shadow-lg" aria-label="Telegram">
+                        <a href="https://t.me/anthtooaung_MrAnt" class="flex h-9 w-9 -translate-y-0 items-center justify-center rounded-xl bg-white/10 text-base text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-slate-900 hover:shadow-lg" aria-label="Telegram">
                             <x-fab-telegram class="size-4" />
                         </a>
-                        <a href="https://github.com" class="flex h-9 w-9 -translate-y-0 items-center justify-center rounded-xl bg-white/10 text-base text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-slate-900 hover:shadow-lg" aria-label="GitHub">
+                        <a href="https://github.com/anthtooaung" class="flex h-9 w-9 -translate-y-0 items-center justify-center rounded-xl bg-white/10 text-base text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-slate-900 hover:shadow-lg" aria-label="GitHub">
                             <x-fab-github class="size-4" />
                         </a>
                     </div>
                 </div>
 
-                <div class="w-full rounded-2xl border border-white/10 bg-white/5 p-5 shadow-xl backdrop-blur-md">
-                    <label for="footer-newsletter-email" class="mb-2.5 block text-center text-xs font-bold uppercase tracking-wider text-slate-300 sm:text-left">
-                        Newsletter
-                    </label>
-                    <div class="space-y-2">
-                        <input id="footer-newsletter-email" type="email" placeholder="Email Address" class="w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 py-2.5 text-sm text-white transition-all placeholder-white/30 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-white/5">
-                        <button type="button" class="w-full rounded-xl bg-white py-2.5 text-xs font-bold uppercase tracking-wider text-slate-900 shadow-md transition-all duration-300 hover:bg-slate-100 active:scale-[0.98]">
-                            Subscribe
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
 

@@ -44,7 +44,7 @@
                     <label class="sr-only" for="welcomeSearch">Search for a trusted website</label>
                     <div class="welcome-search-bar">
                         <x-fas-search class="welcome-search-icon" aria-hidden="true" />
-                        <input id="welcomeSearch" type="search" placeholder="Search for a trusted website..." autocomplete="off">
+                        <input id="welcomeSearch" class="outline-none" type="search" placeholder="Search for a trusted website..." autocomplete="off">
                     </div>
                 </form>
             </div>
@@ -129,34 +129,47 @@
         </section>
 
         {{-- Welcome Connect Section--}}
-        <section class="welcome-connect-section" aria-labelledby="contactTitle">
+        <section class="welcome-connect-section" id="welcome-connect-section" aria-labelledby="contactTitle">
             <div class="welcome-connect-container">
                 <div class="welcome-contact-form welcome-reveal welcome-reveal-1">
-                    <form action="#" aria-label="Contact form">
+                    <form action="{{ route('contact.store') }}" method="POST" aria-label="Contact form">
+                        @csrf
                         <h2 id="contactTitle" class="welcome-form-title">Get in touch</h2>
 
                         <div class="welcome-form-row">
                             <div class="welcome-form-group">
                                 <label for="firstName">First Name</label>
-                                <input type="text" id="firstName" autocomplete="given-name">
+                                <input type="text" id="firstName" name="first_name" value="{{ old('first_name') }}" autocomplete="given-name" required>
+                                @error('first_name')
+                                    <p class="welcome-form-error">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="welcome-form-group">
                                 <label for="lastName">Last Name</label>
-                                <input type="text" id="lastName" autocomplete="family-name">
+                                <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}" autocomplete="family-name" required>
+                                @error('last_name')
+                                    <p class="welcome-form-error">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="welcome-form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" autocomplete="email">
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="email" required>
+                            @error('email')
+                                <p class="welcome-form-error">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="welcome-form-group">
                             <label for="message">What do you have in mind</label>
-                            <textarea id="message" placeholder="Please enter query..."></textarea>
+                            <textarea id="message" name="message" placeholder="Please enter query..." required>{{ old('message') }}</textarea>
+                            @error('message')
+                                <p class="welcome-form-error">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        <button type="button" class="welcome-submit-button">Submit</button>
+                        <button type="submit" class="welcome-submit-button">Submit</button>
                     </form>
                 </div>
 

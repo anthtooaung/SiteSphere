@@ -195,6 +195,8 @@ class PasswordResetTest extends TestCase
 
         $response->assertStatus(200)
             ->assertSee('Create new password')
+            ->assertSee('id="toggleResetPassword"', false)
+            ->assertSee('id="toggleResetPasswordConfirmation"', false)
             ->assertSee($user->email);
     }
 

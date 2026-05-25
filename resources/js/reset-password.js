@@ -79,8 +79,44 @@ const initResetPasswordOtp = () => {
   form.addEventListener("submit", syncInput);
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initResetPasswordOtp);
-} else {
+const initPasswordToggle = (passwordInput, toggleButton) => {
+  if (!passwordInput || !toggleButton) {
+    return;
+  }
+
+  toggleButton.addEventListener("click", () => {
+    const isVisible = passwordInput.type === "text";
+
+    passwordInput.type = isVisible ? "password" : "text";
+    passwordInput.classList.toggle("is-visible-password", !isVisible);
+
+    toggleButton.classList.toggle("is-visible", !isVisible);
+    toggleButton.setAttribute(
+      "aria-label",
+      isVisible ? "Show password" : "Hide password",
+    );
+    toggleButton.setAttribute("aria-pressed", String(!isVisible));
+  });
+};
+
+const initResetPasswordToggles = () => {
+  initPasswordToggle(
+    document.getElementById("reset-password"),
+    document.getElementById("toggleResetPassword"),
+  );
+  initPasswordToggle(
+    document.getElementById("reset-password-confirmation"),
+    document.getElementById("toggleResetPasswordConfirmation"),
+  );
+};
+
+const initResetPassword = () => {
   initResetPasswordOtp();
+  initResetPasswordToggles();
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initResetPassword);
+} else {
+  initResetPassword();
 }

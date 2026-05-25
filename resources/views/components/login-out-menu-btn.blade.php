@@ -1,5 +1,5 @@
 {{--@desktop--}}
-<button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="inline-flex items-center justify-center bg-brand box-border focus:border  focus:border-[var(--accent-color)] shadow-xl  leading-5 rounded-xl text-sm px-4 py-2.5 focus:outline-none" type="button">
+<button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="text-[var(--text-color)] inline-flex items-center justify-center bg-brand box-border focus:border  focus:border-[var(--accent-color)] shadow-xl  leading-5 rounded-xl text-sm px-4 py-2.5 focus:outline-none" type="button">
     Login / Register
     <svg class="w-4 h-4 ms-1.5 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
 </button>

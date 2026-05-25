@@ -33,7 +33,7 @@
 .welcome-hero {
     position: relative;
     display: flex;
-    min-height: calc(100vh - 96px);
+    min-height: calc(100vh - 80px);
     align-items: center;
     justify-content: center;
     padding: 4rem 8% 7rem;
@@ -344,7 +344,7 @@
 }
 
 .welcome-connect-section {
-    padding: 4rem 8%;
+    padding: 5rem 10%;
     background: var(--background-color);
 }
 

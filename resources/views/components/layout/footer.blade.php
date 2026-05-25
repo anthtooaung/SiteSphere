@@ -8,8 +8,6 @@
         </svg>
     </div>
 
-    <div class="absolute left-0 right-0 top-0 h-[4px] bg-gradient-to-r from-slate-500 via-slate-400 to-slate-600"></div>
-
     <div class="relative z-10 mx-auto max-w-5xl">
         <div class="mb-16 flex flex-col items-center text-center md:items-start md:text-left">
             <a href="{{ route('welcome') }}" class="group mb-4 flex items-center" aria-label="SiteSphere home">

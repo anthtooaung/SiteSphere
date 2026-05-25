@@ -13,9 +13,10 @@
 
 @section('content')
     <x-layout.nav />
-    <div class="md:mt-24"></div>
+    <div class="md:mt-20"></div>
 
     <main class="welcome-main">
+        {{-- Welcome Hero Section --}}
         <section class="welcome-hero" id="hero" aria-labelledby="welcomeHeroTitle">
             <div class="welcome-hero-inner">
                 <h1 id="welcomeHeroTitle" class="welcome-hero-title welcome-hero-reveal">
@@ -54,6 +55,7 @@
             </a>
         </section>
 
+        {{-- Welcome Trusted Websites Section--}}
         <section class="welcome-rated-section" id="reviews-section" aria-labelledby="reviewedWebsitesTitle">
             <h2 id="reviewedWebsitesTitle" class="welcome-section-title welcome-reveal">Most Reviewed Websites</h2>
 
@@ -126,6 +128,7 @@
             </div>
         </section>
 
+        {{-- Welcome Connect Section--}}
         <section class="welcome-connect-section" aria-labelledby="contactTitle">
             <div class="welcome-connect-container">
                 <div class="welcome-contact-form welcome-reveal welcome-reveal-1">

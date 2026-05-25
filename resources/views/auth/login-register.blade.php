@@ -30,7 +30,7 @@
                     toastElement.onmouseenter = window.Swal.stopTimer;
                     toastElement.onmouseleave = window.Swal.resumeTimer;
                 },
-                
+
             });
 
             return toast.fire({
@@ -45,11 +45,12 @@
 @section('content')
     <main class="auth-page">
         <section class="auth-shell {{ !$isLogin ? 'is-register' : '' }}" id="authShell" aria-label="SiteSphere authentication">
-{{--            Logo time--}}
-            <div class=" flex absolute top-0 translate-x-5 mt-5 gap-2 z-30">
-                <x-app-logo></x-app-logo>
-                <span class="self-center text-xl text-heading font-bold whitespace-nowrap text-[var(--accent-color)]" >SiteSphere</span>
-           </div>
+            <a href="{{route('welcome')}}" class="brand-title" aria-label="SiteSphere">
+                <x-app-logo  />
+                <span class="brand-word" aria-hidden="true">
+                    <span class="brand-sphere">SiteSphere</span>
+                </span>
+            </a>
             <div class="form-stage">
 
                 <!-- Login Panel -->

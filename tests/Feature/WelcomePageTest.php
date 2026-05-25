@@ -17,6 +17,13 @@ class WelcomePageTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSeeText("Don't drown in documentation");
+        $response->assertSee('id="welcomeHeroTitle"', false);
+        $response->assertSee('welcome-word-toggle', false);
+        $response->assertSee('data-word-state="a">Less', false);
+        $response->assertSee('data-word-state="b">More', false);
+        $response->assertSee('welcome-word-action', false);
+        $response->assertSee('data-word-state="a">Searching', false);
+        $response->assertSee('data-word-state="b">Building', false);
         $response->assertSeeText('Most Reviewed Websites');
         $response->assertSeeText('Process Academy');
         $response->assertSeeText('Get in touch');

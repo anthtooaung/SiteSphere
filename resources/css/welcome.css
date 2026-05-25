@@ -71,6 +71,8 @@
 
 .welcome-swap-box {
     display: inline-grid;
+    overflow: hidden;
+    line-height: 1.12;
     vertical-align: top;
 }
 
@@ -88,13 +90,18 @@
     grid-area: 1 / 1;
     white-space: nowrap;
     opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateY(100%);
+    transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1), transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .welcome-word.is-visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+.welcome-word.is-leaving {
+    opacity: 0;
+    transform: translateY(-100%);
 }
 
 .welcome-accent-soft {

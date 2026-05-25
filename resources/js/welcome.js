@@ -78,18 +78,33 @@ function initWelcomePage() {
         firstWord?.classList.add('is-visible');
     });
 
+    const resetLeavingWord = (word) => {
+        word.classList.remove('is-leaving');
+    };
+
+    const swapWords = (box) => {
+        const words = Array.from(box.querySelectorAll('[data-word-state]'));
+
+        if (words.length < 2) {
+            return;
+        }
+
+        const currentWord = words.find((word) => word.classList.contains('is-visible')) || words[0];
+        const nextWord = words.find((word) => word !== currentWord);
+
+        if (! currentWord || ! nextWord) {
+            return;
+        }
+
+        currentWord.classList.remove('is-visible');
+        currentWord.classList.add('is-leaving');
+        nextWord.classList.add('is-visible');
+
+        currentWord.addEventListener('transitionend', () => resetLeavingWord(currentWord), { once: true });
+    };
+
     window.setInterval(() => {
-        swapBoxes.forEach((box) => {
-            const firstWord = box.querySelector('[data-word-state="a"]');
-            const secondWord = box.querySelector('[data-word-state="b"]');
-
-            if (! firstWord || ! secondWord) {
-                return;
-            }
-
-            firstWord.classList.toggle('is-visible');
-            secondWord.classList.toggle('is-visible');
-        });
+        swapBoxes.forEach(swapWords);
     }, 3000);
 }
 

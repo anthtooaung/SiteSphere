@@ -86,6 +86,7 @@ class PasswordResetTest extends TestCase
     public function test_valid_otp_redirects_to_new_password_screen(): void
     {
         $user = User::factory()->create();
+        $currentPassword = $user->password;
         $verification = OtpVerifications::create([
             'user_id' => $user->id,
             'otp' => '123456',
@@ -107,6 +108,8 @@ class PasswordResetTest extends TestCase
             ->assertSessionHas('password_reset_otp_verified', true);
 
         $this->assertTrue($verification->fresh()->is_verified);
+        $this->assertSame($currentPassword, $user->fresh()->password);
+        $this->assertTrue(Hash::check('password', $user->fresh()->password));
     }
 
     public function test_password_reset_fails_with_invalid_otp(): void

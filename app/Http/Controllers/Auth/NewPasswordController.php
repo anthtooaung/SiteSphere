@@ -61,13 +61,6 @@ class NewPasswordController extends Controller
             ]);
         }
 
-        $user = User::findOrFail($userId);
-
-        $user->forceFill([
-            'password' => Hash::make($request->password),
-            'remember_token' => Str::random(60),
-        ])->save();
-
         $verification->update([
             'is_verified' => true,
         ]);

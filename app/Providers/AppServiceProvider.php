@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Jenssegers\Agent\Agent;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,10 +29,20 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $colors = [];
             $toastPosition = 'top-end';
+            $fontFamily = null;
 
             if (Auth::check()) {
                 $user = Auth::user();
                 $settings = $user->settings()->with(['theme', 'customTheme'])->first();
+                $fontFamily = $user->currentFonts()
+                    ->latest('user_current_fonts.created_at')
+                    ->value('font_family');
+
+                if ($fontFamily) {
+                    $fontFamily = Str::of((string) preg_replace('/[^A-Za-z0-9\s,\-_"\'()]/', '', $fontFamily))
+                        ->trim()
+                        ->toString();
+                }
 
                 if ($settings && in_array($settings->noti_location, ['top-start', 'top-end', 'bottom-end', 'bottom-start'], true)) {
                     $toastPosition = $settings->noti_location;
@@ -60,6 +71,7 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with('themeColors', $colors);
             $view->with('toastPosition', $toastPosition);
+            $view->with('fontFamily', $fontFamily);
         });
 
         Blade::if('mobile', function () {

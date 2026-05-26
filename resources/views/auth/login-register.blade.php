@@ -79,6 +79,9 @@
                                 </svg>
                             </a>
                         </div>
+                        @error('social')
+                            <p class="field-error-message social-error-message">{{ $message }}</p>
+                        @enderror
 
                         <div class="divider"><span>or use your email</span></div>
 

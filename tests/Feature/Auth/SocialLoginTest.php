@@ -22,6 +22,24 @@ class SocialLoginTest extends TestCase
         $response->assertRedirect('https://socialite.fake/google/authorize');
     }
 
+    public function test_github_social_redirect_sends_users_to_github(): void
+    {
+        Socialite::fake('github');
+
+        $response = $this->get(route('social.redirect', 'github'));
+
+        $response->assertRedirect('https://socialite.fake/github/authorize');
+    }
+
+    public function test_login_page_displays_social_authentication_errors(): void
+    {
+        $response = $this
+            ->followingRedirects()
+            ->get(route('social.callback', 'github'));
+
+        $response->assertSee('Unable to authenticate with this social provider.');
+    }
+
     public function test_social_callback_logs_in_an_existing_linked_account(): void
     {
         $user = User::factory()->create();

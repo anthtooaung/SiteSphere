@@ -2578,6 +2578,11 @@ textarea.plain-input.is-invalid {
   animation: fieldErrorIn 0.2s ease-out;
 }
 
+.social-error-message {
+  margin: -4px 0 0;
+  text-align: center;
+}
+
 .auth-status-message {
   margin: 0;
   border: 1px solid rgba(34, 197, 94, 0.24);

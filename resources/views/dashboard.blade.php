@@ -8,12 +8,15 @@
         @yield('title', 'Home')
     </title>
     <link rel="shortcut icon" href="" type="image/x-icon">
-    @auth(!empty($themeColors))
+    <x-google-fonts />
+    @php($resolvedFontFamily = $fontFamily ?: 'Figtree, sans-serif')
+    @auth
         <style>
             :root {
                 --accent-color: {{ $themeColors['accent'] ?? '#6c5ce7' }};
                 --background-color: {{ $themeColors['background'] ?? '#ffffff' }};
                 --text-color: {{ $themeColors['text'] ?? '#0d1b2a' }};
+                --font-family: {!! $resolvedFontFamily !!};
             }
         </style>
     @endauth
@@ -22,8 +25,9 @@
         <style>
             :root{
                 --accent-color: #6c5ce7;
-                --background-color: #fffff;
+                --background-color: #ffffff;
                 --text-color: #0d1b2a;
+                --font-family: {!! $resolvedFontFamily !!};
             }
         </style>
     @endguest
@@ -32,7 +36,7 @@
     @stack('styles')
 
 </head>
-<body class="m-0 box-border p-0 bg-[var(--background-color)] text-[var(--text-color)]">
+<body class="m-0 box-border p-0 bg-[var(--background-color)] text-[var(--text-color)]" style="font-family: var(--font-family);">
     @yield('content')
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
     @stack('scripts')

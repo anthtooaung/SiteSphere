@@ -5,11 +5,31 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class WelcomePageTest extends TestCase
 {
     use RefreshDatabase;
+
+    private const MOBILE_USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
+
+    private function getAsAuthenticatedMobileUser(User $user, string $uri): TestResponse
+    {
+        $previousUserAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+
+        $_SERVER['HTTP_USER_AGENT'] = self::MOBILE_USER_AGENT;
+
+        try {
+            return $this->actingAs($user)->get($uri);
+        } finally {
+            if ($previousUserAgent === null) {
+                unset($_SERVER['HTTP_USER_AGENT']);
+            } else {
+                $_SERVER['HTTP_USER_AGENT'] = $previousUserAgent;
+            }
+        }
+    }
 
     public function test_guest_welcome_page_renders_new_main_sections(): void
     {
@@ -63,9 +83,23 @@ class WelcomePageTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->get('/');
+        $response = $this->getAsAuthenticatedMobileUser($user, '/');
 
         $response->assertOk();
         $response->assertSee('--font-family: "Open Sans", sans-serif', false);
+        $response->assertSee('id="welcomeSearch"', false);
+        $response->assertDontSee('id="mobileSearchForm"', false);
+        $response->assertDontSee('Search reviews...', false);
+    }
+
+    public function test_authenticated_mobile_user_sees_nav_search_outside_welcome_page(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->getAsAuthenticatedMobileUser($user, '/home');
+
+        $response->assertOk();
+        $response->assertSee('id="mobileSearchForm"', false);
+        $response->assertSee('Search reviews...', false);
     }
 }

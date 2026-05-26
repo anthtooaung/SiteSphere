@@ -83,6 +83,7 @@
 
     <!-- Mobile Search (only for authenticated users) -->
     @auth
+        @unless(request()->routeIs('welcome'))
         <section class="mobile-search" aria-label="Mobile search">
             <form method="post" id="mobileSearchForm" class="w-full">
                 @csrf
@@ -96,6 +97,7 @@
                 </label>
             </form>
         </section>
+        @endunless
     @endauth
 
     <!-- Mobile Bottom Navigation Bar -->

@@ -47,7 +47,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('home') }}" class="group flex items-center gap-2.5 py-0.5 text-slate-400 transition-all duration-300 hover:translate-x-1.5 hover:text-white">
+                        <a href="{{ route('login') }}" class="group flex items-center gap-2.5 py-0.5 text-slate-400 transition-all duration-300 hover:translate-x-1.5 hover:text-white">
                             <x-fas-user-pen class="w-4 text-center text-xs text-slate-600 transition-all group-hover:scale-110 group-hover:text-white" />
                             <span>Write A Review</span>
                         </a>

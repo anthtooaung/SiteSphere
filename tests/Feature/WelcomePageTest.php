@@ -24,6 +24,12 @@ class WelcomePageTest extends TestCase
         $response->assertSee('welcome-word-action', false);
         $response->assertSee('data-word-state="a">Searching', false);
         $response->assertSee('data-word-state="b">Building', false);
+        $response->assertSee('welcome-search-bar', false);
+        $response->assertSee('id="welcomeSearch"', false);
+        $response->assertSee('type="search"', false);
+        $response->assertSee('mailto:anthtooaung2792005@outlook.com', false);
+        $response->assertSee('https://github.com/anthtooaung', false);
+        $response->assertSee('https://www.linkedin.com/in/ant-htoo-aung-460006395', false);
         $response->assertSeeText('Most Reviewed Websites');
         $response->assertSeeText('Process Academy');
         $response->assertSeeText('Get in touch');

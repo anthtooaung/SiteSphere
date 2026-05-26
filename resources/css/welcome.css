@@ -125,18 +125,28 @@
 }
 
 .welcome-search {
-    width: min(100%, 34rem);
+    width: min(100%, 36rem);
     margin: 0 auto;
 }
 
 .welcome-search-bar {
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.9rem 1.5rem;
+    min-height: 3.5rem;
+    padding: 0.8rem 1.5rem;
     border-radius: 999px;
     background: #ffffff;
     box-shadow: 0 1.25rem 2.5rem rgb(0 0 0 / 0.24);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.welcome-search-bar:focus-within {
+    box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--accent-color) 22%, transparent),
+        0 1.25rem 2.5rem rgb(0 0 0 / 0.24);
+    transform: translateY(-1px);
 }
 
 .welcome-search-icon {
@@ -150,8 +160,9 @@
     width: 100%;
     min-width: 0;
     border: 0;
-    outline: 0;
+    outline: none;
     background: transparent;
+    box-shadow: none;
     color: #0f172a;
     font-size: 1rem;
 }

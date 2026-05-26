@@ -29,8 +29,8 @@
                         <span class="welcome-static-text">Stack</span>
 
                         <span class="welcome-swap-box welcome-word-action">
-                            <span class="welcome-word is-visible" data-word-state="a">Searching</span>
-                            <span class="welcome-word" data-word-state="b">Building</span>
+                            <span class="welcome-word welcome-accent-soft is-visible" data-word-state="a">Searching</span>
+                            <span class="welcome-word welcome-accent-soft" data-word-state="b">Building</span>
                         </span>
                     </span>
                 </h1>
@@ -182,19 +182,19 @@
                         back to you shortly.
                     </p>
 
-                    <a class="welcome-info-item" href="mailto:hello@workik.com">
+                    <a class="welcome-info-item" href="mailto:anthtooaung2792005@outlook.com">
                         <x-fas-envelope class="welcome-info-icon" aria-hidden="true" />
-                        <span>hello@workik.com</span>
+                        <span>anthtooaung2792005@outlook.com</span>
                     </a>
 
-                    <a class="welcome-info-item" href="https://github.com/yourprofile" target="_blank" rel="noopener noreferrer">
+                    <a class="welcome-info-item" href="https://github.com/anthtooaung" target="_blank" rel="noopener noreferrer">
                         <x-fab-github class="welcome-info-icon" aria-hidden="true" />
-                        <span>github.com/yourprofile</span>
+                        <span>github.com/anthtooaung</span>
                     </a>
 
-                    <a class="welcome-info-item" href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer">
+                    <a class="welcome-info-item" href="https://www.linkedin.com/in/ant-htoo-aung-460006395" target="_blank" rel="noopener noreferrer">
                         <x-fab-linkedin-in class="welcome-info-icon" aria-hidden="true" />
-                        <span>linkedin.com/in/yourprofile</span>
+                        <span>linkedin.com/in/ant-htoo-aung-460006395</span>
                     </a>
                 </div>
             </div>

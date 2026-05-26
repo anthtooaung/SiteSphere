@@ -553,8 +553,13 @@
 
 @media (max-width: 640px) {
     .welcome-hero {
-        min-height: calc(100vh - 72px);
+        min-height: calc(100vh - 56px);
+        min-height: calc(100svh - 56px);
         padding: 3.5rem 1.25rem 6rem;
+    }
+
+    .welcome-hero-inner {
+        transform: translateY(-2rem);
     }
 
     .welcome-static-text {

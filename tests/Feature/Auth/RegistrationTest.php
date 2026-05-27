@@ -34,6 +34,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
+        $this->assertUserHasDefaultPreferences(User::query()->where('email', 'test@example.com')->firstOrFail());
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
@@ -58,6 +59,8 @@ class RegistrationTest extends TestCase
         Mail::assertSent(OtpVerificationMail::class, function (OtpVerificationMail $mail) {
             return $mail->hasTo('test@example.com');
         });
+
+        $this->assertUserHasDefaultPreferences(User::query()->where('email', 'test@example.com')->firstOrFail());
     }
 
     public function test_registration_resend_otp_sends_otp_email(): void
@@ -161,8 +164,9 @@ class RegistrationTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        DB::table('settings')->insert([
+        DB::table('settings')->updateOrInsert([
             'user_id' => $user->id,
+        ], [
             'menuBar_location' => 'right',
             'noti_location' => $notificationLocation,
             'dark_mode' => false,
@@ -170,6 +174,34 @@ class RegistrationTest extends TestCase
             'theme_id' => $themeId,
             'created_at' => now(),
             'updated_at' => now(),
+        ]);
+    }
+
+    private function assertUserHasDefaultPreferences(User $user): void
+    {
+        $themeId = DB::table('themes')
+            ->where('accent_color', '#6c5ce7')
+            ->value('id');
+
+        $defaultFontId = DB::table('fonts')
+            ->where('is_default', true)
+            ->value('id');
+
+        $this->assertNotNull($themeId);
+        $this->assertNotNull($defaultFontId);
+
+        $this->assertDatabaseHas('settings', [
+            'user_id' => $user->id,
+            'menuBar_location' => 'right',
+            'noti_location' => 'top-end',
+            'dark_mode' => false,
+            'user_post_visible' => false,
+            'theme_id' => $themeId,
+        ]);
+
+        $this->assertDatabaseHas('user_current_fonts', [
+            'user_id' => $user->id,
+            'font_id' => $defaultFontId,
         ]);
     }
 }

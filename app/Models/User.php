@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -20,12 +21,18 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected static function boot()
+    private const DEFAULT_ACCENT_COLOR = '#6c5ce7';
+
+    protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($user) {
+        static::creating(function (User $user): void {
             $user->slug = Str::slug($user->name);
+        });
+
+        static::created(function (User $user): void {
+            $user->provisionDefaultPreferences();
         });
     }
 
@@ -50,7 +57,7 @@ class User extends Authenticatable
     /**
      * User settings relation
      */
-    public function settings()
+    public function settings(): HasOne
     {
         return $this->hasOne(Settings::class);
     }
@@ -70,6 +77,31 @@ class User extends Authenticatable
     public function socialAccounts(): HasMany
     {
         return $this->hasMany(SocialAccount::class);
+    }
+
+    public function provisionDefaultPreferences(): void
+    {
+        $theme = Themes::query()->firstOrCreate([
+            'accent_color' => self::DEFAULT_ACCENT_COLOR,
+        ]);
+
+        $this->settings()->firstOrCreate(
+            [],
+            [
+                'menuBar_location' => 'left',
+                'noti_location' => 'top-end',
+                'dark_mode' => false,
+                'user_post_visible' => false,
+                'theme_id' => $theme->id,
+            ],
+        );
+
+        $defaultFont = Fonts::query()
+            ->where('is_default', true)
+            ->orderBy('sort_order')
+            ->firstOrFail();
+
+        $this->currentFonts()->syncWithoutDetaching([$defaultFont->id]);
     }
 
     /**

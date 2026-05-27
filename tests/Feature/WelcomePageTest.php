@@ -93,8 +93,8 @@ class WelcomePageTest extends TestCase
         DB::table('user_current_fonts')->insert([
             'user_id' => $user->id,
             'font_id' => $fontId,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => now()->addMinute(),
+            'updated_at' => now()->addMinute(),
         ]);
 
         $response = $this->getAsAuthenticatedMobileUser($user, '/');

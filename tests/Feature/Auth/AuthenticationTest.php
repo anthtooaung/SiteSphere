@@ -87,8 +87,9 @@ class AuthenticationTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        DB::table('settings')->insert([
+        DB::table('settings')->updateOrInsert([
             'user_id' => $user->id,
+        ], [
             'menuBar_location' => 'right',
             'noti_location' => $notificationLocation,
             'dark_mode' => false,

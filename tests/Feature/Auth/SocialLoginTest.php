@@ -5,8 +5,10 @@ namespace Tests\Feature\Auth;
 use App\Models\SocialAccount;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
+use SweetAlert2\Laravel\Swal;
 use Tests\TestCase;
 
 class SocialLoginTest extends TestCase
@@ -43,6 +45,7 @@ class SocialLoginTest extends TestCase
     public function test_social_callback_logs_in_an_existing_linked_account(): void
     {
         $user = User::factory()->create();
+        $this->createSettingsFor($user, 'bottom-start');
 
         SocialAccount::query()->create([
             'user_id' => $user->id,
@@ -56,7 +59,15 @@ class SocialLoginTest extends TestCase
         $response = $this->get(route('social.callback', 'google'));
 
         $this->assertAuthenticatedAs($user);
-        $response->assertRedirect(route('home', absolute: false));
+        $response
+            ->assertRedirect(route('home', absolute: false))
+            ->assertSessionHas(Swal::SESSION_KEY, function (array $toast): bool {
+                return $toast['toast'] === true
+                    && $toast['position'] === 'bottom-start'
+                    && $toast['showConfirmButton'] === false
+                    && $toast['icon'] === 'success'
+                    && $toast['title'] === 'Signed in successfully';
+            });
     }
 
     public function test_social_callback_links_an_existing_email_user(): void
@@ -104,7 +115,15 @@ class SocialLoginTest extends TestCase
             'provider' => 'google',
             'provider_id' => 'google-456',
         ]);
-        $response->assertRedirect(route('home', absolute: false));
+        $response
+            ->assertRedirect(route('home', absolute: false))
+            ->assertSessionHas(Swal::SESSION_KEY, function (array $toast): bool {
+                return $toast['toast'] === true
+                    && $toast['position'] === 'top-end'
+                    && $toast['showConfirmButton'] === false
+                    && $toast['icon'] === 'success'
+                    && $toast['title'] === 'Signed in successfully';
+            });
     }
 
     public function test_social_callback_rejects_new_users_without_provider_email(): void
@@ -139,5 +158,25 @@ class SocialLoginTest extends TestCase
             'email' => $email,
             'avatar' => $avatar,
         ])->setToken($token);
+    }
+
+    private function createSettingsFor(User $user, string $notificationLocation): void
+    {
+        $themeId = DB::table('themes')->insertGetId([
+            'accent_color' => '#6c5ce7',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('settings')->insert([
+            'user_id' => $user->id,
+            'menuBar_location' => 'right',
+            'noti_location' => $notificationLocation,
+            'dark_mode' => false,
+            'user_post_visible' => false,
+            'theme_id' => $themeId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

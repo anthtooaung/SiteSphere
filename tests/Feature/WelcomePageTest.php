@@ -66,6 +66,20 @@ class WelcomePageTest extends TestCase
         $response->assertSee('--font-family: Figtree, sans-serif', false);
     }
 
+    public function test_guest_welcome_page_renders_the_auth_nav_menu(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('id="dropdownDividerButton"', false);
+        $response->assertSee('data-dropdown-toggle="dropdownDivider"', false);
+        $response->assertSee('class="auth-menu-button"', false);
+        $response->assertSee('class="auth-menu-dropdown hidden"', false);
+        $response->assertSee('href="'.route('login').'"', false);
+        $response->assertSee('href="'.route('register').'"', false);
+        $response->assertSeeText('Login / Register');
+    }
+
     public function test_authenticated_user_current_font_is_applied_to_layout(): void
     {
         $user = User::factory()->create();

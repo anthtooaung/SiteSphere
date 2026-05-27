@@ -10,11 +10,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
+use SweetAlert2\Laravel\Swal;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 use Throwable;
 
 class SocialLoginController extends Controller
 {
+    private const DEFAULT_TOAST_POSITION = 'top-end';
+
+    private const TOAST_POSITIONS = [
+        'top-start',
+        'top-end',
+        'bottom-end',
+        'bottom-start',
+    ];
+
     /**
      * Redirect the user to the OAuth provider.
      */
@@ -42,7 +52,11 @@ class SocialLoginController extends Controller
             ->first();
 
         if ($socialAccount) {
-            Auth::login($socialAccount->user);
+            $user = $socialAccount->user;
+
+            Auth::login($user);
+
+            $this->flashSuccessToast($user);
 
             return redirect()->intended(route('home', absolute: false));
         }
@@ -73,6 +87,8 @@ class SocialLoginController extends Controller
 
         Auth::login($user);
 
+        $this->flashSuccessToast($user);
+
         return redirect()->intended(route('home', absolute: false));
     }
 
@@ -81,5 +97,32 @@ class SocialLoginController extends Controller
         return $socialiteUser->getName()
             ?: $socialiteUser->getNickname()
             ?: Str::before($email, '@');
+    }
+
+    private function toastPositionFor(User $user): string
+    {
+        $position = $user->settings()->value('noti_location');
+
+        return in_array($position, self::TOAST_POSITIONS, true)
+            ? $position
+            : self::DEFAULT_TOAST_POSITION;
+    }
+
+    private function flashSuccessToast(User $user): void
+    {
+        Swal::fire([
+            'toast' => true,
+            'position' => $this->toastPositionFor($user),
+            'showConfirmButton' => false,
+            'timer' => 3000,
+            'timerProgressBar' => true,
+            'icon' => 'success',
+            'title' => 'Signed in successfully',
+            'text' => 'Welcome back to SiteSphere.',
+            'didOpen' => '(toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }',
+        ]);
     }
 }

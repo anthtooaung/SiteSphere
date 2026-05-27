@@ -192,7 +192,7 @@ class RegistrationTest extends TestCase
 
         $this->assertDatabaseHas('settings', [
             'user_id' => $user->id,
-            'menuBar_location' => 'right',
+            'menuBar_location' => 'left',
             'noti_location' => 'top-end',
             'dark_mode' => false,
             'user_post_visible' => false,

@@ -18,14 +18,14 @@ return new class extends Migration
                 'google_family' => 'Figtree',
                 'font_family' => 'Figtree, sans-serif',
                 'sort_order' => 10,
-                'is_default' => true,
+                'is_default' => false,
             ],
             [
                 'display_name' => 'Inter',
                 'google_family' => 'Inter',
                 'font_family' => '"Inter", sans-serif',
                 'sort_order' => 20,
-                'is_default' => false,
+                'is_default' => true,
             ],
             [
                 'display_name' => 'Poppins',

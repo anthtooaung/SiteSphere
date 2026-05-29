@@ -25,7 +25,10 @@ class HomePageTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('This is the Home Page of content Section')
+            ->assertSee('Aurora Pay checkout keeps timing out')
+            ->assertSee('https://ipp-system-demo.com')
+            ->assertSee('Comments')
+            ->assertSee('Review')
             ->assertSee('href="'.route('home').'"', false)
             ->assertSee('class="desktop-link active"', false)
             ->assertSee('aria-current="page"', false);

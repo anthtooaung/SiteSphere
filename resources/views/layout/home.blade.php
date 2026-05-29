@@ -4,6 +4,9 @@
 @endsection
 @section('content')
     <x-layout.nav />
-    <div class="md:mt-24"></div>
-    <h1 >This is the Home Page of content Section</h1>
+    <main class="min-h-screen bg-slate-50 px-4 pb-24 pt-24 sm:px-6 md:pt-28">
+        <section class="mx-auto flex w-full max-w-5xl justify-center">
+            <x-layout.post-card />
+        </section>
+    </main>
 @endsection

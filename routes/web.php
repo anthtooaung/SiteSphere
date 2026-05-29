@@ -9,7 +9,7 @@ Route::get('/', function () {
 
 Route::get('/home', function () {
     return view('layout.home');
-})->name('home');
+})->middleware('auth')->name('home');
 
 Route::post('/contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1')

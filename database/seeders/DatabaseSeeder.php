@@ -16,19 +16,11 @@ class DatabaseSeeder extends Seeder
             FontsSeeder::class,
         ]);
 
-        $admin = User::query()->firstOrNew([
-            'email' => 'anthtooaung2792005@gmail.com',
-        ]);
+        // User::factory(10)->create();
 
-        $admin->forceFill([
-            'name' => 'Ant Htoo Aung',
-            'role' => 'admin',
-            'user_dob' => '2005-09-27',
-            'user_image' => null,
-            'is_verified' => true,
-            'password' => 'admin123!@#',
-        ])->save();
-
-        $admin->provisionDefaultPreferences();
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
     }
 }

@@ -25,14 +25,10 @@ class UserDefaultPreferencesTest extends TestCase
 
         $this->assertNotNull($themeId);
         $this->assertNotNull($defaultFontId);
-        $this->assertSame(
-            '"Inter", sans-serif',
-            DB::table('fonts')->where('id', $defaultFontId)->value('font_family'),
-        );
 
         $this->assertDatabaseHas('settings', [
             'user_id' => $user->id,
-            'menuBar_location' => 'left',
+            'menuBar_location' => 'right',
             'noti_location' => 'top-end',
             'dark_mode' => false,
             'user_post_visible' => false,

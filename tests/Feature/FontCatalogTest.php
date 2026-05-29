@@ -22,10 +22,9 @@ class FontCatalogTest extends TestCase
             $fonts->pluck('display_name')->all(),
         );
         $this->assertSame('Figtree, sans-serif', $fonts->firstWhere('display_name', 'Figtree')->font_family);
-        $this->assertSame('"Inter", sans-serif', $fonts->firstWhere('display_name', 'Inter')->font_family);
         $this->assertSame('"Open Sans", sans-serif', $fonts->firstWhere('display_name', 'Open Sans')->font_family);
         $this->assertSame(1, (int) $fonts->where('is_default', true)->count());
-        $this->assertTrue((bool) $fonts->firstWhere('display_name', 'Inter')->is_default);
+        $this->assertTrue((bool) $fonts->firstWhere('display_name', 'Figtree')->is_default);
     }
 
     public function test_layout_loads_curated_google_fonts_once(): void
@@ -42,7 +41,7 @@ class FontCatalogTest extends TestCase
     {
         $authStyles = file_get_contents(resource_path('css/auth.css'));
 
-        $this->assertStringContainsString('font-family: var(--font-family, "Inter", sans-serif);', $authStyles);
+        $this->assertStringContainsString('font-family: var(--font-family, Figtree, sans-serif);', $authStyles);
         $this->assertStringNotContainsString('fonts.googleapis.com/css2?family=Inter', $authStyles);
         $this->assertStringNotContainsString('font-family: "Inter", Arial, sans-serif;', $authStyles);
     }

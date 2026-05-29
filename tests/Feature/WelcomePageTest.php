@@ -63,7 +63,7 @@ class WelcomePageTest extends TestCase
         $response->assertSee('--accent-color: #6c5ce7', false);
         $response->assertSee('--background-color: #ffffff', false);
         $response->assertSee('--text-color: #0d1b2a', false);
-        $response->assertSee('--font-family: "Inter", sans-serif', false);
+        $response->assertSee('--font-family: Figtree, sans-serif', false);
     }
 
     public function test_guest_welcome_page_renders_the_auth_nav_menu(): void

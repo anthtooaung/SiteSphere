@@ -105,7 +105,7 @@ body {
   margin: 0;
   overflow: hidden;
   color: var(--ink);
-  font-family: var(--font-family, "Inter", sans-serif);
+  font-family: var(--font-family, Figtree, sans-serif);
   background:
     radial-gradient(circle at 16% 12%,
       rgba(53, 109, 243, 0.18),
@@ -1374,7 +1374,7 @@ body.modal-open {
 
 .swal2-popup.sitesphere-alert {
   border-radius: 20px;
-  font-family: var(--font-family, "Inter", sans-serif);
+  font-family: var(--font-family, Figtree, sans-serif);
 }
 
 @media (prefers-reduced-motion: reduce) {

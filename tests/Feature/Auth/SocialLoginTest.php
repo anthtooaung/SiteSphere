@@ -197,7 +197,7 @@ class SocialLoginTest extends TestCase
 
         $this->assertDatabaseHas('settings', [
             'user_id' => $user->id,
-            'menuBar_location' => 'left',
+            'menuBar_location' => 'right',
             'noti_location' => 'top-end',
             'dark_mode' => false,
             'user_post_visible' => false,

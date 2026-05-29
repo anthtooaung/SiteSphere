@@ -9,7 +9,7 @@
     </title>
     <link rel="shortcut icon" href="" type="image/x-icon">
     <x-google-fonts />
-    @php($resolvedFontFamily = $fontFamily ?: '"Inter", sans-serif')
+    @php($resolvedFontFamily = $fontFamily ?: 'Figtree, sans-serif')
     @auth
         <style>
             :root {

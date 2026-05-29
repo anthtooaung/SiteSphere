@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Comments;
+use App\Models\Posts;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +20,9 @@ class CommentsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'post_id' => Posts::factory(),
+            'content' => fake()->paragraph(),
         ];
     }
 }

@@ -1,15 +1,14 @@
 <?php
 
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('layout.welcome');
 })->name('welcome');
 
-Route::get('/home', function () {
-    return view('layout.home');
-})->middleware('auth')->name('home');
+Route::get('/home', HomeController::class)->middleware('auth')->name('home');
 
 Route::post('/contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1')

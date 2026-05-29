@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Posts;
+use App\Models\User;
 use App\Models\UserPosts;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,7 +20,10 @@ class UserPostsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'post_id' => Posts::factory(),
+            'user_id' => User::factory(),
+            'description' => fake()->paragraph(),
+            'user_hidden' => false,
         ];
     }
 }

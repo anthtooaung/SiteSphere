@@ -24,7 +24,11 @@
 
 @mobile
 <a href="#" {{ $attributes->merge(['class' => 'mobile-nav-item']) }}>
-    <x-far-user class="icon"/>
-    <span class="account-name">Profile</span>
+    @if(Auth::user()->user_image)
+        <img src="{{ Auth::user()->getAvatarUrl() }}" alt="{{ Auth::user()->name }}" class="size-6 rounded-full object-cover" />
+    @else
+        <x-far-user class="icon"/>
+    @endif
+    <span class="">Profile</span>
 </a>
 @endmobile

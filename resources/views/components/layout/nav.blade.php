@@ -72,7 +72,11 @@
         </a>
         @auth
             <div class="mobile-user-pill">
-                <x-fas-check-circle class="size-4" style="color: var(--accent-color);" />
+                @if(Auth::user()->user_image)
+                    <img src="{{ Auth::user()->getAvatarUrl() }}" alt="{{ Auth::user()->name }}" class="size-6 rounded-full object-cover" />
+                @else
+                    <x-fas-check-circle class="size-4" style="color: var(--accent-color);" />
+                @endif
                 <span>{{ Auth::user()->name }}</span>
             </div>
         @endauth

@@ -54,11 +54,16 @@ class SocialLoginTest extends TestCase
             'token' => null,
         ]);
 
-        Socialite::fake('google', $this->socialiteUser(id: 'google-123', email: null));
+        Socialite::fake('google', $this->socialiteUser(
+            id: 'google-123',
+            email: null,
+            avatar: 'https://example.com/google-avatar.png',
+        ));
 
         $response = $this->get(route('social.callback', 'google'));
 
         $this->assertAuthenticatedAs($user);
+        $this->assertSame('https://example.com/google-avatar.png', $user->fresh()->user_image);
         $response
             ->assertRedirect(route('home', absolute: false))
             ->assertSessionHas(Swal::SESSION_KEY, function (array $toast): bool {
@@ -80,11 +85,13 @@ class SocialLoginTest extends TestCase
             id: 'github-123',
             email: 'existing@example.com',
             token: 'github-token',
+            avatar: 'https://example.com/github-avatar.png',
         ));
 
         $response = $this->get(route('social.callback', 'github'));
 
         $this->assertAuthenticatedAs($user);
+        $this->assertSame('https://example.com/github-avatar.png', $user->fresh()->user_image);
         $this->assertDatabaseHas('socialAccounts', [
             'user_id' => $user->id,
             'provider' => 'github',
@@ -110,6 +117,7 @@ class SocialLoginTest extends TestCase
         $this->assertNotNull($user);
         $this->assertAuthenticatedAs($user);
         $this->assertTrue($user->hasVerifiedEmail());
+        $this->assertSame('https://example.com/avatar.png', $user->user_image);
         $this->assertUserHasDefaultPreferences($user);
         $this->assertDatabaseHas('socialAccounts', [
             'user_id' => $user->id,
@@ -137,6 +145,32 @@ class SocialLoginTest extends TestCase
         $response
             ->assertRedirect(route('login'))
             ->assertSessionHasErrors('social');
+    }
+
+    public function test_social_callback_preserves_existing_profile_image(): void
+    {
+        $user = User::factory()->create([
+            'user_image' => 'profile_images/uploaded-avatar.jpg',
+        ]);
+
+        SocialAccount::query()->create([
+            'user_id' => $user->id,
+            'provider' => 'github',
+            'provider_id' => 'github-456',
+            'token' => null,
+        ]);
+
+        Socialite::fake('github', $this->socialiteUser(
+            id: 'github-456',
+            email: null,
+            avatar: 'https://example.com/github-avatar.png',
+        ));
+
+        $response = $this->get(route('social.callback', 'github'));
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertSame('profile_images/uploaded-avatar.jpg', $user->fresh()->user_image);
+        $response->assertRedirect(route('home', absolute: false));
     }
 
     public function test_unsupported_social_providers_are_not_routable(): void
@@ -197,7 +231,7 @@ class SocialLoginTest extends TestCase
 
         $this->assertDatabaseHas('settings', [
             'user_id' => $user->id,
-            'menuBar_location' => 'right',
+            'menuBar_location' => 'left',
             'noti_location' => 'top-end',
             'dark_mode' => false,
             'user_post_visible' => false,

@@ -54,6 +54,8 @@ class SocialLoginController extends Controller
         if ($socialAccount) {
             $user = $socialAccount->user;
 
+            $this->fillMissingAvatar($user, $socialiteUser);
+
             Auth::login($user);
 
             $this->flashSuccessToast($user);
@@ -79,6 +81,8 @@ class SocialLoginController extends Controller
             ],
         );
 
+        $this->fillMissingAvatar($user, $socialiteUser);
+
         $user->socialAccounts()->create([
             'provider' => $provider,
             'provider_id' => (string) $socialiteUser->getId(),
@@ -97,6 +101,19 @@ class SocialLoginController extends Controller
         return $socialiteUser->getName()
             ?: $socialiteUser->getNickname()
             ?: Str::before($email, '@');
+    }
+
+    private function fillMissingAvatar(User $user, SocialiteUser $socialiteUser): void
+    {
+        $avatar = $socialiteUser->getAvatar();
+
+        if ($user->user_image || ! $avatar) {
+            return;
+        }
+
+        $user->forceFill([
+            'user_image' => $avatar,
+        ])->save();
     }
 
     private function toastPositionFor(User $user): string

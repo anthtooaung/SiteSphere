@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
@@ -41,9 +42,50 @@ class HomePageTest extends TestCase
             ->assertSee('<strong id="resultsCount">0</strong>', false)
             ->assertDontSee('Aurora Pay checkout keeps timing out')
             ->assertDontSee('class="review-card', false)
+            ->assertDontSee('cdnjs.cloudflare.com/ajax/libs/font-awesome', false)
+            ->assertDontSee('class="fas', false)
             ->assertSee('href="'.route('home').'"', false)
             ->assertSee('class="desktop-link active"', false)
             ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_home_uses_database_theme_and_font_variables(): void
+    {
+        $user = User::factory()->create();
+        $fontId = DB::table('fonts')
+            ->where('font_family', '"Open Sans", sans-serif')
+            ->value('id');
+        $customThemeId = DB::table('custom_themes')->insertGetId([
+            'user_id' => $user->id,
+            'background_color' => '#102030',
+            'text_color' => '#f8fafc',
+            'accent_color' => '#14b8a6',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('settings')
+            ->where('user_id', $user->id)
+            ->update([
+                'custom_theme_id' => $customThemeId,
+                'updated_at' => now(),
+            ]);
+
+        DB::table('user_current_fonts')->insert([
+            'user_id' => $user->id,
+            'font_id' => $fontId,
+            'created_at' => now()->addSecond(),
+            'updated_at' => now()->addSecond(),
+        ]);
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('--accent-color: #14b8a6;', false)
+            ->assertSee('--background-color: #102030;', false)
+            ->assertSee('--text-color: #f8fafc;', false)
+            ->assertSee('--font-family: "Open Sans", sans-serif;', false);
     }
 
     public function test_home_renders_one_card_per_post_with_many_descriptions(): void

@@ -5,7 +5,6 @@
 @endsection
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     @vite('resources/css/homepage.css')
 @endpush
 
@@ -14,7 +13,7 @@
 
     <div class="home-page page-layout">
         <button class="menu-icon" id="sidebarToggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
-            <i class="fas fa-bars"></i>
+            <x-fas-bars aria-hidden="true" />
         </button>
 
         <aside class="sidebar" id="sidebar">
@@ -26,10 +25,10 @@
             <div class="sidebar-section">
                 <div class="section-header" id="ratingHeader">
                     <div class="section-left">
-                        <i class="fas fa-star section-icon"></i>
+                        <x-fas-star class="section-icon" aria-hidden="true" />
                         <h3>Rating</h3>
                     </div>
-                    <i class="fas fa-chevron-down arrow-icon"></i>
+                    <x-fas-chevron-down class="arrow-icon" aria-hidden="true" />
                 </div>
 
                 <div class="section-content" id="ratingContent">
@@ -45,15 +44,15 @@
             <div class="sidebar-section">
                 <div class="section-header" id="categoryHeader">
                     <div class="section-left">
-                        <i class="fas fa-layer-group section-icon"></i>
+                        <x-fas-layer-group class="section-icon" aria-hidden="true" />
                         <h3>Categories</h3>
                     </div>
-                    <i class="fas fa-chevron-down arrow-icon"></i>
+                    <x-fas-chevron-down class="arrow-icon" aria-hidden="true" />
                 </div>
 
                 <div class="section-content" id="categoryContent">
                     <div class="category-search-box">
-                        <i class="fas fa-search"></i>
+                        <x-fas-search class="search-icon" aria-hidden="true" />
                         <input type="text" id="categorySearch" placeholder="Search categories...">
                     </div>
 
@@ -82,16 +81,16 @@
             <div class="sidebar-section">
                 <div class="section-header" id="tagsHeader">
                     <div class="section-left">
-                        <i class="fas fa-tags section-icon"></i>
+                        <x-fas-tags class="section-icon" aria-hidden="true" />
                         <h3>Tags</h3>
                     </div>
-                    <i class="fas fa-chevron-down arrow-icon"></i>
+                    <x-fas-chevron-down class="arrow-icon" aria-hidden="true" />
                 </div>
 
                 <div class="section-content" id="tagsContent">
                     <div class="tag-tools">
                         <div class="tag-search-box">
-                            <i class="fas fa-search"></i>
+                            <x-fas-search class="search-icon" aria-hidden="true" />
                             <input type="text" id="tagSearch" placeholder="Search tags...">
                         </div>
                     </div>
@@ -123,7 +122,7 @@
                     <div class="active-filter-grid" aria-live="polite">
                         <div class="filter-section">
                             <div class="filter-title">
-                                <i class="fas fa-star"></i>
+                                <x-fas-star class="filter-icon" aria-hidden="true" />
                                 <h3>Rating</h3>
                             </div>
                             <div class="filter-items" id="selectedRatings"></div>
@@ -131,7 +130,7 @@
 
                         <div class="filter-section">
                             <div class="filter-title">
-                                <i class="fas fa-layer-group"></i>
+                                <x-fas-layer-group class="filter-icon" aria-hidden="true" />
                                 <h3>Categories</h3>
                             </div>
                             <div class="filter-items" id="selectedCategories"></div>
@@ -139,7 +138,7 @@
 
                         <div class="filter-section">
                             <div class="filter-title">
-                                <i class="fas fa-tags"></i>
+                                <x-fas-tags class="filter-icon" aria-hidden="true" />
                                 <h3>Tags</h3>
                             </div>
                             <div class="filter-items" id="selectedTags"></div>

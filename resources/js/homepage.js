@@ -103,6 +103,25 @@ function formatFilterLabel(value){
 
 }
 
+function filterIconSvg(type){
+
+    const icons = {
+        category: '<svg class="selected-icon" viewBox="0 0 512 512" aria-hidden="true"><path fill="currentColor" d="M40 48C26.7 48 16 58.7 16 72v48c0 13.3 10.7 24 24 24h432c13.3 0 24-10.7 24-24V72c0-13.3-10.7-24-24-24H40zm0 160c-13.3 0-24 10.7-24 24v48c0 13.3 10.7 24 24 24h432c13.3 0 24-10.7 24-24v-48c0-13.3-10.7-24-24-24H40zm0 160c-13.3 0-24 10.7-24 24v48c0 13.3 10.7 24 24 24h432c13.3 0 24-10.7 24-24v-48c0-13.3-10.7-24-24-24H40z"/></svg>',
+        rating: '<svg class="selected-icon" viewBox="0 0 576 512" aria-hidden="true"><path fill="currentColor" d="M316.9 18.6c-5.3-11-16.5-18.6-28.9-18.6s-23.6 7.6-28.9 18.6L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 328 113.2 472.1c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3L288 437.9l128.1 67.8c10.8 5.7 23.9 4.8 33.8-2.3s14.9-19.3 12.9-31.3L438.2 328 542.4 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381 150.3 316.9 18.6z"/></svg>',
+        tag: '<svg class="selected-icon" viewBox="0 0 448 512" aria-hidden="true"><path fill="currentColor" d="M0 80C0 53.5 21.5 32 48 32h145.9c17 0 33.3 6.7 45.3 18.7l176 176c25 25 25 65.5 0 90.5L241.2 491.3c-25 25-65.5 25-90.5 0l-132-132C6.7 347.3 0 331 0 314.1V80zm112 32a48 48 0 1 0 0 96 48 48 0 1 0 0-96z"/></svg>',
+    };
+
+    return icons[type] || '';
+
+}
+
+function fillSelectedBox(box, iconType, label){
+
+    box.innerHTML = `${filterIconSvg(iconType)}<span class="selected-label"></span><span class="remove-btn">×</span>`;
+    box.querySelector('.selected-label').textContent = label;
+
+}
+
 function renderFilterEmptyState(container, text){
 
     if(container.children.length > 0){
@@ -436,11 +455,7 @@ function updateSelectedCategories(){
 
         box.classList.add('selected-box');
 
-        box.innerHTML = `
-            <i class="fas fa-layer-group"></i>
-            <span class="selected-label">${formatFilterLabel(category)}</span>
-            <span class="remove-btn">×</span>
-        `;
+        fillSelectedBox(box, 'category', formatFilterLabel(category));
 
         box.querySelector('.remove-btn').addEventListener('click', () => {
 
@@ -871,11 +886,7 @@ function updateSelectedTags(){
 
         box.classList.add('selected-box');
 
-        box.innerHTML = `
-            <i class="fas fa-tags"></i>
-            <span class="selected-label">${tag}</span>
-            <span class="remove-btn">×</span>
-        `;
+        fillSelectedBox(box, 'tag', tag);
 
         box.querySelector('.remove-btn').addEventListener('click', () => {
 
@@ -1014,11 +1025,7 @@ function updateSelectedRating(){
 
         box.classList.add('selected-box');
 
-        box.innerHTML = `
-            <i class="fas fa-star"></i>
-            <span class="selected-label">${rating === 'all' ? 'All Ratings' : rating + '+ Rating'}</span>
-            <span class="remove-btn">×</span>
-        `;
+        fillSelectedBox(box, 'rating', rating === 'all' ? 'All Ratings' : rating + '+ Rating');
 
         const removeBtn = box.querySelector('.remove-btn');
 

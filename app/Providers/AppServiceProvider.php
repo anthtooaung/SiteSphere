@@ -30,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
             $colors = [];
             $toastPosition = 'top-end';
             $fontFamily = null;
+            $menuBarLocation = 'left';
+            $isDarkMode = false;
 
             if (Auth::check()) {
                 $user = Auth::user();
@@ -48,10 +50,14 @@ class AppServiceProvider extends ServiceProvider
                     $toastPosition = $settings->noti_location;
                 }
 
+                if ($settings && in_array($settings->menuBar_location, ['top', 'right', 'bottom', 'left'], true)) {
+                    $menuBarLocation = $settings->menuBar_location;
+                }
+
+                $isDarkMode = (bool) ($settings?->dark_mode ?? false);
+
                 if ($settings && $settings->custom_theme_id && $settings->customTheme) {
                     $colors = [
-                        'background' => $settings->customTheme->background_color,
-                        'text' => $settings->customTheme->text_color,
                         'accent' => $settings->customTheme->accent_color,
                     ];
                 } elseif ($settings && $settings->theme) {
@@ -69,9 +75,14 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
+            $colors['background'] = $isDarkMode ? '#000000' : '#ffffff';
+            $colors['text'] = $isDarkMode ? '#ffffff' : '#0d1b2a';
+
             $view->with('themeColors', $colors);
             $view->with('toastPosition', $toastPosition);
             $view->with('fontFamily', $fontFamily);
+            $view->with('menuBarLocation', $menuBarLocation);
+            $view->with('isDarkMode', $isDarkMode);
         });
 
         Blade::if('mobile', function () {

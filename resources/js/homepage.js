@@ -14,6 +14,17 @@ if(topMenuBtn){
 
 const sidebar = document.getElementById("sidebar");
 const sidebarToggle = document.getElementById("sidebarToggle");
+const dropdownAsideLocations = ['top', 'bottom'];
+
+function isDropdownAsideDesktop(){
+
+    return (
+        window.innerWidth > 900 &&
+        sidebar &&
+        dropdownAsideLocations.includes(sidebar.dataset.menuBarLocation)
+    );
+
+}
 
 /* TOGGLE SIDEBAR */
 sidebarToggle.addEventListener("click", (e) => {
@@ -822,16 +833,56 @@ const dropdowns = [
     }
 ];
 
-/* START OPEN */
-dropdowns.forEach(item => {
-    item.header.classList.add('active');
-});
+function closeAsideDropdowns(exceptItem = null){
+
+    dropdowns.forEach(item => {
+
+        if(item === exceptItem){
+            return;
+        }
+
+        item.content.classList.add('collapsed');
+        item.header.classList.remove('active');
+
+    });
+
+}
+
+function syncAsideDropdownState(){
+
+    dropdowns.forEach(item => {
+
+        if(isDropdownAsideDesktop()){
+            item.content.classList.add('collapsed');
+            item.header.classList.remove('active');
+
+            return;
+        }
+
+        item.content.classList.remove('collapsed');
+        item.header.classList.add('active');
+
+    });
+
+}
+
+syncAsideDropdownState();
 
 /* SIDEBAR DROPDOWN */
 
 dropdowns.forEach(item => {
 
     item.header.addEventListener('click', () => {
+
+        if(isDropdownAsideDesktop()){
+            const isOpening = item.content.classList.contains('collapsed');
+
+            closeAsideDropdowns(item);
+            item.content.classList.toggle('collapsed', ! isOpening);
+            item.header.classList.toggle('active', isOpening);
+
+            return;
+        }
 
         item.content.classList.toggle('collapsed');
 
@@ -840,14 +891,14 @@ dropdowns.forEach(item => {
     });
 
 });
-dropdowns.forEach(item => {
-
-    item.content.classList.remove('collapsed');
-
-    item.header.classList.add('active');
-
-});
 document.addEventListener('click', (e) => {
+
+    if(
+        isDropdownAsideDesktop() &&
+        !sidebar.contains(e.target)
+    ){
+        closeAsideDropdowns();
+    }
 
     if(window.innerWidth <= 900){
 
@@ -863,6 +914,8 @@ document.addEventListener('click', (e) => {
     }
 
 });
+
+window.addEventListener('resize', syncAsideDropdownState);
 
 /* SHOW MORE TAGS */
 showTagsBtn.addEventListener('click', () => {

@@ -49,7 +49,7 @@ class HomePageTest extends TestCase
             ->assertSee('aria-current="page"', false);
     }
 
-    public function test_home_uses_database_theme_and_font_variables(): void
+    public function test_home_uses_light_mode_theme_and_font_variables(): void
     {
         $user = User::factory()->create();
         $fontId = DB::table('fonts')
@@ -83,9 +83,116 @@ class HomePageTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('--accent-color: #14b8a6;', false)
-            ->assertSee('--background-color: #102030;', false)
-            ->assertSee('--text-color: #f8fafc;', false)
+            ->assertSee('--background-color: #ffffff;', false)
+            ->assertSee('--text-color: #0d1b2a;', false)
             ->assertSee('--font-family: "Open Sans", sans-serif;', false);
+    }
+
+    public function test_home_uses_dark_mode_variables_without_changing_accent(): void
+    {
+        $user = User::factory()->create();
+        $customThemeId = DB::table('custom_themes')->insertGetId([
+            'user_id' => $user->id,
+            'background_color' => '#102030',
+            'text_color' => '#f8fafc',
+            'accent_color' => '#14b8a6',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('settings')
+            ->where('user_id', $user->id)
+            ->update([
+                'custom_theme_id' => $customThemeId,
+                'dark_mode' => true,
+                'updated_at' => now(),
+            ]);
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('--accent-color: #14b8a6;', false)
+            ->assertSee('--background-color: #000000;', false)
+            ->assertSee('--text-color: #ffffff;', false);
+    }
+
+    public function test_home_renders_aside_component_with_default_placement(): void
+    {
+        $user = User::factory()->create();
+
+        DB::table('settings')
+            ->where('user_id', $user->id)
+            ->update([
+                'menuBar_location' => 'left',
+                'updated_at' => now(),
+            ]);
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('id="sidebarToggle"', false)
+            ->assertSee('id="sidebar"', false)
+            ->assertSee('home-aside--left', false)
+            ->assertSee('data-menu-bar-location="left"', false);
+    }
+
+    public function test_home_aside_uses_each_valid_menu_bar_location(): void
+    {
+        foreach (['left', 'right', 'top', 'bottom'] as $location) {
+            $user = User::factory()->create();
+
+            DB::table('settings')
+                ->where('user_id', $user->id)
+                ->update([
+                    'menuBar_location' => $location,
+                    'updated_at' => now(),
+                ]);
+
+            $response = $this->actingAs($user)->get('/home');
+
+            $response
+                ->assertOk()
+                ->assertSee('home-aside--'.$location, false)
+                ->assertSee('data-menu-bar-location="'.$location.'"', false);
+
+            if (in_array($location, ['top', 'bottom'], true)) {
+                $response
+                    ->assertSee('home-aside--dropdown', false)
+                    ->assertSee('data-dropdown-aside="true"', false)
+                    ->assertSee('home-aside-header-primary', false)
+                    ->assertSee('Refine Website')
+                    ->assertSee('home-aside-header-secondary', false)
+                    ->assertSee('by rating, category, and tags.');
+            } else {
+                $response
+                    ->assertDontSee('home-aside--dropdown', false)
+                    ->assertSee('data-dropdown-aside="false"', false)
+                    ->assertSee('Refine websites by rating, category, and tags.')
+                    ->assertDontSee('home-aside-header-primary', false)
+                    ->assertDontSee('home-aside-header-secondary', false);
+            }
+        }
+    }
+
+    public function test_home_aside_falls_back_to_left_for_invalid_or_missing_settings(): void
+    {
+        $this->blade('<x-layout.home-aside :categories="collect()" menu-bar-location="sideways" />')
+            ->assertSee('home-aside--left', false)
+            ->assertSee('data-menu-bar-location="left"', false);
+
+        $missingSettingsUser = User::factory()->create();
+
+        DB::table('settings')
+            ->where('user_id', $missingSettingsUser->id)
+            ->delete();
+
+        $this->actingAs($missingSettingsUser)
+            ->get('/home')
+            ->assertOk()
+            ->assertSee('home-aside--left', false)
+            ->assertSee('data-menu-bar-location="left"', false);
     }
 
     public function test_home_renders_one_card_per_post_with_many_descriptions(): void

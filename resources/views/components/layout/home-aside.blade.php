@@ -84,7 +84,9 @@
                 @endforeach
             </div>
 
-            <button class="show-category-btn" id="showCategoryBtn" type="button">Show More Categories</button>
+            @if ($categories->count() > 5)
+                <button class="show-category-btn" id="showCategoryBtn" type="button">Show More Categories</button>
+            @endif
         </div>
     </div>
 

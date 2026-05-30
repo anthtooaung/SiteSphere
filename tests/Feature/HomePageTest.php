@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Categories;
 use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\Ratings;
@@ -47,6 +48,34 @@ class HomePageTest extends TestCase
             ->assertSee('href="'.route('home').'"', false)
             ->assertSee('class="desktop-link active"', false)
             ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_home_hides_show_more_categories_when_there_are_five_or_fewer_categories(): void
+    {
+        $user = User::factory()->create();
+
+        Categories::factory()->count(5)->create();
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertDontSee('id="showCategoryBtn"', false)
+            ->assertDontSee('Show More Categories');
+    }
+
+    public function test_home_shows_show_more_categories_when_there_are_more_than_five_categories(): void
+    {
+        $user = User::factory()->create();
+
+        Categories::factory()->count(6)->create();
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('id="showCategoryBtn"', false)
+            ->assertSee('Show More Categories');
     }
 
     public function test_home_uses_light_mode_theme_and_font_variables(): void

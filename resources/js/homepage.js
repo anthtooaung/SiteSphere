@@ -407,6 +407,8 @@ document.getElementById('showCategoryBtn');
 const extraCategories =
 document.getElementById('extraCategories');
 
+const hasMoreCategories = Boolean(showCategoryBtn);
+
 function filterCategories(){
 
     const searchValue = categorySearch.value.trim().toLowerCase();
@@ -428,31 +430,37 @@ function filterCategories(){
 
     if(searchValue){
         extraCategories.classList.toggle('show', extraCategoryMatch);
-        showCategoryBtn.style.display = 'none';
+        if(showCategoryBtn){
+            showCategoryBtn.style.display = 'none';
+        }
     }else{
         extraCategories.classList.remove('show');
-        showCategoryBtn.style.display = 'block';
-        showCategoryBtn.innerText = 'Show More Categories';
+        if(showCategoryBtn){
+            showCategoryBtn.style.display = hasMoreCategories ? 'block' : 'none';
+            showCategoryBtn.innerText = 'Show More Categories';
+        }
     }
 
 }
 
-showCategoryBtn.addEventListener('click', () => {
+if(showCategoryBtn){
+    showCategoryBtn.addEventListener('click', () => {
 
-    extraCategories.classList.toggle('show');
+        extraCategories.classList.toggle('show');
 
-    if(extraCategories.classList.contains('show')){
+        if(extraCategories.classList.contains('show')){
 
-        showCategoryBtn.innerText =
-        'Show Less Categories';
+            showCategoryBtn.innerText =
+            'Show Less Categories';
 
-    }else{
+        }else{
 
-        showCategoryBtn.innerText =
-        'Show More Categories';
-    }
+            showCategoryBtn.innerText =
+            'Show More Categories';
+        }
 
-});
+    });
+}
 
 
 /* UPDATE SELECTED CATEGORY UI */
@@ -661,7 +669,7 @@ function renderTags(){
     tagsContainer.innerHTML = '';
 
     /* SHOW TAGS BY SELECTED CATEGORY */
-    let allTags = [];
+    let realTags = [];
 
     const categoryKeys = selectedCategories.length === 0 ||
         selectedCategories.includes('All')
@@ -672,16 +680,13 @@ function renderTags(){
 
         const tags = categoryTags[category] || [];
 
-        allTags.push(...tags);
+        realTags.push(...tags);
 
     });
 
-    allTags = [...new Set(allTags)];
+    realTags = [...new Set(realTags)];
 
     updateSelectedTags();
-
-    /* ADD ALL FIRST */
-    allTags.unshift('All');
 
     if(
         selectedTagFilters.length > 0 &&
@@ -698,25 +703,31 @@ function renderTags(){
 
         const filterTagSet = new Set(filterTags);
 
-        allTags = allTags.filter(tag =>
-            tag === 'All' || filterTagSet.has(tag)
-        );
+        realTags = realTags.filter(tag => filterTagSet.has(tag));
 
     }
 
     /* SEARCH */
     const searchValue = tagSearch.value.toLowerCase();
 
-    allTags = allTags.filter(tag =>
+    realTags = realTags.filter(tag =>
         tag.toLowerCase().includes(searchValue)
     );
 
-    showTagsBtn.style.visibility = allTags.length > 5 ? 'visible' : 'hidden';
+    if(realTags.length <= 5){
+        showAllTags = false;
+    }
+
+    showTagsBtn.style.display = realTags.length > 5 ? 'block' : 'none';
+    showTagsBtn.innerText = showAllTags ? 'Show Less Tags' : 'Show More Tags';
 
     /* SHOW FIRST 5 */
-    let visibleTags = showAllTags
-        ? allTags
-        : allTags.slice(0, 5);
+    let visibleTags = [
+        'All',
+        ...(showAllTags
+            ? realTags
+            : realTags.slice(0, 5)),
+    ];
 
     visibleTags.forEach(tag => {
 

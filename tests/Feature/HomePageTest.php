@@ -6,6 +6,7 @@ use App\Models\Categories;
 use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\Ratings;
+use App\Models\Tags;
 use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
@@ -76,6 +77,33 @@ class HomePageTest extends TestCase
             ->assertOk()
             ->assertSee('id="showCategoryBtn"', false)
             ->assertSee('Show More Categories');
+    }
+
+    public function test_home_aside_renders_category_component_items_and_tag_template(): void
+    {
+        $user = User::factory()->create();
+        $category = Categories::factory()->create([
+            'name' => 'Developer Tools',
+            'slug' => 'developer-tools',
+        ]);
+
+        Tags::factory()->create([
+            'category_id' => $category->id,
+            'name' => 'frontend',
+            'slug' => 'frontend',
+            'tag_color' => '#374151',
+        ]);
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('data-filter-component="category"', false)
+            ->assertSee('value="developer-tools"', false)
+            ->assertSee('Developer Tools')
+            ->assertSee('id="tagFilterTemplate"', false)
+            ->assertSee('data-filter-component="tag"', false)
+            ->assertSee('class="tag-check"', false);
     }
 
     public function test_home_uses_light_mode_theme_and_font_variables(): void

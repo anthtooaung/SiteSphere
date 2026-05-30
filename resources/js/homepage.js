@@ -504,6 +504,7 @@ function updateSelectedCategories(){
 }
 
 const showTagsBtn = document.getElementById('showTagsBtn');
+const tagFilterTemplate = document.getElementById('tagFilterTemplate');
 
 let showAllTags = false;
 
@@ -731,19 +732,7 @@ function renderTags(){
 
     visibleTags.forEach(tag => {
 
-        const label = document.createElement('label');
-
-        label.classList.add('tag-check');
-
-        label.innerHTML = `
-            <input 
-                type="checkbox"
-                value="${tag}"
-                ${selectedTags.includes(tag) ? 'checked' : ''}
-            >
-
-            <span>${tag}</span>
-        `;
+        const label = createTagFilterItem(tag);
 
         const input = label.querySelector('input');
 
@@ -856,6 +845,34 @@ function closeAsideDropdowns(exceptItem = null){
         item.header.classList.remove('active');
 
     });
+
+}
+
+function createTagFilterItem(tag){
+
+    const label = tagFilterTemplate
+        ? tagFilterTemplate.content.firstElementChild.cloneNode(true)
+        : document.createElement('label');
+
+    label.classList.add('tag-check');
+
+    const input = label.querySelector('input') || document.createElement('input');
+    const text = label.querySelector('span') || document.createElement('span');
+
+    input.type = 'checkbox';
+    input.value = tag;
+    input.checked = selectedTags.includes(tag);
+    text.textContent = tag;
+
+    if(!input.parentElement){
+        label.appendChild(input);
+    }
+
+    if(!text.parentElement){
+        label.appendChild(text);
+    }
+
+    return label;
 
 }
 

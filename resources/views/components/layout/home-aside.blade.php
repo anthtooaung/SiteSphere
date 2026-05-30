@@ -66,21 +66,15 @@
                 <input type="text" id="categorySearch" placeholder="Search categories...">
             </div>
 
-            <label class="category-check"><input type="checkbox" value="All"><span>All</span></label>
+            <x-category label="All" value="All" />
 
             @foreach ($categories->take(5) as $category)
-                <label class="category-check">
-                    <input type="checkbox" value="{{ $category->slug }}">
-                    <span>{{ $category->name }}</span>
-                </label>
+                <x-category :label="$category->name" :value="$category->slug" />
             @endforeach
 
             <div class="extra-categories" id="extraCategories">
                 @foreach ($categories->skip(5) as $category)
-                    <label class="category-check">
-                        <input type="checkbox" value="{{ $category->slug }}">
-                        <span>{{ $category->name }}</span>
-                    </label>
+                    <x-category :label="$category->name" :value="$category->slug" />
                 @endforeach
             </div>
 
@@ -108,6 +102,9 @@
             </div>
 
             <div class="tags-container" id="tagsContainer"></div>
+            <template id="tagFilterTemplate">
+                <x-tag label="Tag" value="tag" />
+            </template>
             <button class="show-tags-btn" id="showTagsBtn" type="button">Show More Tags</button>
         </div>
     </div>

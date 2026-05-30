@@ -1,3 +1,10 @@
-<div>
-    <!-- I begin to speak only when I am certain what I will say is not better left unsaid. - Cato the Younger -->
-</div>
+@props([
+    'label',
+    'value',
+    'checked' => false,
+])
+
+<label {{ $attributes->class('category-check')->merge(['data-filter-component' => 'category']) }}>
+    <input type="checkbox" value="{{ $value }}" @checked($checked)>
+    <span>{{ $label }}</span>
+</label>

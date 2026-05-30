@@ -20,7 +20,7 @@
 .main-content{
     flex:1;
     overflow-y:auto;
-    padding:24px 28px;
+    padding:12px;
     width:100%;
     background:color-mix(in srgb, var(--background-color, #f5f7fb) 94%, var(--accent-color, #6c5ce7) 6%);
 }
@@ -609,7 +609,7 @@
     padding:9px 10px;
     border:none;
     border-radius:8px;
-    background:#eff6ff;
+    /*background:#eff6ff;*/
     color:var(--accent-color, #6c5ce7);
     font-weight:700;
     cursor:pointer;
@@ -810,7 +810,7 @@
     padding:9px 10px;
     border:none;
     border-radius:8px;
-    background:#eff6ff;
+    /*background:#eff6ff;*/
     color:var(--accent-color, #6c5ce7);
     font-weight:700;
     cursor:pointer;
@@ -912,7 +912,7 @@
 
 .content-intro{
     display:block;
-    margin-bottom:22px;
+    margin-bottom:10px;
     padding:16px 22px 14px;
     background:white;
     border:1px solid #d6e5f8;
@@ -1645,9 +1645,9 @@
         width: 88px;
     }
 
-    .main-content {
-        padding: 28px;
-    }
+    /*.main-content {*/
+    /*    padding: 25px;*/
+    /*}*/
 
     .hero h1 {
         font-size: 2.5rem;
@@ -1755,11 +1755,11 @@
     }
 
     /* MAIN CONTENT */
-    .main-content{
-        width:100%;
+    /*.main-content{*/
+    /*    width:100%;*/
 
-        padding:70px 14px 20px;
-    }
+    /*    padding:70px 14px 20px;*/
+    /*}*/
 
     .content-intro{
         align-items:flex-start;
@@ -2298,7 +2298,7 @@
 
 @media (max-width: 600px) {
     .main-content {
-        padding: 70px 14px 20px;
+        padding: 14px 14px 14px;
     }
 
     .filter-section{
@@ -2785,7 +2785,7 @@
     .home-page .main-content {
         height: auto !important;
         min-height: calc(100vh - var(--home-nav-height));
-        padding-top: 70px !important;
+        /*padding-top: 70px !important;*/
     }
 
     .home-page .menu-icon,

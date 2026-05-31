@@ -351,6 +351,7 @@ window.addEventListener('resize', () => {
 });
 /* CATEGORY TAGS DATA */
 const categoryTags = window.homeCategoryTags || { all: [] };
+const initialCategory = window.homeInitialCategory || null;
   
 categoryCheckboxes.forEach(box => {
 
@@ -467,6 +468,40 @@ if(showCategoryBtn){
         }
 
     });
+}
+
+function applyInitialCategoryFilter(){
+
+    if(!initialCategory || selectedCategories.length > 0){
+        return;
+    }
+
+    const matchingCategory = [...categoryCheckboxes]
+        .find(checkbox => checkbox.value === initialCategory);
+
+    if(!matchingCategory){
+        return;
+    }
+
+    const allCategory =
+        document.querySelector('.category-check input[value="All"]');
+
+    if(allCategory){
+        allCategory.checked = false;
+    }
+
+    matchingCategory.checked = true;
+    selectedCategories = [initialCategory];
+
+    if(matchingCategory.closest('#extraCategories') && extraCategories){
+        extraCategories.classList.add('show');
+
+        if(showCategoryBtn){
+            showCategoryBtn.style.display = 'block';
+            showCategoryBtn.innerText = 'Show Less Categories';
+        }
+    }
+
 }
 
 
@@ -1202,6 +1237,8 @@ if(sortSelect){
 }
 
 /* INITIAL */
+applyInitialCategoryFilter();
+
 renderTags();
 
 updateTagFilterButton();

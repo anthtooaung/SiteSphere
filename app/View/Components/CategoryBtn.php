@@ -2,18 +2,25 @@
 
 namespace App\View\Components;
 
+use App\Models\Categories;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 
 class CategoryBtn extends Component
 {
     /**
-     * Create a new component instance.
+     * @var Collection<int, Categories>
      */
-    public function __construct()
+    public Collection $categories;
+
+    public function __construct(public string $mobileMode = 'both')
     {
-        //
+        $this->categories = once(fn (): Collection => Categories::query()
+            ->select(['id', 'name', 'slug'])
+            ->orderBy('name')
+            ->get());
     }
 
     /**

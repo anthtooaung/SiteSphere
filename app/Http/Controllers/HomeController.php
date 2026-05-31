@@ -12,6 +12,9 @@ class HomeController extends Controller
 {
     public function __invoke(Request $request): View
     {
+        $initialCategory = $request->query('category');
+        $initialCategory = is_string($initialCategory) ? $initialCategory : null;
+
         $posts = Posts::query()
             ->with([
                 'userPosts' => fn ($query) => $query
@@ -79,6 +82,7 @@ class HomeController extends Controller
                 ->pluck('name', 'slug')
                 ->put('All', 'All')
                 ->put('all', 'All'),
+            'initialCategory' => $initialCategory,
         ]);
     }
 }

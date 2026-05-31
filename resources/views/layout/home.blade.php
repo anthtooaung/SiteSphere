@@ -99,6 +99,7 @@
     <script>
         window.homeCategoryTags = @json($categoryTags);
         window.homeCategoryLabels = @json($categoryLabels);
+        window.homeInitialCategory = @json($initialCategory);
     </script>
     @vite('resources/js/homepage.js')
 @endpush

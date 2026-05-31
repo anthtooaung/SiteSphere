@@ -111,7 +111,7 @@
 
         @auth
             <!-- Categories Trigger -->
-            <x-category-btn />
+            <x-category-btn mobile-mode="trigger" />
 
             <!-- Create Post Button -->
             <x-create-post-btn />
@@ -130,34 +130,8 @@
         @endguest
     </nav>
 
-    <!-- Mobile Categories Overlay -->
     @auth
-        <div class="mobile-menu-overlay" id="mobileCategoryOverlay">
-            <button
-                type="button"
-                class="mobile-close-button"
-                data-mobile-menu-close
-                aria-label="Close categories"
-            >
-                <x-fas-times class="size-8"/>
-            </button>
-            <a href="#" class="mobile-overlay-link">
-                <x-fas-microchip class="icon size-8"/>
-                Technology
-            </a>
-            <a href="#" class="mobile-overlay-link">
-                <x-fas-gamepad class="icon size-8"/>
-                Gaming
-            </a>
-            <a href="#" class="mobile-overlay-link">
-                <x-fas-brain class="icon size-8"/>
-                AI Models
-            </a>
-            <a href="#" class="mobile-overlay-link">
-                <x-fas-gear class="icon size-8"/>
-                Settings
-            </a>
-        </div>
+        <x-category-btn mobile-mode="overlay" />
     @endauth
 
     <!-- Mobile Navigation Interactions Script -->

@@ -12,17 +12,37 @@ use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const MOBILE_USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->seed(FontsSeeder::class);
+    }
+
+    private function getAsAuthenticatedMobileUser(User $user, string $uri): TestResponse
+    {
+        $previousUserAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+
+        $_SERVER['HTTP_USER_AGENT'] = self::MOBILE_USER_AGENT;
+
+        try {
+            return $this->actingAs($user)->get($uri);
+        } finally {
+            if ($previousUserAgent === null) {
+                unset($_SERVER['HTTP_USER_AGENT']);
+            } else {
+                $_SERVER['HTTP_USER_AGENT'] = $previousUserAgent;
+            }
+        }
     }
 
     public function test_guests_are_redirected_from_home_to_login(): void
@@ -104,6 +124,50 @@ class HomePageTest extends TestCase
             ->assertSee('id="tagFilterTemplate"', false)
             ->assertSee('data-filter-component="tag"', false)
             ->assertSee('class="tag-check"', false);
+    }
+
+    public function test_home_nav_category_menu_uses_database_categories(): void
+    {
+        $user = User::factory()->create();
+
+        Categories::factory()->create([
+            'name' => 'Developer Tools',
+            'slug' => 'developer-tools',
+        ]);
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('Developer Tools')
+            ->assertSee('href="'.route('home', ['category' => 'developer-tools']).'"', false);
+
+        $mobileResponse = $this->getAsAuthenticatedMobileUser($user, '/home');
+
+        $mobileResponse
+            ->assertOk()
+            ->assertSeeInOrder([
+                '<nav class="mobile-bottom-nav"',
+                'data-mobile-menu-open',
+                '</nav>',
+                '<div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay">',
+            ], false);
+    }
+
+    public function test_home_exposes_initial_category_from_query_string(): void
+    {
+        $user = User::factory()->create();
+
+        Categories::factory()->create([
+            'name' => 'Developer Tools',
+            'slug' => 'developer-tools',
+        ]);
+
+        $response = $this->actingAs($user)->get('/home?category=developer-tools');
+
+        $response
+            ->assertOk()
+            ->assertSee('window.homeInitialCategory = "developer-tools";', false);
     }
 
     public function test_home_uses_light_mode_theme_and_font_variables(): void

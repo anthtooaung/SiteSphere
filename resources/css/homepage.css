@@ -62,7 +62,7 @@
 
 /* SIDEBAR */
 .sidebar{
-    width:260px;
+    width:280px ;
     height:100vh;
 
     background:white;
@@ -72,7 +72,7 @@
     overflow-x:hidden;
      scrollbar-gutter:stable;
 
-    padding:14px 10px;
+    padding:14px 14px;
 
     transition:0.3s;
 
@@ -544,12 +544,12 @@
 
     width:100%;
 
-    grid-column:1 / -1;
+
 }
 
 .extra-categories.show{
     display:flex;
-    flex-direction:column;
+    
     gap:10px;
 }
 #categoryContent{
@@ -1045,9 +1045,8 @@
     border-radius:30px;
 }/* TAGS CONTAINER */
 .tags-container{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-
+    display:flex;
+    flex-direction:column;
     gap:8px;
 
     width:100%;
@@ -1056,6 +1055,12 @@
 /* TAG ITEM */
 .tag-check{
     width:100%;
+}
+
+.tag-check span{
+    min-width:0;
+    white-space:normal;
+    overflow-wrap:anywhere;
 }
 
 
@@ -1325,7 +1330,7 @@
 /* FILTER BOX ITEM */
 .selected-box{
     flex:0 0 auto;
-    max-width:130px;
+    max-width:none;
 
     display:flex;
 
@@ -1352,12 +1357,14 @@
 
     line-height:1.1;
 
-    overflow:hidden;
+    overflow:visible;
 }
 
-.selected-box .selected-label,
-.selected-box{
-    text-overflow:ellipsis;
+.selected-box .selected-label{
+    flex:0 0 auto;
+    max-width:none;
+    overflow:visible;
+    text-overflow:clip;
 }
 
 .selected-box:hover{

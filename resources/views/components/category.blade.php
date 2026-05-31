@@ -4,7 +4,6 @@
     'checked' => false,
 ])
 
-<label {{ $attributes->class('category-check')->merge(['data-filter-component' => 'category']) }}>
-    <input type="checkbox" value="{{ $value }}" @checked($checked)>
+<span {{ $attributes->class('category-check')->merge(['data-filter-component' => 'category', 'data-value' => $value]) }}>
     <span>{{ $label }}</span>
-</label>
+</span>

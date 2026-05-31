@@ -133,6 +133,13 @@ function fillSelectedBox(box, iconType, label){
 
 }
 
+function fillSelectedTextBox(box, label){
+
+    box.innerHTML = '<span class="selected-label"></span><span class="remove-btn">×</span>';
+    box.querySelector('.selected-label').textContent = label;
+
+}
+
 function renderFilterEmptyState(container, text){
 
     if(container.children.length > 0){
@@ -474,7 +481,7 @@ function updateSelectedCategories(){
 
         box.classList.add('selected-box');
 
-        fillSelectedBox(box, 'category', formatFilterLabel(category));
+        fillSelectedTextBox(box, formatFilterLabel(category));
 
         box.querySelector('.remove-btn').addEventListener('click', () => {
 
@@ -669,23 +676,13 @@ function renderTags(){
 
     tagsContainer.innerHTML = '';
 
-    /* SHOW TAGS BY SELECTED CATEGORY */
-    let realTags = [];
+    const allTags = Array.isArray(categoryTags.all)
+        ? categoryTags.all
+        : Object.entries(categoryTags)
+            .filter(([category]) => category !== 'all')
+            .flatMap(([, tags]) => tags || []);
 
-    const categoryKeys = selectedCategories.length === 0 ||
-        selectedCategories.includes('All')
-        ? Object.keys(categoryTags)
-        : selectedCategories.map(category => category.toLowerCase());
-
-    categoryKeys.forEach(category => {
-
-        const tags = categoryTags[category] || [];
-
-        realTags.push(...tags);
-
-    });
-
-    realTags = [...new Set(realTags)];
+    let realTags = [...new Set(allTags)];
 
     updateSelectedTags();
 
@@ -967,7 +964,7 @@ function updateSelectedTags(){
 
         box.classList.add('selected-box');
 
-        fillSelectedBox(box, 'tag', tag);
+        fillSelectedTextBox(box, tag);
 
         box.querySelector('.remove-btn').addEventListener('click', () => {
 

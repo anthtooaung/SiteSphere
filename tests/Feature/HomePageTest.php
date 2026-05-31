@@ -108,11 +108,15 @@ class HomePageTest extends TestCase
             'slug' => 'developer-tools',
         ]);
 
-        Tags::factory()->create([
-            'category_id' => $category->id,
+        $tag = Tags::factory()->create([
             'name' => 'frontend',
             'slug' => 'frontend',
             'tag_color' => '#374151',
+        ]);
+
+        DB::table('category_tags')->insert([
+            'category_id' => $category->id,
+            'tag_id' => $tag->id,
         ]);
 
         $response = $this->actingAs($user)->get('/home');

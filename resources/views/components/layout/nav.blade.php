@@ -3,7 +3,7 @@
     <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between">
 {{--        left path--}}
         <div class="flex gap-3">
-            <a href="{{ route('welcome') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <a href="{{ route('welcome') }}" class="flex items-center space-x-0 rtl:space-x-reverse">
                 <x-app-logo></x-app-logo>
                 <span class="self-center text-xl text-heading font-semibold whitespace-nowrap " style="color: var(--accent-color, #6c5ce7);">SiteSphere</span>
             </a>

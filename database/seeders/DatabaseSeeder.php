@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             FontsSeeder::class,
+            ThemesSeeder::class,
             CategoriesSeeder::class,
             TagsSeeder::class,
         ]);

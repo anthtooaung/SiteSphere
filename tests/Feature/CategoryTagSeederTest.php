@@ -23,12 +23,19 @@ class CategoryTagSeederTest extends TestCase
         $programmingCategoryId = DB::table('categories')
             ->where('slug', 'programming-development')
             ->value('id');
+        $frontendTagId = DB::table('tags')
+            ->where('slug', 'frontend')
+            ->value('id');
 
         $this->assertDatabaseHas('tags', [
-            'category_id' => $programmingCategoryId,
             'name' => 'frontend',
             'slug' => 'frontend',
             'tag_color' => TagsSeeder::DEFAULT_TAG_COLOR,
+        ]);
+
+        $this->assertDatabaseHas('category_tags', [
+            'category_id' => $programmingCategoryId,
+            'tag_id' => $frontendTagId,
         ]);
 
         $this->assertDatabaseHas('categories', [
@@ -41,5 +48,27 @@ class CategoryTagSeederTest extends TestCase
             'slug' => 'enterprise',
             'tag_color' => '#374151',
         ]);
+    }
+
+    public function test_category_and_tag_seed_data_is_idempotent(): void
+    {
+        $this->seed(TagsSeeder::class);
+        $this->seed(TagsSeeder::class);
+
+        $programmingCategoryId = DB::table('categories')
+            ->where('slug', 'programming-development')
+            ->value('id');
+        $frontendTagId = DB::table('tags')
+            ->where('slug', 'frontend')
+            ->value('id');
+
+        $this->assertSame(1, DB::table('tags')->where('slug', 'frontend')->count());
+        $this->assertSame(
+            1,
+            DB::table('category_tags')
+                ->where('category_id', $programmingCategoryId)
+                ->where('tag_id', $frontendTagId)
+                ->count(),
+        );
     }
 }

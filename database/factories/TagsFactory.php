@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Categories;
 use App\Models\Tags;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -22,7 +21,6 @@ class TagsFactory extends Factory
         $name = fake()->unique()->word();
 
         return [
-            'category_id' => Categories::factory(),
             'name' => Str::title($name),
             'slug' => Str::slug($name),
             'tag_color' => fake()->hexColor(),

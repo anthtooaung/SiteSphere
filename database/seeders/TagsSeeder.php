@@ -18,6 +18,7 @@ class TagsSeeder extends Seeder
         $this->call(CategoriesSeeder::class);
 
         foreach (CategoriesSeeder::categoryTagsFromFile() as $categoryName => $tagNames) {
+            $now = now();
             $categoryId = DB::table('categories')
                 ->where('slug', Str::slug($categoryName))
                 ->value('id');
@@ -25,14 +26,28 @@ class TagsSeeder extends Seeder
             foreach ($tagNames as $tagName) {
                 DB::table('tags')->updateOrInsert(
                     [
-                        'category_id' => $categoryId,
                         'slug' => Str::slug($tagName),
                     ],
                     [
                         'name' => $tagName,
                         'tag_color' => self::DEFAULT_TAG_COLOR,
-                        'updated_at' => now(),
-                        'created_at' => now(),
+                        'updated_at' => $now,
+                        'created_at' => $now,
+                    ],
+                );
+
+                $tagId = DB::table('tags')
+                    ->where('slug', Str::slug($tagName))
+                    ->value('id');
+
+                DB::table('category_tags')->updateOrInsert(
+                    [
+                        'category_id' => $categoryId,
+                        'tag_id' => $tagId,
+                    ],
+                    [
+                        'category_id' => $categoryId,
+                        'tag_id' => $tagId,
                     ],
                 );
             }

@@ -21,7 +21,7 @@ class HomeController extends Controller
                     ->where('user_hidden', false)
                     ->with('user')
                     ->latest(),
-                'tags.category',
+                'tags.categories',
             ])
             ->withAvg('ratings as average_rating', 'rating')
             ->withCount([
@@ -35,7 +35,7 @@ class HomeController extends Controller
             ->get()
             ->map(function (Posts $post): array {
                 $primaryTag = $post->tags->first();
-                $primaryCategory = $primaryTag?->category;
+                $primaryCategory = $primaryTag?->categories->first();
 
                 return [
                     'title' => $post->title,

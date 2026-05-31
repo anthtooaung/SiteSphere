@@ -5,7 +5,7 @@ namespace App\Models;
 use Database\Factories\CategoriesFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Categories extends Model
 {
@@ -14,8 +14,8 @@ class Categories extends Model
 
     protected $guarded = [];
 
-    public function tags(): HasMany
+    public function tags(): BelongsToMany
     {
-        return $this->hasMany(Tags::class, 'category_id');
+        return $this->belongsToMany(Tags::class, 'category_tags', 'category_id', 'tag_id');
     }
 }

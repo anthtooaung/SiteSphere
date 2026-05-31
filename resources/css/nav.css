@@ -104,6 +104,44 @@
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
+.category-menu-dropdown a {
+    position: relative;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--text-color, #0d1b2a);
+    text-decoration: none;
+    transition:
+        color 180ms ease,
+        transform 220ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.category-menu-dropdown a::after {
+    position: absolute;
+    bottom: 2px;
+    left: 10px;
+    width: calc(100% - 20px);
+    height: 2.5px;
+    border-radius: 999px;
+    background: var(--accent-color, #6c5ce7);
+    content: "";
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 360ms cubic-bezier(0.68, -0.35, 0.265, 1.35);
+}
+
+.category-menu-dropdown a:hover,
+.category-menu-dropdown a:focus-visible {
+    color: var(--accent-color, #6c5ce7);
+    outline: none;
+    transform: translateY(-4px);
+}
+
+.category-menu-dropdown a:hover::after,
+.category-menu-dropdown a:focus-visible::after {
+    transform: scaleX(1);
+}
+
 /* Search Box Container focus & expand animations */
 .desktop-search-container {
     position: relative;

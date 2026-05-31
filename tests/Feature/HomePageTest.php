@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Categories;
 use App\Models\Comments;
+use App\Models\Notificatioins;
 use App\Models\Posts;
 use App\Models\Ratings;
 use App\Models\Tags;
@@ -168,6 +169,66 @@ class HomePageTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('window.homeInitialCategory = "developer-tools";', false);
+    }
+
+    public function test_home_nav_notification_dropdown_uses_current_users_unread_notifications(): void
+    {
+        $user = User::factory()->create();
+        $sender = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        Notificatioins::factory()->create([
+            'to_user_id' => $user->id,
+            'from_user_id' => $sender->id,
+            'message' => 'Fresh unread notification',
+            'is_read' => false,
+        ]);
+        Notificatioins::factory()->read()->create([
+            'to_user_id' => $user->id,
+            'from_user_id' => $sender->id,
+            'message' => 'Already read notification',
+        ]);
+        Notificatioins::factory()->create([
+            'to_user_id' => $otherUser->id,
+            'from_user_id' => $sender->id,
+            'message' => 'Someone else notification',
+            'is_read' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('aria-label="1 unread notifications"', false)
+            ->assertSee('<span class="noti-badge">1</span>', false)
+            ->assertSee('Fresh unread notification')
+            ->assertDontSee('Already read notification')
+            ->assertDontSee('Someone else notification');
+
+        $mobileResponse = $this->getAsAuthenticatedMobileUser($user, '/home');
+
+        $mobileResponse
+            ->assertOk()
+            ->assertSee('<span class="mobile-badge">1</span>', false);
+    }
+
+    public function test_home_nav_notification_dropdown_shows_empty_state_without_unread_notifications(): void
+    {
+        $user = User::factory()->create();
+
+        Notificatioins::factory()->read()->create([
+            'to_user_id' => $user->id,
+            'message' => 'Read notification only',
+        ]);
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('No unread notifications')
+            ->assertSee('aria-label="Notifications"', false)
+            ->assertDontSee('noti-badge', false)
+            ->assertDontSee('Read notification only');
     }
 
     public function test_home_uses_light_mode_theme_and_font_variables(): void

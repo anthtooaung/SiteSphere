@@ -1,22 +1,46 @@
 @desktop
 <button
-    data-tooltip-placement="bottom"
+    id="notificationDropdownButton"
     type="button"
-    data-tooltip-target="notification"
+    data-dropdown-toggle="notificationDropdown"
     {{ $attributes->merge(['class' => 'noti-button']) }}
+    aria-label="{{ $unreadCount > 0 ? $unreadCount.' unread notifications' : 'Notifications' }}"
 >
     <x-far-bell class="icon"/>
-    <span class="absolute top-0.5 right-0.5 flex items-center justify-center bg-red-500 text-white text-[10px] font-black rounded-full w-4 h-4 border border-white shadow-sm">3</span>
+    @if ($unreadCount > 0)
+        <span class="noti-badge">{{ $unreadCount }}</span>
+    @endif
 </button>
-<div id="notification" role="tooltip" class=" text-white absolute z-10 invisible inline-block px-3 py-2 text-md bg-gray-600 rounded-xl shadow-xs opacity-0 tooltip">
-    Notification
+<div id="notificationDropdown" class="noti-dropdown hidden" aria-labelledby="notificationDropdownButton">
+    <div class="noti-dropdown-header">Notifications</div>
+
+    @if ($unreadNotifications->isEmpty())
+        <p class="noti-empty">No unread notifications</p>
+    @else
+        <div class="noti-list">
+            @foreach ($unreadNotifications as $notification)
+                <div class="noti-item">
+                    <span class="noti-message">{{ $notification->message }}</span>
+                    @if ($notification->created_at)
+                        <span class="noti-time">{{ $notification->created_at->diffForHumans() }}</span>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @endif
 </div>
 @enddesktop
 
 @mobile
-<a href="#" {{ $attributes->merge(['class' => 'mobile-nav-item relative']) }}>
+<a
+    href="#"
+    {{ $attributes->merge(['class' => 'mobile-nav-item relative']) }}
+    aria-label="{{ $unreadCount > 0 ? $unreadCount.' unread notifications' : 'Notifications' }}"
+>
     <x-far-bell class="icon"/>
-    <span class="mobile-badge">3</span>
+    @if ($unreadCount > 0)
+        <span class="mobile-badge">{{ $unreadCount }}</span>
+    @endif
     <span>Alerts</span>
 </a>
 @endmobile

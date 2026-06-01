@@ -84,6 +84,11 @@
     transform: translateY(-4px);
 }
 
+.site-brand,
+.site-brand span {
+    color: var(--accent-color, #6c5ce7);
+}
+
 .category-menu-dropdown {
     position: fixed !important;
     top: 86px !important;

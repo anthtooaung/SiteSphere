@@ -271,7 +271,14 @@ class HomePageTest extends TestCase
             ->assertSee('--accent-color: #14b8a6;', false)
             ->assertSee('--background-color: #ffffff;', false)
             ->assertSee('--text-color: #0d1b2a;', false)
-            ->assertSee('--font-family: "Open Sans", sans-serif;', false);
+            ->assertSee('--font-family: "Open Sans", sans-serif;', false)
+            ->assertSee('class="site-brand flex items-center space-x-0 rtl:space-x-reverse"', false)
+            ->assertSee('fill="var(--accent-color, #6c5ce7)"', false);
+
+        $this->assertStringContainsString(
+            '.site-brand span',
+            file_get_contents(resource_path('css/nav.css')),
+        );
     }
 
     public function test_home_uses_dark_mode_variables_without_changing_accent(): void

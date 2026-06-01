@@ -19,7 +19,8 @@ class AppLogoComponentTest extends TestCase
             ->assertSee('role="img"', false)
             ->assertSee('aria-label="SiteSphere"', false)
             ->assertSee('color: var(--accent-color, #6c5ce7);', false)
-            ->assertSee('fill="currentColor"', false)
+            ->assertSee('fill="var(--accent-color, #6c5ce7)"', false)
+            ->assertDontSee('fill="currentColor"', false)
             ->assertDontSee('fill="#2EB4F7"', false)
             ->assertDontSee('>S</div>', false);
     }

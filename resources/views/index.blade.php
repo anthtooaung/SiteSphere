@@ -7,7 +7,7 @@
     <title>
         @yield('title', 'SiteSphere')
     </title>
-    <link rel="shortcut icon" href="" type="image/x-icon">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <x-google-fonts />
     @php($resolvedFontFamily = $fontFamily ?: 'Figtree, sans-serif')
     @auth

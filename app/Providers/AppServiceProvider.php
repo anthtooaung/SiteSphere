@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Themes;
+use App\ThemePreferences;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
@@ -27,11 +27,12 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share user preference values with all views so Blade can easily read them.
         View::composer('*', function ($view) {
-            $colors = [];
+            $themePreferences = app(ThemePreferences::class);
+            $colors = $themePreferences->colorsFor(Auth::user());
             $toastPosition = 'top-end';
             $fontFamily = null;
             $menuBarLocation = 'left';
-            $isDarkMode = false;
+            $isDarkMode = $colors['background'] === '#000000';
 
             if (Auth::check()) {
                 $user = Auth::user();
@@ -55,28 +56,7 @@ class AppServiceProvider extends ServiceProvider
                 }
 
                 $isDarkMode = (bool) ($settings?->dark_mode ?? false);
-
-                if ($settings && $settings->custom_theme_id && $settings->customTheme) {
-                    $colors = [
-                        'accent' => $settings->customTheme->accent_color,
-                    ];
-                } elseif ($settings && $settings->theme) {
-                    $colors = [
-
-                        'accent' => $settings->theme->accent_color,
-                    ];
-                }
-            } else {
-                $theme = Themes::query()->first();
-                if ($theme) {
-                    $colors = [
-                        'accent' => $theme->accent_color,
-                    ];
-                }
             }
-
-            $colors['background'] = $isDarkMode ? '#000000' : '#ffffff';
-            $colors['text'] = $isDarkMode ? '#ffffff' : '#0d1b2a';
 
             $view->with('themeColors', $colors);
             $view->with('toastPosition', $toastPosition);

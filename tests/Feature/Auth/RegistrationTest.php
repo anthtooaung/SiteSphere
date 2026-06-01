@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Mail\OtpVerificationMail;
 use App\Models\OtpVerifications;
 use App\Models\User;
+use Database\Seeders\FontsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,13 @@ class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(FontsSeeder::class);
+    }
+
     public function test_registration_screen_can_be_rendered(): void
     {
         $response = $this->get('/register');
@@ -24,7 +32,7 @@ class RegistrationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_new_users_can_register(): void
+    public function test_standard_registration_post_does_not_create_user_without_otp(): void
     {
         $response = $this->post('/register', [
             'name' => 'Test User',
@@ -33,9 +41,12 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
-        $this->assertAuthenticated();
-        $this->assertUserHasDefaultPreferences(User::query()->where('email', 'test@example.com')->firstOrFail());
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertGuest();
+        $this->assertDatabaseMissing('users', [
+            'email' => 'test@example.com',
+        ]);
+        $response->assertRedirect(route('register', absolute: false))
+            ->assertSessionHasErrors('email');
     }
 
     public function test_registration_initiate_sends_otp_email_without_exposing_otp_code(): void
@@ -60,7 +71,16 @@ class RegistrationTest extends TestCase
             return $mail->hasTo('test@example.com');
         });
 
-        $this->assertUserHasDefaultPreferences(User::query()->where('email', 'test@example.com')->firstOrFail());
+        $this->assertDatabaseMissing('users', [
+            'email' => 'test@example.com',
+        ]);
+        $this->assertDatabaseHas('otpVerifications', [
+            'email' => 'test@example.com',
+            'user_id' => null,
+            'is_verified' => false,
+        ]);
+        $this->assertDatabaseCount('settings', 0);
+        $this->assertDatabaseCount('user_current_fonts', 0);
     }
 
     public function test_registration_resend_otp_sends_otp_email(): void
@@ -68,13 +88,13 @@ class RegistrationTest extends TestCase
         Config::set('mail.mailers.smtp.password', 'test-app-password');
         Mail::fake();
 
-        $user = User::factory()->unverified()->create([
+        $this->postJson('/register/initiate', [
+            'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => 'password!!!',
         ]);
 
-        $response = $this->postJson('/register/resend-otp', [
-            'user_id' => $user->id,
-        ]);
+        $response = $this->postJson('/register/resend-otp');
 
         $response->assertOk()
             ->assertJson([
@@ -82,9 +102,9 @@ class RegistrationTest extends TestCase
             ])
             ->assertJsonMissingPath('otp');
 
-        Mail::assertSent(OtpVerificationMail::class, function (OtpVerificationMail $mail) {
-            return $mail->hasTo('test@example.com');
-        });
+        Mail::assertSentTimes(OtpVerificationMail::class, 2);
+        $this->assertDatabaseCount('users', 0);
+        $this->assertSame(2, OtpVerifications::where('email', 'test@example.com')->count());
     }
 
     public function test_registration_initiate_still_returns_success_when_otp_email_delivery_fails(): void
@@ -115,31 +135,65 @@ class RegistrationTest extends TestCase
                 'otp_delivery_failed' => true,
             ])
             ->assertJsonMissingPath('otp');
+
+        $this->assertDatabaseCount('users', 0);
     }
 
-    public function test_registration_finalize_redirects_to_login_and_flashes_database_positioned_toast(): void
+    public function test_registration_verify_otp_marks_session_as_verified_without_creating_user(): void
     {
-        $user = User::factory()->unverified()->create([
-            'email' => 'test@example.com',
-        ]);
-        $this->createSettingsFor($user, 'bottom-end');
+        Config::set('mail.mailers.smtp.password', 'test-app-password');
+        Mail::fake();
 
-        OtpVerifications::create([
-            'user_id' => $user->id,
-            'otp' => '123456',
-            'is_verified' => true,
-            'expire_at' => now()->addMinutes(5),
+        $this->postJson('/register/initiate', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password!!!',
+        ]);
+
+        $verification = OtpVerifications::where('email', 'test@example.com')->firstOrFail();
+
+        $response = $this->postJson('/register/verify-otp', [
+            'otp_code' => $verification->otp,
+        ]);
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+            ]);
+
+        $this->assertTrue((bool) $verification->fresh()->is_verified);
+        $this->assertDatabaseCount('users', 0);
+    }
+
+    public function test_registration_finalize_creates_user_after_verified_otp_and_flashes_toast(): void
+    {
+        Config::set('mail.mailers.smtp.password', 'test-app-password');
+        Mail::fake();
+
+        $this->postJson('/register/initiate', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password!!!',
+        ]);
+
+        $verification = OtpVerifications::where('email', 'test@example.com')->firstOrFail();
+
+        $this->postJson('/register/verify-otp', [
+            'otp_code' => $verification->otp,
         ]);
 
         $response = $this->postJson('/register/finalize', [
-            'user_id' => $user->id,
             'user_dob' => null,
             'user_phone' => '',
             'user_bio' => '',
         ]);
 
+        $user = User::query()->where('email', 'test@example.com')->firstOrFail();
+
         $this->assertGuest();
-        $this->assertTrue((bool) $user->fresh()->is_verified);
+        $this->assertTrue((bool) $user->is_verified);
+        $this->assertUserHasDefaultPreferences($user);
+        $this->assertSame($user->id, $verification->fresh()->user_id);
 
         $response
             ->assertOk()
@@ -149,31 +203,37 @@ class RegistrationTest extends TestCase
             ])
             ->assertSessionHas(Swal::SESSION_KEY, function (array $toast): bool {
                 return $toast['toast'] === true
-                    && $toast['position'] === 'bottom-end'
+                    && $toast['position'] === 'top-end'
                     && $toast['showConfirmButton'] === false
                     && $toast['icon'] === 'success'
                     && $toast['title'] === 'Account ready';
             });
     }
 
-    private function createSettingsFor(User $user, string $notificationLocation): void
+    public function test_registration_finalize_requires_verified_otp(): void
     {
-        $themeId = DB::table('themes')->insertGetId([
-            'accent_color' => '#6c5ce7',
-            'created_at' => now(),
-            'updated_at' => now(),
+        Config::set('mail.mailers.smtp.password', 'test-app-password');
+        Mail::fake();
+
+        $this->postJson('/register/initiate', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password!!!',
         ]);
 
-        DB::table('settings')->updateOrInsert([
-            'user_id' => $user->id,
-        ], [
-            'menuBar_location' => 'right',
-            'noti_location' => $notificationLocation,
-            'dark_mode' => false,
-            'user_post_visible' => false,
-            'theme_id' => $themeId,
-            'created_at' => now(),
-            'updated_at' => now(),
+        $response = $this->postJson('/register/finalize', [
+            'user_dob' => null,
+            'user_phone' => '',
+            'user_bio' => '',
+        ]);
+
+        $response->assertForbidden()
+            ->assertJson([
+                'message' => 'OTP verification must be completed first.',
+            ]);
+
+        $this->assertDatabaseMissing('users', [
+            'email' => 'test@example.com',
         ]);
     }
 
@@ -192,7 +252,7 @@ class RegistrationTest extends TestCase
 
         $this->assertDatabaseHas('settings', [
             'user_id' => $user->id,
-            'menuBar_location' => 'right',
+            'menuBar_location' => 'left',
             'noti_location' => 'top-end',
             'dark_mode' => false,
             'user_post_visible' => false,

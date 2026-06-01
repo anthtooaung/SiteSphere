@@ -10,6 +10,7 @@ class OtpVerifications extends Model
 
     protected $fillable = [
         'user_id',
+        'email',
         'otp',
         'is_verified',
         'expire_at',

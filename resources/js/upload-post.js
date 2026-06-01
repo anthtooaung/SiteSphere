@@ -190,9 +190,11 @@ const initUploadPost = () => {
     const dot = document.createElement("span");
 
     pill.className = isEmpty
-      ? "inline-flex items-center gap-1 rounded-md border border-slate-100 bg-slate-50 px-2 py-0.5 text-[11px] font-bold text-slate-500"
-      : "inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700";
-    dot.className = isEmpty ? "size-1.5 rounded-full bg-slate-400" : "size-1.5 rounded-full bg-emerald-500";
+      ? "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_16%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_94%,var(--text-color,#0d1b2a)_6%)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)]"
+      : "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_90%,var(--accent-color,#6c5ce7)_10%)] [color:var(--accent-color,#6c5ce7)]";
+    dot.className = isEmpty
+      ? "size-1.5 rounded-full [background:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]"
+      : "size-1.5 rounded-full [background:var(--accent-color,#6c5ce7)]";
 
     pill.appendChild(dot);
     pill.append(label);

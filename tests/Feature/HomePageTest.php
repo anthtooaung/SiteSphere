@@ -270,8 +270,8 @@ class HomePageTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('--accent-color: #14b8a6;', false)
-            ->assertSee('--background-color: #ffffff;', false)
-            ->assertSee('--text-color: #0d1b2a;', false)
+            ->assertSee('--background-color: #102030;', false)
+            ->assertSee('--text-color: #f8fafc;', false)
             ->assertSee('--font-family: "Open Sans", sans-serif;', false)
             ->assertSee('class="site-brand flex items-center space-x-0 rtl:space-x-reverse"', false)
             ->assertSee('fill="var(--accent-color, #6c5ce7)"', false);
@@ -282,7 +282,7 @@ class HomePageTest extends TestCase
         );
     }
 
-    public function test_home_uses_dark_mode_variables_without_changing_accent(): void
+    public function test_home_uses_custom_theme_variables_when_dark_mode_is_enabled(): void
     {
         $user = User::factory()->create();
         $customThemeId = DB::table('custom_themes')->insertGetId([
@@ -307,8 +307,34 @@ class HomePageTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('--accent-color: #14b8a6;', false)
-            ->assertSee('--background-color: #000000;', false)
-            ->assertSee('--text-color: #ffffff;', false);
+            ->assertSee('--background-color: #102030;', false)
+            ->assertSee('--text-color: #f8fafc;', false);
+    }
+
+    public function test_home_post_card_uses_theme_variables_for_surfaces_text_and_effects(): void
+    {
+        $viewer = User::factory()->create();
+        $reviewer = User::factory()->create();
+        $post = Posts::factory()->create([
+            'title' => 'Theme Controlled Card',
+            'url' => 'https://theme-controlled-card.test',
+        ]);
+
+        UserPosts::factory()->create([
+            'post_id' => $post->id,
+            'user_id' => $reviewer->id,
+            'description' => 'Card color should follow theme variables.',
+        ]);
+
+        $response = $this->actingAs($viewer)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('Theme Controlled Card')
+            ->assertSee('[background:var(--background-color,#ffffff)]', false)
+            ->assertSee('[color:var(--text-color,#0d1b2a)]', false)
+            ->assertSee('[border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)', false)
+            ->assertSee('hover:[box-shadow:0_8px_18px_color-mix(in_srgb,var(--accent-color,#6c5ce7)', false);
     }
 
     public function test_home_renders_aside_component_with_default_placement(): void
@@ -387,6 +413,20 @@ class HomePageTest extends TestCase
             ->assertOk()
             ->assertSee('home-aside--left', false)
             ->assertSee('data-menu-bar-location="left"', false);
+    }
+
+    public function test_home_review_grid_uses_six_card_pages_and_three_desktop_columns(): void
+    {
+        $homepageCss = file_get_contents(resource_path('css/homepage.css'));
+        $homepageJs = file_get_contents(resource_path('js/homepage.js'));
+
+        $this->assertStringContainsString('grid-template-columns: repeat(3, minmax(0, 320px));', $homepageCss);
+        $this->assertStringContainsString('column-gap: 18px;', $homepageCss);
+        $this->assertStringContainsString('row-gap: 24px;', $homepageCss);
+        $this->assertStringContainsString('justify-content:start;', $homepageCss);
+        $this->assertStringContainsString('const cardsPerPage = 6;', $homepageJs);
+        $this->assertStringContainsString('if(pageCount <= 1)', $homepageJs);
+        $this->assertStringContainsString('pagination.hidden = true;', $homepageJs);
     }
 
     public function test_home_renders_one_card_per_post_with_many_descriptions(): void

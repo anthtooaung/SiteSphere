@@ -15,13 +15,19 @@ class ThemePreferences
     {
         $isDarkMode = false;
         $accentColor = self::DEFAULT_ACCENT_COLOR;
+        $backgroundColor = '#ffffff';
+        $textColor = '#0d1b2a';
 
         if ($user) {
             $settings = $user->settings()->with(['theme', 'customTheme'])->first();
             $isDarkMode = (bool) ($settings?->dark_mode ?? false);
+            $backgroundColor = $isDarkMode ? '#000000' : '#ffffff';
+            $textColor = $isDarkMode ? '#ffffff' : '#0d1b2a';
 
             if ($settings?->custom_theme_id && $settings->customTheme) {
                 $accentColor = $this->validAccentColor($settings->customTheme->accent_color);
+                $backgroundColor = $this->validThemeColor($settings->customTheme->background_color, $backgroundColor);
+                $textColor = $this->validThemeColor($settings->customTheme->text_color, $textColor);
             } elseif ($settings?->theme) {
                 $accentColor = $this->validAccentColor($settings->theme->accent_color);
             }
@@ -29,8 +35,8 @@ class ThemePreferences
 
         return [
             'accent' => $accentColor,
-            'background' => $isDarkMode ? '#000000' : '#ffffff',
-            'text' => $isDarkMode ? '#ffffff' : '#0d1b2a',
+            'background' => $backgroundColor,
+            'text' => $textColor,
         ];
     }
 
@@ -46,5 +52,14 @@ class ThemePreferences
         }
 
         return self::DEFAULT_ACCENT_COLOR;
+    }
+
+    private function validThemeColor(?string $color, string $fallback): string
+    {
+        if ($color && preg_match('/^#[0-9A-Fa-f]{6}$/', $color) === 1) {
+            return $color;
+        }
+
+        return $fallback;
     }
 }

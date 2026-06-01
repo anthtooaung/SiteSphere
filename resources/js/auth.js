@@ -122,7 +122,6 @@ const init = () => {
     account: null,
     profile: {},
     profileImageDataUrl: "",
-    userId: null,
   };
 
   const createAuthAlertMixin = () => {
@@ -544,7 +543,6 @@ const init = () => {
       account,
       profile: {},
       profileImageDataUrl: "",
-      userId: account.userId,
     };
 
     otpEmailTarget.textContent = account.email;
@@ -739,7 +737,7 @@ const init = () => {
       const data = await parseResponseData(response);
 
       if (response.ok) {
-        openRegistrationFlow({ username: name, email, userId: data.user_id }, data.otp);
+        openRegistrationFlow({ username: name, email }, data.otp);
 
         if (data.otp_delivery_failed) {
           showAlert({
@@ -776,8 +774,6 @@ const init = () => {
   closeRegistrationFlow?.addEventListener("click", hideRegistrationFlow);
 
   resendOtpBtn?.addEventListener("click", async () => {
-    if (!registrationData.userId) return;
-
     try {
       const response = await fetch("/register/resend-otp", {
         method: "POST",
@@ -786,7 +782,6 @@ const init = () => {
           "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content,
           "Accept": "application/json",
         },
-        body: JSON.stringify({ user_id: registrationData.userId }),
       });
 
       const data = await parseResponseData(response);
@@ -914,7 +909,6 @@ const init = () => {
           "Accept": "application/json",
         },
         body: JSON.stringify({
-          user_id: registrationData.userId,
           otp_code: otpInput.value.trim()
         }),
       });
@@ -1000,12 +994,9 @@ const init = () => {
 
   // Backend finalize account logic
   confirmRegisterBtn?.addEventListener("click", async () => {
-    if (!registrationData.userId) return;
-
     let shouldKeepLoading = false;
 
     const formData = new FormData();
-    formData.append("user_id", registrationData.userId);
     formData.append("user_dob", registrationData.profile.user_dob || "");
     formData.append("user_phone", registrationData.profile.user_phone || "");
     formData.append("user_bio", registrationData.profile.user_bio || "");

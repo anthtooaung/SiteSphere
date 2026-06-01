@@ -251,7 +251,7 @@ let selectedTagFilters = ['All'];
 let selectedRatings = [];
 let currentPage = 1;
 
-const cardsPerPage = 10;
+const cardsPerPage = 6;
 
 let filteredCards = [...cards];
 
@@ -1194,8 +1194,14 @@ function displayCards(){
 function setupPagination(){
 
     pagination.innerHTML = '';
+    pagination.hidden = false;
 
     const pageCount = Math.ceil(filteredCards.length / cardsPerPage);
+
+    if(pageCount <= 1){
+        pagination.hidden = true;
+        return;
+    }
 
     for(let i = 1; i <= pageCount; i++){
 

@@ -52,6 +52,9 @@ const init = () => {
   const confirmLayoutText = document.getElementById("confirmLayoutText");
   const backToProfileBtn = document.getElementById("backToProfileBtn");
   const confirmRegisterBtn = document.getElementById("confirmRegisterBtn");
+  const registerSubmitButton = registerForm?.querySelector('[data-loading-button="register"]');
+  const otpSubmitButton = otpForm?.querySelector('[data-loading-button="verify-otp"]');
+  let continueProfileBtn = document.getElementById("continueProfileBtn");
 
   const OTP_DURATION_MS = 5 * 60 * 1000;
   const DESKTOP_SLIDE_ANIMATION_MS = 640;
@@ -59,11 +62,17 @@ const init = () => {
   const MOBILE_HANDOFF_SWITCH_MS = 260;
   const STEP_ANIMATION_MS = 460;
   const OTP_FEEDBACK_MS = 420;
+  const PROFILE_CONTINUE_LOADING_MS = 300;
   const mobileHandoffQuery = window.matchMedia("(max-width: 900px)");
 
-  const ensureProfileContinueButton = () => {
-    let continueProfileBtn = document.getElementById("continueProfileBtn");
+  const buttonLoadingMarkup = (label) => `
+    <span class="button-label">${label}</span>
+    <span class="button-loader" aria-hidden="true">
+      <i></i><i></i><i></i>
+    </span>
+  `;
 
+  const ensureProfileContinueButton = () => {
     if (continueProfileBtn || !profileActions) {
       return continueProfileBtn;
     }
@@ -72,13 +81,30 @@ const init = () => {
     continueProfileBtn.type = "submit";
     continueProfileBtn.className = "primary-button";
     continueProfileBtn.id = "continueProfileBtn";
-    continueProfileBtn.textContent = "Continue";
+    continueProfileBtn.dataset.loadingButton = "continue-profile";
+    continueProfileBtn.innerHTML = buttonLoadingMarkup("Continue");
     profileActions.appendChild(continueProfileBtn);
 
     return continueProfileBtn;
   };
 
   ensureProfileContinueButton();
+
+  const setButtonLoading = (button, isLoading) => {
+    if (!button) {
+      return;
+    }
+
+    button.classList.toggle("is-loading", isLoading);
+    button.disabled = isLoading;
+
+    if (isLoading) {
+      button.setAttribute("aria-busy", "true");
+      return;
+    }
+
+    button.removeAttribute("aria-busy");
+  };
 
   let slideTimer = null;
   let modeSwitchTimer = null;
@@ -697,6 +723,8 @@ const init = () => {
       return;
     }
 
+    setButtonLoading(registerSubmitButton, true);
+
     try {
       const response = await fetch("/register/initiate", {
         method: "POST",
@@ -740,6 +768,8 @@ const init = () => {
         text: "An error occurred during registration. Please try again.",
         icon: "error",
       });
+    } finally {
+      setButtonLoading(registerSubmitButton, false);
     }
   });
 
@@ -873,6 +903,8 @@ const init = () => {
       return;
     }
 
+    setButtonLoading(otpSubmitButton, true);
+
     try {
       const response = await fetch("/register/verify-otp", {
         method: "POST",
@@ -916,6 +948,8 @@ const init = () => {
         text: "Could not verify OTP. Please try again.",
         icon: "error",
       });
+    } finally {
+      setButtonLoading(otpSubmitButton, false);
     }
   });
 
@@ -948,7 +982,12 @@ const init = () => {
 
   profileForm?.addEventListener("submit", (event) => {
     event.preventDefault();
-    continueToConfirmation();
+    setButtonLoading(continueProfileBtn, true);
+
+    setTimeout(() => {
+      continueToConfirmation();
+      setButtonLoading(continueProfileBtn, false);
+    }, PROFILE_CONTINUE_LOADING_MS);
   });
 
   skipProfileBtn?.addEventListener("click", () => {
@@ -963,6 +1002,8 @@ const init = () => {
   confirmRegisterBtn?.addEventListener("click", async () => {
     if (!registrationData.userId) return;
 
+    let shouldKeepLoading = false;
+
     const formData = new FormData();
     formData.append("user_id", registrationData.userId);
     formData.append("user_dob", registrationData.profile.user_dob || "");
@@ -971,6 +1012,8 @@ const init = () => {
     if (profileImage.files[0]) {
       formData.append("user_image", profileImage.files[0]);
     }
+
+    setButtonLoading(confirmRegisterBtn, true);
 
     try {
       const response = await fetch("/register/finalize", {
@@ -985,6 +1028,7 @@ const init = () => {
       const data = await response.json();
 
       if (response.ok) {
+        shouldKeepLoading = true;
         hideRegistrationFlow();
         registerForm.reset();
         window.location.href = data.redirect || "/login";
@@ -1009,6 +1053,10 @@ const init = () => {
         text: "An error occurred while setting up your account. Please try again.",
         icon: "error",
       });
+    } finally {
+      if (!shouldKeepLoading) {
+        setButtonLoading(confirmRegisterBtn, false);
+      }
     }
   });
 

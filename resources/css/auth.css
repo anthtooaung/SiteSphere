@@ -894,6 +894,9 @@ body.modal-open {
 }
 
 .primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 46px;
   border: 0;
   border-radius: 10px;
@@ -909,6 +912,52 @@ body.modal-open {
     box-shadow 180ms ease;
 }
 
+.primary-button.is-loading {
+  cursor: wait;
+  pointer-events: none;
+}
+
+.primary-button .button-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary-button .button-loader {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 27px;
+  color: currentColor;
+}
+
+.primary-button .button-loader i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.25;
+  animation: authButtonDotPulse 1.2s ease-in-out infinite;
+}
+
+.primary-button .button-loader i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.primary-button .button-loader i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.primary-button.is-loading .button-label {
+  display: none;
+}
+
+.primary-button.is-loading .button-loader {
+  display: inline-flex;
+}
+
 .primary-button:hover,
 .primary-button:focus-visible {
   background: var(--blue-dark);
@@ -920,6 +969,19 @@ body.modal-open {
 .primary-button:active {
   transform: translateY(1px) scale(0.98);
   box-shadow: 0 10px 22px rgba(33, 84, 216, 0.22);
+}
+
+@keyframes authButtonDotPulse {
+  0%,
+  100% {
+    opacity: 0.22;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
 }
 
 .slider-panel {

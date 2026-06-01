@@ -68,13 +68,13 @@
         }
 
         .sitesphere-loader.is-active .sitesphere-loader__draw-a {
-            animation: sitesphereLoaderDraw 0.5s ease-in-out infinite;
+            animation: sitesphereLoaderDraw 1.2s ease-in-out infinite;
             animation-fill-mode: both;
         }
 
         .sitesphere-loader.is-active .sitesphere-loader__draw-b {
-            animation: sitesphereLoaderDraw 0.5s ease-in-out infinite;
-            animation-delay: 0.1s;
+            animation: sitesphereLoaderDraw 1.2s ease-in-out infinite;
+            animation-delay: 0.25s;
             animation-fill-mode: both;
         }
 
@@ -111,7 +111,17 @@
                 return;
             }
 
+            const minimumVisibleMilliseconds = 1000;
+            let shownAt = 0;
+            let hideTimeout = null;
+
             const showLoader = () => {
+                if (hideTimeout) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+
+                shownAt = Date.now();
                 loader.classList.remove('is-active');
                 void loader.offsetWidth;
                 loader.classList.add('is-active');
@@ -119,8 +129,28 @@
             };
 
             const hideLoader = () => {
-                loader.classList.remove('is-active');
-                loader.setAttribute('aria-hidden', 'true');
+                const deactivateLoader = () => {
+                    loader.classList.remove('is-active');
+                    loader.setAttribute('aria-hidden', 'true');
+                    hideTimeout = null;
+                };
+
+                if (! shownAt) {
+                    deactivateLoader();
+
+                    return;
+                }
+
+                const elapsedMilliseconds = Date.now() - shownAt;
+                const remainingMilliseconds = minimumVisibleMilliseconds - elapsedMilliseconds;
+
+                if (remainingMilliseconds <= 0) {
+                    deactivateLoader();
+
+                    return;
+                }
+
+                hideTimeout = setTimeout(deactivateLoader, remainingMilliseconds);
             };
 
             const navigationEntry = performance.getEntriesByType('navigation')[0];

@@ -197,7 +197,12 @@
                             </x-slot:suffix>
                         </x-input-field>
 
-                        <button type="submit" class="primary-button">Register</button>
+                        <button type="submit" class="primary-button" data-loading-button="register">
+                            <span class="button-label">Register</span>
+                            <span class="button-loader" aria-hidden="true">
+                                <i></i><i></i><i></i>
+                            </span>
+                        </button>
                     </form>
                 </section>
             </div>
@@ -295,7 +300,12 @@
                                 Resend OTP
                             </button>
                         </div>
-                        <button type="submit" class="primary-button">Verify OTP</button>
+                        <button type="submit" class="primary-button" data-loading-button="verify-otp">
+                            <span class="button-label">Verify OTP</span>
+                            <span class="button-loader" aria-hidden="true">
+                                <i></i><i></i><i></i>
+                            </span>
+                        </button>
                     </form>
                 </section>
 
@@ -335,8 +345,11 @@
                             <button type="button" class="secondary-button" id="skipProfileBtn">
                                 Skip
                             </button>
-                            <button type="submit" class="primary-button" id="continueProfileBtn">
-                                Continue
+                            <button type="submit" class="primary-button" id="continueProfileBtn" data-loading-button="continue-profile">
+                                <span class="button-label">Continue</span>
+                                <span class="button-loader" aria-hidden="true">
+                                    <i></i><i></i><i></i>
+                                </span>
                             </button>
                         </div>
                     </form>
@@ -364,8 +377,11 @@
                         <button type="button" class="secondary-button" id="backToProfileBtn">
                             Back
                         </button>
-                        <button type="button" class="primary-button" id="confirmRegisterBtn">
-                            Confirm account
+                        <button type="button" class="primary-button" id="confirmRegisterBtn" data-loading-button="confirm-account">
+                            <span class="button-label">Confirm account</span>
+                            <span class="button-loader" aria-hidden="true">
+                                <i></i><i></i><i></i>
+                            </span>
                         </button>
                     </div>
                 </section>

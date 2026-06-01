@@ -51,4 +51,34 @@ class LoginRegisterPageTest extends TestCase
             ->assertSee('Complete each step to finish setting up your SiteSphere account securely.')
             ->assertSee('id="confirmRegisterBtn"', false);
     }
+
+    public function test_register_page_renders_loading_markup_for_register_flow_buttons(): void
+    {
+        $response = $this->get('/register');
+
+        $response->assertOk()
+            ->assertSee('data-loading-button="register"', false)
+            ->assertSee('data-loading-button="verify-otp"', false)
+            ->assertSee('data-loading-button="continue-profile"', false)
+            ->assertSee('data-loading-button="confirm-account"', false)
+            ->assertSee('<span class="button-label">Register</span>', false)
+            ->assertSee('<span class="button-label">Verify OTP</span>', false)
+            ->assertSee('<span class="button-label">Continue</span>', false)
+            ->assertSee('<span class="button-label">Confirm account</span>', false)
+            ->assertSee('class="button-loader"', false)
+            ->assertSee('<i></i><i></i><i></i>', false);
+    }
+
+    public function test_register_button_loading_assets_include_css_and_script_hooks(): void
+    {
+        $authCss = file_get_contents(resource_path('css/auth.css'));
+        $authJs = file_get_contents(resource_path('js/auth.js'));
+
+        $this->assertStringContainsString('.primary-button.is-loading .button-loader', $authCss);
+        $this->assertStringContainsString('@keyframes authButtonDotPulse', $authCss);
+        $this->assertStringContainsString('const setButtonLoading', $authJs);
+        $this->assertStringContainsString('aria-busy', $authJs);
+        $this->assertStringContainsString('data-loading-button="register"', $authJs);
+        $this->assertStringContainsString('data-loading-button="verify-otp"', $authJs);
+    }
 }

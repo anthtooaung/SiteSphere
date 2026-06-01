@@ -1,5 +1,5 @@
 @desktop
-<a href="#"
+<a href="{{ route('posts.create') }}"
    {{ $attributes->merge(['class' => 'write-button']) }}
    data-tooltip-placement="bottom"
    data-tooltip-target="create-post"
@@ -12,7 +12,7 @@
 @enddesktop
 
 @mobile
-<a href="#" {{ $attributes->merge(['class' => 'mobile-add-button']) }} aria-label="Write review">
+<a href="{{ route('posts.create') }}" {{ $attributes->merge(['class' => 'mobile-add-button']) }} aria-label="Write review">
     <x-fas-plus class="icon" style="font-size: 1.2rem;"/>
 </a>
 @endmobile

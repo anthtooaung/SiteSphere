@@ -69,7 +69,8 @@ class HomePageTest extends TestCase
             ->assertDontSee('class="fas', false)
             ->assertSee('href="'.route('home').'"', false)
             ->assertSee('class="desktop-link active"', false)
-            ->assertSee('aria-current="page"', false);
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('href="'.route('posts.create').'"', false);
     }
 
     public function test_home_hides_show_more_categories_when_there_are_five_or_fewer_categories(): void
@@ -393,6 +394,8 @@ class HomePageTest extends TestCase
         $viewer = User::factory()->create();
         $firstReviewer = User::factory()->create(['name' => 'First Reviewer']);
         $secondReviewer = User::factory()->create(['name' => 'Second Reviewer']);
+        $firstReviewer->settings()->update(['user_post_visible' => true]);
+        $secondReviewer->settings()->update(['user_post_visible' => true]);
         $post = Posts::factory()->create([
             'title' => 'Shared URL Review',
             'url' => 'https://shared-example.test',
@@ -421,9 +424,57 @@ class HomePageTest extends TestCase
         $this->assertSame(1, substr_count($response->getContent(), 'class="review-card'));
     }
 
+    public function test_home_only_renders_profile_tabs_for_users_with_visible_posts_enabled(): void
+    {
+        $viewer = User::factory()->create();
+        $visibleReviewer = User::factory()->create(['name' => 'Visible Reviewer']);
+        $hiddenReviewer = User::factory()->create(['name' => 'Hidden Reviewer']);
+        $invisibleOnlyReviewer = User::factory()->create(['name' => 'Invisible Only']);
+        $visibleReviewer->settings()->update(['user_post_visible' => true]);
+        $hiddenReviewer->settings()->update(['user_post_visible' => false]);
+        $invisibleOnlyReviewer->settings()->update(['user_post_visible' => false]);
+
+        $mixedPost = Posts::factory()->create([
+            'title' => 'Mixed Visibility Post',
+            'url' => 'https://mixed-visibility.test',
+        ]);
+        $hiddenOnlyPost = Posts::factory()->create([
+            'title' => 'Hidden Only Post',
+            'url' => 'https://hidden-only.test',
+        ]);
+
+        UserPosts::factory()->create([
+            'post_id' => $mixedPost->id,
+            'user_id' => $visibleReviewer->id,
+            'description' => 'Visible reviewer description.',
+        ]);
+        UserPosts::factory()->create([
+            'post_id' => $mixedPost->id,
+            'user_id' => $hiddenReviewer->id,
+            'description' => 'Hidden reviewer description.',
+        ]);
+        UserPosts::factory()->create([
+            'post_id' => $hiddenOnlyPost->id,
+            'user_id' => $invisibleOnlyReviewer->id,
+            'description' => 'Nobody should see this hidden-only post.',
+        ]);
+
+        $response = $this->actingAs($viewer)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('Mixed Visibility Post')
+            ->assertSee('Visible reviewer description.')
+            ->assertDontSee('Hidden reviewer description.')
+            ->assertDontSee('Hidden Only Post')
+            ->assertDontSee('Nobody should see this hidden-only post.');
+    }
+
     public function test_comments_and_ratings_are_post_level_totals(): void
     {
         $viewer = User::factory()->create();
+        $reviewer = User::factory()->create();
+        $reviewer->settings()->update(['user_post_visible' => true]);
         $post = Posts::factory()->create([
             'title' => 'Post Level Totals',
             'url' => 'https://totals-example.test',
@@ -431,7 +482,7 @@ class HomePageTest extends TestCase
 
         UserPosts::factory()->create([
             'post_id' => $post->id,
-            'user_id' => User::factory()->create()->id,
+            'user_id' => $reviewer->id,
             'description' => 'Description does not own comments or ratings.',
         ]);
 

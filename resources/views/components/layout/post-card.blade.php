@@ -50,7 +50,7 @@
     <header class="space-y-3 px-4 pb-3 pt-4 sm:px-5">
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
-                <h2 class="break-words text-base font-extrabold leading-snug tracking-normal text-slate-950">
+                <h2 class="break-words text-base font-extrabold leading-snug tracking-normal text-slate-950" data-post-card-title>
                     {{ $title }}
                 </h2>
             </div>
@@ -84,16 +84,17 @@
             target="_blank"
             rel="noopener noreferrer"
             class="group flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 transition-all hover:border-blue-200 hover:bg-blue-100/70"
+            data-post-card-link
         >
             <span class="flex size-6 shrink-0 items-center justify-center rounded-lg bg-white text-blue-600 shadow-sm">
                 <x-fas-link class="size-2.5" />
             </span>
-            <span class="min-w-0 flex-1 truncate text-xs font-bold text-slate-700 group-hover:text-blue-700">{{ $url }}</span>
+            <span class="min-w-0 flex-1 truncate text-xs font-bold text-slate-700 group-hover:text-blue-700" data-post-card-url>{{ $url }}</span>
             <x-fas-arrow-up-right-from-square class="size-2.5 text-blue-400 opacity-70" />
         </a>
 
         <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
+            <span class="inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700" data-post-card-category>
                 <span class="size-1.5 rounded-full bg-emerald-500"></span>
                 {{ $category }}
             </span>
@@ -138,6 +139,7 @@
                 </div>
                 <p
                     class="line-clamp-3 whitespace-pre-wrap break-words text-[13px] leading-5 text-slate-700"
+                    data-post-card-description
                     x-text="currentProfile.description"
                 >{{ $profiles[0]['description'] ?? '' }}</p>
             </div>

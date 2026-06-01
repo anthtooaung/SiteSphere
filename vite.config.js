@@ -13,6 +13,8 @@ export default defineConfig({
                 'resources/js/welcome.js',
                 'resources/css/homepage.css',
                 'resources/js/homepage.js',
+                'resources/css/upload-post.css',
+                'resources/js/upload-post.js',
             ],
             refresh: true,
         }),

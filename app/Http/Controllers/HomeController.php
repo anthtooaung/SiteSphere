@@ -19,6 +19,7 @@ class HomeController extends Controller
             ->with([
                 'userPosts' => fn ($query) => $query
                     ->where('user_hidden', false)
+                    ->whereHas('user.settings', fn ($settingsQuery) => $settingsQuery->where('user_post_visible', true))
                     ->with('user')
                     ->latest(),
                 'tags.categories',
@@ -30,7 +31,9 @@ class HomeController extends Controller
                 'bookmarks as is_bookmarked' => fn ($query) => $query
                     ->where('user_id', $request->user()->id),
             ])
-            ->whereHas('userPosts', fn ($query) => $query->where('user_hidden', false))
+            ->whereHas('userPosts', fn ($query) => $query
+                ->where('user_hidden', false)
+                ->whereHas('user.settings', fn ($settingsQuery) => $settingsQuery->where('user_post_visible', true)))
             ->latest()
             ->get()
             ->map(function (Posts $post): array {

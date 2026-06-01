@@ -12,7 +12,8 @@ Route::get('/', function () {
     return view('layout.welcome');
 })->name('welcome');
 
-Route::get('/home', HomeController::class)->middleware('auth')->name('home');
+// home doesn't need to use auth it will show all
+Route::get('/home', HomeController::class)->name('home');
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/posts/create', [PostsController::class, 'create'])->name('posts.create');

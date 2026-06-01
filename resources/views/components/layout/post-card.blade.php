@@ -42,6 +42,18 @@
         switchProfile(index) {
             this.activeProfile = index;
         },
+        scrollProfiles(direction) {
+            this.$refs.profileTabs?.scrollBy({
+                left: direction * 120,
+                behavior: 'smooth'
+            });
+        },
+        scrollTags(direction) {
+            this.$refs.tagScroller?.scrollBy({
+                left: direction * 120,
+                behavior: 'smooth'
+            });
+        },
         setRating(rating) {
             this.selectedRating = rating;
         }
@@ -55,16 +67,28 @@
                     {{ $title }}
                 </h2>
             </div>
-            <button
-                type="button"
-                class="flex size-8 shrink-0 items-center justify-center rounded-lg border [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] transition-all hover:[border-color:var(--accent-color,#6c5ce7)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus:ring-2 focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,transparent)]"
-                aria-label="Save post"
-                x-on:click="saved = ! saved"
-                x-bind:aria-pressed="saved.toString()"
-            >
-                <x-fas-bookmark x-show="saved" class="size-3.5 [color:var(--accent-color,#6c5ce7)]" />
-                <x-far-bookmark x-show="! saved" class="size-3.5" />
-            </button>
+            @auth
+                <button
+                    type="button"
+                    class="flex size-8 shrink-0 items-center justify-center rounded-lg border [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] transition-all hover:[border-color:var(--accent-color,#6c5ce7)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus:ring-2 focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,transparent)]"
+                    aria-label="Save post"
+                    x-on:click="saved = ! saved"
+                    x-bind:aria-pressed="saved.toString()"
+                >
+                    <x-fas-bookmark x-show="saved" class="size-3.5 [color:var(--accent-color,#6c5ce7)]" />
+                    <x-far-bookmark x-show="! saved" class="size-3.5" />
+                </button>
+            @endauth
+            @guest
+                <a
+                    href="{{ route('login') }}"
+                    class="flex size-8 shrink-0 items-center justify-center rounded-lg border [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] transition-all hover:[border-color:var(--accent-color,#6c5ce7)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus:ring-2 focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,transparent)]"
+                    aria-label="Log in to save post"
+                    data-auth-required="bookmark"
+                >
+                    <x-far-bookmark class="size-3.5" />
+                </a>
+            @endguest
         </div>
 
         <div class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_88%,var(--accent-color,#6c5ce7)_12%)]">
@@ -94,32 +118,71 @@
             <x-fas-arrow-up-right-from-square class="size-2.5 opacity-70 [color:var(--accent-color,#6c5ce7)]" />
         </a>
 
-        <div class="flex flex-wrap items-center gap-2" data-post-card-tags>
-            @forelse ($tags as $tag)
-                <span class="inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_90%,var(--accent-color,#6c5ce7)_10%)] [color:var(--accent-color,#6c5ce7)]">
-                    <span class="size-1.5 rounded-full [background:var(--accent-color,#6c5ce7)]"></span>
-                    {{ $tag }}
-                </span>
-            @empty
-                <span class="inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_16%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_94%,var(--text-color,#0d1b2a)_6%)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)]">
-                    <span class="size-1.5 rounded-full [background:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]"></span>
-                    No tags selected
-                </span>
-            @endforelse
+        <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-1">
+            <button
+                type="button"
+                class="flex size-7 shrink-0 items-center justify-center rounded-md [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_58%,transparent)] focus:outline-none focus:ring-2 focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,transparent)]"
+                aria-label="Scroll tags left"
+                data-tag-scroll="left"
+                x-on:click="scrollTags(-1)"
+            >
+                <x-fas-chevron-left class="size-2.5" aria-hidden="true" />
+            </button>
+            <div
+                class="flex min-w-0 items-center gap-2 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                x-ref="tagScroller"
+                data-post-card-tags
+            >
+                @forelse ($tags as $tag)
+                    <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_90%,var(--accent-color,#6c5ce7)_10%)] [color:var(--accent-color,#6c5ce7)]">
+                        <span class="size-1.5 rounded-full [background:var(--accent-color,#6c5ce7)]"></span>
+                        {{ $tag }}
+                    </span>
+                @empty
+                    <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_16%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_94%,var(--text-color,#0d1b2a)_6%)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)]">
+                        <span class="size-1.5 rounded-full [background:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]"></span>
+                        No tags selected
+                    </span>
+                @endforelse
+            </div>
+            <button
+                type="button"
+                class="flex size-7 shrink-0 items-center justify-center rounded-md [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_58%,transparent)] focus:outline-none focus:ring-2 focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,transparent)]"
+                aria-label="Scroll tags right"
+                data-tag-scroll="right"
+                x-on:click="scrollTags(1)"
+            >
+                <x-fas-chevron-right class="size-2.5" aria-hidden="true" />
+            </button>
         </div>
     </header>
 
     <section class="px-4 pb-3 sm:px-5">
         <div class="overflow-hidden rounded-xl border [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_94%,var(--accent-color,#6c5ce7)_6%)]">
             <div class="border-b px-3 py-2 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_16%,transparent)]">
-                <div class="relative">
-                    <div class="flex snap-x items-center gap-2 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-1">
+                    <button
+                        type="button"
+                        class="flex size-7 shrink-0 items-center justify-center rounded-md [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_58%,transparent)] focus:outline-none focus:ring-2 focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,transparent)]"
+                        aria-label="Scroll profiles left"
+                        data-profile-scroll="left"
+                        x-on:click="scrollProfiles(-1)"
+                    >
+                        <x-fas-chevron-left class="size-2.5" aria-hidden="true" />
+                    </button>
+                    <div
+                        class="flex min-w-0 snap-x items-center gap-2 overflow-x-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                        x-ref="profileTabs"
+                        data-profile-tabs
+                    >
                         <template x-for="(profile, index) in profiles" x-bind:key="profile.username + index">
                             <button
                                 type="button"
-                                class="flex shrink-0 snap-start items-center gap-1.5 border-b-2 px-3.5 py-2.5 text-[10px] font-semibold uppercase tracking-wider transition-all"
-                                x-bind:class="activeProfile === index ? '[border-color:var(--accent-color,#6c5ce7)] [color:var(--accent-color,#6c5ce7)] font-bold' : 'border-transparent [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_48%,transparent)] hover:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]'"
+                                class="flex shrink-0 snap-start items-center gap-1.5 border-b-2 px-3.5 py-2.5 text-[10px] font-semibold uppercase tracking-wider"
+                                x-bind:class="activeProfile === index ? '[border-color:var(--accent-color,#6c5ce7)] [color:var(--accent-color,#6c5ce7)] font-bold' : 'border-transparent [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_48%,transparent)]'"
+                                x-bind:data-active="activeProfile === index ? 'true' : 'false'"
                                 x-on:click="switchProfile(index)"
+                                data-profile-tab
                             >
                                 <img
                                     x-show="profile.avatar"
@@ -136,6 +199,16 @@
                             </button>
                         </template>
                     </div>
+                    {{-- right  --}}
+                    <button
+                        type="button"
+                        class="flex size-7 shrink-0 items-center justify-center rounded-md [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_58%,transparent)] focus:outline-none focus:ring-2 focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,transparent)]"
+                        aria-label="Scroll profiles right"
+                        data-profile-scroll="right"
+                        x-on:click="scrollProfiles(1)"
+                    >
+                        <x-fas-chevron-right class="size-2.5" aria-hidden="true" />
+                    </button>
                 </div>
             </div>
 
@@ -162,15 +235,27 @@
             <span class="rounded-full px-2 py-0.5 text-[11px] font-bold [background:color-mix(in_srgb,var(--background-color,#ffffff)_82%,var(--accent-color,#6c5ce7)_18%)] [color:var(--accent-color,#6c5ce7)]" x-text="commentsTotal()">{{ $commentsCount }}</span>
         </button>
         <div class="relative">
-            <button
-                type="button"
-                class="group inline-flex  items-center gap-2 rounded-md  px-2 py-0.5 text-sm font-bold transition-all  [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_76%,transparent)] [box-shadow:0_1px_3px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] hover:[box-shadow:0_8px_18px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)]"
-                x-on:click.stop="reviewOpen = ! reviewOpen"
-                x-bind:aria-expanded="reviewOpen.toString()"
-            >
-                <x-far-star class="size-3 group-hover:[color:var(--accent-color,#6c5ce7)]" />
-                <span class="group-hover:[color:var(--accent-color,#6c5ce7)]">Review</span>
-            </button>
+            @auth
+                <button
+                    type="button"
+                    class="group inline-flex  items-center gap-2 rounded-md  px-2 py-0.5 text-sm font-bold transition-all  [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_76%,transparent)] [box-shadow:0_1px_3px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] hover:[box-shadow:0_8px_18px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)]"
+                    x-on:click.stop="reviewOpen = ! reviewOpen"
+                    x-bind:aria-expanded="reviewOpen.toString()"
+                >
+                    <x-far-star class="size-3 group-hover:[color:var(--accent-color,#6c5ce7)]" />
+                    <span class="group-hover:[color:var(--accent-color,#6c5ce7)]">Review</span>
+                </button>
+            @endauth
+            @guest
+                <a
+                    href="{{ route('login') }}"
+                    class="group inline-flex  items-center gap-2 rounded-md  px-2 py-0.5 text-sm font-bold transition-all  [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_76%,transparent)] [box-shadow:0_1px_3px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] hover:[box-shadow:0_8px_18px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)]"
+                    data-auth-required="review"
+                >
+                    <x-far-star class="size-3 group-hover:[color:var(--accent-color,#6c5ce7)]" />
+                    <span class="group-hover:[color:var(--accent-color,#6c5ce7)]">Review</span>
+                </a>
+            @endguest
         </div>
     </footer>
 </article>

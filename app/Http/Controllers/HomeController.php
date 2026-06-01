@@ -14,6 +14,7 @@ class HomeController extends Controller
     {
         $initialCategory = $request->query('category');
         $initialCategory = is_string($initialCategory) ? $initialCategory : null;
+        $userId = $request->user()?->id;
 
         $posts = Posts::query()
             ->with([
@@ -28,7 +29,8 @@ class HomeController extends Controller
                 'ratings',
                 'comments',
                 'bookmarks as is_bookmarked' => fn ($query) => $query
-                    ->where('user_id', $request->user()->id),
+                    ->when($userId, fn ($query) => $query->where('user_id', $userId))
+                    ->when(! $userId, fn ($query) => $query->whereRaw('1 = 0')),
             ])
             ->whereHas('userPosts', fn ($query) => $query
                 ->where('user_hidden', false))

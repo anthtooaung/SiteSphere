@@ -46,11 +46,31 @@ class HomePageTest extends TestCase
         }
     }
 
-    public function test_guests_are_redirected_from_home_to_login(): void
+    public function test_guests_can_view_home_posts_with_auth_gated_actions(): void
     {
+        $reviewer = User::factory()->create();
+        $reviewer->settings()->update(['user_post_visible' => true]);
+        $post = Posts::factory()->create([
+            'title' => 'Public Guest Visible Post',
+            'url' => 'https://guest-visible-post.test',
+        ]);
+
+        UserPosts::factory()->create([
+            'post_id' => $post->id,
+            'user_id' => $reviewer->id,
+            'description' => 'Guests can read this post before logging in.',
+        ]);
+
         $response = $this->get('/home');
 
-        $response->assertRedirect(route('login'));
+        $response
+            ->assertOk()
+            ->assertSee('Public Guest Visible Post')
+            ->assertSee('https://guest-visible-post.test')
+            ->assertSee('Guests can read this post before logging in.')
+            ->assertSee('href="'.route('login').'"', false)
+            ->assertSee('data-auth-required="bookmark"', false)
+            ->assertSee('data-auth-required="review"', false);
     }
 
     public function test_authenticated_users_can_view_empty_home_without_review_cards(): void
@@ -432,7 +452,10 @@ class HomePageTest extends TestCase
     public function test_home_renders_one_card_per_post_with_many_descriptions(): void
     {
         $viewer = User::factory()->create();
-        $firstReviewer = User::factory()->create(['name' => 'First Reviewer']);
+        $firstReviewer = User::factory()->create([
+            'name' => 'First Reviewer',
+            'user_image' => 'profile_images/first-reviewer-avatar.jpg',
+        ]);
         $secondReviewer = User::factory()->create(['name' => 'Second Reviewer']);
         $firstReviewer->settings()->update(['user_post_visible' => true]);
         $secondReviewer->settings()->update(['user_post_visible' => true]);
@@ -453,15 +476,34 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->actingAs($viewer)->get('/home');
+        $content = $response->getContent();
+        $cardStart = strpos($content, 'Shared URL Review');
+        $cardEnd = strpos($content, '</article>', $cardStart);
+        $cardHtml = substr($content, $cardStart, $cardEnd - $cardStart);
 
         $response
             ->assertOk()
             ->assertSee('Shared URL Review')
             ->assertSee('https://shared-example.test')
             ->assertSee('First description for the same website.')
-            ->assertSee('Second description for the same website.');
+            ->assertSee('Second description for the same website.')
+            ->assertSee('data-profile-scroll="left"', false)
+            ->assertSee('data-profile-scroll="right"', false)
+            ->assertSee('data-profile-tabs', false)
+            ->assertSee('data-profile-tab', false)
+            ->assertSee('x-bind:data-active', false)
+            ->assertSee('[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', false)
+            ->assertSee('[border-color:var(--accent-color,#6c5ce7)] [color:var(--accent-color,#6c5ce7)] font-bold', false);
 
-        $this->assertSame(1, substr_count($response->getContent(), 'class="review-card'));
+        $homepageCss = file_get_contents(resource_path('css/homepage.css'));
+
+        $this->assertSame(1, substr_count($content, 'class="review-card'));
+        $this->assertStringContainsString('first-reviewer-avatar.jpg', $content);
+        $this->assertStringNotContainsString('hover:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]', $cardHtml);
+        $this->assertStringContainsString('.home-page [data-profile-tabs]', $homepageCss);
+        $this->assertStringContainsString('scrollbar-width:none;', $homepageCss);
+        $this->assertStringContainsString('.home-page [data-profile-tab]:hover', $homepageCss);
+        $this->assertStringContainsString('border-bottom-color:var(--accent-color, #6c5ce7);', $homepageCss);
     }
 
     public function test_home_post_card_visible_badges_use_real_tags_not_categories(): void
@@ -503,11 +545,22 @@ class HomePageTest extends TestCase
             ->assertOk()
             ->assertSee('data-category="category-should-not-be-badge"', false)
             ->assertSee('data-tags="True Visible Tag"', false)
+            ->assertSee('data-tag-scroll="left"', false)
+            ->assertSee('data-tag-scroll="right"', false)
+            ->assertSee('x-on:click="scrollTags(-1)"', false)
+            ->assertSee('x-on:click="scrollTags(1)"', false)
+            ->assertSee('x-ref="tagScroller"', false)
             ->assertSee('data-post-card-tags', false)
+            ->assertSee('overflow-x-auto scroll-smooth', false)
+            ->assertSee('[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', false)
+            ->assertSee('shrink-0 items-center gap-1 whitespace-nowrap', false)
             ->assertSee('True Visible Tag');
+
+        $homepageCss = file_get_contents(resource_path('css/homepage.css'));
 
         $this->assertStringContainsString('True Visible Tag', $cardHtml);
         $this->assertStringNotContainsString('Category Should Not Be Badge', $cardHtml);
+        $this->assertStringContainsString('.home-page [data-post-card-tags]', $homepageCss);
     }
 
     public function test_home_anonymizes_profile_tabs_when_user_post_visibility_is_disabled(): void

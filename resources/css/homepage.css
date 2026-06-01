@@ -1505,7 +1505,7 @@
     column-gap: 18px;
     row-gap: 24px;
     align-items: stretch;
-    justify-content:start;
+    justify-content:center;
 }
 
 /* Review Cards */
@@ -2322,6 +2322,33 @@
     box-shadow:none;
 }
 
+.home-page [data-profile-tab],
+.home-page [data-profile-tab]:hover,
+.home-page [data-profile-tab]:active,
+.home-page [data-profile-tab]:focus{
+    background:transparent;
+    box-shadow:none;
+    outline:none;
+    transform:none;
+}
+
+.home-page [data-profile-tab]:not([data-active="true"]),
+.home-page [data-profile-tab]:not([data-active="true"]):hover,
+.home-page [data-profile-tab]:not([data-active="true"]):active,
+.home-page [data-profile-tab]:not([data-active="true"]):focus{
+    border-color:transparent;
+    color:color-mix(in srgb, var(--text-color, #182230) 48%, transparent);
+}
+
+.home-page [data-profile-tab][data-active="true"],
+.home-page [data-profile-tab][data-active="true"]:hover,
+.home-page [data-profile-tab][data-active="true"]:active,
+.home-page [data-profile-tab][data-active="true"]:focus{
+    border-color:transparent;
+    border-bottom-color:var(--accent-color, #6c5ce7);
+    color:var(--accent-color, #6c5ce7);
+}
+
 @media (max-width: 600px) {
     .main-content {
         padding: 14px 14px 14px;
@@ -2459,6 +2486,26 @@
 
 .home-page *::-webkit-scrollbar-track{
     background:transparent;
+}
+
+.home-page [data-profile-tabs]{
+    scrollbar-width:none;
+}
+
+.home-page [data-profile-tabs]::-webkit-scrollbar{
+    display:none;
+    width:0;
+    height:0;
+}
+
+.home-page [data-post-card-tags]{
+    scrollbar-width:none;
+}
+
+.home-page [data-post-card-tags]::-webkit-scrollbar{
+    display:none;
+    width:0;
+    height:0;
 }
 
 .sidebar::-webkit-scrollbar,

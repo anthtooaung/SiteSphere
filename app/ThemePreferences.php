@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Models\Themes;
 use App\Models\User;
 
 class ThemePreferences
@@ -26,8 +25,6 @@ class ThemePreferences
             } elseif ($settings?->theme) {
                 $accentColor = $this->validAccentColor($settings->theme->accent_color);
             }
-        } else {
-            $accentColor = $this->validAccentColor(Themes::query()->value('accent_color'));
         }
 
         return [

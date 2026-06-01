@@ -31,7 +31,7 @@ class FaviconTest extends TestCase
             ->assertSee('<link rel="icon" type="image/svg+xml" href="/favicon.svg">', false);
     }
 
-    public function test_guest_favicon_uses_first_theme_accent_color(): void
+    public function test_guest_favicon_uses_default_accent_color_even_when_themes_exist(): void
     {
         DB::table('themes')->insert([
             'accent_color' => '#059669',
@@ -45,7 +45,8 @@ class FaviconTest extends TestCase
             ->assertOk()
             ->assertHeader('Content-Type', 'image/svg+xml')
             ->assertSee('<svg', false)
-            ->assertSee('fill="#059669"', false);
+            ->assertSee('fill="#6c5ce7"', false)
+            ->assertDontSee('fill="#059669"', false);
     }
 
     public function test_authenticated_favicon_uses_user_custom_accent_color(): void

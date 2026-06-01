@@ -114,6 +114,7 @@
                 title="Untitled Post"
                 url="https://example.com"
                 :category="$initialCategory?->name ?? 'Selected category'"
+                :tags="['No tags selected']"
                 :profiles="[[
                     'username' => '@'.\Illuminate\Support\Str::slug($profileName, '_'),
                     'initial' => \Illuminate\Support\Str::of($profileName)->substr(0, 1)->upper()->toString(),

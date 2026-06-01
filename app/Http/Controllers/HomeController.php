@@ -19,8 +19,7 @@ class HomeController extends Controller
             ->with([
                 'userPosts' => fn ($query) => $query
                     ->where('user_hidden', false)
-                    ->whereHas('user.settings', fn ($settingsQuery) => $settingsQuery->where('user_post_visible', true))
-                    ->with('user')
+                    ->with('user.settings')
                     ->latest(),
                 'tags.categories',
             ])
@@ -32,8 +31,7 @@ class HomeController extends Controller
                     ->where('user_id', $request->user()->id),
             ])
             ->whereHas('userPosts', fn ($query) => $query
-                ->where('user_hidden', false)
-                ->whereHas('user.settings', fn ($settingsQuery) => $settingsQuery->where('user_post_visible', true)))
+                ->where('user_hidden', false))
             ->latest()
             ->get()
             ->map(function (Posts $post): array {
@@ -53,14 +51,15 @@ class HomeController extends Controller
                     'profiles' => $post->userPosts
                         ->map(function ($userPost): array {
                             $user = $userPost->user;
+                            $isProfileVisible = (bool) $user?->settings?->user_post_visible;
                             $name = $user?->name ?? 'Reviewer';
 
                             return [
-                                'username' => '@'.Str::slug($name, '_'),
-                                'initial' => Str::of($name)->substr(0, 1)->upper()->toString(),
+                                'username' => $isProfileVisible ? '@'.Str::slug($name, '_') : 'Anonymous',
+                                'initial' => $isProfileVisible ? Str::of($name)->substr(0, 1)->upper()->toString() : '?',
                                 'time' => 'Published '.$userPost->created_at->diffForHumans(),
                                 'description' => $userPost->description,
-                                'avatar' => $user?->getAvatarUrl() ?? '',
+                                'avatar' => $isProfileVisible ? $user?->getAvatarUrl() ?? '' : '',
                             ];
                         })
                         ->values()

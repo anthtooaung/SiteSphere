@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('menuBar_location',['top','right','bottom','left'])->default('right');
-            $table->enum('noti_location',['top-start','top-end','bottom-end','bottom-start'])->default('top-end');
+            $table->enum('menuBar_location', ['top', 'right', 'bottom', 'left'])->default('right');
+            $table->enum('noti_location', ['top-start', 'top-end', 'bottom-end', 'bottom-start'])->default('top-end');
             $table->boolean('dark_mode')->default(false);
-            $table->boolean('user_post_visible')->default(false);
+            $table->boolean('user_post_visible')->default(true);
             $table->foreignId('theme_id')->constrained('themes')->onDelete('cascade');
             $table->foreignId('custom_theme_id')->nullable()->constrained('custom_themes')->onDelete('cascade');
             $table->timestamps();

@@ -424,23 +424,63 @@ class HomePageTest extends TestCase
         $this->assertSame(1, substr_count($response->getContent(), 'class="review-card'));
     }
 
-    public function test_home_only_renders_profile_tabs_for_users_with_visible_posts_enabled(): void
+    public function test_home_post_card_visible_badges_use_real_tags_not_categories(): void
+    {
+        $viewer = User::factory()->create();
+        $reviewer = User::factory()->create();
+        $reviewer->settings()->update(['user_post_visible' => true]);
+        $category = Categories::factory()->create([
+            'name' => 'Category Should Not Be Badge',
+            'slug' => 'category-should-not-be-badge',
+        ]);
+        $tag = Tags::factory()->create([
+            'name' => 'True Visible Tag',
+            'slug' => 'true-visible-tag',
+        ]);
+        $post = Posts::factory()->create([
+            'title' => 'Real Tag Card',
+            'url' => 'https://real-tag-card.test',
+        ]);
+
+        DB::table('category_tags')->insert([
+            'category_id' => $category->id,
+            'tag_id' => $tag->id,
+        ]);
+        $post->tags()->attach($tag->id);
+        UserPosts::factory()->create([
+            'post_id' => $post->id,
+            'user_id' => $reviewer->id,
+            'description' => 'This card should show real tag badges.',
+        ]);
+
+        $response = $this->actingAs($viewer)->get('/home');
+        $content = $response->getContent();
+        $cardStart = strpos($content, 'Real Tag Card');
+        $cardEnd = strpos($content, '</article>', $cardStart);
+        $cardHtml = substr($content, $cardStart, $cardEnd - $cardStart);
+
+        $response
+            ->assertOk()
+            ->assertSee('data-category="category-should-not-be-badge"', false)
+            ->assertSee('data-tags="True Visible Tag"', false)
+            ->assertSee('data-post-card-tags', false)
+            ->assertSee('True Visible Tag');
+
+        $this->assertStringContainsString('True Visible Tag', $cardHtml);
+        $this->assertStringNotContainsString('Category Should Not Be Badge', $cardHtml);
+    }
+
+    public function test_home_anonymizes_profile_tabs_when_user_post_visibility_is_disabled(): void
     {
         $viewer = User::factory()->create();
         $visibleReviewer = User::factory()->create(['name' => 'Visible Reviewer']);
         $hiddenReviewer = User::factory()->create(['name' => 'Hidden Reviewer']);
-        $invisibleOnlyReviewer = User::factory()->create(['name' => 'Invisible Only']);
         $visibleReviewer->settings()->update(['user_post_visible' => true]);
         $hiddenReviewer->settings()->update(['user_post_visible' => false]);
-        $invisibleOnlyReviewer->settings()->update(['user_post_visible' => false]);
 
         $mixedPost = Posts::factory()->create([
             'title' => 'Mixed Visibility Post',
             'url' => 'https://mixed-visibility.test',
-        ]);
-        $hiddenOnlyPost = Posts::factory()->create([
-            'title' => 'Hidden Only Post',
-            'url' => 'https://hidden-only.test',
         ]);
 
         UserPosts::factory()->create([
@@ -453,11 +493,6 @@ class HomePageTest extends TestCase
             'user_id' => $hiddenReviewer->id,
             'description' => 'Hidden reviewer description.',
         ]);
-        UserPosts::factory()->create([
-            'post_id' => $hiddenOnlyPost->id,
-            'user_id' => $invisibleOnlyReviewer->id,
-            'description' => 'Nobody should see this hidden-only post.',
-        ]);
 
         $response = $this->actingAs($viewer)->get('/home');
 
@@ -465,9 +500,35 @@ class HomePageTest extends TestCase
             ->assertOk()
             ->assertSee('Mixed Visibility Post')
             ->assertSee('Visible reviewer description.')
-            ->assertDontSee('Hidden reviewer description.')
-            ->assertDontSee('Hidden Only Post')
-            ->assertDontSee('Nobody should see this hidden-only post.');
+            ->assertSee('Hidden reviewer description.')
+            ->assertSee('@visible_reviewer')
+            ->assertSee('Anonymous')
+            ->assertDontSee('@hidden_reviewer');
+    }
+
+    public function test_home_does_not_render_user_hidden_contributions(): void
+    {
+        $viewer = User::factory()->create();
+        $reviewer = User::factory()->create(['name' => 'Hidden Contribution']);
+        $reviewer->settings()->update(['user_post_visible' => true]);
+        $post = Posts::factory()->create([
+            'title' => 'User Hidden Post',
+            'url' => 'https://user-hidden.test',
+        ]);
+
+        UserPosts::factory()->create([
+            'post_id' => $post->id,
+            'user_id' => $reviewer->id,
+            'description' => 'This user hidden contribution should not render.',
+            'user_hidden' => true,
+        ]);
+
+        $response = $this->actingAs($viewer)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertDontSee('User Hidden Post')
+            ->assertDontSee('This user hidden contribution should not render.');
     }
 
     public function test_comments_and_ratings_are_post_level_totals(): void

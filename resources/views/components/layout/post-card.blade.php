@@ -2,6 +2,7 @@
     'title',
     'url',
     'category' => 'Uncategorized',
+    'tags' => [],
     'profiles' => [],
     'averageRating' => 0,
     'ratingsCount' => 0,
@@ -93,11 +94,18 @@
             <x-fas-arrow-up-right-from-square class="size-2.5 text-blue-400 opacity-70" />
         </a>
 
-        <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700" data-post-card-category>
-                <span class="size-1.5 rounded-full bg-emerald-500"></span>
-                {{ $category }}
-            </span>
+        <div class="flex flex-wrap items-center gap-2" data-post-card-tags>
+            @forelse ($tags as $tag)
+                <span class="inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
+                    <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                    {{ $tag }}
+                </span>
+            @empty
+                <span class="inline-flex items-center gap-1 rounded-md border border-slate-100 bg-slate-50 px-2 py-0.5 text-[11px] font-bold text-slate-500">
+                    <span class="size-1.5 rounded-full bg-slate-400"></span>
+                    No tags selected
+                </span>
+            @endforelse
         </div>
     </header>
 

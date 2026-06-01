@@ -151,11 +151,10 @@ const initUploadPost = () => {
     const title = titleInput.value.trim() || "Untitled Post";
     const link = linkInput.value.trim() || "https://example.com";
     const description = descInput.value.trim() || "No description written yet.";
-    const category = categories[currentCategory]?.name || selectedTagRecords()[0]?.name || "Selected category";
     const titleElement = previewCard.querySelector("[data-post-card-title]");
     const urlElement = previewCard.querySelector("[data-post-card-url]");
     const linkElement = previewCard.querySelector("[data-post-card-link]");
-    const categoryElement = previewCard.querySelector("[data-post-card-category]");
+    const tagsElement = previewCard.querySelector("[data-post-card-tags]");
     const descriptionElement = previewCard.querySelector("[data-post-card-description]");
 
     if (titleElement) {
@@ -170,20 +169,35 @@ const initUploadPost = () => {
       linkElement.setAttribute("href", isValidUrl(link) ? link : "#");
     }
 
-    if (categoryElement) {
-      const dot = categoryElement.querySelector("span");
-      categoryElement.textContent = "";
+    if (tagsElement) {
+      const records = selectedTagRecords();
+      tagsElement.innerHTML = "";
 
-      if (dot) {
-        categoryElement.appendChild(dot);
+      if (!records.length) {
+        tagsElement.appendChild(createPreviewTagPill("No tags selected", true));
+      } else {
+        records.forEach((tag) => tagsElement.appendChild(createPreviewTagPill(tag.name)));
       }
-
-      categoryElement.append(category);
     }
 
     if (descriptionElement) {
       descriptionElement.textContent = description;
     }
+  };
+
+  const createPreviewTagPill = (label, isEmpty = false) => {
+    const pill = document.createElement("span");
+    const dot = document.createElement("span");
+
+    pill.className = isEmpty
+      ? "inline-flex items-center gap-1 rounded-md border border-slate-100 bg-slate-50 px-2 py-0.5 text-[11px] font-bold text-slate-500"
+      : "inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700";
+    dot.className = isEmpty ? "size-1.5 rounded-full bg-slate-400" : "size-1.5 rounded-full bg-emerald-500";
+
+    pill.appendChild(dot);
+    pill.append(label);
+
+    return pill;
   };
 
   const validateBeforePreview = () => {

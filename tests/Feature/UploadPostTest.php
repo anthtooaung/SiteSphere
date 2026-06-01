@@ -58,6 +58,8 @@ class UploadPostTest extends TestCase
             ->assertSee('Laravel')
             ->assertSee('id="preview-wrapper-column"', false)
             ->assertSee('data-upload-preview-card', false)
+            ->assertSee('data-post-card-tags', false)
+            ->assertSee('window.uploadPostCategories', false)
             ->assertDontSee('cdn.tailwindcss.com')
             ->assertDontSee('cdnjs.cloudflare.com/ajax/libs/font-awesome');
     }

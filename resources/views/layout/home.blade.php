@@ -78,6 +78,7 @@
                         :title="$post['title']"
                         :url="$post['url']"
                         :category="$post['category']"
+                        :tags="$post['tags']"
                         :profiles="$post['profiles']"
                         :average-rating="$post['average_rating']"
                         :ratings-count="$post['ratings_count']"

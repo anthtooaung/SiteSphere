@@ -482,6 +482,89 @@
     outline-offset: 2px;
 }
 
+.account-menu-dropdown {
+    z-index: 1010;
+    width: 220px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
+    color: var(--text-color);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+}
+
+.account-menu-list {
+    display: grid;
+    gap: 2px;
+    padding: 8px;
+    font-size: 0.9rem;
+    font-weight: 750;
+}
+
+.account-menu-section,
+.account-menu-logout {
+    border-top: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+}
+
+.account-menu-heading {
+    padding: 10px 16px 2px;
+    color: color-mix(in srgb, var(--text-color) 52%, transparent);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.account-menu-link {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    transition:
+        background 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+.account-menu-link:hover,
+.account-menu-link:focus-visible {
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 12%, transparent);
+    color: var(--accent-color, #6c5ce7);
+    outline: none;
+    transform: translateX(2px);
+}
+
+.account-menu-link:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 35%, transparent);
+    outline-offset: 2px;
+}
+
+.account-menu-action {
+    justify-content: flex-start;
+}
+
+.account-menu-logout {
+    padding: 8px;
+}
+
+.mobile-account-menu-wrap {
+    display: contents;
+}
+
+.account-menu-dropdown--mobile {
+    width: min(220px, calc(100vw - 48px));
+}
+
 .verified-label {
     color: var(--accent-color, #6c5ce7);
     font-size: 0.65rem;

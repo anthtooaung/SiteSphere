@@ -21,7 +21,7 @@ class DashboardMenuTest extends TestCase
 
     public function test_dashboard_renders_edge_layout_menu(): void
     {
-        $user = User::factory()->create(['role' => 'user']);
+        $user = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($user)->get(route('dashboard'));
 
@@ -39,7 +39,7 @@ class DashboardMenuTest extends TestCase
     public function test_dashboard_menu_uses_each_valid_menu_bar_location(): void
     {
         foreach (['left', 'right', 'top', 'bottom'] as $location) {
-            $user = User::factory()->create(['role' => 'user']);
+            $user = User::factory()->create(['role' => 'admin']);
 
             DB::table('settings')
                 ->where('user_id', $user->id)
@@ -54,14 +54,51 @@ class DashboardMenuTest extends TestCase
                 ->assertOk()
                 ->assertSee('dashboard-page--'.$location, false)
                 ->assertSee('layout-menu--'.$location, false)
-                ->assertSee('data-menu-bar-location="'.$location.'"', false);
+                ->assertSee('data-menu-bar-location="'.$location.'"', false)
+                ->assertSee('Users')
+                ->assertSee('Reports')
+                ->assertSee('aria-current="page"', false);
 
             if (in_array($location, ['top', 'bottom'], true)) {
                 $response->assertSee('layout-menu--horizontal', false);
             } else {
                 $response->assertDontSee('layout-menu--horizontal', false);
             }
+
+            if ($location === 'top') {
+                $response
+                    ->assertSee('layout-menu--topbar', false)
+                    ->assertSee('class="layout-menu-topbar-link active"', false)
+                    ->assertSee('id="layoutMenuSettingDropdown"', false)
+                    ->assertSee('class="layout-menu-topbar-logout"', false);
+            } else {
+                $response
+                    ->assertSee('class="layout-menu-link active"', false)
+                    ->assertDontSee('layout-menu--topbar', false)
+                    ->assertDontSee('id="layoutMenuSettingDropdown"', false)
+                    ->assertDontSee('class="layout-menu-topbar-logout"', false);
+            }
         }
+    }
+
+    public function test_dashboard_menu_hides_admin_group_for_normal_users(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $this->actingAs($user);
+
+        $this->blade('<x-layout.menu />')
+            ->assertSee('View Profile')
+            ->assertSee('Saved Post')
+            ->assertSee('Appearance')
+            ->assertSee('Security')
+            ->assertSee('Edit Profile')
+            ->assertSee('Logout')
+            ->assertDontSee('Dashboard')
+            ->assertDontSee('Users')
+            ->assertDontSee('Reports')
+            ->assertDontSee('aria-current="page"', false)
+            ->assertDontSee('class="layout-menu-link active"', false);
     }
 
     public function test_dashboard_menu_falls_back_to_left_for_invalid_or_missing_settings(): void

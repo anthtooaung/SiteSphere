@@ -1,20 +1,20 @@
 @php
     $user = Auth::user();
     $isAdmin = $user?->role === 'admin';
+    $isDashboardRoute = request()->routeIs('dashboard');
 
-    $primaryMenuItems = [
+    $profileMenuItems = [
         ['label' => 'View Profile', 'href' => '#'],
-        ['label' => 'Dashboard', 'href' => route('dashboard')],
+        ['label' => 'Saved Post', 'href' => '#'],
     ];
 
-    if ($isAdmin) {
-        $primaryMenuItems = array_merge($primaryMenuItems, [
+    $adminMenuItems = $isAdmin
+        ? [
+            ['label' => 'Dashboard', 'href' => route('dashboard')],
             ['label' => 'Users', 'href' => '#'],
             ['label' => 'Reports', 'href' => '#'],
-        ]);
-    }
-
-    $primaryMenuItems[] = ['label' => 'Saved Post', 'href' => '#'];
+        ]
+        : [];
 
     $settingMenuItems = [
         ['label' => 'Edit Profile', 'href' => '#'],
@@ -49,12 +49,29 @@
 
     <div id="desktopAccountMenu" class="account-menu-dropdown hidden" aria-labelledby="desktopAccountMenuButton">
         <ul class="account-menu-list">
-            @foreach($primaryMenuItems as $menuItem)
+            @foreach($profileMenuItems as $menuItem)
                 <li>
                     <a href="{{ $menuItem['href'] }}" class="account-menu-link">{{ $menuItem['label'] }}</a>
                 </li>
             @endforeach
         </ul>
+
+        @if($isAdmin)
+            <div class="account-menu-section">
+                <ul class="account-menu-list">
+                    @foreach($adminMenuItems as $menuItem)
+                        @php($isActive = $menuItem['label'] === 'Dashboard' && $isDashboardRoute)
+                        <li>
+                            <a
+                                href="{{ $menuItem['href'] }}"
+                                @class(['account-menu-link', 'active' => $isActive])
+                                @if($isActive) aria-current="page" @endif
+                            >{{ $menuItem['label'] }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <div class="account-menu-section">
             <p class="account-menu-heading">Setting</p>
@@ -96,12 +113,29 @@
 
     <div id="mobileAccountMenu" class="account-menu-dropdown account-menu-dropdown--mobile hidden" aria-labelledby="mobileAccountMenuButton">
         <ul class="account-menu-list">
-            @foreach($primaryMenuItems as $menuItem)
+            @foreach($profileMenuItems as $menuItem)
                 <li>
                     <a href="{{ $menuItem['href'] }}" class="account-menu-link">{{ $menuItem['label'] }}</a>
                 </li>
             @endforeach
         </ul>
+
+        @if($isAdmin)
+            <div class="account-menu-section">
+                <ul class="account-menu-list">
+                    @foreach($adminMenuItems as $menuItem)
+                        @php($isActive = $menuItem['label'] === 'Dashboard' && $isDashboardRoute)
+                        <li>
+                            <a
+                                href="{{ $menuItem['href'] }}"
+                                @class(['account-menu-link', 'active' => $isActive])
+                                @if($isActive) aria-current="page" @endif
+                            >{{ $menuItem['label'] }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <div class="account-menu-section">
             <p class="account-menu-heading">Setting</p>

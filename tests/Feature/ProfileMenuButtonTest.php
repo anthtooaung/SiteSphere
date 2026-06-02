@@ -34,8 +34,6 @@ class ProfileMenuButtonTest extends TestCase
             ->assertDontSee('data-layout-menu-trigger', false)
             ->assertDontSee('id="layoutMenu"', false)
             ->assertSee('View Profile')
-            ->assertSee('href="'.route('dashboard').'"', false)
-            ->assertSee('Dashboard')
             ->assertSee('Saved Post')
             ->assertSee('Setting')
             ->assertSee('Edit Profile')
@@ -44,6 +42,8 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('method="POST"', false)
             ->assertSee('action="'.route('logout').'"', false)
             ->assertSee('Logout')
+            ->assertDontSee('href="'.route('dashboard').'"', false)
+            ->assertDontSee('Dashboard')
             ->assertDontSee('Users')
             ->assertDontSee('Reports');
     }
@@ -84,14 +84,29 @@ class ProfileMenuButtonTest extends TestCase
             ->assertDontSee('id="layoutMenu"', false)
             ->assertDontSee('data-layout-menu-trigger', false)
             ->assertSee('View Profile')
-            ->assertSee('href="'.route('dashboard').'"', false)
-            ->assertSee('Dashboard')
             ->assertSee('Saved Post')
             ->assertSee('Edit Profile')
             ->assertSee('Appearance')
             ->assertSee('Security')
             ->assertSee('action="'.route('logout').'"', false)
-            ->assertSee('Logout');
+            ->assertSee('Logout')
+            ->assertDontSee('href="'.route('dashboard').'"', false)
+            ->assertDontSee('Dashboard')
+            ->assertDontSee('Users')
+            ->assertDontSee('Reports');
+    }
+
+    public function test_admin_dashboard_profile_menu_link_marks_current_page(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)->get(route('dashboard'));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('dashboard').'"', false)
+            ->assertSee('class="account-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
     }
 
     private function getAsAuthenticatedMobileUser(User $user, string $uri): TestResponse

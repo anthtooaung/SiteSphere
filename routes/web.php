@@ -24,8 +24,30 @@ Route::post('/contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::middleware('auth')->group(function (): void {
+    Route::get('/menu/dashboard', function () {
+        return view('layout.menu.dashboard');
+    })->name('dashboard');
+
+    Route::get('/menu/edit-profile', function () {
+        return view('layout.menu.edit-profile');
+    })->name('edit-profile');
+
+    Route::get('/menu/saved-post', function () {
+        return view('layout.menu.saved-post');
+    })->name('saved-post');
+
+    Route::get('/menu/reports', function () {
+        return view('layout.menu.reports');
+    })->name('reports');
+
+    Route::get('/menu/security', function () {
+        return view('layout.menu.security');
+    })->name('security');
+
+    Route::get('/menu/users', function () {
+        return view('layout.menu.users');
+    })->name('users');
+});
 
 require __DIR__.'/auth.php';

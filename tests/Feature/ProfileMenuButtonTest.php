@@ -31,7 +31,11 @@ class ProfileMenuButtonTest extends TestCase
             ->assertOk()
             ->assertSee('data-dropdown-toggle="desktopAccountMenu"', false)
             ->assertSee('id="desktopAccountMenu"', false)
+            ->assertDontSee('data-layout-menu-trigger', false)
+            ->assertDontSee('id="layoutMenu"', false)
             ->assertSee('View Profile')
+            ->assertSee('href="'.route('dashboard').'"', false)
+            ->assertSee('Dashboard')
             ->assertSee('Saved Post')
             ->assertSee('Setting')
             ->assertSee('Edit Profile')
@@ -40,7 +44,6 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('method="POST"', false)
             ->assertSee('action="'.route('logout').'"', false)
             ->assertSee('Logout')
-            ->assertDontSee('Dashboard')
             ->assertDontSee('Users')
             ->assertDontSee('Reports');
     }
@@ -53,6 +56,8 @@ class ProfileMenuButtonTest extends TestCase
 
         $response
             ->assertOk()
+            ->assertDontSee('data-layout-menu-trigger', false)
+            ->assertDontSee('id="layoutMenu"', false)
             ->assertSee('View Profile')
             ->assertSee('href="'.route('dashboard').'"', false)
             ->assertSee('Dashboard')
@@ -76,7 +81,11 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('data-dropdown-toggle="mobileAccountMenu"', false)
             ->assertSee('data-dropdown-placement="top"', false)
             ->assertSee('id="mobileAccountMenu"', false)
+            ->assertDontSee('id="layoutMenu"', false)
+            ->assertDontSee('data-layout-menu-trigger', false)
             ->assertSee('View Profile')
+            ->assertSee('href="'.route('dashboard').'"', false)
+            ->assertSee('Dashboard')
             ->assertSee('Saved Post')
             ->assertSee('Edit Profile')
             ->assertSee('Appearance')

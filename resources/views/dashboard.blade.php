@@ -1,45 +1,29 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>
-        @yield('title', 'Home')
-    </title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <x-google-fonts />
-    @php($resolvedFontFamily = $fontFamily ?: 'Figtree, sans-serif')
-    @auth
-        <style>
-            :root {
-                --accent-color: {{ $themeColors['accent'] ?? '#6c5ce7' }};
-                --background-color: {{ $themeColors['background'] ?? '#ffffff' }};
-                --text-color: {{ $themeColors['text'] ?? '#0d1b2a' }};
-                --font-family: {!! $resolvedFontFamily !!};
-            }
-        </style>
-    @endauth
-    @guest
+@extends('index')
 
-        <style>
-            :root{
-                --accent-color: #6c5ce7;
-                --background-color: #ffffff;
-                --text-color: #0d1b2a;
-                --font-family: {!! $resolvedFontFamily !!};
-            }
-        </style>
-    @endguest
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @include('sweetalert2::index')
-    @stack('styles')
+@section('title')
+    Dashboard
+@endsection
 
-</head>
-<body class="m-0 box-border p-0 bg-[var(--background-color)] text-[var(--text-color)]" style="font-family: var(--font-family);">
-    <x-loading />
-    @yield('content')
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
-    @stack('scripts')
-</body>
-</html>
+@section('content')
+    @php
+        $dashboardMenuLocation = in_array($menuBarLocation ?? 'left', ['top', 'right', 'bottom', 'left'], true)
+            ? $menuBarLocation
+            : 'left';
+    @endphp
+
+    <x-layout.nav />
+
+    <div class="dashboard-page dashboard-page--{{ $dashboardMenuLocation }}">
+        <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
+
+        <main class="dashboard-content" aria-labelledby="dashboardTitle">
+            <section class="dashboard-panel">
+                <p class="dashboard-kicker">Dashboard</p>
+                <h1 id="dashboardTitle">Welcome back, {{ auth()->user()->name }}</h1>
+                <p>
+                    Your workspace is ready.
+                </p>
+            </section>
+        </main>
+    </div>
+@endsection

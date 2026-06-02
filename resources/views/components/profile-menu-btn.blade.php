@@ -4,11 +4,11 @@
 
     $primaryMenuItems = [
         ['label' => 'View Profile', 'href' => '#'],
+        ['label' => 'Dashboard', 'href' => route('dashboard')],
     ];
 
     if ($isAdmin) {
         $primaryMenuItems = array_merge($primaryMenuItems, [
-            ['label' => 'Dashboard', 'href' => route('dashboard')],
             ['label' => 'Users', 'href' => '#'],
             ['label' => 'Reports', 'href' => '#'],
         ]);

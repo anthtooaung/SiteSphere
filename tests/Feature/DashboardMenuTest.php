@@ -19,7 +19,7 @@ class DashboardMenuTest extends TestCase
         $this->seed(FontsSeeder::class);
     }
 
-    public function test_dashboard_renders_fixed_nav_and_layout_menu(): void
+    public function test_dashboard_renders_edge_layout_menu(): void
     {
         $user = User::factory()->create(['role' => 'user']);
 
@@ -55,6 +55,12 @@ class DashboardMenuTest extends TestCase
                 ->assertSee('dashboard-page--'.$location, false)
                 ->assertSee('layout-menu--'.$location, false)
                 ->assertSee('data-menu-bar-location="'.$location.'"', false);
+
+            if (in_array($location, ['top', 'bottom'], true)) {
+                $response->assertSee('layout-menu--horizontal', false);
+            } else {
+                $response->assertDontSee('layout-menu--horizontal', false);
+            }
         }
     }
 

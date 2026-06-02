@@ -8,6 +8,7 @@
     $menuBarLocation = in_array($menuBarLocation, ['top', 'right', 'bottom', 'left'], true)
         ? $menuBarLocation
         : 'left';
+    $isHorizontalMenu = in_array($menuBarLocation, ['top', 'bottom'], true);
 
     $primaryMenuItems = [
         ['label' => 'View Profile', 'href' => '#', 'icon' => 'user'],
@@ -33,7 +34,7 @@
     <aside
         id="layoutMenu"
         data-menu-bar-location="{{ $menuBarLocation }}"
-        {{ $attributes->class(['layout-menu', 'layout-menu--'.$menuBarLocation]) }}
+        {{ $attributes->class(['layout-menu', 'layout-menu--'.$menuBarLocation, 'layout-menu--horizontal' => $isHorizontalMenu]) }}
     >
         <div class="layout-menu-header">
             <div>

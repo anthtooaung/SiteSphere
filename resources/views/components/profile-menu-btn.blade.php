@@ -10,8 +10,8 @@
 
     $adminMenuItems = $isAdmin
         ? [
-            ['label' => 'Dashboard', 'href' => route('dashboard')],
-            ['label' => 'Users', 'href' => '#'],
+            ['label' => 'Dashboard', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard')],
+            ['label' => 'Users', 'href' => route('users'), 'active' => request()->routeIs('users')],
             ['label' => 'Reports', 'href' => '#'],
         ]
         : [];
@@ -65,7 +65,7 @@
             <div class="account-menu-section">
                 <ul class="account-menu-list">
                     @foreach($adminMenuItems as $menuItem)
-                        @php($isActive = $menuItem['label'] === 'Dashboard' && $isDashboardRoute)
+                        @php($isActive = $menuItem['active'] ?? false)
                         <li>
                             <a
                                 href="{{ $menuItem['href'] }}"
@@ -134,7 +134,7 @@
             <div class="account-menu-section">
                 <ul class="account-menu-list">
                     @foreach($adminMenuItems as $menuItem)
-                        @php($isActive = $menuItem['label'] === 'Dashboard' && $isDashboardRoute)
+                        @php($isActive = $menuItem['active'] ?? false)
                         <li>
                             <a
                                 href="{{ $menuItem['href'] }}"

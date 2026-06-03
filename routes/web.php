@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\FaviconController;
@@ -49,9 +50,10 @@ Route::middleware('auth')->group(function (): void {
         return view('layout.menu.security');
     })->name('security');
 
-    Route::get('/menu/users', function () {
-        return view('layout.menu.users');
-    })->name('users');
+    Route::get('/menu/users', [AdminUsersController::class, 'index'])->name('users');
+    Route::patch('/menu/users/{user}/role', [AdminUsersController::class, 'updateRole'])->name('users.role');
+    Route::delete('/menu/users/{user}', [AdminUsersController::class, 'destroy'])->name('users.destroy');
+    Route::patch('/menu/users/{user}/restore', [AdminUsersController::class, 'restore'])->withTrashed()->name('users.restore');
 });
 
 require __DIR__.'/auth.php';

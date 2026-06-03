@@ -18,8 +18,8 @@
 
     $adminMenuItems = $isAdmin
         ? [
-            ['label' => 'Dashboard', 'href' => route('dashboard'), 'icon' => 'dashboard'],
-            ['label' => 'Users', 'href' => '#', 'icon' => 'users'],
+            ['label' => 'Dashboard', 'href' => route('dashboard'), 'icon' => 'dashboard', 'active' => request()->routeIs('dashboard')],
+            ['label' => 'Users', 'href' => route('users'), 'icon' => 'users', 'active' => request()->routeIs('users')],
             ['label' => 'Reports', 'href' => '#', 'icon' => 'reports'],
         ]
         : [];
@@ -77,7 +77,7 @@
                         <li class="layout-menu-topbar-divider" aria-hidden="true"></li>
 
                         @foreach ($adminMenuItems as $menuItem)
-                            @php($isActive = $menuItem['icon'] === 'dashboard' && $isDashboardRoute)
+                            @php($isActive = $menuItem['active'] ?? false)
                             <li class="layout-menu-topbar-item">
                                 <a
                                     href="{{ $menuItem['href'] }}"
@@ -202,7 +202,7 @@
                     <div class="layout-menu-section">
                         <ul class="layout-menu-list">
                             @foreach ($adminMenuItems as $menuItem)
-                                @php($isActive = $menuItem['icon'] === 'dashboard' && $isDashboardRoute)
+                                @php($isActive = $menuItem['active'] ?? false)
                                 <li>
                                     <a
                                         href="{{ $menuItem['href'] }}"

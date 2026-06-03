@@ -13,7 +13,7 @@
 
     $profileMenuItems = [
         ['label' => 'View Profile', 'href' => '#', 'icon' => 'user'],
-        ['label' => 'Saved Post', 'href' => '#', 'icon' => 'saved'],
+        ['label' => 'Saved Post', 'href' => route('saved-post'), 'icon' => 'saved', 'active' => request()->routeIs('saved-post')],
     ];
 
     $adminMenuItems = $isAdmin
@@ -41,7 +41,7 @@
             <nav class="layout-menu-topbar-nav" aria-label="Account top menu">
                 <ul class="layout-menu-topbar-list">
                     @foreach ($profileMenuItems as $menuItem)
-                        @php($isActive = $menuItem['icon'] === 'dashboard' && $isDashboardRoute)
+                        @php($isActive = $menuItem['active'] ?? false)
                         <li class="layout-menu-topbar-item">
                             <a
                                 href="{{ $menuItem['href'] }}"
@@ -165,7 +165,7 @@
             <nav class="layout-menu-nav" aria-label="Account menu">
                 <ul class="layout-menu-list">
                     @foreach ($profileMenuItems as $menuItem)
-                        @php($isActive = $menuItem['icon'] === 'dashboard' && $isDashboardRoute)
+                        @php($isActive = $menuItem['active'] ?? false)
                         <li>
                             <a
                                 href="{{ $menuItem['href'] }}"

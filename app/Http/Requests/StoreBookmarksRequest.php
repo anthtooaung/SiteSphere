@@ -12,7 +12,16 @@ class StoreBookmarksRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        $post = $this->route('post');
+        $user = $this->user();
+
+        if ($user === null || $post === null) {
+            return false;
+        }
+
+        return ! $post->userPosts()
+            ->where('user_id', $user->id)
+            ->exists();
     }
 
     /**

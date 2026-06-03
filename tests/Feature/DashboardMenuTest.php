@@ -90,6 +90,7 @@ class DashboardMenuTest extends TestCase
         $this->blade('<x-layout.menu />')
             ->assertSee('View Profile')
             ->assertSee('Saved Post')
+            ->assertSee('href="'.route('saved-post').'"', false)
             ->assertSee('Appearance')
             ->assertSee('Security')
             ->assertSee('Edit Profile')
@@ -123,5 +124,17 @@ class DashboardMenuTest extends TestCase
             ->assertSee('dashboard-page--left', false)
             ->assertSee('layout-menu--left', false)
             ->assertSee('data-menu-bar-location="left"', false);
+    }
+
+    public function test_saved_post_layout_menu_link_marks_current_page(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $this->actingAs($user)
+            ->get(route('saved-post'))
+            ->assertOk()
+            ->assertSee('href="'.route('saved-post').'"', false)
+            ->assertSee('class="layout-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
     }
 }

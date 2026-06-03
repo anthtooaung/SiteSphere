@@ -1576,6 +1576,18 @@
     margin-bottom:8px;
 }
 
+.review-card [data-post-card-title]{
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    min-height:2.5rem;
+    max-height:2.5rem;
+    overflow:hidden;
+    line-height:1.25rem;
+    margin-bottom:0;
+    text-overflow:ellipsis;
+}
+
 .review-card p{
     color:color-mix(in srgb, var(--text-color, #0d1b2a) 72%, transparent);
     font-size:0.9rem;

@@ -5,7 +5,7 @@
 
     $profileMenuItems = [
         ['label' => 'View Profile', 'href' => '#'],
-        ['label' => 'Saved Post', 'href' => '#'],
+        ['label' => 'Saved Post', 'href' => route('saved-post'), 'active' => request()->routeIs('saved-post')],
     ];
 
     $adminMenuItems = $isAdmin
@@ -50,8 +50,13 @@
     <div id="desktopAccountMenu" class="account-menu-dropdown hidden" aria-labelledby="desktopAccountMenuButton">
         <ul class="account-menu-list">
             @foreach($profileMenuItems as $menuItem)
+                @php($isActive = $menuItem['active'] ?? false)
                 <li>
-                    <a href="{{ $menuItem['href'] }}" class="account-menu-link">{{ $menuItem['label'] }}</a>
+                    <a
+                        href="{{ $menuItem['href'] }}"
+                        @class(['account-menu-link', 'active' => $isActive])
+                        @if($isActive) aria-current="page" @endif
+                    >{{ $menuItem['label'] }}</a>
                 </li>
             @endforeach
         </ul>
@@ -114,8 +119,13 @@
     <div id="mobileAccountMenu" class="account-menu-dropdown account-menu-dropdown--mobile hidden" aria-labelledby="mobileAccountMenuButton">
         <ul class="account-menu-list">
             @foreach($profileMenuItems as $menuItem)
+                @php($isActive = $menuItem['active'] ?? false)
                 <li>
-                    <a href="{{ $menuItem['href'] }}" class="account-menu-link">{{ $menuItem['label'] }}</a>
+                    <a
+                        href="{{ $menuItem['href'] }}"
+                        @class(['account-menu-link', 'active' => $isActive])
+                        @if($isActive) aria-current="page" @endif
+                    >{{ $menuItem['label'] }}</a>
                 </li>
             @endforeach
         </ul>

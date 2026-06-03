@@ -6,6 +6,7 @@ use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\SavedPostsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/favicon.svg', FaviconController::class)->name('favicon');
@@ -38,9 +39,7 @@ Route::middleware('auth')->group(function (): void {
         return view('layout.menu.edit-profile');
     })->name('edit-profile');
 
-    Route::get('/menu/saved-post', function () {
-        return view('layout.menu.saved-post');
-    })->name('saved-post');
+    Route::get('/menu/saved-post', SavedPostsController::class)->name('saved-post');
 
     Route::get('/menu/reports', function () {
         return view('layout.menu.reports');

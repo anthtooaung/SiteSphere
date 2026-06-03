@@ -25,6 +25,7 @@ class StoreReportsRequest extends FormRequest
     {
         return [
             'reason' => ['required', 'string', 'max:500'],
+            'details' => ['nullable', 'string', 'max:600'],
         ];
     }
 }

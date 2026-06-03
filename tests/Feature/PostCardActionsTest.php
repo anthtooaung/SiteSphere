@@ -4,12 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\AuditLogs;
 use App\Models\Bookmarks;
+use App\Models\Notificatioins;
 use App\Models\Posts;
 use App\Models\Reports;
 use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use SweetAlert2\Laravel\Swal;
 use Tests\TestCase;
 
 class PostCardActionsTest extends TestCase
@@ -38,8 +40,31 @@ class PostCardActionsTest extends TestCase
             ->assertSee('data-auth-required="report"', false)
             ->assertSee('Save Post')
             ->assertSee('Report')
+            ->assertDontSee('data-post-card-report-form', false)
             ->assertDontSee('data-post-card-action="ban"', false)
             ->assertDontSee('Ban');
+    }
+
+    public function test_authenticated_home_cards_render_report_modal_form(): void
+    {
+        $user = User::factory()->create();
+        $post = $this->createVisiblePost('Report Modal Post');
+
+        $this->actingAs($user)
+            ->get(route('home'))
+            ->assertOk()
+            ->assertSee($post->title)
+            ->assertSee('data-post-card-report-trigger', false)
+            ->assertSee('data-post-card-report-modal', false)
+            ->assertSee('data-post-card-report-form', false)
+            ->assertSee('data-post-card-report-reason', false)
+            ->assertSee('data-post-card-report-details', false)
+            ->assertSee('data-post-card-report-submit', false)
+            ->assertSee('x-bind:disabled="! reportReason"', false)
+            ->assertSee('Spam / Misleading')
+            ->assertSee('Harassment / Abuse')
+            ->assertSee('Scams / Fraud')
+            ->assertSee('Describe context or reasons to help us review this report faster.');
     }
 
     public function test_authenticated_users_can_save_and_unsave_a_post(): void
@@ -83,7 +108,119 @@ class PostCardActionsTest extends TestCase
         $this->actingAs($user)
             ->from(route('home'))
             ->post(route('posts.report', $post), [
-                'reason' => 'Reported from the post card action menu.',
+                'reason' => 'Spam / Misleading',
+            ])
+            ->assertRedirect(route('home'))
+            ->assertSessionHas('success', 'Post reported.')
+            ->assertSessionHas(Swal::SESSION_KEY, function (array $toast): bool {
+                return $toast['toast'] === true
+                    && $toast['position'] === 'top-end'
+                    && $toast['showConfirmButton'] === false
+                    && $toast['icon'] === 'success'
+                    && $toast['title'] === 'Report submitted'
+                    && $toast['text'] === 'Thanks for helping us keep SiteSphere safe.';
+            });
+
+        $this->assertDatabaseHas((new Reports)->getTable(), [
+            'user_id' => $user->id,
+            'target_name' => 'posts',
+            'target_id' => $post->id,
+            'reason' => 'Spam / Misleading',
+            'admin_read' => false,
+        ]);
+    }
+
+    public function test_reporting_a_post_notifies_every_admin(): void
+    {
+        $reporter = User::factory()->create(['name' => 'Reporting User']);
+        $firstAdmin = User::factory()->create(['role' => 'admin']);
+        $secondAdmin = User::factory()->create(['role' => 'admin']);
+        $regularUser = User::factory()->create(['role' => 'user']);
+        $post = $this->createVisiblePost('Admin Notification Target');
+        $message = 'Reporting User reported post: Admin Notification Target';
+
+        $this->actingAs($reporter)
+            ->from(route('home'))
+            ->post(route('posts.report', $post), [
+                'reason' => 'Spam / Misleading',
+            ])
+            ->assertRedirect(route('home'));
+
+        foreach ([$firstAdmin, $secondAdmin] as $admin) {
+            $this->assertDatabaseHas((new Notificatioins)->getTable(), [
+                'to_user_id' => $admin->id,
+                'from_user_id' => $reporter->id,
+                'target_type' => 'posts',
+                'target_id' => $post->id,
+                'message' => $message,
+                'is_read' => false,
+            ]);
+        }
+
+        $this->assertDatabaseMissing((new Notificatioins)->getTable(), [
+            'to_user_id' => $regularUser->id,
+            'message' => $message,
+        ]);
+
+        $this->assertSame(2, Notificatioins::query()->where('message', $message)->count());
+    }
+
+    public function test_reporting_a_post_succeeds_without_admin_users(): void
+    {
+        $reporter = User::factory()->create(['role' => 'user']);
+        $post = $this->createVisiblePost('No Admin Report Target');
+
+        $this->actingAs($reporter)
+            ->from(route('home'))
+            ->post(route('posts.report', $post), [
+                'reason' => 'Fake / False Info',
+            ])
+            ->assertRedirect(route('home'))
+            ->assertSessionHas('success', 'Post reported.');
+
+        $this->assertDatabaseHas((new Reports)->getTable(), [
+            'user_id' => $reporter->id,
+            'target_name' => 'posts',
+            'target_id' => $post->id,
+            'reason' => 'Fake / False Info',
+            'admin_read' => false,
+        ]);
+
+        $this->assertDatabaseCount((new Notificatioins)->getTable(), 0);
+    }
+
+    public function test_admin_home_notification_box_shows_report_notifications(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $reporter = User::factory()->create(['name' => 'Dropdown Reporter']);
+        $post = $this->createVisiblePost('Dropdown Report Target');
+        $message = 'Dropdown Reporter reported post: Dropdown Report Target';
+
+        $this->actingAs($reporter)
+            ->from(route('home'))
+            ->post(route('posts.report', $post), [
+                'reason' => 'Illegal Activities',
+            ])
+            ->assertRedirect(route('home'));
+
+        $this->actingAs($admin)
+            ->get(route('home'))
+            ->assertOk()
+            ->assertSee('aria-label="1 unread notifications"', false)
+            ->assertSee('<span class="noti-badge">1</span>', false)
+            ->assertSee($message);
+    }
+
+    public function test_authenticated_users_can_report_a_post_with_details(): void
+    {
+        $user = User::factory()->create();
+        $post = $this->createVisiblePost('Detailed Reported Post');
+
+        $this->actingAs($user)
+            ->from(route('home'))
+            ->post(route('posts.report', $post), [
+                'reason' => 'Scams / Fraud',
+                'details' => 'This post links to a suspicious checkout flow.',
             ])
             ->assertRedirect(route('home'))
             ->assertSessionHas('success', 'Post reported.');
@@ -92,7 +229,7 @@ class PostCardActionsTest extends TestCase
             'user_id' => $user->id,
             'target_name' => 'posts',
             'target_id' => $post->id,
-            'reason' => 'Reported from the post card action menu.',
+            'reason' => "Scams / Fraud\n\nDetails: This post links to a suspicious checkout flow.",
             'admin_read' => false,
         ]);
     }

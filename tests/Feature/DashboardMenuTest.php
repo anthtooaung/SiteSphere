@@ -94,6 +94,7 @@ class DashboardMenuTest extends TestCase
             ->assertSee('Saved Post')
             ->assertSee('href="'.route('saved-post').'"', false)
             ->assertSee('Appearance')
+            ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
             ->assertSee('Edit Profile')
             ->assertSee('Logout')
@@ -160,6 +161,18 @@ class DashboardMenuTest extends TestCase
             ->get(route('reports'))
             ->assertOk()
             ->assertSee('href="'.route('reports').'"', false)
+            ->assertSee('class="layout-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_appearance_layout_menu_link_marks_current_page(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $this->actingAs($user)
+            ->get(route('appearance'))
+            ->assertOk()
+            ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('class="layout-menu-link active"', false)
             ->assertSee('aria-current="page"', false);
     }

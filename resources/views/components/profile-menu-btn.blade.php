@@ -18,7 +18,7 @@
 
     $settingMenuItems = [
         ['label' => 'Edit Profile', 'href' => '#'],
-        ['label' => 'Appearance', 'href' => '#'],
+        ['label' => 'Appearance', 'href' => route('appearance'), 'active' => request()->routeIs('appearance')],
         ['label' => 'Security', 'href' => '#'],
     ];
 @endphp
@@ -83,7 +83,12 @@
             <ul class="account-menu-list">
                 @foreach($settingMenuItems as $menuItem)
                     <li>
-                        <a href="{{ $menuItem['href'] }}" class="account-menu-link">{{ $menuItem['label'] }}</a>
+                        @php($isActive = $menuItem['active'] ?? false)
+                        <a
+                            href="{{ $menuItem['href'] }}"
+                            @class(['account-menu-link', 'active' => $isActive])
+                            @if($isActive) aria-current="page" @endif
+                        >{{ $menuItem['label'] }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -152,7 +157,12 @@
             <ul class="account-menu-list">
                 @foreach($settingMenuItems as $menuItem)
                     <li>
-                        <a href="{{ $menuItem['href'] }}" class="account-menu-link">{{ $menuItem['label'] }}</a>
+                        @php($isActive = $menuItem['active'] ?? false)
+                        <a
+                            href="{{ $menuItem['href'] }}"
+                            @class(['account-menu-link', 'active' => $isActive])
+                            @if($isActive) aria-current="page" @endif
+                        >{{ $menuItem['label'] }}</a>
                     </li>
                 @endforeach
             </ul>

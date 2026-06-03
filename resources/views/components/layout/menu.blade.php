@@ -38,7 +38,12 @@
         : [];
 
     $settingMenuItems = [
-        ['label' => 'Appearance', 'href' => '#', 'icon' => 'appearance'],
+        [
+            'label' => 'Appearance',
+            'href' => route('appearance'),
+            'icon' => 'appearance',
+            'active' => request()->routeIs('appearance'),
+        ],
         ['label' => 'Security', 'href' => '#', 'icon' => 'security'],
         ['label' => 'Edit Profile', 'href' => '#', 'icon' => 'edit'],
     ];
@@ -122,7 +127,9 @@
                             aria-labelledby="layoutMenuSettingToggle" x-show="open" x-cloak>
                             @foreach ($settingMenuItems as $menuItem)
                                 <li>
-                                    <a href="{{ $menuItem['href'] }}" class="layout-menu-topbar-dropdown-link">
+                                    @php($isActive = $menuItem['active'] ?? false)
+                                    <a href="{{ $menuItem['href'] }}" @class(['layout-menu-topbar-dropdown-link', 'active' => $isActive])
+                                        @if ($isActive) aria-current="page" @endif>
                                         @switch($menuItem['icon'])
                                             @case('edit')
                                                 <x-fas-user-pen class="icon" aria-hidden="true" />
@@ -223,7 +230,9 @@
                     <ul class="layout-menu-list">
                         @foreach ($settingMenuItems as $menuItem)
                             <li>
-                                <a href="{{ $menuItem['href'] }}" class="layout-menu-link">
+                                @php($isActive = $menuItem['active'] ?? false)
+                                <a href="{{ $menuItem['href'] }}" @class(['layout-menu-link', 'active' => $isActive])
+                                    @if ($isActive) aria-current="page" @endif>
                                     @switch($menuItem['icon'])
                                         @case('security')
                                             <x-fas-user-shield class="icon" aria-hidden="true" />

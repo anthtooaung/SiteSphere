@@ -17,6 +17,7 @@ export default defineConfig({
                 'resources/css/upload-post.css',
                 'resources/js/upload-post.js',
                 'resources/css/reports.css',
+                'resources/css/appearance.css',
             ],
             refresh: true,
         }),

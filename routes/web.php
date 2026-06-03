@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminReportsController;
 use App\Http\Controllers\AdminUsersController;
+use App\Http\Controllers\AppearanceController;
 use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\FaviconController;
@@ -46,6 +47,9 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/menu/reports', [AdminReportsController::class, 'index'])->name('reports');
     Route::patch('/menu/reports/{report}/read', [AdminReportsController::class, 'markRead'])->name('reports.read');
+
+    Route::get('/menu/appearance', [AppearanceController::class, 'index'])->name('appearance');
+    Route::patch('/menu/appearance', [AppearanceController::class, 'update'])->name('appearance.update');
 
     Route::get('/menu/security', function () {
         return view('layout.menu.security');

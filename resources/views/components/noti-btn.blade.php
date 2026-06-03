@@ -19,12 +19,24 @@
     @else
         <div class="noti-list">
             @foreach ($unreadNotifications as $notification)
-                <div class="noti-item">
-                    <span class="noti-message">{{ $notification->message }}</span>
-                    @if ($notification->created_at)
-                        <span class="noti-time">{{ $notification->created_at->diffForHumans() }}</span>
-                    @endif
-                </div>
+                @if ($notification->target_type === 'posts')
+                    <form method="POST" action="{{ route('notifications.open', $notification) }}" class="noti-form">
+                        @csrf
+                        <button type="submit" class="noti-item noti-item-action">
+                            <span class="noti-message">{{ $notification->message }}</span>
+                            @if ($notification->created_at)
+                                <span class="noti-time">{{ $notification->created_at->diffForHumans() }}</span>
+                            @endif
+                        </button>
+                    </form>
+                @else
+                    <div class="noti-item">
+                        <span class="noti-message">{{ $notification->message }}</span>
+                        @if ($notification->created_at)
+                            <span class="noti-time">{{ $notification->created_at->diffForHumans() }}</span>
+                        @endif
+                    </div>
+                @endif
             @endforeach
         </div>
     @endif

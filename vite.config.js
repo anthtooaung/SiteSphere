@@ -16,6 +16,7 @@ export default defineConfig({
                 'resources/js/homepage.js',
                 'resources/css/upload-post.css',
                 'resources/js/upload-post.js',
+                'resources/css/reports.css',
             ],
             refresh: true,
         }),

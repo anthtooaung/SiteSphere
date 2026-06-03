@@ -65,6 +65,7 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('Users')
             ->assertSee('href="'.route('users').'"', false)
             ->assertSee('Reports')
+            ->assertSee('href="'.route('reports').'"', false)
             ->assertSee('Saved Post')
             ->assertSee('href="'.route('saved-post').'"', false)
             ->assertSee('Edit Profile')
@@ -135,6 +136,19 @@ class ProfileMenuButtonTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('href="'.route('users').'"', false)
+            ->assertSee('class="account-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_reports_profile_menu_link_marks_current_page(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)->get(route('reports'));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('reports').'"', false)
             ->assertSee('class="account-menu-link active"', false)
             ->assertSee('aria-current="page"', false);
     }

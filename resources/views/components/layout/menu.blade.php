@@ -5,22 +5,35 @@
 @php
     $user = Auth::user();
     $isAdmin = $user?->role === 'admin';
-    $menuBarLocation = in_array($menuBarLocation, ['top', 'right', 'bottom', 'left'], true)
-        ? $menuBarLocation
-        : 'left';
+    $menuBarLocation = in_array($menuBarLocation, ['top', 'right', 'bottom', 'left'], true) ? $menuBarLocation : 'left';
     $isHorizontalMenu = in_array($menuBarLocation, ['top', 'bottom'], true);
     $isDashboardRoute = request()->routeIs('dashboard');
 
     $profileMenuItems = [
         ['label' => 'View Profile', 'href' => '#', 'icon' => 'user'],
-        ['label' => 'Saved Post', 'href' => route('saved-post'), 'icon' => 'saved', 'active' => request()->routeIs('saved-post')],
+        [
+            'label' => 'Saved Post',
+            'href' => route('saved-post'),
+            'icon' => 'saved',
+            'active' => request()->routeIs('saved-post'),
+        ],
     ];
 
     $adminMenuItems = $isAdmin
         ? [
-            ['label' => 'Dashboard', 'href' => route('dashboard'), 'icon' => 'dashboard', 'active' => request()->routeIs('dashboard')],
+            [
+                'label' => 'Dashboard',
+                'href' => route('dashboard'),
+                'icon' => 'dashboard',
+                'active' => request()->routeIs('dashboard'),
+            ],
             ['label' => 'Users', 'href' => route('users'), 'icon' => 'users', 'active' => request()->routeIs('users')],
-            ['label' => 'Reports', 'href' => '#', 'icon' => 'reports'],
+            [
+                'label' => 'Reports',
+                'href' => route('reports'),
+                'icon' => 'reports',
+                'active' => request()->routeIs('reports'),
+            ],
         ]
         : [];
 
@@ -32,38 +45,32 @@
 @endphp
 
 @auth
-    <aside
-        id="layoutMenu"
-        data-menu-bar-location="{{ $menuBarLocation }}"
-        {{ $attributes->class(['layout-menu', 'layout-menu--'.$menuBarLocation, 'layout-menu--horizontal' => $isHorizontalMenu, 'layout-menu--topbar' => $menuBarLocation === 'top']) }}
-    >
+    <aside id="layoutMenu" data-menu-bar-location="{{ $menuBarLocation }}"
+        {{ $attributes->class(['layout-menu', 'layout-menu--' . $menuBarLocation, 'layout-menu--horizontal' => $isHorizontalMenu, 'layout-menu--topbar' => $menuBarLocation === 'top']) }}>
         @if ($menuBarLocation === 'top')
             <nav class="layout-menu-topbar-nav" aria-label="Account top menu">
                 <ul class="layout-menu-topbar-list">
                     @foreach ($profileMenuItems as $menuItem)
                         @php($isActive = $menuItem['active'] ?? false)
                         <li class="layout-menu-topbar-item">
-                            <a
-                                href="{{ $menuItem['href'] }}"
-                                @class(['layout-menu-topbar-link', 'active' => $isActive])
-                                @if($isActive) aria-current="page" @endif
-                            >
+                            <a href="{{ $menuItem['href'] }}" @class(['layout-menu-topbar-link', 'active' => $isActive])
+                                @if ($isActive) aria-current="page" @endif>
                                 @switch($menuItem['icon'])
                                     @case('dashboard')
                                         <x-fas-chart-pie class="icon" aria-hidden="true" />
-                                        @break
+                                    @break
 
                                     @case('saved')
                                         <x-fas-bookmark class="icon" aria-hidden="true" />
-                                        @break
+                                    @break
 
                                     @case('users')
                                         <x-fas-users class="icon" aria-hidden="true" />
-                                        @break
+                                    @break
 
                                     @case('reports')
                                         <x-fas-circle-info class="icon" aria-hidden="true" />
-                                        @break
+                                    @break
 
                                     @default
                                         <x-fas-user class="icon" aria-hidden="true" />
@@ -79,23 +86,20 @@
                         @foreach ($adminMenuItems as $menuItem)
                             @php($isActive = $menuItem['active'] ?? false)
                             <li class="layout-menu-topbar-item">
-                                <a
-                                    href="{{ $menuItem['href'] }}"
-                                    @class(['layout-menu-topbar-link', 'active' => $isActive])
-                                    @if($isActive) aria-current="page" @endif
-                                >
+                                <a href="{{ $menuItem['href'] }}" @class(['layout-menu-topbar-link', 'active' => $isActive])
+                                    @if ($isActive) aria-current="page" @endif>
                                     @switch($menuItem['icon'])
                                         @case('dashboard')
                                             <x-fas-chart-pie class="icon" aria-hidden="true" />
-                                            @break
+                                        @break
 
                                         @case('users')
                                             <x-fas-users class="icon" aria-hidden="true" />
-                                            @break
+                                        @break
 
                                         @case('reports')
                                             <x-fas-file-lines class="icon" aria-hidden="true" />
-                                            @break
+                                        @break
                                     @endswitch
                                     <span>{{ $menuItem['label'] }}</span>
                                 </a>
@@ -105,38 +109,28 @@
 
                     <li class="layout-menu-topbar-divider" aria-hidden="true"></li>
 
-                    <li class="layout-menu-topbar-item layout-menu-topbar-settings" x-data="{ open: false }" @click.outside="open = false">
-                        <button
-                            type="button"
-                            class="layout-menu-topbar-link"
-                            id="layoutMenuSettingToggle"
-                            aria-haspopup="true"
-                            :aria-expanded="open.toString()"
-                            @click="open = ! open"
-                        >
+                    <li class="layout-menu-topbar-item layout-menu-topbar-settings" x-data="{ open: false }"
+                        @click.outside="open = false">
+                        <button type="button" class="layout-menu-topbar-link" id="layoutMenuSettingToggle"
+                            aria-haspopup="true" :aria-expanded="open.toString()" @click="open = ! open">
                             <x-fas-cog class="icon" aria-hidden="true" />
                             <span>Setting</span>
                             <x-fas-chevron-down class="layout-menu-topbar-chevron" aria-hidden="true" />
                         </button>
 
-                        <ul
-                            class="layout-menu-topbar-dropdown"
-                            id="layoutMenuSettingDropdown"
-                            aria-labelledby="layoutMenuSettingToggle"
-                            x-show="open"
-                            x-cloak
-                        >
+                        <ul class="layout-menu-topbar-dropdown" id="layoutMenuSettingDropdown"
+                            aria-labelledby="layoutMenuSettingToggle" x-show="open" x-cloak>
                             @foreach ($settingMenuItems as $menuItem)
                                 <li>
                                     <a href="{{ $menuItem['href'] }}" class="layout-menu-topbar-dropdown-link">
                                         @switch($menuItem['icon'])
-                                            @case('security')
-                                                <x-fas-user-shield class="icon" aria-hidden="true" />
-                                                @break
-
                                             @case('edit')
                                                 <x-fas-user-pen class="icon" aria-hidden="true" />
-                                                @break
+                                            @break
+
+                                            @case('security')
+                                                <x-fas-user-shield class="icon" aria-hidden="true" />
+                                            @break
 
                                             @default
                                                 <x-fas-palette class="icon" aria-hidden="true" />
@@ -167,27 +161,24 @@
                     @foreach ($profileMenuItems as $menuItem)
                         @php($isActive = $menuItem['active'] ?? false)
                         <li>
-                            <a
-                                href="{{ $menuItem['href'] }}"
-                                @class(['layout-menu-link', 'active' => $isActive])
-                                @if($isActive) aria-current="page" @endif
-                            >
+                            <a href="{{ $menuItem['href'] }}" @class(['layout-menu-link', 'active' => $isActive])
+                                @if ($isActive) aria-current="page" @endif>
                                 @switch($menuItem['icon'])
                                     @case('dashboard')
                                         <x-fas-chart-pie class="icon" aria-hidden="true" />
-                                        @break
+                                    @break
 
                                     @case('saved')
                                         <x-fas-bookmark class="icon" aria-hidden="true" />
-                                        @break
+                                    @break
 
                                     @case('users')
                                         <x-fas-users class="icon" aria-hidden="true" />
-                                        @break
+                                    @break
 
                                     @case('reports')
                                         <x-fas-file-lines class="icon" aria-hidden="true" />
-                                        @break
+                                    @break
 
                                     @default
                                         <x-fas-user class="icon" aria-hidden="true" />
@@ -204,23 +195,20 @@
                             @foreach ($adminMenuItems as $menuItem)
                                 @php($isActive = $menuItem['active'] ?? false)
                                 <li>
-                                    <a
-                                        href="{{ $menuItem['href'] }}"
-                                        @class(['layout-menu-link', 'active' => $isActive])
-                                        @if($isActive) aria-current="page" @endif
-                                    >
+                                    <a href="{{ $menuItem['href'] }}" @class(['layout-menu-link', 'active' => $isActive])
+                                        @if ($isActive) aria-current="page" @endif>
                                         @switch($menuItem['icon'])
                                             @case('dashboard')
                                                 <x-fas-chart-pie class="icon" aria-hidden="true" />
-                                                @break
+                                            @break
 
                                             @case('users')
                                                 <x-fas-users class="icon" aria-hidden="true" />
-                                                @break
+                                            @break
 
                                             @case('reports')
                                                 <x-fas-file-lines class="icon" aria-hidden="true" />
-                                                @break
+                                            @break
                                         @endswitch
                                         <span>{{ $menuItem['label'] }}</span>
                                     </a>
@@ -239,11 +227,11 @@
                                     @switch($menuItem['icon'])
                                         @case('security')
                                             <x-fas-user-shield class="icon" aria-hidden="true" />
-                                            @break
+                                        @break
 
                                         @case('edit')
                                             <x-fas-user-pen class="icon" aria-hidden="true" />
-                                            @break
+                                        @break
 
                                         @default
                                             <x-fas-palette class="icon" aria-hidden="true" />

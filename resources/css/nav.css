@@ -296,12 +296,37 @@
     gap: 8px;
 }
 
+.noti-form {
+    margin: 0;
+}
+
 .noti-item {
     display: grid;
+    width: 100%;
     gap: 4px;
     padding: 8px 10px;
+    border: 0;
     border-radius: 8px;
     background: color-mix(in srgb, var(--accent-color, #6c5ce7) 6%, white);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+}
+
+.noti-item-action {
+    cursor: pointer;
+    transition:
+        background 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+.noti-item-action:hover,
+.noti-item-action:focus-visible {
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 12%, white);
+    color: var(--accent-color, #6c5ce7);
+    outline: none;
+    transform: translateX(2px);
 }
 
 .noti-message {

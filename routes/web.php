@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdminReportsController;
 use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationOpenController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SavedPostsController;
@@ -42,9 +44,8 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/menu/saved-post', SavedPostsController::class)->name('saved-post');
 
-    Route::get('/menu/reports', function () {
-        return view('layout.menu.reports');
-    })->name('reports');
+    Route::get('/menu/reports', [AdminReportsController::class, 'index'])->name('reports');
+    Route::patch('/menu/reports/{report}/read', [AdminReportsController::class, 'markRead'])->name('reports.read');
 
     Route::get('/menu/security', function () {
         return view('layout.menu.security');
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/menu/users/{user}/role', [AdminUsersController::class, 'updateRole'])->name('users.role');
     Route::delete('/menu/users/{user}', [AdminUsersController::class, 'destroy'])->name('users.destroy');
     Route::patch('/menu/users/{user}/restore', [AdminUsersController::class, 'restore'])->withTrashed()->name('users.restore');
+
+    Route::post('/notifications/{notification}/open', NotificationOpenController::class)->name('notifications.open');
 });
 
 require __DIR__.'/auth.php';

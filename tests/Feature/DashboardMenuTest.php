@@ -58,6 +58,7 @@ class DashboardMenuTest extends TestCase
                 ->assertSee('Users')
                 ->assertSee('href="'.route('users').'"', false)
                 ->assertSee('Reports')
+                ->assertSee('href="'.route('reports').'"', false)
                 ->assertSee('aria-current="page"', false);
 
             if (in_array($location, ['top', 'bottom'], true)) {
@@ -147,6 +148,18 @@ class DashboardMenuTest extends TestCase
             ->get(route('users'))
             ->assertOk()
             ->assertSee('href="'.route('users').'"', false)
+            ->assertSee('class="layout-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_reports_layout_menu_link_marks_current_page(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->get(route('reports'))
+            ->assertOk()
+            ->assertSee('href="'.route('reports').'"', false)
             ->assertSee('class="layout-menu-link active"', false)
             ->assertSee('aria-current="page"', false);
     }

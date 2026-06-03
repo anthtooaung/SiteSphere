@@ -12,7 +12,7 @@
         ? [
             ['label' => 'Dashboard', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard')],
             ['label' => 'Users', 'href' => route('users'), 'active' => request()->routeIs('users')],
-            ['label' => 'Reports', 'href' => '#'],
+            ['label' => 'Reports', 'href' => route('reports'), 'active' => request()->routeIs('reports')],
         ]
         : [];
 

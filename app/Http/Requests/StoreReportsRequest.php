@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Posts;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +13,7 @@ class StoreReportsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user() !== null && $this->route('post') instanceof Posts;
     }
 
     /**
@@ -23,7 +24,7 @@ class StoreReportsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'reason' => ['required', 'string', 'max:500'],
         ];
     }
 }

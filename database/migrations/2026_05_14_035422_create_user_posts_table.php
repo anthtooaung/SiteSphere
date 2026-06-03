@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->longText('description');
-            $table->boolean('user_hidden')->default(false);
+            $table->boolean('user_hidden')->default(true);
             $table->unique(['post_id', 'user_id']);
             $table->timestamps();
         });

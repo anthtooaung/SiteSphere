@@ -1505,7 +1505,7 @@
     column-gap: 18px;
     row-gap: 24px;
     align-items: stretch;
-    justify-content:center;
+    justify-content:start;
 }
 
 /* Review Cards */
@@ -2347,6 +2347,48 @@
     border-color:transparent;
     border-bottom-color:var(--accent-color, #6c5ce7);
     color:var(--accent-color, #6c5ce7);
+}
+
+.home-page [data-post-card-actions-menu] [data-post-card-action]{
+    border-color:transparent;
+    color:color-mix(in srgb, var(--text-color, #182230) 78%, transparent);
+    transform:translateX(0);
+    transition:
+        background 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+.home-page [data-post-card-actions-menu] [data-post-card-action]:hover,
+.home-page [data-post-card-actions-menu] [data-post-card-action]:focus-visible,
+.home-page [data-post-card-actions-menu] [data-post-card-action]:active{
+    background:color-mix(in srgb, var(--accent-color, #6c5ce7) 12%, transparent);
+    border-color:transparent;
+    color:var(--accent-color, #6c5ce7);
+    box-shadow:none;
+    outline:none;
+    transform:translateX(2px);
+}
+
+.home-page [data-post-card-actions-menu] [data-post-card-action]:focus-visible{
+    outline:2px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 35%, transparent);
+    outline-offset:2px;
+}
+
+.home-page [data-post-card-actions-menu] [data-post-card-action="ban"]{
+    color:#b91c1c;
+}
+
+.home-page [data-post-card-actions-menu] [data-post-card-action="ban"]:hover,
+.home-page [data-post-card-actions-menu] [data-post-card-action="ban"]:focus-visible,
+.home-page [data-post-card-actions-menu] [data-post-card-action="ban"]:active{
+    background:color-mix(in srgb, #fee2e2 78%, var(--background-color, #ffffff) 22%);
+    color:#b91c1c;
+    transform:translateX(2px);
+}
+
+.home-page [data-post-card-actions-menu] [data-post-card-action="ban"]:focus-visible{
+    outline-color:color-mix(in srgb, #b91c1c 35%, transparent);
 }
 
 @media (max-width: 600px) {

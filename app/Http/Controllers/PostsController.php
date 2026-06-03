@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostsRequest;
 use App\Http\Requests\UpdatePostsRequest;
+use App\Models\AuditLogs;
 use App\Models\Categories;
 use App\Models\Posts;
 use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -79,6 +81,29 @@ class PostsController extends Controller
         return redirect()
             ->route('home')
             ->with('success', 'Post created successfully.');
+    }
+
+    public function ban(Request $request, Posts $post): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+
+        UserPosts::query()
+            ->where('post_id', $post->id)
+            ->update(['user_hidden' => true]);
+
+        AuditLogs::query()->create([
+            'user_id' => $user->id,
+            'action' => 'ban_post',
+            'target_type' => Posts::class,
+            'target_id' => $post->id,
+            'reason' => 'Post hidden from the home feed by an admin.',
+        ]);
+
+        return redirect()
+            ->route('home')
+            ->with('success', 'Post banned.');
     }
 
     private function uniqueSlug(string $title, ?Posts $ignorePost = null): string

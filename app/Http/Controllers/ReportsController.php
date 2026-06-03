@@ -4,32 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReportsRequest;
 use App\Http\Requests\UpdateReportsRequest;
+use App\Models\Posts;
 use App\Models\Reports;
+use Illuminate\Http\RedirectResponse;
 
 class ReportsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreReportsRequest $request)
+    public function store(StoreReportsRequest $request, Posts $post): RedirectResponse
     {
-        //
+        Reports::query()->create([
+            'user_id' => $request->user()->id,
+            'target_name' => 'posts',
+            'target_id' => $post->id,
+            'reason' => $request->validated('reason'),
+            'admin_read' => false,
+        ]);
+
+        return back()->with('success', 'Post reported.');
     }
 
     /**

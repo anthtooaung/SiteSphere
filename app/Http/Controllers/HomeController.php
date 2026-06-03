@@ -41,6 +41,7 @@ class HomeController extends Controller
                 $primaryCategory = $primaryTag?->categories->first();
 
                 return [
+                    'id' => $post->id,
                     'title' => $post->title,
                     'url' => $post->url,
                     'category' => $primaryCategory?->name ?? 'Uncategorized',

@@ -6,6 +6,7 @@ use Database\Factories\TagsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tags extends Model
 {
@@ -23,5 +24,10 @@ class Tags extends Model
     {
         return $this->belongsToMany(Posts::class, 'post_tags', 'tag_id', 'post_id')
             ->withTimestamps();
+    }
+
+    public function customTags(): HasMany
+    {
+        return $this->hasMany(CustomTags::class, 'tag_id');
     }
 }

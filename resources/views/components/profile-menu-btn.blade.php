@@ -20,6 +20,7 @@
         ['label' => 'Edit Profile', 'href' => route('edit-profile'), 'active' => request()->routeIs('edit-profile')],
         ['label' => 'Appearance', 'href' => route('appearance'), 'active' => request()->routeIs('appearance')],
         ['label' => 'Security', 'href' => route('security'), 'active' => request()->routeIs('security')],
+        ['label' => 'Edit Tag', 'href' => route('edit-tag'), 'active' => request()->routeIs('edit-tag')],
     ];
 @endphp
 

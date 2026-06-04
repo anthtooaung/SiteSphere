@@ -97,6 +97,8 @@ class DashboardMenuTest extends TestCase
             ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
             ->assertSee('href="'.route('security').'"', false)
+            ->assertSee('Edit Tag')
+            ->assertSee('href="'.route('edit-tag').'"', false)
             ->assertSee('Edit Profile')
             ->assertSee('href="'.route('edit-profile').'"', false)
             ->assertSee('Logout')
@@ -199,6 +201,18 @@ class DashboardMenuTest extends TestCase
             ->get(route('security'))
             ->assertOk()
             ->assertSee('href="'.route('security').'"', false)
+            ->assertSee('class="layout-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_edit_tag_layout_menu_link_marks_current_page(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $this->actingAs($user)
+            ->get(route('edit-tag'))
+            ->assertOk()
+            ->assertSee('href="'.route('edit-tag').'"', false)
             ->assertSee('class="layout-menu-link active"', false)
             ->assertSee('aria-current="page"', false);
     }

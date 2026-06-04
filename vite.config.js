@@ -20,6 +20,7 @@ export default defineConfig({
                 'resources/css/appearance.css',
                 'resources/css/edit-profile.css',
                 'resources/css/security.css',
+                'resources/css/edit-tag.css',
             ],
             refresh: true,
         }),

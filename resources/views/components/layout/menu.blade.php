@@ -51,6 +51,12 @@
             'active' => request()->routeIs('security'),
         ],
         [
+            'label' => 'Edit Tag',
+            'href' => route('edit-tag'),
+            'icon' => 'tag',
+            'active' => request()->routeIs('edit-tag'),
+        ],
+        [
             'label' => 'Edit Profile',
             'href' => route('edit-profile'),
             'icon' => 'edit',
@@ -147,6 +153,10 @@
 
                                             @case('security')
                                                 <x-fas-user-shield class="icon" aria-hidden="true" />
+                                            @break
+
+                                            @case('tag')
+                                                <x-fas-tags class="icon" aria-hidden="true" />
                                             @break
 
                                             @default
@@ -250,6 +260,10 @@
 
                                         @case('edit')
                                             <x-fas-user-pen class="icon" aria-hidden="true" />
+                                        @break
+
+                                        @case('tag')
+                                            <x-fas-tags class="icon" aria-hidden="true" />
                                         @break
 
                                         @default

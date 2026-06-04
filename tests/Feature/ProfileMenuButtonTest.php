@@ -43,6 +43,8 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
             ->assertSee('href="'.route('security').'"', false)
+            ->assertSee('Edit Tag')
+            ->assertSee('href="'.route('edit-tag').'"', false)
             ->assertSee('method="POST"', false)
             ->assertSee('action="'.route('logout').'"', false)
             ->assertSee('Logout')
@@ -77,6 +79,8 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
             ->assertSee('href="'.route('security').'"', false)
+            ->assertSee('Edit Tag')
+            ->assertSee('href="'.route('edit-tag').'"', false)
             ->assertSee('Logout');
     }
 
@@ -102,6 +106,8 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
             ->assertSee('href="'.route('security').'"', false)
+            ->assertSee('Edit Tag')
+            ->assertSee('href="'.route('edit-tag').'"', false)
             ->assertSee('action="'.route('logout').'"', false)
             ->assertSee('Logout')
             ->assertDontSee('href="'.route('dashboard').'"', false)
@@ -197,6 +203,19 @@ class ProfileMenuButtonTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('href="'.route('security').'"', false)
+            ->assertSee('class="account-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_edit_tag_profile_menu_link_marks_current_page(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $response = $this->actingAs($user)->get(route('edit-tag'));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('edit-tag').'"', false)
             ->assertSee('class="account-menu-link active"', false)
             ->assertSee('aria-current="page"', false);
     }

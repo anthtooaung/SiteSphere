@@ -6,6 +6,7 @@ use App\Http\Controllers\AppearanceController;
 use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\EditProfileController;
+use App\Http\Controllers\EditTagsController;
 use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationOpenController;
@@ -43,6 +44,10 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/menu/edit-profile', [EditProfileController::class, 'edit'])->name('edit-profile');
     Route::patch('/menu/edit-profile', [EditProfileController::class, 'update'])->name('edit-profile.update');
+
+    Route::get('/menu/edit-tag', [EditTagsController::class, 'index'])->name('edit-tag');
+    Route::patch('/menu/edit-tag', [EditTagsController::class, 'update'])->name('edit-tag.update');
+    Route::delete('/menu/edit-tag/custom-tags', [EditTagsController::class, 'reset'])->name('edit-tag.reset');
 
     Route::get('/menu/saved-post', SavedPostsController::class)->name('saved-post');
 

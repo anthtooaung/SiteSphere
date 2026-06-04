@@ -44,7 +44,12 @@
             'icon' => 'appearance',
             'active' => request()->routeIs('appearance'),
         ],
-        ['label' => 'Security', 'href' => '#', 'icon' => 'security'],
+        [
+            'label' => 'Security',
+            'href' => route('security'),
+            'icon' => 'security',
+            'active' => request()->routeIs('security'),
+        ],
         [
             'label' => 'Edit Profile',
             'href' => route('edit-profile'),

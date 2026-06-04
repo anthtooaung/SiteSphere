@@ -12,6 +12,7 @@ use App\Http\Controllers\NotificationOpenController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SavedPostsController;
+use App\Http\Controllers\SecurityController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/favicon.svg', FaviconController::class)->name('favicon');
@@ -51,9 +52,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/menu/appearance', [AppearanceController::class, 'index'])->name('appearance');
     Route::patch('/menu/appearance', [AppearanceController::class, 'update'])->name('appearance.update');
 
-    Route::get('/menu/security', function () {
-        return view('layout.menu.security');
-    })->name('security');
+    Route::get('/menu/security', [SecurityController::class, 'edit'])->name('security');
+    Route::patch('/menu/security', [SecurityController::class, 'update'])->name('security.update');
 
     Route::get('/menu/users', [AdminUsersController::class, 'index'])->name('users');
     Route::patch('/menu/users/{user}/role', [AdminUsersController::class, 'updateRole'])->name('users.role');

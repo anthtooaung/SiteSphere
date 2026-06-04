@@ -96,6 +96,7 @@ class DashboardMenuTest extends TestCase
             ->assertSee('Appearance')
             ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
+            ->assertSee('href="'.route('security').'"', false)
             ->assertSee('Edit Profile')
             ->assertSee('href="'.route('edit-profile').'"', false)
             ->assertSee('Logout')
@@ -186,6 +187,18 @@ class DashboardMenuTest extends TestCase
             ->get(route('edit-profile'))
             ->assertOk()
             ->assertSee('href="'.route('edit-profile').'"', false)
+            ->assertSee('class="layout-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_security_layout_menu_link_marks_current_page(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $this->actingAs($user)
+            ->get(route('security'))
+            ->assertOk()
+            ->assertSee('href="'.route('security').'"', false)
             ->assertSee('class="layout-menu-link active"', false)
             ->assertSee('aria-current="page"', false);
     }

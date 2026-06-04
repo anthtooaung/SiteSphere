@@ -83,7 +83,7 @@
                                     </button>
                                 </div>
 
-                                <p class="file-info">JPG, GIF or PNG. Max size of 5MB.</p>
+                                <p class="file-info">JPG or PNG up to 5MB. Animated GIF up to 1MB.</p>
                                 <input type="file" id="photo-input" x-ref="photoInput" accept="image/png,image/jpeg,image/gif"
                                     hidden @change="handlePhoto">
                                 <button type="button" class="upload-btn" id="upload-button" @click="choosePhoto">
@@ -234,7 +234,8 @@
                     }
 
                     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                    const maxSize = 5 * 1024 * 1024;
+                    const imageMaxSize = 5 * 1024 * 1024;
+                    const gifMaxSize = 1 * 1024 * 1024;
 
                     if (! allowedTypes.includes(file.type)) {
                         this.showMessage('Please choose a JPG, GIF, or PNG image.', 'error');
@@ -242,7 +243,13 @@
                         return;
                     }
 
-                    if (file.size > maxSize) {
+                    if (file.type === 'image/gif' && file.size > gifMaxSize) {
+                        this.showMessage('Please choose a GIF smaller than 1MB.', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    if (file.type !== 'image/gif' && file.size > imageMaxSize) {
                         this.showMessage('Please choose an image smaller than 5MB.', 'error');
                         event.target.value = '';
                         return;
@@ -250,6 +257,14 @@
 
                     const reader = new FileReader();
                     reader.addEventListener('load', (readerEvent) => {
+                        if (file.type === 'image/gif') {
+                            this.croppedAvatar = readerEvent.target.result;
+                            this.avatarPreview = readerEvent.target.result;
+                            this.showMessage('GIF selected. Save changes to keep it.', 'success');
+                            event.target.value = '';
+                            return;
+                        }
+
                         this.openCrop(readerEvent.target.result, file.type);
                     });
                     reader.readAsDataURL(file);

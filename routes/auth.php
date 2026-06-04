@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\LoginTwoFactorChallengeController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -34,6 +35,17 @@ Route::middleware('guest')->group(function () {
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
+
+    Route::get('login/two-factor', [LoginTwoFactorChallengeController::class, 'create'])
+        ->name('login.two-factor');
+
+    Route::post('login/two-factor', [LoginTwoFactorChallengeController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('login.two-factor.store');
+
+    Route::post('login/two-factor/resend', [LoginTwoFactorChallengeController::class, 'resend'])
+        ->middleware('throttle:3,1')
+        ->name('login.two-factor.resend');
 
     Route::get('auth/{provider}/redirect', [SocialLoginController::class, 'redirect'])
         ->whereIn('provider', ['google', 'github'])

@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Mail\LoginTwoFactorOtpMail;
+use App\Models\OtpVerifications;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use SweetAlert2\Laravel\Swal;
 use Tests\TestCase;
 
@@ -55,6 +58,145 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticatedAs($user);
         $response->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_two_factor_users_are_redirected_to_otp_challenge_after_valid_password(): void
+    {
+        Mail::fake();
+        config(['mail.mailers.smtp.password' => 'testing-password']);
+
+        $user = User::factory()->create([
+            'two_factor_enabled' => true,
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+            'remember' => '1',
+        ]);
+
+        $this->assertGuest();
+        $response
+            ->assertRedirect(route('login.two-factor'))
+            ->assertSessionHas('login.two_factor.user_id', $user->id)
+            ->assertSessionHas('login.two_factor.remember', true);
+
+        $this->assertDatabaseHas('otpVerifications', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'is_verified' => false,
+        ]);
+
+        Mail::assertSent(LoginTwoFactorOtpMail::class, $user->email);
+    }
+
+    public function test_invalid_two_factor_otp_does_not_authenticate(): void
+    {
+        $user = User::factory()->create([
+            'two_factor_enabled' => true,
+        ]);
+
+        OtpVerifications::create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'otp' => '123456',
+            'is_verified' => false,
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $this->withSession([
+            'login.two_factor.user_id' => $user->id,
+            'login.two_factor.remember' => false,
+        ])->post(route('login.two-factor.store'), [
+            'otp_code' => '000000',
+        ])->assertSessionHasErrors('otp_code');
+
+        $this->assertGuest();
+    }
+
+    public function test_expired_two_factor_otp_does_not_authenticate(): void
+    {
+        $user = User::factory()->create([
+            'two_factor_enabled' => true,
+        ]);
+
+        OtpVerifications::create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'otp' => '123456',
+            'is_verified' => false,
+            'expire_at' => now()->subMinute(),
+        ]);
+
+        $this->withSession([
+            'login.two_factor.user_id' => $user->id,
+            'login.two_factor.remember' => false,
+        ])->post(route('login.two-factor.store'), [
+            'otp_code' => '123456',
+        ])->assertSessionHasErrors('otp_code');
+
+        $this->assertGuest();
+    }
+
+    public function test_valid_two_factor_otp_authenticates_and_clears_pending_session(): void
+    {
+        $user = User::factory()->create([
+            'two_factor_enabled' => true,
+        ]);
+        $this->createSettingsFor($user, 'bottom-start');
+
+        $verification = OtpVerifications::create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'otp' => '123456',
+            'is_verified' => false,
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $response = $this->withSession([
+            'login.two_factor.user_id' => $user->id,
+            'login.two_factor.remember' => true,
+        ])->post(route('login.two-factor.store'), [
+            'otp_code' => '123456',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertTrue($verification->fresh()->is_verified);
+        $response
+            ->assertRedirect(route('home', absolute: false))
+            ->assertSessionMissing('login.two_factor.user_id')
+            ->assertSessionMissing('login.two_factor.remember')
+            ->assertSessionHas(Swal::SESSION_KEY, function (array $toast): bool {
+                return $toast['toast'] === true
+                    && $toast['position'] === 'bottom-start'
+                    && $toast['icon'] === 'success'
+                    && $toast['title'] === 'Signed in successfully';
+            });
+    }
+
+    public function test_two_factor_resend_creates_a_new_otp(): void
+    {
+        Mail::fake();
+        config(['mail.mailers.smtp.password' => 'testing-password']);
+
+        $user = User::factory()->create([
+            'two_factor_enabled' => true,
+        ]);
+
+        $this->withSession([
+            'login.two_factor.user_id' => $user->id,
+            'login.two_factor.remember' => false,
+        ])->post(route('login.two-factor.resend'))
+            ->assertRedirect()
+            ->assertSessionHas('status', 'A new login verification code was sent to your email.');
+
+        $this->assertDatabaseHas('otpVerifications', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'is_verified' => false,
+        ]);
+
+        Mail::assertSent(LoginTwoFactorOtpMail::class, $user->email);
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

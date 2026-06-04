@@ -19,6 +19,7 @@ export default defineConfig({
                 'resources/css/reports.css',
                 'resources/css/appearance.css',
                 'resources/css/edit-profile.css',
+                'resources/css/security.css',
             ],
             refresh: true,
         }),

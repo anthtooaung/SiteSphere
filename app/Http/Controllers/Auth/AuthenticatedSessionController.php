@@ -4,11 +4,18 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Mail\LoginTwoFactorOtpMail;
+use App\Models\OtpVerifications;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use SweetAlert2\Laravel\Swal;
+use Throwable;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -20,6 +27,10 @@ class AuthenticatedSessionController extends Controller
         'bottom-end',
         'bottom-start',
     ];
+
+    public const TWO_FACTOR_USER_ID_KEY = 'login.two_factor.user_id';
+
+    public const TWO_FACTOR_REMEMBER_KEY = 'login.two_factor.remember';
 
     /**
      * Display the login view.
@@ -34,7 +45,22 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $user = $request->authenticate();
+
+        if ($user->two_factor_enabled) {
+            $this->createAndSendTwoFactorOtp($user);
+
+            $request->session()->put([
+                self::TWO_FACTOR_USER_ID_KEY => $user->id,
+                self::TWO_FACTOR_REMEMBER_KEY => $request->boolean('remember'),
+            ]);
+
+            return redirect()
+                ->route('login.two-factor')
+                ->with('status', 'We sent a login verification code to your email.');
+        }
+
+        Auth::guard('web')->login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();
 
@@ -86,5 +112,32 @@ class AuthenticatedSessionController extends Controller
                 toast.onmouseleave = Swal.resumeTimer;
             }',
         ]);
+    }
+
+    private function createAndSendTwoFactorOtp(User $user): void
+    {
+        $otpCode = (string) rand(100000, 999999);
+
+        OtpVerifications::create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'otp' => $otpCode,
+            'is_verified' => false,
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        Log::info("Login 2FA OTP verification code for {$user->email}: {$otpCode}");
+
+        $mailPassword = (string) config('mail.mailers.smtp.password');
+
+        if ($mailPassword === '' || Str::contains($mailPassword, 'replace-with-gmail-app-password')) {
+            return;
+        }
+
+        try {
+            Mail::to($user->email)->send(new LoginTwoFactorOtpMail($otpCode));
+        } catch (Throwable $exception) {
+            report($exception);
+        }
     }
 }

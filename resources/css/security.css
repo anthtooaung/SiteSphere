@@ -1,0 +1,486 @@
+.security-page {
+    color: var(--text-color, #0d1b2a);
+    font-family: var(--font-family, Figtree, sans-serif);
+}
+
+.security-page [x-cloak] {
+    display: none !important;
+}
+
+.security-content {
+    padding: 24px;
+}
+
+.security-shell {
+    display: grid;
+    align-content: start;
+    gap: 18px;
+    width: min(1000px, 100%);
+    margin-inline: auto;
+}
+
+.security-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 58%, transparent);
+    font-size: 0.9rem;
+    font-weight: 750;
+}
+
+.security-breadcrumb-icon,
+.security-heading-icon,
+.help-icon,
+.save-btn-icon,
+.visibility-btn svg {
+    flex: 0 0 auto;
+}
+
+.security-breadcrumb-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.security-breadcrumbs .separator {
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 38%, transparent);
+    font-size: 1.12rem;
+    line-height: 1;
+}
+
+.security-breadcrumbs .active,
+.help-tooltip {
+    color: var(--accent-color, #6c5ce7);
+}
+
+.security-header,
+.security-card,
+.security-message {
+    border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, transparent);
+    background: color-mix(in srgb, var(--background-color, #ffffff) 96%, #ffffff 4%);
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+}
+
+.security-header {
+    border-radius: 18px;
+    padding: 24px;
+}
+
+.security-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: var(--text-color, #0d1b2a);
+    font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 1.15;
+}
+
+.security-heading-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--accent-color, #6c5ce7);
+}
+
+.security-header p {
+    max-width: 720px;
+    margin: 8px 0 0;
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 68%, transparent);
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+.security-form,
+.settings-stack {
+    display: grid;
+    gap: 24px;
+}
+
+.security-card {
+    border-radius: 12px;
+    padding: clamp(18px, 3vw, 24px);
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.security-card h2 {
+    margin: 0 0 4px;
+    color: var(--text-color, #0d1b2a);
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.subtitle {
+    margin: 13px 0 0;
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 62%, transparent);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.security-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.security-card-header > div:first-child {
+    min-width: 0;
+}
+
+.toggle-area {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-left: auto;
+}
+
+.toggle-label {
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 58%, transparent);
+    font-size: 0.88rem;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 76px;
+    height: 40px;
+}
+
+.switch input {
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--text-color, #0d1b2a) 14%, transparent);
+    cursor: pointer;
+    transition: background-color 220ms ease;
+}
+
+.slider::before {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.22);
+    content: "";
+    transition: transform 220ms ease;
+}
+
+.switch input:checked + .slider {
+    background-color: var(--accent-color, #6c5ce7);
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(36px);
+}
+
+.switch input:focus-visible + .slider,
+.save-btn:focus-visible,
+.password-input-wrapper input:focus-visible,
+.visibility-btn:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, transparent);
+    outline-offset: 3px;
+}
+
+.visibility-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.help-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+}
+
+.help-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.tooltip-text {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    z-index: 100;
+    width: 230px;
+    padding: 10px;
+    border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--background-color, #ffffff) 98%, #ffffff 2%);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+    color: var(--text-color, #0d1b2a);
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 1.25;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-4px);
+    transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+    visibility: hidden;
+}
+
+.help-tooltip:hover .tooltip-text,
+.help-tooltip:focus .tooltip-text,
+.help-tooltip:focus-within .tooltip-text {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+    visibility: visible;
+}
+
+.visibility-preview {
+    display: grid;
+    gap: 8px;
+}
+
+.visibility-preview-title {
+    color: var(--accent-color, #6c5ce7);
+    font-size: 0.7rem;
+    font-weight: 900;
+}
+
+.visibility-preview-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px;
+    border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--background-color, #ffffff) 88%, var(--accent-color, #6c5ce7) 12%);
+}
+
+.visibility-preview-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, transparent);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--background-color, #ffffff) 98%, #ffffff 2%);
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 62%, transparent);
+    font-size: 0.78rem;
+    font-weight: 900;
+    object-fit: cover;
+}
+
+.visibility-preview-name,
+.visibility-preview-label {
+    display: block;
+    max-width: 140px;
+    overflow: hidden;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.visibility-preview-name {
+    color: var(--text-color, #0d1b2a);
+    font-size: 0.76rem;
+    font-weight: 850;
+}
+
+.visibility-preview-label {
+    margin-top: 2px;
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 56%, transparent);
+    font-size: 0.66rem;
+}
+
+.password-form {
+    display: grid;
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.field-group {
+    display: grid;
+    gap: 8px;
+}
+
+.field-group label {
+    color: var(--text-color, #0d1b2a);
+    font-size: 0.95rem;
+    font-weight: 850;
+}
+
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 12%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--background-color, #ffffff) 98%, #ffffff 2%);
+    color: var(--text-color, #0d1b2a);
+    font: inherit;
+    font-size: 1rem;
+    outline: none;
+    padding: 12px 48px 12px 16px;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.password-input-wrapper input:focus {
+    border-color: var(--accent-color, #6c5ce7);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, #6c5ce7) 16%, transparent);
+}
+
+.password-input-wrapper input.is-invalid {
+    border-color: #dc2626;
+}
+
+.password-input-wrapper input::placeholder {
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 42%, transparent);
+}
+
+.visibility-btn {
+    position: absolute;
+    right: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: color-mix(in srgb, var(--text-color, #0d1b2a) 58%, transparent);
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+.visibility-btn:hover {
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 12%, transparent);
+    color: var(--accent-color, #6c5ce7);
+}
+
+.visibility-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: auto;
+    border: 1px solid var(--accent-color, #6c5ce7);
+    border-radius: 8px;
+    background: var(--accent-color, #6c5ce7);
+    color: #ffffff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 850;
+    padding: 12px 28px;
+    transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.save-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, transparent);
+}
+
+.save-btn-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.security-message {
+    display: none;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.92rem;
+    font-weight: 750;
+}
+
+.security-message.show {
+    display: block;
+}
+
+.security-message ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+}
+
+.security-message.success {
+    border-color: color-mix(in srgb, #16a34a 24%, transparent);
+    background: color-mix(in srgb, #dcfce7 68%, var(--background-color, #ffffff) 32%);
+    color: #166534;
+}
+
+.security-message.error {
+    border-color: color-mix(in srgb, #dc2626 24%, transparent);
+    background: color-mix(in srgb, #fee2e2 68%, var(--background-color, #ffffff) 32%);
+    color: #991b1b;
+}
+
+@media (max-width: 639px) {
+    .security-content {
+        padding: 18px 14px 96px;
+    }
+
+    .security-header,
+    .security-card {
+        padding: 18px;
+    }
+
+    .security-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .toggle-area {
+        width: 100%;
+        justify-content: space-between;
+        margin-left: 0;
+    }
+
+    .tooltip-text {
+        right: 0;
+        left: auto;
+        transform: translateY(-4px);
+    }
+
+    .help-tooltip:hover .tooltip-text,
+    .help-tooltip:focus .tooltip-text,
+    .help-tooltip:focus-within .tooltip-text {
+        transform: translateY(0);
+    }
+
+    .footer-actions,
+    .save-btn {
+        width: 100%;
+    }
+}

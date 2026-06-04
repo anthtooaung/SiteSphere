@@ -65,7 +65,18 @@ class UpdateEditProfileRequest extends FormRequest
                     return;
                 }
 
-                if (strlen($decoded) > 5 * 1024 * 1024) {
+                $mimeType = strtolower($matches[1] ?? '');
+                $maxBytes = $mimeType === 'gif'
+                    ? 1 * 1024 * 1024
+                    : 5 * 1024 * 1024;
+
+                if (strlen($decoded) > $maxBytes) {
+                    if ($mimeType === 'gif') {
+                        $validator->errors()->add('cropped_avatar', 'The profile GIF must be smaller than 1MB.');
+
+                        return;
+                    }
+
                     $validator->errors()->add('cropped_avatar', 'The profile image may not be greater than 5MB.');
                 }
             },

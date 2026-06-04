@@ -14,6 +14,8 @@ class EditProfilePageTest extends TestCase
 
     private const TINY_PNG_DATA_URL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=';
 
+    private const TINY_GIF_DATA_URL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -48,6 +50,7 @@ class EditProfilePageTest extends TestCase
             ->assertSee('name="cropped_avatar"', false)
             ->assertSee('id="crop-modal"', false)
             ->assertSee('data-bio-counter', false)
+            ->assertSee('Animated GIF up to 1MB')
             ->assertSee('Save Changes')
             ->assertSee('value="Lin Thant Aung"', false)
             ->assertSee('value="lin@example.com"', false)
@@ -146,6 +149,52 @@ class EditProfilePageTest extends TestCase
 
         $this->assertStringStartsWith('profile_images/', $user->user_image);
         Storage::disk('public')->assertExists($user->user_image);
+    }
+
+    public function test_small_gif_avatar_data_url_is_stored_as_gif(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->patch(route('edit-profile.update'), [
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_dob' => null,
+                'user_phone' => null,
+                'user_bio' => null,
+                'cropped_avatar' => self::TINY_GIF_DATA_URL,
+            ])
+            ->assertRedirect(route('edit-profile'))
+            ->assertSessionHasNoErrors();
+
+        $user->refresh();
+
+        $this->assertStringStartsWith('profile_images/', $user->user_image);
+        $this->assertStringEndsWith('.gif', $user->user_image);
+        Storage::disk('public')->assertExists($user->user_image);
+    }
+
+    public function test_oversized_gif_avatar_data_url_is_rejected(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create();
+        $oversizedGif = 'data:image/gif;base64,'.base64_encode(str_repeat('A', 1024 * 1024 + 1));
+
+        $this->actingAs($user)
+            ->patch(route('edit-profile.update'), [
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_dob' => null,
+                'user_phone' => null,
+                'user_bio' => null,
+                'cropped_avatar' => $oversizedGif,
+            ])
+            ->assertSessionHasErrors('cropped_avatar');
+
+        $this->assertNull($user->refresh()->user_image);
     }
 
     public function test_previous_local_avatar_file_is_deleted_after_replacement(): void

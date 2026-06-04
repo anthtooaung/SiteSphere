@@ -38,6 +38,7 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('href="'.route('saved-post').'"', false)
             ->assertSee('Setting')
             ->assertSee('Edit Profile')
+            ->assertSee('href="'.route('edit-profile').'"', false)
             ->assertSee('Appearance')
             ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
@@ -70,6 +71,7 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('Saved Post')
             ->assertSee('href="'.route('saved-post').'"', false)
             ->assertSee('Edit Profile')
+            ->assertSee('href="'.route('edit-profile').'"', false)
             ->assertSee('Appearance')
             ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
@@ -93,6 +95,7 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('Saved Post')
             ->assertSee('href="'.route('saved-post').'"', false)
             ->assertSee('Edit Profile')
+            ->assertSee('href="'.route('edit-profile').'"', false)
             ->assertSee('Appearance')
             ->assertSee('href="'.route('appearance').'"', false)
             ->assertSee('Security')
@@ -165,6 +168,19 @@ class ProfileMenuButtonTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('href="'.route('appearance').'"', false)
+            ->assertSee('class="account-menu-link active"', false)
+            ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_edit_profile_profile_menu_link_marks_current_page(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $response = $this->actingAs($user)->get(route('edit-profile'));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('edit-profile').'"', false)
             ->assertSee('class="account-menu-link active"', false)
             ->assertSee('aria-current="page"', false);
     }

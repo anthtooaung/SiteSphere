@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\AppearanceController;
 use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\EditProfileController;
 use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationOpenController;
@@ -39,9 +40,8 @@ Route::middleware('auth')->group(function (): void {
         return view('layout.menu.dashboard');
     })->name('dashboard');
 
-    Route::get('/menu/edit-profile', function () {
-        return view('layout.menu.edit-profile');
-    })->name('edit-profile');
+    Route::get('/menu/edit-profile', [EditProfileController::class, 'edit'])->name('edit-profile');
+    Route::patch('/menu/edit-profile', [EditProfileController::class, 'update'])->name('edit-profile.update');
 
     Route::get('/menu/saved-post', SavedPostsController::class)->name('saved-post');
 

@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/upload-post.js',
                 'resources/css/reports.css',
                 'resources/css/appearance.css',
+                'resources/css/edit-profile.css',
             ],
             refresh: true,
         }),

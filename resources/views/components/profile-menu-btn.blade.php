@@ -17,7 +17,7 @@
         : [];
 
     $settingMenuItems = [
-        ['label' => 'Edit Profile', 'href' => '#'],
+        ['label' => 'Edit Profile', 'href' => route('edit-profile'), 'active' => request()->routeIs('edit-profile')],
         ['label' => 'Appearance', 'href' => route('appearance'), 'active' => request()->routeIs('appearance')],
         ['label' => 'Security', 'href' => '#'],
     ];

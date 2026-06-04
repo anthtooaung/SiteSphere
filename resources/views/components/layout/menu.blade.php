@@ -45,7 +45,12 @@
             'active' => request()->routeIs('appearance'),
         ],
         ['label' => 'Security', 'href' => '#', 'icon' => 'security'],
-        ['label' => 'Edit Profile', 'href' => '#', 'icon' => 'edit'],
+        [
+            'label' => 'Edit Profile',
+            'href' => route('edit-profile'),
+            'icon' => 'edit',
+            'active' => request()->routeIs('edit-profile'),
+        ],
     ];
 @endphp
 

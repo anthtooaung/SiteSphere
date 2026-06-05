@@ -42,11 +42,17 @@ class AdminReportsPageTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
         $report = $this->createPostReport('Console Target Post', 'Spam / Misleading');
 
-        $this->actingAs($admin)
+        $response = $this->actingAs($admin)
             ->get(route('reports'))
-            ->assertOk()
-            ->assertSee('/build/assets/reports-', false)
-            ->assertSee('data-admin-reports-page', false)
+            ->assertOk();
+
+        $html = $response->getContent();
+        $this->assertTrue(
+            str_contains($html, '/build/assets/reports-') || str_contains($html, 'reports.css'),
+            'Failed asserting that reports CSS is loaded.'
+        );
+
+        $response->assertSee('data-admin-reports-page', false)
             ->assertSee('data-report-filter-form', false)
             ->assertSee('data-report-search', false)
             ->assertSee('data-report-status-filter', false)

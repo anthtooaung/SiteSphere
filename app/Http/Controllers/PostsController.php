@@ -6,7 +6,9 @@ use App\Http\Requests\StorePostsRequest;
 use App\Http\Requests\UpdatePostsRequest;
 use App\Models\AuditLogs;
 use App\Models\Categories;
+use App\Models\Comments;
 use App\Models\Posts;
+use App\Models\Ratings;
 use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -126,9 +128,102 @@ class PostsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Posts $posts)
+    public function show(Posts $posts): View
     {
-        //
+        $posts->load([
+            'tags.categories',
+            'userPosts' => fn ($query) => $query
+                ->where('user_hidden', false)
+                ->with('user.settings')
+                ->latest(),
+        ]);
+
+        $userId = auth()->id();
+
+        // Calculate average rating
+        $averageRating = (float) $posts->ratings()->avg('rating') ?: 0.0;
+        $averageRating = round($averageRating, 1);
+
+        // Count reviews (general reviews / ratings)
+        $ratingsCount = $posts->ratings()->count();
+
+        // Count audits (expert audits)
+        $auditsCount = $posts->userPosts()->where('user_hidden', false)->count();
+
+        // Count comments
+        $commentsCount = $posts->comments()->count();
+
+        // Calculate ratings distribution (1 to 5 stars)
+        $ratingDistribution = [
+            5 => 0,
+            4 => 0,
+            3 => 0,
+            2 => 0,
+            1 => 0,
+        ];
+        if ($ratingsCount > 0) {
+            $distributionData = $posts->ratings()
+                ->select('rating', DB::raw('count(*) as count'))
+                ->groupBy('rating')
+                ->pluck('count', 'rating');
+            foreach ($ratingDistribution as $stars => $count) {
+                $ratingDistribution[$stars] = $distributionData->get($stars, 0);
+            }
+        }
+
+        // Fetch user comments (User Reports)
+        $comments = $posts->comments()
+            ->with([
+                'user.settings',
+                'user.ratings' => fn ($query) => $query->where('post_id', $posts->id),
+                'commentReactions',
+            ])
+            ->withCount(['commentReactions as helpful_count' => fn ($query) => $query->where('helpful', true)])
+            ->latest()
+            ->get();
+
+        // Related posts (horizontal scroll carousel)
+        $tagIds = $posts->tags->pluck('id');
+        $relatedPosts = Posts::query()
+            ->whereKeyNot($posts->id)
+            ->whereHas('tags', fn ($query) => $query->whereIn('tags.id', $tagIds))
+            ->with([
+                'userPosts' => fn ($query) => $query->where('user_hidden', false),
+            ])
+            ->withAvg('ratings as average_rating', 'rating')
+            ->withCount(['userPosts as audits_count' => fn ($query) => $query->where('user_hidden', false)])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        if ($relatedPosts->count() < 5) {
+            $filler = Posts::query()
+                ->whereKeyNot($posts->id)
+                ->whereNotIn('id', $relatedPosts->pluck('id'))
+                ->with([
+                    'userPosts' => fn ($query) => $query->where('user_hidden', false),
+                ])
+                ->withAvg('ratings as average_rating', 'rating')
+                ->withCount(['userPosts as audits_count' => fn ($query) => $query->where('user_hidden', false)])
+                ->latest()
+                ->take(5 - $relatedPosts->count())
+                ->get();
+            $relatedPosts = $relatedPosts->concat($filler);
+        }
+
+        $userRating = $userId ? (Ratings::where('post_id', $posts->id)->where('user_id', $userId)->value('rating') ?? 0) : 0;
+
+        return view('layout.post-detail', [
+            'post' => $posts,
+            'averageRating' => $averageRating,
+            'ratingsCount' => $ratingsCount,
+            'auditsCount' => $auditsCount,
+            'commentsCount' => $commentsCount,
+            'ratingDistribution' => $ratingDistribution,
+            'comments' => $comments,
+            'relatedPosts' => $relatedPosts,
+            'userRating' => $userRating,
+        ]);
     }
 
     /**

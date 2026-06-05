@@ -4,6 +4,8 @@ use App\Http\Controllers\AdminReportsController;
 use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\AppearanceController;
 use App\Http\Controllers\BookmarksController;
+use App\Http\Controllers\CommentReactionsController;
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\EditProfileController;
 use App\Http\Controllers\EditTagsController;
@@ -31,7 +33,12 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/posts/{post}/bookmark', [BookmarksController::class, 'store'])->name('posts.bookmark');
     Route::post('/posts/{post}/report', [ReportsController::class, 'store'])->name('posts.report');
     Route::post('/posts/{post}/ban', [PostsController::class, 'ban'])->name('posts.ban');
+
+    Route::post('/posts/{posts:slug}/comments', [CommentsController::class, 'store'])->name('posts.comments.store');
+    Route::post('/comments/{comment}/react', [CommentReactionsController::class, 'toggle'])->name('comments.react');
 });
+
+Route::get('/posts/{posts:slug}', [PostsController::class, 'show'])->name('posts.show');
 
 Route::post('/contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1')

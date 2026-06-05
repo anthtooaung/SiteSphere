@@ -9,6 +9,7 @@
     'ratingsCount' => 0,
     'commentsCount' => 0,
     'saved' => false,
+    'slug' => null,
 ])
 
 <article
@@ -78,7 +79,13 @@
             <div class="min-w-0 flex-1">
                 <h2 class="line-clamp-2 min-h-10 max-h-10 overflow-hidden break-words text-base font-extrabold leading-5 tracking-normal [color:var(--text-color,#0d1b2a)]"
                     title="{{ $title }}" data-post-card-title>
-                    {{ $title }}
+                    @if($slug)
+                        <a href="{{ route('posts.show', $slug) }}" class="hover:underline hover:[color:var(--accent-color)] transition-colors">
+                            {{ $title }}
+                        </a>
+                    @else
+                        {{ $title }}
+                    @endif
                 </h2>
             </div>
 
@@ -285,14 +292,25 @@
 
     <footer
         class="relative flex items-center  justify-between gap-3 border-t px-4 py-3 sm:px-5 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_96%,var(--accent-color,#6c5ce7)_4%)]">
-        <button type="button"
-            class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--accent-color,#6c5ce7)]">
-            <x-far-comment class="size-5" />
-            <span>Comments</span>
-            <span
-                class="rounded-full px-2 py-0.5 text-[11px] font-bold [background:color-mix(in_srgb,var(--background-color,#ffffff)_82%,var(--accent-color,#6c5ce7)_18%)] [color:var(--accent-color,#6c5ce7)]"
-                x-text="commentsTotal()">{{ $commentsCount }}</span>
-        </button>
+        @if($slug)
+            <a href="{{ route('posts.show', $slug) }}"
+                class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--accent-color,#6c5ce7)]">
+                <x-far-comment class="size-5" />
+                <span>Comments</span>
+                <span
+                    class="rounded-full px-2 py-0.5 text-[11px] font-bold [background:color-mix(in_srgb,var(--background-color,#ffffff)_82%,var(--accent-color,#6c5ce7)_18%)] [color:var(--accent-color,#6c5ce7)]"
+                    x-text="commentsTotal()">{{ $commentsCount }}</span>
+            </a>
+        @else
+            <button type="button"
+                class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--accent-color,#6c5ce7)]">
+                <x-far-comment class="size-5" />
+                <span>Comments</span>
+                <span
+                    class="rounded-full px-2 py-0.5 text-[11px] font-bold [background:color-mix(in_srgb,var(--background-color,#ffffff)_82%,var(--accent-color,#6c5ce7)_18%)] [color:var(--accent-color,#6c5ce7)]"
+                    x-text="commentsTotal()">{{ $commentsCount }}</span>
+            </button>
+        @endif
         <div class="relative">
             @auth
                 <button type="button"

@@ -85,6 +85,7 @@
                         :ratings-count="$post['ratings_count']"
                         :comments-count="$post['comments_count']"
                         :saved="$post['is_bookmarked']"
+                        :slug="$post['slug']"
                         data-category="{{ $post['category_slug'] }}"
                         data-rating="{{ (int) floor($post['average_rating']) }}"
                         data-tags="{{ implode(',', $post['tags']) }}"

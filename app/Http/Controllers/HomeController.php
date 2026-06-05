@@ -44,6 +44,7 @@ class HomeController extends Controller
                     'id' => $post->id,
                     'title' => $post->title,
                     'url' => $post->url,
+                    'slug' => $post->slug,
                     'category' => $primaryCategory?->name ?? 'Uncategorized',
                     'category_slug' => $primaryCategory?->slug ?? 'uncategorized',
                     'tags' => $post->tags->pluck('name')->values()->all(),
@@ -58,7 +59,7 @@ class HomeController extends Controller
                             $name = $user?->name ?? 'Reviewer';
 
                             return [
-                                'username' => $isProfileVisible ? Str::slug($name, '_') : 'Anonymous',
+                                'username' => $isProfileVisible ? '@'.Str::slug($name, '_') : 'Anonymous',
                                 'initial' => $isProfileVisible ? Str::of($name)->substr(0, 1)->upper()->toString() : '?',
                                 'time' => 'Published '.$userPost->created_at->diffForHumans(),
                                 'description' => $userPost->description,

@@ -63,7 +63,7 @@ class LoadingComponentTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/dashboard');
+        $response = $this->actingAs($user)->get(route('dashboard'));
 
         $response
             ->assertOk()

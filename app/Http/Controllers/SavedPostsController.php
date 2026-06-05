@@ -75,6 +75,7 @@ class SavedPostsController extends Controller
             'id' => $post->id,
             'title' => $post->title,
             'url' => $post->url,
+            'slug' => $post->slug,
             'category' => $primaryCategory?->name ?? 'Uncategorized',
             'category_slug' => $primaryCategory?->slug ?? 'uncategorized',
             'tags' => $post->tags->pluck('name')->values()->all(),

@@ -2,65 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCommentReactionsRequest;
-use App\Http\Requests\UpdateCommentReactionsRequest;
 use App\Models\CommentReactions;
+use App\Models\Comments;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CommentReactionsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function toggle(Request $request, Comments $comment): JsonResponse
     {
-        //
-    }
+        $user = $request->user();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $reaction = CommentReactions::query()
+            ->where('user_id', $user->id)
+            ->where('comment_id', $comment->id)
+            ->first();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreCommentReactionsRequest $request)
-    {
-        //
-    }
+        if ($reaction) {
+            $reaction->delete();
+            $voted = false;
+        } else {
+            CommentReactions::query()->create([
+                'user_id' => $user->id,
+                'comment_id' => $comment->id,
+                'helpful' => true,
+            ]);
+            $voted = true;
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CommentReactions $commentReactions)
-    {
-        //
-    }
+        $helpfulCount = CommentReactions::query()
+            ->where('comment_id', $comment->id)
+            ->where('helpful', true)
+            ->count();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CommentReactions $commentReactions)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCommentReactionsRequest $request, CommentReactions $commentReactions)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(CommentReactions $commentReactions)
-    {
-        //
+        return response()->json([
+            'voted' => $voted,
+            'helpful_count' => $helpfulCount,
+        ]);
     }
 }

@@ -2,65 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCommentsRequest;
-use App\Http\Requests\UpdateCommentsRequest;
 use App\Models\Comments;
+use App\Models\Posts;
+use App\Models\Ratings;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CommentsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCommentsRequest $request)
+    public function store(Request $request, Posts $posts): RedirectResponse
     {
-        //
-    }
+        $validated = $request->validate([
+            'content' => 'required|string|max:2000',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Comments $comments)
-    {
-        //
-    }
+        $user = $request->user();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Comments $comments)
-    {
-        //
-    }
+        DB::transaction(function () use ($posts, $user, $validated): void {
+            Comments::query()->create([
+                'user_id' => $user->id,
+                'post_id' => $posts->id,
+                'content' => $validated['content'],
+            ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCommentsRequest $request, Comments $comments)
-    {
-        //
-    }
+            Ratings::query()->updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'post_id' => $posts->id,
+                ],
+                [
+                    'rating' => $validated['rating'],
+                ]
+            );
+        });
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Comments $comments)
-    {
-        //
+        return back()->with('success', 'Review submitted successfully.');
     }
 }

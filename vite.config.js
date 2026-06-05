@@ -23,6 +23,8 @@ export default defineConfig({
                 'resources/css/edit-tag.css',
                 'resources/css/profile-detail.css',
                 'resources/js/profile-detail.js',
+                'resources/css/post-detail.css',
+                'resources/js/post-detail.js',
             ],
             refresh: true,
         }),

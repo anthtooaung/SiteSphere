@@ -104,7 +104,7 @@
                             <x-layout.post-card :post-id="$post['id']" :title="$post['title']" :url="$post['url']"
                                 :category="$post['category']" :tags="$post['tags']" :profiles="$post['profiles']"
                                 :average-rating="$post['average_rating']" :ratings-count="$post['ratings_count']"
-                                :comments-count="$post['comments_count']" :saved="true"
+                                :comments-count="$post['comments_count']" :saved="true" :slug="$post['slug']"
                                 class="saved-post-card"
                                 data-saved-post-card
                                 data-saved-post-title="{{ $post['title'] }}"

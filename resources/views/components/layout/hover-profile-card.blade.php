@@ -1,4 +1,4 @@
-<div class="profile-card">
+<div class="hover-profile-card">
     <div class="top-section">
         <div class="profile-img">
             @if($cardUser->user_image)

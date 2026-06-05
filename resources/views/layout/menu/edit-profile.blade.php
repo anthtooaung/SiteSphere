@@ -41,10 +41,6 @@
                 data-edit-profile-page
             >
                 <nav class="edit-profile-breadcrumbs" aria-label="Breadcrumb">
-                    <x-fas-house class="edit-profile-breadcrumb-icon" aria-hidden="true" />
-                    <span class="separator">›</span>
-                    <span>Settings</span>
-                    <span class="separator">›</span>
                     <span class="active">Profile Settings</span>
                 </nav>
 

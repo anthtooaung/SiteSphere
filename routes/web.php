@@ -16,6 +16,7 @@ use App\Http\Controllers\PostsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SavedPostsController;
 use App\Http\Controllers\SecurityController;
+use App\Http\Controllers\UserHoverCardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/favicon.svg', FaviconController::class)->name('favicon');
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function (): void {
 });
 
 Route::get('/posts/{posts:slug}', [PostsController::class, 'show'])->name('posts.show');
+Route::get('/users/{user}/hover-card', UserHoverCardController::class)->name('users.hover-card');
 
 Route::post('/contact', [ContactMessageController::class, 'store'])
     ->middleware('throttle:5,1')

@@ -59,6 +59,7 @@ class HomeController extends Controller
                             $name = $user?->name ?? 'Reviewer';
 
                             return [
+                                'user_id' => $isProfileVisible ? $user?->id : null,
                                 'username' => $isProfileVisible ? '@'.Str::slug($name, '_') : 'Anonymous',
                                 'initial' => $isProfileVisible ? Str::of($name)->substr(0, 1)->upper()->toString() : '?',
                                 'time' => 'Published '.$userPost->created_at->diffForHumans(),

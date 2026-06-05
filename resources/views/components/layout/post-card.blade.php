@@ -259,6 +259,7 @@
                                     '[border-color:var(--accent-color,#6c5ce7)] [color:var(--accent-color,#6c5ce7)] font-bold' :
                                     'border-transparent [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_48%,transparent)]'"
                                 x-bind:data-active="activeProfile === index ? 'true' : 'false'"
+                                x-bind:data-hover-profile="profile.user_id"
                                 x-on:click="switchProfile(index)" data-profile-tab>
                                 <img x-show="profile.avatar" x-bind:src="profile.avatar"
                                     x-bind:alt="profile.username + ' profile'" class="size-6 rounded-full object-cover">

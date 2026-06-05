@@ -175,12 +175,17 @@ class PostsController extends Controller
         $comments = $posts->comments()
             ->with([
                 'user.settings',
-                'user.ratings' => fn ($query) => $query->where('post_id', $posts->id),
                 'commentReactions',
             ])
             ->withCount(['commentReactions as helpful_count' => fn ($query) => $query->where('helpful', true)])
             ->latest()
             ->get();
+
+        // Ratings keyed by user_id for this post (used in the comments section)
+        $commentUserRatings = Ratings::query()
+            ->where('post_id', $posts->id)
+            ->whereIn('user_id', $comments->pluck('user_id')->unique())
+            ->pluck('rating', 'user_id');
 
         // Related posts (horizontal scroll carousel)
         $tagIds = $posts->tags->pluck('id');
@@ -221,6 +226,7 @@ class PostsController extends Controller
             'commentsCount' => $commentsCount,
             'ratingDistribution' => $ratingDistribution,
             'comments' => $comments,
+            'commentUserRatings' => $commentUserRatings,
             'relatedPosts' => $relatedPosts,
             'userRating' => $userRating,
         ]);

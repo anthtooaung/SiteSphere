@@ -21,6 +21,8 @@ export default defineConfig({
                 'resources/css/edit-profile.css',
                 'resources/css/security.css',
                 'resources/css/edit-tag.css',
+                'resources/css/profile-detail.css',
+                'resources/js/profile-detail.js',
             ],
             refresh: true,
         }),

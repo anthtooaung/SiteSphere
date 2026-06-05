@@ -42,6 +42,10 @@ Route::middleware('auth')->group(function (): void {
         return view('layout.menu.dashboard');
     })->name('dashboard');
 
+    Route::get('/profile', function () {
+        return view('layout.profile-detail');
+    })->name('profile-detail');
+
     Route::get('/menu/edit-profile', [EditProfileController::class, 'edit'])->name('edit-profile');
     Route::patch('/menu/edit-profile', [EditProfileController::class, 'update'])->name('edit-profile.update');
 

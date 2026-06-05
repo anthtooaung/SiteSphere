@@ -588,12 +588,11 @@
     align-self: flex-start;
     flex-direction: column;
     flex-shrink: 0;
-    overflow: hidden auto;
+    overflow: visible;
     z-index: 900;
     border: 0;
     background: color-mix(in srgb, var(--background-color) 94%, #ffffff 6%);
     color: var(--text-color);
-    scrollbar-gutter: stable;
 }
 
 .layout-menu--left {
@@ -817,7 +816,7 @@
 
 .layout-menu-nav {
     min-height: 0;
-    overflow-y: auto;
+    overflow: visible;
     padding: 10px;
 }
 

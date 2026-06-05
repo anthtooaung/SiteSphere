@@ -4,7 +4,7 @@
     $isDashboardRoute = request()->routeIs('dashboard');
 
     $profileMenuItems = [
-        ['label' => 'View Profile', 'href' => '#'],
+        ['label' => 'View Profile', 'href' => route('profile-detail'), 'active' => request()->routeIs('profile-detail')],
         ['label' => 'Saved Post', 'href' => route('saved-post'), 'active' => request()->routeIs('saved-post')],
     ];
 
@@ -19,8 +19,8 @@
     $settingMenuItems = [
         ['label' => 'Edit Profile', 'href' => route('edit-profile'), 'active' => request()->routeIs('edit-profile')],
         ['label' => 'Appearance', 'href' => route('appearance'), 'active' => request()->routeIs('appearance')],
-        ['label' => 'Security', 'href' => route('security'), 'active' => request()->routeIs('security')],
         ['label' => 'Edit Tag', 'href' => route('edit-tag'), 'active' => request()->routeIs('edit-tag')],
+        ['label' => 'Security', 'href' => route('security'), 'active' => request()->routeIs('security')],
     ];
 @endphp
 

@@ -66,6 +66,33 @@ class WelcomePageTest extends TestCase
         $response->assertSee('--font-family: Figtree, sans-serif', false);
     }
 
+    public function test_guest_welcome_page_uses_database_default_font_and_theme(): void
+    {
+        DB::table('themes')->truncate();
+        DB::table('fonts')->truncate();
+
+        DB::table('themes')->insert([
+            'accent_color' => '#059669',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('fonts')->insert([
+            'display_name' => 'Inter',
+            'google_family' => 'Inter',
+            'font_family' => '"Inter", sans-serif',
+            'sort_order' => 1,
+            'is_default' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $response = $this->get('/');
+        $response->assertOk();
+        $response->assertSee('--accent-color: #059669', false);
+        $response->assertSee('--font-family: "Inter", sans-serif', false);
+    }
+
     public function test_guest_welcome_page_renders_the_auth_nav_menu(): void
     {
         $response = $this->get('/');

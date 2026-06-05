@@ -12,6 +12,7 @@ class InputField extends Component
      * Create a new component instance.
      */
     public $id;
+
     public function __construct($id)
     {
         $this->id = $id;

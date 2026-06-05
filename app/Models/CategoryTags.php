@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\CategoryTagsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CategoryTags extends Model
 {
-    /** @use HasFactory<\Database\Factories\CategoryTagsFactory> */
+    /** @use HasFactory<CategoryTagsFactory> */
     use HasFactory;
 }

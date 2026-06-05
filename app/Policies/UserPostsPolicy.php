@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\UserPosts;
-use Illuminate\Auth\Access\Response;
 
 class UserPostsPolicy
 {

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\User;
+use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
 use Database\Seeders\ThemesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -106,5 +107,43 @@ class PostDetailTest extends TestCase
             'user_id' => $user->id,
             'comment_id' => $comment->id,
         ]);
+    }
+
+    public function test_contributors_can_be_anonymous_on_post_detail_page(): void
+    {
+        $viewer = User::factory()->create();
+        $post = Posts::factory()->create();
+
+        // 1. Visible contributor
+        $visibleUser = User::factory()->create(['name' => 'Visible Contributor']);
+        $visibleUser->settings()->update(['user_post_visible' => true]);
+        UserPosts::create([
+            'user_id' => $visibleUser->id,
+            'post_id' => $post->id,
+            'description' => 'Visible contribution text',
+            'user_hidden' => false,
+        ]);
+
+        // 2. Anonymous contributor
+        $anonymousUser = User::factory()->create(['name' => 'Secret Contributor']);
+        $anonymousUser->settings()->update(['user_post_visible' => false]);
+        UserPosts::create([
+            'user_id' => $anonymousUser->id,
+            'post_id' => $post->id,
+            'description' => 'Secret contribution text',
+            'user_hidden' => false,
+        ]);
+
+        $response = $this
+            ->actingAs($viewer)
+            ->get(route('posts.show', $post->slug));
+
+        $response->assertOk();
+        // The visible contributor name should be shown
+        $response->assertSee('Visible Contributor');
+        // The secret contributor name should NOT be shown
+        $response->assertDontSee('Secret Contributor');
+        // The anonymous placeholder should be shown
+        $response->assertSee('Anonymous');
     }
 }

@@ -20,8 +20,6 @@
     <x-layout.nav />
 
     <div class="dashboard-page dashboard-page--{{ $dashboardMenuLocation }} post-detail-page">
-        <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
-
         <main class="dashboard-content post-detail-content">
             <!-- Background Blur -->
             <div class="bg-blur blur1"></div>
@@ -153,13 +151,26 @@
                         </div>
 
                         <!-- Taxonomy tags -->
-                        <div class="aud-tags">
-                            @foreach($post->tags->flatMap->categories->unique('id') as $category)
-                                <span class="ss-tag is-cat">{{ $category->name }}</span>
-                            @endforeach
-                            @foreach($post->tags as $tag)
-                                <span class="ss-tag is-accent">{{ $tag->name }}</span>
-                            @endforeach
+                        <div class="aud-tags-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 18px;">
+                            @if($post->tags->flatMap->categories->unique('id')->isNotEmpty())
+                                <div class="aud-categories" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                    @foreach($post->tags->flatMap->categories->unique('id') as $category)
+                                        @php
+                                            $catColor = $category->category_color ?? '#6c5ce7';
+                                        @endphp
+                                        <span class="ss-tag is-cat" style="background-color: color-mix(in srgb, {{ $catColor }} 14%, transparent); color: {{ $catColor }};">
+                                            {{ $category->name }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @endif
+                            @if($post->tags->isNotEmpty())
+                                <div class="aud-tags" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0;">
+                                    @foreach($post->tags as $tag)
+                                        <x-tag :tag="$tag" class="ss-tag is-accent" />
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     </header>
 
@@ -241,27 +252,34 @@
                                 <nav class="aud-depo-index" aria-label="Auditors" id="depoNav">
                                     @foreach($post->userPosts as $userPost)
                                         @php
-                                            $initials = collect(explode(' ', $userPost->user->name))
-                                                ->map(fn($n) => Str::substr($n, 0, 1))
-                                                ->join('');
-                                            $hue = ($userPost->user->id * 47) % 360;
+                                            $isProfileVisible = (bool) ($userPost->user->settings?->user_post_visible);
+                                            $displayName = $isProfileVisible ? $userPost->user->name : 'Anonymous';
+                                            $initials = $isProfileVisible 
+                                                ? collect(explode(' ', $userPost->user->name))->map(fn($n) => Str::substr($n, 0, 1))->join('')
+                                                : '?';
+                                            $hue = $isProfileVisible ? (($userPost->user->id * 47) % 360) : 222;
+                                            $avatarUrl = $isProfileVisible ? $userPost->user->getAvatarUrl() : '';
                                         @endphp
                                         <button
                                             type="button"
                                             class="aud-depo-tab @if($loop->first) is-active @endif"
                                             data-contributor="user-{{ $userPost->user->id }}"
-                                            data-hover-profile="{{ $userPost->user->id }}"
+                                            @if($isProfileVisible) data-hover-profile="{{ $userPost->user->id }}" @endif
                                             aria-selected="{{ $loop->first ? 'true' : 'false' }}"
                                         >
-                                            <span
-                                                class="ss-avatar is-initial"
-                                                aria-hidden="true"
-                                                style="width: 40px; height: 40px; border-radius: 50%; --ph-hue: {{ $hue }};"
-                                            >
-                                                <span class="ss-avatar-initials" style="font-size: 13.6px">{{ $initials }}</span>
-                                            </span>
+                                            @if($avatarUrl)
+                                                <img src="{{ $avatarUrl }}" alt="{{ $displayName }} profile" class="ss-avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                                            @else
+                                                <span
+                                                    class="ss-avatar is-initial"
+                                                    aria-hidden="true"
+                                                    style="width: 40px; height: 40px; border-radius: 50%; --ph-hue: {{ $hue }};"
+                                                >
+                                                    <span class="ss-avatar-initials" style="font-size: 13.6px">{{ $initials }}</span>
+                                                </span>
+                                            @endif
                                             <span class="aud-depo-tab-body">
-                                                <span class="aud-depo-tab-name">{{ $userPost->user->name }}</span>
+                                                <span class="aud-depo-tab-name">{{ $displayName }}</span>
                                             </span>
                                         </button>
                                     @endforeach
@@ -271,10 +289,14 @@
                                 <div id="depoPanels">
                                     @foreach($post->userPosts as $userPost)
                                         @php
-                                            $initials = collect(explode(' ', $userPost->user->name))
-                                                ->map(fn($n) => Str::substr($n, 0, 1))
-                                                ->join('');
-                                            $hue = ($userPost->user->id * 47) % 360;
+                                            $isProfileVisible = (bool) ($userPost->user->settings?->user_post_visible);
+                                            $displayName = $isProfileVisible ? $userPost->user->name : 'Anonymous';
+                                            $initials = $isProfileVisible 
+                                                ? collect(explode(' ', $userPost->user->name))->map(fn($n) => Str::substr($n, 0, 1))->join('')
+                                                : '?';
+                                            $hue = $isProfileVisible ? (($userPost->user->id * 47) % 360) : 222;
+                                            $avatarUrl = $isProfileVisible ? $userPost->user->getAvatarUrl() : '';
+                                            $bio = $isProfileVisible ? ($userPost->user->user_bio ?? 'Expert Contributor') : 'Expert Contributor';
                                         @endphp
                                         <article
                                             class="aud-depo-panel"
@@ -283,18 +305,22 @@
                                             @if(!$loop->first) hidden @endif
                                         >
                                             <header class="aud-depo-panel-head">
-                                                <span
-                                                    class="ss-avatar is-initial"
-                                                    aria-hidden="true"
-                                                    style="width: 62px; height: 62px; border-radius: 50%; --ph-hue: {{ $hue }};"
-                                                >
-                                                    <span class="ss-avatar-initials" style="font-size: 21.1px">{{ $initials }}</span>
-                                                </span>
+                                                @if($avatarUrl)
+                                                    <img src="{{ $avatarUrl }}" alt="{{ $displayName }} profile" class="ss-avatar" style="width: 62px; height: 62px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                                                @else
+                                                    <span
+                                                        class="ss-avatar is-initial"
+                                                        aria-hidden="true"
+                                                        style="width: 62px; height: 62px; border-radius: 50%; --ph-hue: {{ $hue }};"
+                                                    >
+                                                        <span class="ss-avatar-initials" style="font-size: 21.1px">{{ $initials }}</span>
+                                                    </span>
+                                                @endif
                                                 <div class="aud-depo-id">
                                                     <div class="aud-depo-name-row">
-                                                        <h3>{{ $userPost->user->name }}</h3>
+                                                        <h3>{{ $displayName }}</h3>
                                                     </div>
-                                                    <p class="aud-depo-role">{{ $userPost->user->user_bio ?? 'Expert Contributor' }}</p>
+                                                    <p class="aud-depo-role">{{ $bio }}</p>
                                                     <p class="aud-depo-date ss-mono">{{ $userPost->created_at->diffForHumans() }}</p>
                                                 </div>
                                             </header>

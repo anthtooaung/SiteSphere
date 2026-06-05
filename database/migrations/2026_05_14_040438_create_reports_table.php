@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('target_name',['users','posts','comments']);
+            $table->enum('target_name', ['users', 'posts', 'comments']);
             $table->integer('target_id');
             $table->longText('reason');
             $table->boolean('admin_read')->default(false);

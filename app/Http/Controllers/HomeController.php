@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categories;
+use App\Models\CustomTags;
 use App\Models\Posts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -14,7 +15,12 @@ class HomeController extends Controller
     {
         $initialCategory = $request->query('category');
         $initialCategory = is_string($initialCategory) ? $initialCategory : null;
-        $userId = $request->user()?->id;
+        $user = $request->user();
+        $userId = $user?->id;
+
+        $customTags = $user
+            ? CustomTags::query()->where('user_id', $user->id)->get()->keyBy('tag_id')
+            : collect();
 
         $posts = Posts::query()
             ->with([
@@ -36,7 +42,7 @@ class HomeController extends Controller
                 ->where('user_hidden', false))
             ->latest()
             ->get()
-            ->map(function (Posts $post): array {
+            ->map(function (Posts $post) use ($customTags): array {
                 $primaryTag = $post->tags->first();
                 $primaryCategory = $primaryTag?->categories->first();
 
@@ -47,7 +53,16 @@ class HomeController extends Controller
                     'slug' => $post->slug,
                     'category' => $primaryCategory?->name ?? 'Uncategorized',
                     'category_slug' => $primaryCategory?->slug ?? 'uncategorized',
-                    'tags' => $post->tags->pluck('name')->values()->all(),
+                    'tags' => $post->tags->map(function ($tag) use ($customTags): array {
+                        $custom = $customTags->get($tag->id);
+
+                        return [
+                            'id' => $tag->id,
+                            'name' => $custom ? $custom->name : $tag->name,
+                            'color' => $custom ? $custom->color : $tag->tag_color,
+                            'slug' => $tag->slug,
+                        ];
+                    })->values()->all(),
                     'average_rating' => round((float) ($post->average_rating ?? 0), 1),
                     'ratings_count' => (int) $post->ratings_count,
                     'comments_count' => (int) $post->comments_count,
@@ -82,9 +97,9 @@ class HomeController extends Controller
             'categories' => $categories,
             'categoryTags' => $categories
                 ->mapWithKeys(fn (Categories $category): array => [
-                    $category->slug => $category->tags->pluck('name')->values(),
+                    $category->slug => $category->tags->map(fn ($t) => $customTags->get($t->id)?->name ?? $t->name)->values(),
                 ])
-                ->put('all', $categories->flatMap->tags->pluck('name')->unique()->values()),
+                ->put('all', $categories->flatMap->tags->map(fn ($t) => $customTags->get($t->id)?->name ?? $t->name)->unique()->values()),
             'categoryLabels' => $categories
                 ->pluck('name', 'slug')
                 ->put('All', 'All')

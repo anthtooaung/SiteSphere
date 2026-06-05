@@ -1,7 +1,7 @@
 .upload-post-page {
   min-height: calc(100vh - 76px);
   padding: 112px 24px 32px;
-  background: #f6f8fb;
+  background: color-mix(in srgb, var(--background-color, #ffffff) 94%, var(--accent-color, #6c5ce7) 6%);
 }
 
 .upload-post-shell {
@@ -23,9 +23,9 @@
   min-height: 580px;
   flex-shrink: 0;
   flex-direction: column;
-  border: 1px solid #f1f5f9;
+  border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, var(--background-color, #ffffff));
   border-radius: 20px;
-  background: #ffffff;
+  background: var(--background-color, #ffffff);
   padding: 24px;
   box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
 }
@@ -73,7 +73,7 @@
 
 .upload-post-heading h1 {
   margin: 0;
-  color: #1f2937;
+  color: var(--text-color, #1f2937);
   font-size: 1rem;
   font-weight: 800;
   letter-spacing: 0;
@@ -91,7 +91,7 @@
 }
 
 .upload-field label {
-  color: #4b5563;
+  color: color-mix(in srgb, var(--text-color, #0d1b2a) 60%, var(--background-color, #ffffff));
   font-size: 0.75rem;
   font-weight: 700;
 }
@@ -104,10 +104,10 @@
 .upload-field textarea,
 .tag-trigger-box {
   width: 100%;
-  border: 1px solid #e5e7eb;
+  border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 15%, var(--background-color, #ffffff));
   border-radius: 10px;
-  background: #ffffff;
-  color: #374151;
+  background: var(--background-color, #ffffff);
+  color: var(--text-color, #374151);
   font-size: 0.75rem;
   outline: none;
   transition:
@@ -168,7 +168,7 @@
 .tag-placeholder {
   position: absolute;
   left: 14px;
-  color: #9ca3af;
+  color: color-mix(in srgb, var(--text-color, #0d1b2a) 40%, var(--background-color, #ffffff));
   font-size: 0.75rem;
 }
 
@@ -177,7 +177,7 @@
   align-items: center;
   gap: 10px;
   margin-top: auto;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, var(--background-color, #ffffff));
   padding-top: 16px;
 }
 
@@ -195,8 +195,8 @@
 }
 
 .upload-discard-button {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: color-mix(in srgb, var(--text-color, #0d1b2a) 8%, var(--background-color, #ffffff));
+  color: var(--text-color, #4b5563);
 }
 
 .upload-submit-button {
@@ -237,9 +237,9 @@
   width: min(100%, 330px);
   flex-direction: column;
   gap: 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 15%, var(--background-color, #ffffff));
   border-radius: 20px;
-  background: #ffffff;
+  background: var(--background-color, #ffffff);
   padding: 16px;
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
 }
@@ -260,7 +260,8 @@
   border: 1px solid var(--accent-color, #6c5ce7);
   border-radius: 12px;
   padding: 8px 10px;
-  color: #374151;
+  color: var(--text-color, #374151);
+  background: var(--background-color, #ffffff);
   font-size: 0.75rem;
   font-weight: 600;
   outline: none;
@@ -273,8 +274,8 @@
   place-items: center;
   border: 0;
   border-radius: 10px;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: color-mix(in srgb, var(--text-color, #0d1b2a) 8%, var(--background-color, #ffffff));
+  color: var(--text-color, #6b7280);
 }
 
 .tag-picker-section {
@@ -308,8 +309,8 @@
 .tag-category-button,
 .suggested-tag-button {
   padding: 5px 10px;
-  background: #e5e7eb;
-  color: #374151;
+  background: color-mix(in srgb, var(--text-color, #0d1b2a) 10%, var(--background-color, #ffffff));
+  color: var(--text-color, #374151);
   font-size: 0.66rem;
 }
 
@@ -319,8 +320,8 @@
 }
 
 .suggested-tag-button {
-  background: #eef2ff;
-  color: #4f46e5;
+  background: color-mix(in srgb, var(--accent-color, #6c5ce7) 8%, var(--background-color, #ffffff));
+  color: var(--accent-color, #4f46e5);
 }
 
 .suggested-tag-button.is-selected {
@@ -332,8 +333,8 @@
   align-items: center;
   gap: 5px;
   padding: 3px 10px;
-  background: #eef2ff;
-  color: #4f46e5;
+  background: color-mix(in srgb, var(--accent-color, #6c5ce7) 8%, var(--background-color, #ffffff));
+  color: var(--accent-color, #4f46e5);
   font-size: 0.65rem;
 }
 
@@ -392,9 +393,9 @@
     z-index: 1;
     width: 10px;
     height: 10px;
-    border-bottom: 1px solid #e5e7eb;
-    border-left: 1px solid #e5e7eb;
-    background: #ffffff;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 15%, var(--background-color, #ffffff));
+    border-left: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 15%, var(--background-color, #ffffff));
+    background: var(--background-color, #ffffff);
     content: "";
     transform: rotate(45deg);
   }

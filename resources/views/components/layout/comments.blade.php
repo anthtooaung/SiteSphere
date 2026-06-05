@@ -20,15 +20,19 @@
             <input type="hidden" name="rating" id="ratingInput" value="{{ $userRating }}">
 
             <div class="aud-composer-top">
-                <span
-                    class="ss-avatar is-initial"
-                    aria-hidden="true"
-                    style="width: 32px; height: 32px; border-radius: 50%; --ph-hue: {{ (auth()->id() * 47) % 360 }};"
-                >
-                    <span class="ss-avatar-initials" style="font-size: 10.9px">
-                        {{ collect(explode(' ', auth()->user()->name))->map(fn($n) => Str::substr($n, 0, 1))->join('') }}
+                @if(auth()->user()->getAvatarUrl())
+                    <img src="{{ auth()->user()->getAvatarUrl() }}" alt="{{ auth()->user()->name }} profile" class="ss-avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                @else
+                    <span
+                        class="ss-avatar is-initial"
+                        aria-hidden="true"
+                        style="width: 32px; height: 32px; border-radius: 50%; --ph-hue: {{ (auth()->id() * 47) % 360 }};"
+                    >
+                        <span class="ss-avatar-initials" style="font-size: 10.9px">
+                            {{ collect(explode(' ', auth()->user()->name))->map(fn($n) => Str::substr($n, 0, 1))->join('') }}
+                        </span>
                     </span>
-                </span>
+                @endif
 
                 <span class="aud-composer-label">Contribute your experience</span>
 
@@ -56,6 +60,7 @@
                     type="submit"
                     class="aud-submit"
                     id="reviewSubmit"
+                    style="background-color: var(--accent-color); color: var(--background-color);"
                     disabled
                 >
                     Submit
@@ -65,7 +70,7 @@
     @else
         <div class="aud-composer" style="text-align: center; padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper);">
             <p class="aud-sub" style="margin: 0 auto 12px;">You must be logged in to contribute your experience.</p>
-            <a href="{{ route('login') }}" class="aud-submit" style="display: inline-block;">Login to Review</a>
+            <a href="{{ route('login') }}" class="aud-submit" style="display: inline-block; background-color: var(--accent-color); color: var(--background-color);">Login to Review</a>
         </div>
     @endauth
 
@@ -81,14 +86,18 @@
                 $voted = auth()->check() && $comment->commentReactions->contains('user_id', auth()->id());
             @endphp
             <article class="aud-row" data-review-id="comment-{{ $comment->id }}">
-                <span
-                    class="ss-avatar is-initial"
-                    aria-hidden="true"
-                    data-hover-profile="{{ $comment->user_id }}"
-                    style="width: 34px; height: 34px; border-radius: 50%; --ph-hue: {{ $cHue }};"
-                >
-                    <span class="ss-avatar-initials" style="font-size: 11.6px">{{ $cInitials }}</span>
-                </span>
+                @if($comment->user->getAvatarUrl())
+                    <img src="{{ $comment->user->getAvatarUrl() }}" alt="{{ $comment->user->name }} profile" class="ss-avatar" data-hover-profile="{{ $comment->user_id }}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                @else
+                    <span
+                        class="ss-avatar is-initial"
+                        aria-hidden="true"
+                        data-hover-profile="{{ $comment->user_id }}"
+                        style="width: 34px; height: 34px; border-radius: 50%; --ph-hue: {{ $cHue }};"
+                    >
+                        <span class="ss-avatar-initials" style="font-size: 11.6px">{{ $cInitials }}</span>
+                    </span>
+                @endif
                 <div class="aud-row-body">
                     <div class="aud-row-head">
                         <span class="aud-row-head-left">

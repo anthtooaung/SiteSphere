@@ -15,7 +15,9 @@
         ->all();
 
     $initialCategory = $categories->first();
-    $profileName = auth()->user()?->name ?? 'Reviewer';
+    $user = auth()->user();
+    $isProfileVisible = $user ? (bool) ($user->settings?->user_post_visible) : false;
+    $profileName = $user?->name ?? 'Reviewer';
     $oldTagIds = collect(old('tags', []))->map(fn ($tag) => (string) $tag)->values();
 @endphp
 
@@ -34,25 +36,25 @@
 
                         <div class="upload-field">
                             <label for="input-title">Title <span>*</span></label>
-                            <input type="text" id="input-title" name="title" value="{{ old('title') }}" placeholder="Enter title here..." @class(['is-invalid' => $errors->has('title')])>
+                            <input type="text" id="input-title" name="title" value="{{ old('title') }}" placeholder="Enter title here..." @class(['is-invalid' => $errors->has('title')]) style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
                             <p id="error-title" @class(['upload-error', 'hidden' => ! $errors->has('title')])>{{ $errors->first('title') ?: 'Title is required.' }}</p>
                         </div>
 
                         <div class="upload-field">
                             <label for="input-link">Website Link <span>*</span></label>
-                            <input type="url" id="input-link" name="url" value="{{ old('url') }}" placeholder="https://example.com" @class(['is-invalid' => $errors->has('url')])>
+                            <input type="url" id="input-link" name="url" value="{{ old('url') }}" placeholder="https://example.com" @class(['is-invalid' => $errors->has('url')]) style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
                             <p id="error-link" @class(['upload-error', 'hidden' => ! $errors->has('url')])>{{ $errors->first('url') ?: 'Please enter a valid link, for example https://example.com.' }}</p>
                         </div>
 
                         <div class="upload-field">
                             <label for="input-desc">Description <span>*</span></label>
-                            <textarea id="input-desc" name="description" rows="3" placeholder="Write description here..." @class(['is-invalid' => $errors->has('description')])>{{ old('description') }}</textarea>
+                            <textarea id="input-desc" name="description" rows="3" placeholder="Write description here..." @class(['is-invalid' => $errors->has('description')]) style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">{{ old('description') }}</textarea>
                             <p id="error-desc" @class(['upload-error', 'hidden' => ! $errors->has('description')])>{{ $errors->first('description') ?: 'Description is required.' }}</p>
                         </div>
 
                         <div class="upload-field">
                             <label for="tag-search-input">Tag <span>*</span></label>
-                            <button type="button" id="tag-trigger-box" @class(['tag-trigger-box', 'is-invalid' => $errors->has('tags') || $errors->has('tags.*')])>
+                            <button type="button" id="tag-trigger-box" @class(['tag-trigger-box', 'is-invalid' => $errors->has('tags') || $errors->has('tags.*')]) style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
                                 <span id="form-active-tags-preview" class="active-tags-preview"></span>
                                 <span id="input-placeholder-text" class="tag-placeholder">Add tag here...</span>
                             </button>
@@ -78,7 +80,7 @@
                         <span aria-hidden="true">
                             <x-fas-search class="size-3" />
                         </span>
-                        <input type="text" id="tag-search-input" placeholder="Search tags..." autocomplete="off">
+                        <input type="text" id="tag-search-input" placeholder="Search tags..." autocomplete="off" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
                         <button type="button" id="closeTagTooltip" aria-label="Close tag picker">
                             <x-fas-times class="size-3" />
                         </button>
@@ -109,18 +111,19 @@
             </div>
         </section>
 
-        <aside id="preview-wrapper-column" class="preview-wrapper-column" aria-label="Post preview">
+        <aside id="preview-wrapper-column" class="preview-wrapper-column" aria-label="Post preview" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
             <x-layout.post-card
                 title="Untitled Post"
                 url="https://example.com"
                 :category="$initialCategory?->name ?? 'Selected category'"
                 :tags="['No tags selected']"
                 :profiles="[[
-                    'username' => '@'.\Illuminate\Support\Str::slug($profileName, '_'),
-                    'initial' => \Illuminate\Support\Str::of($profileName)->substr(0, 1)->upper()->toString(),
+                    'user_id' => $isProfileVisible ? $user?->id : null,
+                    'username' => $isProfileVisible ? '@'.\Illuminate\Support\Str::slug($profileName, '_') : 'Anonymous',
+                    'initial' => $isProfileVisible ? \Illuminate\Support\Str::of($profileName)->substr(0, 1)->upper()->toString() : '?',
                     'time' => 'Published just now',
                     'description' => 'No description written yet.',
-                    'avatar' => auth()->user()?->getAvatarUrl() ?? '',
+                    'avatar' => $isProfileVisible ? ($user?->getAvatarUrl() ?? '') : '',
                 ]]"
                 class="upload-preview-card"
                 data-upload-preview-card

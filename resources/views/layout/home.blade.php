@@ -11,7 +11,7 @@
 @section('content')
     <x-layout.nav />
 
-    <div class="home-page page-layout">
+    <div class="home-page page-layout" style="font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color);">
         
         <x-layout.home-aside :categories="$categories" :menu-bar-location="$menuBarLocation" />
 
@@ -88,7 +88,7 @@
                         :slug="$post['slug']"
                         data-category="{{ $post['category_slug'] }}"
                         data-rating="{{ (int) floor($post['average_rating']) }}"
-                        data-tags="{{ implode(',', $post['tags']) }}"
+                        data-tags="{{ implode(',', collect($post['tags'])->pluck('name')->all()) }}"
                     />
                 @endforeach
             </section>

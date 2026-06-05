@@ -13,7 +13,7 @@ class FaviconController extends Controller
      */
     public function __invoke(Request $request, ThemePreferences $themePreferences): Response
     {
-        $accentColor = $themePreferences->accentColorFor($request->user());
+        $accentColor = $request->user() ? $themePreferences->accentColorFor($request->user()) : ThemePreferences::DEFAULT_ACCENT_COLOR;
         $svg = <<<SVG
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88.5 99.5" fill="none" role="img" aria-label="SiteSphere">
             <path fill="{$accentColor}" d="M44.5 28.75L28.75 37.25L28.75 38.75L63.25 58.5L66.5 60.75L65.75 62.5L43.75 74.25L9.75 54.25L7.75 53.25L6 54L6.25 72L43.75 93.5L46 93.25L82.5 71.75L82 50Z"/>

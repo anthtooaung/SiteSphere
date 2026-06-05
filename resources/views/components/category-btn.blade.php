@@ -7,7 +7,7 @@
 
 <div
     id="mega-menu-icons-dropdown"
-    class="category-menu-dropdown absolute z-10 hidden text-sm bg-neutral-200 border border-1 rounded-xl shadow-md"
+    class="category-menu-dropdown absolute z-10 hidden text-sm rounded-xl shadow-md"
 >
     <div class="category-menu-panel p-4 text-heading md:pb-4">
         @if ($categories->isEmpty())

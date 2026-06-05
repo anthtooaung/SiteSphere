@@ -1,9 +1,3 @@
-@props([
-    'label',
-    'value',
-    'checked' => false,
-])
-
-<span {{ $attributes->class('tag-check')->merge(['data-filter-component' => 'tag', 'data-value' => $value]) }}>
-    <span>{{ $label }}</span>
+<span {{ $attributes->merge(['style' => 'background-color: color-mix(in srgb, ' . $color . ' 14%, transparent); color: ' . $color . ';']) }}>
+    {{ $name }}
 </span>

@@ -443,7 +443,7 @@ class HomePageTest extends TestCase
         $this->assertStringContainsString('grid-template-columns: repeat(3, minmax(0, 320px));', $homepageCss);
         $this->assertStringContainsString('column-gap: 18px;', $homepageCss);
         $this->assertStringContainsString('row-gap: 24px;', $homepageCss);
-        $this->assertStringContainsString('justify-content:start;', $homepageCss);
+        $this->assertStringContainsString('justify-content: start;', $homepageCss);
         $this->assertStringContainsString('const cardsPerPage = 6;', $homepageJs);
         $this->assertStringContainsString('if(pageCount <= 1)', $homepageJs);
         $this->assertStringContainsString('pagination.hidden = true;', $homepageJs);
@@ -501,9 +501,9 @@ class HomePageTest extends TestCase
         $this->assertStringContainsString('first-reviewer-avatar.jpg', $content);
         $this->assertStringNotContainsString('hover:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]', $cardHtml);
         $this->assertStringContainsString('.home-page [data-profile-tabs]', $homepageCss);
-        $this->assertStringContainsString('scrollbar-width:none;', $homepageCss);
+        $this->assertStringContainsString('scrollbar-width: none;', $homepageCss);
         $this->assertStringContainsString('.home-page [data-profile-tab]:hover', $homepageCss);
-        $this->assertStringContainsString('border-bottom-color:var(--accent-color, #6c5ce7);', $homepageCss);
+        $this->assertStringContainsString('border-bottom-color: var(--accent-color, #6c5ce7);', $homepageCss);
     }
 
     public function test_home_post_card_visible_badges_use_real_tags_not_categories(): void
@@ -553,7 +553,7 @@ class HomePageTest extends TestCase
             ->assertSee('data-post-card-tags', false)
             ->assertSee('overflow-x-auto scroll-smooth', false)
             ->assertSee('[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', false)
-            ->assertSee('shrink-0 items-center gap-1 whitespace-nowrap', false)
+            ->assertSee('shrink-0 items-center gap-1.5 whitespace-nowrap', false)
             ->assertSee('True Visible Tag');
 
         $homepageCss = file_get_contents(resource_path('css/homepage.css'));

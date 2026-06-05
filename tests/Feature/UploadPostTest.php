@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Categories;
+use App\Models\Fonts;
 use App\Models\Posts;
 use App\Models\Tags;
+use App\Models\Themes;
 use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
@@ -62,6 +64,36 @@ class UploadPostTest extends TestCase
             ->assertSee('window.uploadPostCategories', false)
             ->assertDontSee('cdn.tailwindcss.com')
             ->assertDontSee('cdnjs.cloudflare.com/ajax/libs/font-awesome');
+    }
+
+    public function test_upload_page_uses_database_theme_and_font(): void
+    {
+        $user = User::factory()->create();
+
+        $theme = Themes::forceCreate([
+            'accent_color' => '#10b981',
+        ]);
+
+        $user->settings()->update([
+            'theme_id' => $theme->id,
+        ]);
+
+        $font = Fonts::forceCreate([
+            'display_name' => 'Roboto',
+            'google_family' => 'Roboto',
+            'font_family' => '"Roboto", sans-serif',
+            'sort_order' => 1,
+            'is_default' => true,
+        ]);
+
+        $user->currentFonts()->sync([$font->id]);
+
+        $response = $this->actingAs($user)->get(route('posts.create'));
+
+        $response->assertOk();
+        $response->assertSee('--accent-color: #10b981', false);
+        $response->assertSee('--font-family: "Roboto", sans-serif', false);
+        $response->assertSee('style="font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color);"', false);
     }
 
     public function test_authenticated_users_can_store_a_post_with_tags(): void
@@ -147,5 +179,19 @@ class UploadPostTest extends TestCase
         $response
             ->assertRedirect(route('posts.create'))
             ->assertSessionHasErrors(['url']);
+    }
+
+    public function test_upload_page_preview_card_reflects_user_post_visibility_setting(): void
+    {
+        $user = User::factory()->create();
+        $user->settings()->update([
+            'user_post_visible' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('posts.create'));
+
+        $response->assertOk();
+        $response->assertSee('Anonymous');
+        $response->assertSee('\u0022initial\u0022:\u0022?\u0022', false);
     }
 }

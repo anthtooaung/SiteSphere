@@ -977,8 +977,8 @@
   padding: 10px 22px;
   border: 0;
   border-radius: 999px;
-  background: var(--ink);
-  color: #fff;
+  background: var(--accent);
+  color: var(--paper);
   font-weight: 800;
   font-size: 0.86rem;
   transition:
@@ -1087,10 +1087,11 @@
   display: flex;
   flex-direction: row;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 12px;
   isolation: isolate;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-top: 4px;
+  padding-bottom: 6px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -1314,4 +1315,29 @@
 }
 .post-detail-page .aud-menu-item.is-danger:hover {
   background: #fff0f3;
+}
+
+/* Background Blur */
+.post-detail-page .bg-blur {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  pointer-events: none;
+}
+.post-detail-page .blur1 {
+  width: 350px;
+  height: 350px;
+  background: linear-gradient(135deg, var(--accent), transparent);
+  top: -100px;
+  left: -100px;
+  opacity: 0.18;
+}
+.post-detail-page .blur2 {
+  width: 350px;
+  height: 350px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 80%, #000000 20%), transparent);
+  bottom: -100px;
+  right: -100px;
+  opacity: 0.12;
 }

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\ThemePreferences;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -56,6 +57,14 @@ class AppServiceProvider extends ServiceProvider
                 }
 
                 $isDarkMode = (bool) ($settings?->dark_mode ?? false);
+            } else {
+                try {
+                    $fontFamily = DB::table('fonts')
+                        ->where('is_default', true)
+                        ->value('font_family');
+                } catch (\Throwable $e) {
+                    $fontFamily = null;
+                }
             }
 
             $view->with('themeColors', $colors);

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bookmarks;
+use App\Models\CustomTags;
 use App\Models\Posts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class SavedPostsController extends Controller
@@ -18,13 +20,19 @@ class SavedPostsController extends Controller
             : 'recent';
         $startDate = Str::of((string) $request->query('start_date'))->trim()->toString();
         $endDate = Str::of((string) $request->query('end_date'))->trim()->toString();
+
+        $user = $request->user();
         $totalSavedCount = Bookmarks::query()
-            ->where('user_id', $request->user()->id)
+            ->where('user_id', $user->id)
             ->whereHas('post.userPosts', fn ($query) => $query->where('user_hidden', false))
             ->count();
 
+        $customTags = $user
+            ? CustomTags::query()->where('user_id', $user->id)->get()->keyBy('tag_id')
+            : collect();
+
         $bookmarks = Bookmarks::query()
-            ->where('user_id', $request->user()->id)
+            ->where('user_id', $user->id)
             ->whereHas('post.userPosts', fn ($query) => $query->where('user_hidden', false))
             ->when($search !== '', fn ($query) => $query->whereHas('post', fn ($query) => $query
                 ->where('title', 'like', "%{$search}%")
@@ -49,7 +57,7 @@ class SavedPostsController extends Controller
 
         return view('layout.menu.saved-post', [
             'savedPosts' => $bookmarks
-                ->map(fn (Bookmarks $bookmark): array => $this->formatSavedPost($bookmark))
+                ->map(fn (Bookmarks $bookmark): array => $this->formatSavedPost($bookmark, $customTags))
                 ->values(),
             'savedPostFilters' => [
                 'search' => $search,
@@ -62,9 +70,10 @@ class SavedPostsController extends Controller
     }
 
     /**
+     * @param  Collection<int, CustomTags>  $customTags
      * @return array<string, mixed>
      */
-    private function formatSavedPost(Bookmarks $bookmark): array
+    private function formatSavedPost(Bookmarks $bookmark, Collection $customTags): array
     {
         /** @var Posts $post */
         $post = $bookmark->post;
@@ -78,7 +87,16 @@ class SavedPostsController extends Controller
             'slug' => $post->slug,
             'category' => $primaryCategory?->name ?? 'Uncategorized',
             'category_slug' => $primaryCategory?->slug ?? 'uncategorized',
-            'tags' => $post->tags->pluck('name')->values()->all(),
+            'tags' => $post->tags->map(function ($tag) use ($customTags): array {
+                $custom = $customTags->get($tag->id);
+
+                return [
+                    'id' => $tag->id,
+                    'name' => $custom ? $custom->name : $tag->name,
+                    'color' => $custom ? $custom->color : $tag->tag_color,
+                    'slug' => $tag->slug,
+                ];
+            })->values()->all(),
             'average_rating' => round((float) ($post->average_rating ?? 0), 1),
             'ratings_count' => (int) $post->ratings_count,
             'comments_count' => (int) $post->comments_count,

@@ -11,7 +11,9 @@
 @section('content')
     <x-layout.nav />
 
-    <x-layout.upload-post :categories="$categories" />
+    <div style="font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color);">
+        <x-layout.upload-post :categories="$categories" />
+    </div>
 @endsection
 
 @push('scripts')

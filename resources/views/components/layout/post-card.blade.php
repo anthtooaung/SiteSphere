@@ -216,16 +216,11 @@
             <div class="flex min-w-0 items-center gap-2 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 x-ref="tagScroller" data-post-card-tags>
                 @forelse ($tags as $tag)
-                    <span
-                        class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_90%,var(--accent-color,#6c5ce7)_10%)] [color:var(--accent-color,#6c5ce7)]">
-                        <span class="size-1.5 rounded-full [background:var(--accent-color,#6c5ce7)]"></span>
-                        {{ $tag }}
-                    </span>
+                    <x-tag :tag="$tag" class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[7px] px-2.5 py-1 text-xs font-black transition-all" />
                 @empty
                     <span
-                        class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_16%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_94%,var(--text-color,#0d1b2a)_6%)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)]">
-                        <span
-                            class="size-1.5 rounded-full [background:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]"></span>
+                        class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[7px] px-2.5 py-1 text-xs font-black transition-all"
+                        style="background-color: color-mix(in srgb, var(--text-color, #0d1b2a) 8%, transparent); color: color-mix(in srgb, var(--text-color, #0d1b2a) 55%, transparent);">
                         No tags selected
                     </span>
                 @endforelse

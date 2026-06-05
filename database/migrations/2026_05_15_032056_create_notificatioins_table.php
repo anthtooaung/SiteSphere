@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('to_user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('from_user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('target_type',['posts','comments']);
+            $table->enum('target_type', ['posts', 'comments']);
             $table->integer('target_id');
             $table->string('message');
             $table->boolean('is_read')->default(false);

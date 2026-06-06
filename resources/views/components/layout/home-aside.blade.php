@@ -66,25 +66,27 @@
                 <input type="text" id="categorySearch" placeholder="Search categories...">
             </div>
 
-            <label class="category-check" data-filter-component="category">
-                <input type="checkbox" value="All">
-                <span>All</span>
-            </label>
-
-            @foreach ($categories->take(5) as $category)
+            <div class="category-list-container">
                 <label class="category-check" data-filter-component="category">
-                    <input type="checkbox" value="{{ $category->slug }}">
-                    <span>{{ $category->name }}</span>
+                    <input type="checkbox" value="All">
+                    <span>All</span>
                 </label>
-            @endforeach
 
-            <div class="extra-categories" id="extraCategories">
-                @foreach ($categories->skip(5) as $category)
+                @foreach ($categories->take(5) as $category)
                     <label class="category-check" data-filter-component="category">
                         <input type="checkbox" value="{{ $category->slug }}">
                         <span>{{ $category->name }}</span>
                     </label>
                 @endforeach
+
+                <div class="extra-categories" id="extraCategories">
+                    @foreach ($categories->skip(5) as $category)
+                        <label class="category-check" data-filter-component="category">
+                            <input type="checkbox" value="{{ $category->slug }}">
+                            <span>{{ $category->name }}</span>
+                        </label>
+                    @endforeach
+                </div>
             </div>
 
             @if ($categories->count() > 5)

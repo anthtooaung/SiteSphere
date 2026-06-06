@@ -75,6 +75,7 @@
                     themes: @js($presetThemeOptions),
                     fonts: @js($fontOptions),
                     isSubmitting: false,
+                    initialMenuLocation: '{{ $selectedMenuLocation }}',
                     selectedTheme() {
                         return this.themes.find((theme) => theme.id === Number(this.selectedThemeId)) || this.themes[0];
                     },
@@ -146,18 +147,24 @@
                             const data = await response.json();
 
                             if (response.ok) {
+                                const locationChanged = formData.get('menuBar_location') !== this.initialMenuLocation;
                                 Swal.fire({
                                     toast: true,
                                     position: formData.get('noti_location') || 'top-end',
                                     showConfirmButton: false,
-                                    timer: 3000,
+                                    timer: locationChanged ? 1500 : 3000,
                                     timerProgressBar: true,
                                     icon: 'success',
                                     title: data.message || 'Appearance settings saved.',
                                     didOpen: (toast) => {
                                         toast.onmouseenter = Swal.stopTimer;
                                         toast.onmouseleave = Swal.resumeTimer;
-                                    }
+                                    },
+                                    ...(locationChanged ? {
+                                        willClose: () => {
+                                            location.reload();
+                                        }
+                                    } : {})
                                 });
                             } else {
                                 let errorText = 'An error occurred.';
@@ -236,7 +243,6 @@
                     <div class="appearance-choice-grid two" :class="{ 'is-disabled': useCustomTheme }">
                         <label class="appearance-mode-option">
                             <input type="radio" name="dark_mode" value="0" x-model="darkMode" :disabled="useCustomTheme" @checked(! $selectedDarkMode)>
-                            <span class="appearance-check" aria-hidden="true">✓</span>
                             <span class="appearance-mode-preview light">
                                 <span></span><span></span><span></span>
                             </span>
@@ -246,7 +252,6 @@
 
                         <label class="appearance-mode-option">
                             <input type="radio" name="dark_mode" value="1" x-model="darkMode" :disabled="useCustomTheme" @checked($selectedDarkMode)>
-                            <span class="appearance-check" aria-hidden="true">✓</span>
                             <span class="appearance-mode-preview dark">
                                 <span></span><span></span><span></span>
                             </span>
@@ -280,7 +285,7 @@
                                     x-model.number="selectedThemeId"
                                     :disabled="useCustomTheme"
                                     data-appearance-preset-theme>
-                                <span class="appearance-check" aria-hidden="true">✓</span>
+
                                 <span class="appearance-swatch" style="--theme-swatch: {{ $presetTheme['accent_color'] }}"></span>
                                 <strong>{{ $presetTheme['name'] }}</strong>
                                 <small>{{ $presetTheme['accent_color'] }}</small>
@@ -372,7 +377,7 @@
                             <label class="appearance-layout-option">
                                 <input type="radio" name="menuBar_location" value="{{ $layout }}"
                                     @checked($selectedMenuLocation === $layout) data-appearance-menu-location>
-                                <span class="appearance-check" aria-hidden="true">✓</span>
+
                                 <span class="appearance-layout-preview {{ $layout }}" aria-hidden="true">
                                     <i></i><b></b>
                                 </span>
@@ -394,7 +399,7 @@
                             <label class="appearance-layout-option">
                                 <input type="radio" name="noti_location" value="{{ $position }}"
                                     @checked($selectedToastPosition === $position) data-appearance-toast-position>
-                                <span class="appearance-check" aria-hidden="true">✓</span>
+
                                 <span class="appearance-alert-preview {{ $position }}" aria-hidden="true">
                                     <i></i>
                                 </span>

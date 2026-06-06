@@ -737,6 +737,13 @@
     transform: translateX(-50%) translateY(10px);
 }
 
+.layout-menu--bottom .layout-menu-topbar-dropdown {
+    top: auto;
+    bottom: 100%;
+    transform: translateX(-50%) translateY(-10px);
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.15);
+}
+
 .layout-menu-topbar-dropdown-link {
     display: flex;
     align-items: center;

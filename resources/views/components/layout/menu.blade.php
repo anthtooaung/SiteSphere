@@ -72,8 +72,8 @@
 
 @auth
     <aside id="layoutMenu" data-menu-bar-location="{{ $menuBarLocation }}"
-        {{ $attributes->class(['layout-menu', 'layout-menu--' . $menuBarLocation, 'layout-menu--horizontal' => $isHorizontalMenu, 'layout-menu--topbar' => $menuBarLocation === 'top']) }}>
-        @if ($menuBarLocation === 'top')
+        {{ $attributes->class(['layout-menu', 'layout-menu--' . $menuBarLocation, 'layout-menu--horizontal' => $isHorizontalMenu, 'layout-menu--topbar' => $isHorizontalMenu]) }}>
+        @if ($isHorizontalMenu)
             <nav class="layout-menu-topbar-nav" aria-label="Account top menu">
                 <ul class="layout-menu-topbar-list">
                     @foreach ($profileMenuItems as $menuItem)

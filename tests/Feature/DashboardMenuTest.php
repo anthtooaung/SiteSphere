@@ -67,7 +67,7 @@ class DashboardMenuTest extends TestCase
                 $response->assertDontSee('layout-menu--horizontal', false);
             }
 
-            if ($location === 'top') {
+            if (in_array($location, ['top', 'bottom'], true)) {
                 $response
                     ->assertSee('layout-menu--topbar', false)
                     ->assertSee('class="layout-menu-topbar-link active"', false)

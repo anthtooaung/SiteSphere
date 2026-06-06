@@ -128,6 +128,100 @@
 
                     category.tags = category.tags.filter((item) => item.uid !== tag.uid);
                 },
+                shareModalOpen: false,
+                shareSourceCategory: null,
+                shareSelectedTags: [],
+                shareSelectedCategories: [],
+                openShareModal(category) {
+                    this.shareSourceCategory = category;
+                    this.shareSelectedTags = (category.tags || []).map((t) => t.uid);
+                    this.shareSelectedCategories = [];
+                    this.shareModalOpen = true;
+                },
+                toggleShareTag(tagUid) {
+                    const idx = this.shareSelectedTags.indexOf(tagUid);
+                    if (idx > -1) {
+                        this.shareSelectedTags.splice(idx, 1);
+                    } else {
+                        this.shareSelectedTags.push(tagUid);
+                    }
+                },
+                toggleShareCategory(catUid) {
+                    const idx = this.shareSelectedCategories.indexOf(catUid);
+                    if (idx > -1) {
+                        this.shareSelectedCategories.splice(idx, 1);
+                    } else {
+                        this.shareSelectedCategories.push(catUid);
+                    }
+                },
+                confirmShare() {
+                    if (! this.shareSourceCategory || ! this.shareSelectedTags.length || ! this.shareSelectedCategories.length) {
+                        return;
+                    }
+                    const tagsToShare = this.shareSourceCategory.tags.filter((t) => this.shareSelectedTags.includes(t.uid));
+                    this.shareSelectedCategories.forEach((catUid) => {
+                        const targetCategory = this.categories.find((c) => c.uid === catUid);
+                        if (targetCategory) {
+                            tagsToShare.forEach((sourceTag) => {
+                                const exists = targetCategory.tags.some((t) => t.name.toLowerCase().trim() === sourceTag.name.toLowerCase().trim());
+                                if (! exists) {
+                                    targetCategory.tags.push({
+                                        id: null,
+                                        uid: `new-${crypto.randomUUID()}`,
+                                        name: sourceTag.name,
+                                        color: sourceTag.color,
+                                    });
+                                }
+                            });
+                        }
+                    });
+                    this.closeShareModal();
+                },
+                closeShareModal() {
+                    this.shareModalOpen = false;
+                    this.shareSourceCategory = null;
+                    this.shareSelectedTags = [];
+                    this.shareSelectedCategories = [];
+                },
+                syncTagColors(changedTag, field) {
+                    const nameLower = (changedTag.name || '').toLowerCase().trim();
+                    if (! nameLower) {
+                        return;
+                    }
+
+                    if (field === 'color') {
+                        this.categories.forEach((category) => {
+                            (category.tags || []).forEach((tag) => {
+                                if ((tag.name || '').toLowerCase().trim() === nameLower) {
+                                    tag.color = changedTag.color;
+                                }
+                            });
+                        });
+                    } else if (field === 'name') {
+                        let matchingColor = null;
+                        for (const category of this.categories) {
+                            for (const tag of category.tags || []) {
+                                if (tag.uid !== changedTag.uid && (tag.name || '').toLowerCase().trim() === nameLower) {
+                                    matchingColor = tag.color;
+                                    break;
+                                }
+                            }
+                            if (matchingColor) {
+                                break;
+                            }
+                        }
+                        if (matchingColor) {
+                            changedTag.color = matchingColor;
+                            this.categories.forEach((category) => {
+                                (category.tags || []).forEach((tag) => {
+                                    if ((tag.name || '').toLowerCase().trim() === nameLower) {
+                                        tag.color = matchingColor;
+                                    }
+                                });
+                            });
+                        }
+                    }
+                },
                 tint(color) {
                     const hex = /^#[0-9A-Fa-f]{6}$/.test(color || '') ? color : '#6c5ce7';
                     const red = parseInt(hex.slice(1, 3), 16);
@@ -137,6 +231,12 @@
                     return `rgba(${red}, ${green}, ${blue}, 0.14)`;
                 },
                 previewTags() {
+                    if (this.openCategory) {
+                        const openCat = this.categories.find((c) => c.uid === this.openCategory);
+                        if (openCat) {
+                            return openCat.tags || [];
+                        }
+                    }
                     return this.categories.flatMap((category) => category.tags || []).slice(0, 7);
                 },
                 isSubmitting: false,
@@ -313,18 +413,22 @@
 
                                     <div class="thread-dropdown" x-show="openCategory === category.uid" x-cloak>
                                         <div class="thread-actions">
-                                            <button type="button" class="thread-btn" @click="startEditing(category)"
-                                                :class="{ 'is-active': isEditing(category) }">
-                                                <span x-text="isEditing(category) ? 'Done Editing' : 'Edit'"></span>
-                                            </button>
+                                            <button type="button" class="thread-btn" @click="startEditing(category)" :class="{ 'is-active': isEditing(category) }"><span x-text="isEditing(category) ? 'Done Editing' : 'Edit'"></span></button>
 
                                             <template x-if="isAdmin">
                                                 <button type="button" class="thread-btn" @click="addTag(category)">Add Tag</button>
                                             </template>
 
                                             <template x-if="isAdmin">
-                                                <button type="button" class="thread-btn danger"
-                                                    @click="removeCategory(category)">Delete</button>
+                                                <button type="button" class="thread-btn danger" @click="removeCategory(category)">Delete</button>
+                                            </template>
+
+                                            <template x-if="isAdmin">
+                                                <button type="button" class="thread-share-icon-btn" @click="openShareModal(category)" aria-label="Share tags across categories">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 16 16">
+                                                        <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5"/>
+                                                    </svg>
+                                                </button>
                                             </template>
                                         </div>
 
@@ -341,13 +445,13 @@
                                                     :style="{ backgroundColor: tint(tag.color), color: tag.color }"
                                                     data-edit-tag-chip>
                                                     <template x-if="isEditing(category)">
-                                                        <input type="text" x-model="tag.name" aria-label="Tag name">
+                                                        <input type="text" x-model="tag.name" @input="syncTagColors(tag, 'name')" aria-label="Tag name" class="outline-none">
                                                     </template>
                                                     <template x-if="! isEditing(category)">
                                                         <span class="thread-tag-name" x-text="tag.name"></span>
                                                     </template>
                                                     <template x-if="isEditing(category)">
-                                                        <input type="color" x-model="tag.color" aria-label="Tag color">
+                                                        <input type="color" x-model="tag.color" @input="syncTagColors(tag, 'color')" aria-label="Tag color">
                                                     </template>
                                                     <template x-if="isAdmin && isEditing(category)">
                                                         <button type="button" class="thread-chip-remove"
@@ -441,6 +545,70 @@
                         </button>
                     </form>
                 @endunless
+                @if ($isAdminTagEditor)
+                    <!-- Share tags modal -->
+                    <div class="thread-share-overlay" :class="{ 'show': shareModalOpen }" x-show="shareModalOpen" x-cloak @click.self="closeShareModal">
+                        <div class="thread-share-dialog" role="dialog" aria-modal="true" aria-labelledby="threadShareTitle">
+                            <div class="thread-share-header">
+                                <div>
+                                    <h3 id="threadShareTitle">Share tags</h3>
+                                    <p>Choose tags from <span style="font-weight: 800; color: var(--accent-color);" x-text="shareSourceCategory ? shareSourceCategory.name : ''"></span> and the categories that should receive them.</p>
+                                </div>
+                                <button type="button" class="thread-share-close" @click="closeShareModal" aria-label="Close">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16" aria-hidden="true">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="thread-share-grid">
+                                <section>
+                                    <h4>Tags to share</h4>
+                                    <div class="thread-share-options">
+                                        <template x-if="shareSourceCategory">
+                                            <template x-for="tag in shareSourceCategory.tags" :key="tag.uid">
+                                                <label class="thread-share-option" :class="{ 'is-selected': shareSelectedTags.includes(tag.uid) }">
+                                                    <input type="checkbox" :value="tag.uid" :checked="shareSelectedTags.includes(tag.uid)" @change="toggleShareTag(tag.uid)">
+                                                    <span x-text="tag.name"></span>
+                                                    <span class="thread-share-check" aria-hidden="true">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                                                        </svg>
+                                                    </span>
+                                                </label>
+                                            </template>
+                                        </template>
+                                        <template x-if="shareSourceCategory && shareSourceCategory.tags.length === 0">
+                                            <p class="thread-share-empty">This category has no tags to share yet.</p>
+                                        </template>
+                                    </div>
+                                </section>
+                                <section>
+                                    <h4>Share across categories</h4>
+                                    <div class="thread-share-options">
+                                        <template x-for="cat in categories.filter(c => c.uid !== (shareSourceCategory ? shareSourceCategory.uid : ''))" :key="cat.uid">
+                                            <label class="thread-share-option" :class="{ 'is-selected': shareSelectedCategories.includes(cat.uid) }">
+                                                <input type="checkbox" :value="cat.uid" :checked="shareSelectedCategories.includes(cat.uid)" @change="toggleShareCategory(cat.uid)">
+                                                <span x-text="cat.name"></span>
+                                                <span class="thread-share-check" aria-hidden="true">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                                                    </svg>
+                                                </span>
+                                            </label>
+                                        </template>
+                                        <template x-if="categories.length <= 1">
+                                            <p class="thread-share-empty">No other categories available.</p>
+                                        </template>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="thread-share-actions">
+                                <button type="button" class="btn-secondary" @click="closeShareModal">Cancel</button>
+                                <button type="button" class="btn-primary" @click="confirmShare" :disabled="!shareSelectedTags.length || !shareSelectedCategories.length">Share selected</button>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </section>
         </main>
     </div>

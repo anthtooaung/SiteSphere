@@ -194,33 +194,6 @@
     pointer-events: none;
 }
 
-.appearance-check {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    display: inline-flex;
-    width: 24px;
-    height: 24px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    background: var(--accent-color, #6c5ce7);
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 900;
-    opacity: 0;
-    transform: scale(0.82);
-    transition:
-        opacity 160ms ease,
-        transform 160ms ease;
-}
-
-.appearance-mode-option:has(input:checked) .appearance-check,
-.appearance-theme-option:has(input:checked) .appearance-check,
-.appearance-layout-option:has(input:checked) .appearance-check {
-    opacity: 1;
-    transform: scale(1);
-}
 
 .appearance-mode-option strong,
 .appearance-theme-option strong,
@@ -352,11 +325,11 @@
     transition: transform 180ms ease;
 }
 
-.appearance-toggle input[type="checkbox"]:checked + span {
+.appearance-toggle input[type="checkbox"]:checked+span {
     background: var(--accent-color, #6c5ce7);
 }
 
-.appearance-toggle input[type="checkbox"]:checked + span::after {
+.appearance-toggle input[type="checkbox"]:checked+span::after {
     transform: translateX(24px);
 }
 
@@ -774,6 +747,7 @@
 }
 
 @keyframes authButtonDotPulse {
+
     0%,
     100% {
         opacity: 0.22;
@@ -793,6 +767,7 @@
 }
 
 @media (max-width: 1180px) {
+
     .appearance-choice-grid.four,
     .appearance-theme-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));

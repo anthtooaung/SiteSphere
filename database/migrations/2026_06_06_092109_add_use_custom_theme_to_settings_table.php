@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
         Schema::table('settings', function (Blueprint $table) {
-            $table->foreignId('theme_id')->nullable()->change();
+            $table->boolean('use_custom_theme')->default(false)->after('custom_theme_id');
         });
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -23,10 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::disableForeignKeyConstraints();
         Schema::table('settings', function (Blueprint $table) {
-            $table->foreignId('theme_id')->nullable(false)->change();
+            $table->dropColumn('use_custom_theme');
         });
-        Schema::enableForeignKeyConstraints();
     }
 };

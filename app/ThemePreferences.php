@@ -25,7 +25,7 @@ class ThemePreferences
             $backgroundColor = $isDarkMode ? '#000000' : '#ffffff';
             $textColor = $isDarkMode ? '#ffffff' : '#0d1b2a';
 
-            if ($settings?->custom_theme_id && $settings->customTheme) {
+            if ($settings?->use_custom_theme && $settings->customTheme) {
                 $accentColor = $this->validAccentColor($settings->customTheme->accent_color);
                 $backgroundColor = $this->validThemeColor($settings->customTheme->background_color, $backgroundColor);
                 $textColor = $this->validThemeColor($settings->customTheme->text_color, $textColor);

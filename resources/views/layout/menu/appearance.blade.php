@@ -14,7 +14,7 @@
             ? $menuBarLocation
             : 'left';
         $selectedThemeId = (int) old('theme_id', $appearanceSettings->theme_id);
-        $usesCustomTheme = old('use_custom_theme', $appearanceSettings->custom_theme_id ? '1' : '0') === '1';
+        $usesCustomTheme = old('use_custom_theme', $appearanceSettings->use_custom_theme ? '1' : '0') === '1';
         $customTheme = $customTheme ?? $appearanceSettings->customTheme;
         $customBackground = old('background_color', $customTheme?->background_color ?? ($themeColors['background'] ?? '#ffffff'));
         $customText = old('text_color', $customTheme?->text_color ?? ($themeColors['text'] ?? '#0d1b2a'));
@@ -337,12 +337,25 @@
                     </div>
                 </section>
 
-                <div @class(['form-message', 'show success' => session('success')]) id="appearance-save-message" role="status" aria-live="polite"
-                    data-appearance-save-message>
-                    @if (session('success'))
-                        {{ session('success') }}
-                    @endif
-                </div>
+                @if (session('success'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            Swal.fire({
+                                toast: true,
+                                position: '{{ $selectedToastPosition }}',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                icon: 'success',
+                                title: '{{ session('success') }}',
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
+                            });
+                        });
+                    </script>
+                @endif
 
                 <div class="appearance-actions">
                     <button type="submit" class="save-btn" data-appearance-save>

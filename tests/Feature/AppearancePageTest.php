@@ -121,7 +121,8 @@ class AppearancePageTest extends TestCase
         $this->assertDatabaseHas('settings', [
             'user_id' => $user->id,
             'theme_id' => $themeId,
-            'custom_theme_id' => null,
+            'custom_theme_id' => $customThemeId,
+            'use_custom_theme' => false,
             'dark_mode' => false,
             'menuBar_location' => 'right',
             'noti_location' => 'bottom-start',
@@ -180,8 +181,8 @@ class AppearancePageTest extends TestCase
         ]);
         $this->assertDatabaseHas('settings', [
             'user_id' => $user->id,
-            'theme_id' => null,
             'custom_theme_id' => $customThemeId,
+            'use_custom_theme' => true,
             'dark_mode' => true,
             'menuBar_location' => 'top',
             'noti_location' => 'top-start',

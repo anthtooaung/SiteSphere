@@ -51,6 +51,7 @@ class AppearanceController extends Controller
             'dark_mode' => (bool) $validated['dark_mode'],
             'menuBar_location' => $validated['menuBar_location'],
             'noti_location' => $validated['noti_location'],
+            'use_custom_theme' => (bool) $validated['use_custom_theme'],
         ]);
 
         if ((bool) $validated['use_custom_theme']) {
@@ -64,10 +65,8 @@ class AppearanceController extends Controller
             );
 
             $settings->custom_theme_id = $customTheme->id;
-            $settings->theme_id = null;
         } else {
             $settings->theme_id = (int) $validated['theme_id'];
-            $settings->custom_theme_id = null;
         }
 
         $settings->save();

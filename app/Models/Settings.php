@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'menuBar_location', 'noti_location', 'dark_mode', 'user_post_visible', 'theme_id', 'custom_theme_id'])]
+#[Fillable(['user_id', 'menuBar_location', 'noti_location', 'dark_mode', 'user_post_visible', 'theme_id', 'custom_theme_id', 'use_custom_theme'])]
 class Settings extends Model
 {
     /** @use HasFactory<SettingsFactory> */

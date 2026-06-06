@@ -275,6 +275,7 @@ class HomePageTest extends TestCase
             ->where('user_id', $user->id)
             ->update([
                 'custom_theme_id' => $customThemeId,
+                'use_custom_theme' => true,
                 'updated_at' => now(),
             ]);
 
@@ -319,6 +320,7 @@ class HomePageTest extends TestCase
             ->update([
                 'custom_theme_id' => $customThemeId,
                 'dark_mode' => true,
+                'use_custom_theme' => true,
                 'updated_at' => now(),
             ]);
 

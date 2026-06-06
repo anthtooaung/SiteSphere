@@ -15,7 +15,7 @@
             : 'left';
         $selectedThemeId = (int) old('theme_id', $appearanceSettings->theme_id);
         $usesCustomTheme = old('use_custom_theme', $appearanceSettings->custom_theme_id ? '1' : '0') === '1';
-        $customTheme = $appearanceSettings->customTheme;
+        $customTheme = $customTheme ?? $appearanceSettings->customTheme;
         $customBackground = old('background_color', $customTheme?->background_color ?? ($themeColors['background'] ?? '#ffffff'));
         $customText = old('text_color', $customTheme?->text_color ?? ($themeColors['text'] ?? '#0d1b2a'));
         $customAccent = old('accent_color', $customTheme?->accent_color ?? ($themeColors['accent'] ?? '#6c5ce7'));

@@ -131,6 +131,20 @@ class AppearancePageTest extends TestCase
             'font_id' => $fontId,
         ]);
         $this->assertSame(1, DB::table('user_current_fonts')->where('user_id', $user->id)->count());
+
+        $this->assertDatabaseHas('custom_themes', [
+            'user_id' => $user->id,
+            'background_color' => '#111111',
+            'text_color' => '#eeeeee',
+            'accent_color' => '#123456',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('appearance'))
+            ->assertOk()
+            ->assertSee('value="#111111"', false)
+            ->assertSee('value="#eeeeee"', false)
+            ->assertSee('value="#123456"', false);
     }
 
     public function test_saving_custom_theme_stores_custom_colors_and_links_settings(): void
@@ -166,6 +180,7 @@ class AppearancePageTest extends TestCase
         ]);
         $this->assertDatabaseHas('settings', [
             'user_id' => $user->id,
+            'theme_id' => null,
             'custom_theme_id' => $customThemeId,
             'dark_mode' => true,
             'menuBar_location' => 'top',

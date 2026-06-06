@@ -30,9 +30,11 @@ class AppearanceController extends Controller
         $currentFont = $user->currentFonts()
             ->latest('user_current_fonts.created_at')
             ->first();
+        $customTheme = CustomThemes::query()->where('user_id', $user->id)->first();
 
         return view('layout.menu.appearance', [
             'appearanceSettings' => $settings->load(['theme', 'customTheme']),
+            'customTheme' => $customTheme,
             'currentFontId' => $currentFont?->id,
             'fonts' => Fonts::query()->orderBy('sort_order')->orderBy('display_name')->get(),
             'presetThemes' => $this->presetThemes(),
@@ -62,6 +64,7 @@ class AppearanceController extends Controller
             );
 
             $settings->custom_theme_id = $customTheme->id;
+            $settings->theme_id = null;
         } else {
             $settings->theme_id = (int) $validated['theme_id'];
             $settings->custom_theme_id = null;

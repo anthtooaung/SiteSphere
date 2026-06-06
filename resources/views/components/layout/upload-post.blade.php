@@ -24,7 +24,7 @@
 <main class="upload-post-page" id="uploadPostPage">
     <div class="upload-post-shell">
         <section class="upload-post-panel" aria-labelledby="uploadPostTitle">
-            <div class="upload-post-scroll no-scrollbar">
+            <div class="upload-post-scroll">
                 <form id="uploadPostForm" method="POST" action="{{ route('posts.store') }}" class="upload-post-form" novalidate>
                     @csrf
 

@@ -296,7 +296,6 @@
                                                 : '?';
                                             $hue = $isProfileVisible ? (($userPost->user->id * 47) % 360) : 222;
                                             $avatarUrl = $isProfileVisible ? $userPost->user->getAvatarUrl() : '';
-                                            $bio = $isProfileVisible ? ($userPost->user->user_bio ?? 'Expert Contributor') : 'Expert Contributor';
                                         @endphp
                                         <article
                                             class="aud-depo-panel"
@@ -320,7 +319,6 @@
                                                     <div class="aud-depo-name-row">
                                                         <h3>{{ $displayName }}</h3>
                                                     </div>
-                                                    <p class="aud-depo-role">{{ $bio }}</p>
                                                     <p class="aud-depo-date ss-mono">{{ $userPost->created_at->diffForHumans() }}</p>
                                                 </div>
                                             </header>

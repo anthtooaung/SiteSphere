@@ -2170,3 +2170,69 @@
     flex: 0 0 auto;
     color: var(--accent-color, #6c5ce7);
 }
+
+/* Custom scrollbar styling matching homepage scrollbar style */
+html,
+body,
+.post-detail-page *,
+.profile-detail-page *,
+.edit-profile-page *,
+.appearance-page *,
+.security-page *,
+.edit-tag-page *,
+.upload-post-page *,
+.admin-users-page *,
+.saved-post-page *,
+.reports-page * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent-color, #6c5ce7) 50%, transparent) transparent;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.post-detail-page *::-webkit-scrollbar,
+.profile-detail-page *::-webkit-scrollbar,
+.edit-profile-page *::-webkit-scrollbar,
+.appearance-page *::-webkit-scrollbar,
+.security-page *::-webkit-scrollbar,
+.edit-tag-page *::-webkit-scrollbar,
+.upload-post-page *::-webkit-scrollbar,
+.admin-users-page *::-webkit-scrollbar,
+.saved-post-page *::-webkit-scrollbar,
+.reports-page *::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+.post-detail-page *::-webkit-scrollbar-thumb,
+.profile-detail-page *::-webkit-scrollbar-thumb,
+.edit-profile-page *::-webkit-scrollbar-thumb,
+.appearance-page *::-webkit-scrollbar-thumb,
+.security-page *::-webkit-scrollbar-thumb,
+.edit-tag-page *::-webkit-scrollbar-thumb,
+.upload-post-page *::-webkit-scrollbar-thumb,
+.admin-users-page *::-webkit-scrollbar-thumb,
+.saved-post-page *::-webkit-scrollbar-thumb,
+.reports-page *::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 50%, transparent);
+    border-radius: 999px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+.post-detail-page *::-webkit-scrollbar-track,
+.profile-detail-page *::-webkit-scrollbar-track,
+.edit-profile-page *::-webkit-scrollbar-track,
+.appearance-page *::-webkit-scrollbar-track,
+.security-page *::-webkit-scrollbar-track,
+.edit-tag-page *::-webkit-scrollbar-track,
+.upload-post-page *::-webkit-scrollbar-track,
+.admin-users-page *::-webkit-scrollbar-track,
+.saved-post-page *::-webkit-scrollbar-track,
+.reports-page *::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+

@@ -950,7 +950,7 @@
   letter-spacing: -0.02em;
 }
 
-.post-detail-page .aud-depo-role {
+.post-detail-page {
   font-size: 0.86rem;
   color: var(--muted);
   font-weight: 600;

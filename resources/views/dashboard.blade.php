@@ -31,6 +31,14 @@
             }
         </style>
     @endguest
+    <style>
+        @media (min-width: 901px) {
+            html, body {
+                height: 100%;
+                overflow: hidden;
+            }
+        }
+    </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('sweetalert2::index')
     @stack('styles')

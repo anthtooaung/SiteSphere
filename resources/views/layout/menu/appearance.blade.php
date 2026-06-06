@@ -117,16 +117,25 @@
 
                         return this.selectedTheme()?.accent || '#6c5ce7';
                     },
-                    previewStyle() {
-                        return {
-                            '--accent-color': this.previewAccent(),
-                            '--background-color': this.previewBackground(),
-                            '--text-color': this.previewText(),
-                            '--font-family': this.selectedFontFamily(),
-                        };
+                    applyRootTheme() {
+                        const root = document.documentElement;
+                        root.style.setProperty('--accent-color', this.previewAccent());
+                        root.style.setProperty('--background-color', this.previewBackground());
+                        root.style.setProperty('--text-color', this.previewText());
+                        root.style.setProperty('--font-family', this.selectedFontFamily());
+                        document.body.style.fontFamily = 'var(--font-family)';
                     },
                 }"
-                x-bind:style="previewStyle()"
+                x-init="
+                    applyRootTheme();
+                    $watch('useCustomTheme', () => applyRootTheme());
+                    $watch('darkMode', () => applyRootTheme());
+                    $watch('selectedThemeId', () => applyRootTheme());
+                    $watch('customBackground', () => applyRootTheme());
+                    $watch('customText', () => applyRootTheme());
+                    $watch('customAccent', () => applyRootTheme());
+                    $watch('selectedFontId', () => applyRootTheme());
+                "
                 data-appearance-page>
                 @csrf
                 @method('PATCH')
@@ -156,9 +165,9 @@
                         <p>Choose the base contrast for your workspace.</p>
                     </div>
 
-                    <div class="appearance-choice-grid two">
+                    <div class="appearance-choice-grid two" :class="{ 'is-disabled': useCustomTheme }">
                         <label class="appearance-mode-option">
-                            <input type="radio" name="dark_mode" value="0" x-model="darkMode" @checked(! $selectedDarkMode)>
+                            <input type="radio" name="dark_mode" value="0" x-model="darkMode" :disabled="useCustomTheme" @checked(! $selectedDarkMode)>
                             <span class="appearance-check" aria-hidden="true">✓</span>
                             <span class="appearance-mode-preview light">
                                 <span></span><span></span><span></span>
@@ -168,7 +177,7 @@
                         </label>
 
                         <label class="appearance-mode-option">
-                            <input type="radio" name="dark_mode" value="1" x-model="darkMode" @checked($selectedDarkMode)>
+                            <input type="radio" name="dark_mode" value="1" x-model="darkMode" :disabled="useCustomTheme" @checked($selectedDarkMode)>
                             <span class="appearance-check" aria-hidden="true">✓</span>
                             <span class="appearance-mode-preview dark">
                                 <span></span><span></span><span></span>
@@ -211,7 +220,7 @@
                         @endforeach
                     </div>
 
-                    <div class="appearance-custom-panel" x-show="useCustomTheme" x-cloak
+                    <div class="appearance-custom-panel" :class="{ 'is-disabled': ! useCustomTheme }"
                         x-transition.opacity.duration.160ms
                         data-appearance-custom-panel data-appearance-stable-panel>
                         <label>

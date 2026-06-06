@@ -10,14 +10,26 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <x-google-fonts />
     @php($resolvedFontFamily = $fontFamily ?: 'Figtree, sans-serif')
-    <style>
-        :root {
-            --accent-color: {{ $themeColors['accent'] ?? '#6c5ce7' }};
-            --background-color: {{ $themeColors['background'] ?? '#ffffff' }};
-            --text-color: {{ $themeColors['text'] ?? '#0d1b2a' }};
-            --font-family: {!! $resolvedFontFamily !!};
-        }
-    </style>
+    @auth
+        <style>
+            :root {
+                --accent-color: {{ $themeColors['accent'] ?? '#6c5ce7' }};
+                --background-color: {{ $themeColors['background'] ?? '#ffffff' }};
+                --text-color: {{ $themeColors['text'] ?? '#0d1b2a' }};
+                --font-family: {!! $resolvedFontFamily !!};
+            }
+        </style>
+    @endauth
+    @guest
+        <style>
+            :root {
+                --accent-color: #6c5ce7;
+                --background-color: #ffffff;
+                --text-color: #0d1b2a;
+                --font-family: {!! $resolvedFontFamily !!};
+            }
+        </style>
+    @endguest
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('sweetalert2::index')
     @stack('styles')

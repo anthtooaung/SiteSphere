@@ -100,7 +100,7 @@ function initHelpfulBtn(btn) {
   const commentId = btn.dataset.commentId;
   if (!commentId) return;
 
-  const countEl = btn.querySelector(".helpful-count");
+  const countEl = btn.closest(".ss-helpful")?.querySelector(".helpful-count");
   if (!countEl) return;
 
   btn.addEventListener("click", () => {

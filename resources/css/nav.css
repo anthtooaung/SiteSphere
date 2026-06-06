@@ -932,11 +932,6 @@
     flex: 1;
     padding: 32px;
     overflow-y: auto;
-    scrollbar-width: none;
-}
-
-.dashboard-content::-webkit-scrollbar {
-    display: none;
 }
 
 .dashboard-panel {

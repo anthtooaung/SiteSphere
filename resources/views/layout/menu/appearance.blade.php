@@ -74,6 +74,7 @@
                     fontResultsOpen: false,
                     themes: @js($presetThemeOptions),
                     fonts: @js($fontOptions),
+                    isSubmitting: false,
                     selectedTheme() {
                         return this.themes.find((theme) => theme.id === Number(this.selectedThemeId)) || this.themes[0];
                     },
@@ -125,6 +126,72 @@
                         root.style.setProperty('--font-family', this.selectedFontFamily());
                         document.body.style.fontFamily = 'var(--font-family)';
                     },
+                    async submitForm(formElement) {
+                        if (this.isSubmitting) return;
+                        this.isSubmitting = true;
+
+                        const formData = new FormData(formElement);
+
+                        try {
+                            const response = await fetch(formElement.action, {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
+                                body: formData
+                            });
+
+                            const data = await response.json();
+
+                            if (response.ok) {
+                                Swal.fire({
+                                    toast: true,
+                                    position: formData.get('noti_location') || 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    icon: 'success',
+                                    title: data.message || 'Appearance settings saved.',
+                                    didOpen: (toast) => {
+                                        toast.onmouseenter = Swal.stopTimer;
+                                        toast.onmouseleave = Swal.resumeTimer;
+                                    }
+                                });
+                            } else {
+                                let errorText = 'An error occurred.';
+                                if (data.errors) {
+                                    errorText = Object.values(data.errors).flat().join(' ');
+                                } else if (data.message) {
+                                    errorText = data.message;
+                                }
+
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    icon: 'error',
+                                    title: errorText
+                                });
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                icon: 'error',
+                                title: 'Could not save appearance settings. Please try again.'
+                            });
+                        } finally {
+                            this.isSubmitting = false;
+                        }
+                    }
                 }"
                 x-init="
                     applyRootTheme();
@@ -136,6 +203,7 @@
                     $watch('customAccent', () => applyRootTheme());
                     $watch('selectedFontId', () => applyRootTheme());
                 "
+                @submit.prevent="submitForm($el)"
                 data-appearance-page>
                 @csrf
                 @method('PATCH')
@@ -358,15 +426,20 @@
                 @endif
 
                 <div class="appearance-actions">
-                    <button type="submit" class="save-btn" data-appearance-save>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="save-btn-icon" viewBox="0 0 16 16"
-                            fill="currentColor" aria-hidden="true">
-                            <path
-                                d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
-                            <path
-                                d="M2 1.5A1.5 1.5 0 0 1 3.5 0h7.086a1.5 1.5 0 0 1 1.061.44l3.914 3.913A1.5 1.5 0 0 1 16 5.414V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v5h-.5A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0H2v1.5Zm3 9A1 1 0 0 0 4 11.5V16h8v-4.5a1 1 0 0 0-1-1H5Z" />
-                        </svg>
-                        <span>Save Changes</span>
+                    <button type="submit" class="save-btn" data-appearance-save :class="{ 'is-loading': isSubmitting }" :disabled="isSubmitting">
+                        <span class="button-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="save-btn-icon" viewBox="0 0 16 16"
+                                fill="currentColor" aria-hidden="true">
+                                <path
+                                    d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
+                                <path
+                                    d="M2 1.5A1.5 1.5 0 0 1 3.5 0h7.086a1.5 1.5 0 0 1 1.061.44l3.914 3.913A1.5 1.5 0 0 1 16 5.414V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v5h-.5A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0H2v1.5Zm3 9A1 1 0 0 0 4 11.5V16h8v-4.5a1 1 0 0 0-1-1H5Z" />
+                            </svg>
+                            <span>Save Changes</span>
+                        </span>
+                        <span class="button-loader" aria-hidden="true">
+                            <i></i><i></i><i></i>
+                        </span>
                     </button>
                 </div>
             </form>

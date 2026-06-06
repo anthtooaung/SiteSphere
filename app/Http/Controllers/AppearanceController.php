@@ -10,6 +10,7 @@ use App\Models\Themes;
 use App\Models\User;
 use App\ThemePreferences;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -41,7 +42,7 @@ class AppearanceController extends Controller
         ]);
     }
 
-    public function update(UpdateAppearanceRequest $request): RedirectResponse
+    public function update(UpdateAppearanceRequest $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validated();
         $user = $request->user();
@@ -71,6 +72,13 @@ class AppearanceController extends Controller
 
         $settings->save();
         $user->currentFonts()->sync([(int) $validated['font_id']]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Appearance settings saved.',
+            ]);
+        }
 
         return back()->with('success', 'Appearance settings saved.');
     }

@@ -695,6 +695,7 @@
 }
 
 .appearance-page .save-btn {
+    position: relative;
     display: inline-flex;
     width: 100%;
     min-height: 48px;
@@ -724,6 +725,71 @@
     filter: brightness(1.04);
     outline: none;
     transform: translateY(-1px);
+}
+
+.appearance-page .save-btn.is-loading {
+    cursor: wait;
+    pointer-events: none;
+}
+
+.appearance-page .save-btn .button-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.appearance-page .save-btn .button-loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 27px;
+    color: currentColor;
+}
+
+.appearance-page .save-btn .button-loader i {
+    display: block;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.25;
+    animation: authButtonDotPulse 1.2s ease-in-out infinite;
+}
+
+.appearance-page .save-btn .button-loader i:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.appearance-page .save-btn .button-loader i:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.appearance-page .save-btn.is-loading .button-label {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.appearance-page .save-btn.is-loading .button-loader {
+    display: inline-flex;
+}
+
+@keyframes authButtonDotPulse {
+    0%,
+    100% {
+        opacity: 0.22;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
 }
 
 .appearance-page .save-btn-icon {

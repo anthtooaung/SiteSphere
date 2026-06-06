@@ -213,4 +213,38 @@ class AppearancePageTest extends TestCase
             ->assertRedirect(route('appearance'))
             ->assertSessionHasErrors(['background_color', 'menuBar_location', 'noti_location']);
     }
+
+    public function test_saving_preset_theme_via_ajax_returns_json_response(): void
+    {
+        $this->seed(ThemesSeeder::class);
+        $user = User::factory()->create();
+
+        $themeId = DB::table('themes')->where('accent_color', '#DC2626')->value('id');
+        $fontId = DB::table('fonts')->where('display_name', 'Inter')->value('id');
+
+        $response = $this->actingAs($user)
+            ->patchJson(route('appearance.update'), [
+                'dark_mode' => '0',
+                'use_custom_theme' => '0',
+                'theme_id' => $themeId,
+                'font_id' => $fontId,
+                'menuBar_location' => 'right',
+                'noti_location' => 'bottom-start',
+            ]);
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+                'message' => 'Appearance settings saved.',
+            ]);
+
+        $this->assertDatabaseHas('settings', [
+            'user_id' => $user->id,
+            'theme_id' => $themeId,
+            'use_custom_theme' => false,
+            'dark_mode' => false,
+            'menuBar_location' => 'right',
+            'noti_location' => 'bottom-start',
+        ]);
+    }
 }

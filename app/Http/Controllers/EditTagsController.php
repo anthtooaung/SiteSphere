@@ -10,6 +10,7 @@ use App\Models\Tags;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +46,7 @@ class EditTagsController extends Controller
         ]);
     }
 
-    public function update(UpdateEditTagsRequest $request): RedirectResponse
+    public function update(UpdateEditTagsRequest $request): RedirectResponse|JsonResponse
     {
         $user = $request->user();
 
@@ -54,10 +55,24 @@ class EditTagsController extends Controller
         if ($user->role === 'admin') {
             $this->updateGlobalTaxonomy($request->taxonomyPayload(), $user);
 
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Tag defaults published for users.',
+                ]);
+            }
+
             return back()->with('success', 'Tag defaults published for users.');
         }
 
         $this->updateUserOverrides($request->taxonomyPayload(), $user);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Your tag styles were saved.',
+            ]);
+        }
 
         return back()->with('success', 'Your tag styles were saved.');
     }

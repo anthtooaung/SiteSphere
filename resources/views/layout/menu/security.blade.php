@@ -27,7 +27,7 @@
         <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
 
         <main class="dashboard-content security-content" aria-labelledby="securityTitle">
-            <section class="security-shell" data-security-page>
+            <section class="security-shell" data-security-page x-data="securityPage()">
                 <nav class="security-breadcrumbs" aria-label="Breadcrumb">
                     <x-fas-house class="security-breadcrumb-icon" aria-hidden="true" />
                     <span class="separator">›</span>
@@ -61,7 +61,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('security.update') }}" class="security-form" data-security-form>
+                <form method="POST" action="{{ route('security.update') }}" class="security-form" data-security-form @submit.prevent="submitForm($el)">
                     @csrf
                     @method('PATCH')
 
@@ -184,9 +184,20 @@
                     </section>
 
                     <footer class="footer-actions">
-                        <button class="save-btn" type="submit" data-security-save>
-                            <x-fas-floppy-disk class="save-btn-icon" aria-hidden="true" />
-                            <span>Save Changes</span>
+                        <button type="submit" class="save-btn" data-security-save :class="{ 'is-loading': isSubmitting }" :disabled="isSubmitting">
+                            <span class="button-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="save-btn-icon" viewBox="0 0 16 16"
+                                    fill="currentColor" aria-hidden="true">
+                                    <path
+                                        d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
+                                    <path
+                                        d="M2 1.5A1.5 1.5 0 0 1 3.5 0h7.086a1.5 1.5 0 0 1 1.061.44l3.914 3.913A1.5 1.5 0 0 1 16 5.414V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v5h-.5A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0H2v1.5Zm3 9A1 1 0 0 0 4 11.5V16h8v-4.5a1 1 0 0 0-1-1H5Z" />
+                                </svg>
+                                <span>Save Changes</span>
+                            </span>
+                            <span class="button-loader" aria-hidden="true">
+                                <i></i><i></i><i></i>
+                            </span>
                         </button>
                     </footer>
                 </form>
@@ -194,3 +205,80 @@
         </main>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function securityPage() {
+            return {
+                isSubmitting: false,
+                async submitForm(formElement) {
+                    if (this.isSubmitting) return;
+                    this.isSubmitting = true;
+
+                    const formData = new FormData(formElement);
+
+                    try {
+                        const response = await fetch(formElement.action, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: formData
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                icon: 'success',
+                                title: data.message || 'Security settings saved.',
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
+                            });
+                        } else {
+                            let errorText = 'Please check your security settings.';
+                            if (data.errors) {
+                                errorText = Object.values(data.errors).flat().join(' ');
+                            } else if (data.message) {
+                                errorText = data.message;
+                            }
+
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                icon: 'error',
+                                title: errorText
+                            });
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            icon: 'error',
+                            title: 'Could not save security settings. Please try again.'
+                        });
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                }
+            };
+        }
+    </script>
+@endpush
+

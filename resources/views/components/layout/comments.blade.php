@@ -8,7 +8,7 @@
 <section class="aud-reviews" aria-label="User Reports">
     <div class="aud-depo-head">
         <div>
-            <h2 class="aud-h2">User Reports</h2>
+            <h2 class="aud-h2">User Comments</h2>
             <p class="aud-sub">Community experiences and ratings posted by users.</p>
         </div>
     </div>
@@ -22,6 +22,7 @@
             <div class="aud-composer-top">
                 @if(auth()->user()->getAvatarUrl())
                     <img src="{{ auth()->user()->getAvatarUrl() }}" alt="{{ auth()->user()->name }} profile" class="ss-avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                    <span class="aud-composer-label">{{auth()->user()->name}}</span>
                 @else
                     <span
                         class="ss-avatar is-initial"
@@ -34,7 +35,6 @@
                     </span>
                 @endif
 
-                <span class="aud-composer-label">Contribute your experience</span>
 
                 <!-- Star rating picker -->
                 <div
@@ -172,7 +172,7 @@
             </article>
         @empty
             <div style="padding: 24px; text-align: center; border-top: 1px solid var(--line-2);">
-                <p class="aud-sub">No user reports yet. Be the first to share your experience!</p>
+                <p class="aud-sub">No user Comments yet. Be the first to share your experience!</p>
             </div>
         @endforelse
     </div>

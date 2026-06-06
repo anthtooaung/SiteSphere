@@ -242,7 +242,7 @@
                         <section class="aud-depo" aria-label="Detailed Reports">
                             <div class="aud-depo-head">
                                 <div>
-                                    <h2 class="aud-h2">Detailed Reports</h2>
+                                    <h2 class="aud-h2">Detailed Description</h2>
                                     <p class="aud-sub">Expert audits and technical reviews from verified contributors.</p>
                                 </div>
                             </div>

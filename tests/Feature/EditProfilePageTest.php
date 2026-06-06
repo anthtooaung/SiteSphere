@@ -223,4 +223,31 @@ class EditProfilePageTest extends TestCase
         Storage::disk('public')->assertMissing('profile_images/old.png');
         Storage::disk('public')->assertExists($user->user_image);
     }
+
+    public function test_ajax_profile_fields_update_returns_json_successfully(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'old@example.com',
+            'is_verified' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->patchJson(route('edit-profile.update'), [
+                'name' => 'Updated User via Ajax',
+                'email' => 'updated-ajax@example.com',
+                'user_dob' => '1999-01-15',
+                'user_phone' => '912345678',
+                'user_bio' => 'Updated profile bio via Ajax.',
+            ])
+            ->assertOk()
+            ->assertJson([
+                'success' => true,
+                'message' => 'Profile changes saved successfully.',
+            ]);
+
+        $user->refresh();
+
+        $this->assertSame('Updated User via Ajax', $user->name);
+        $this->assertSame('updated-ajax@example.com', $user->email);
+    }
 }

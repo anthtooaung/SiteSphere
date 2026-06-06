@@ -258,4 +258,68 @@ class EditTagPageTest extends TestCase
 
         return [$category, $tag];
     }
+
+    public function test_user_saves_custom_tag_override_via_ajax_returns_json(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        [$category, $tag] = $this->createCategoryWithTag();
+
+        $payload = [
+            [
+                'id' => $category->id,
+                'name' => $category->name,
+                'color' => '#6C5CE7',
+                'tags' => [
+                    [
+                        'id' => $tag->id,
+                        'name' => 'Personal Name Ajax',
+                        'color' => '#FF0000',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->actingAs($user)
+            ->patchJson(route('edit-tag.update'), ['taxonomy' => json_encode($payload)])
+            ->assertOk()
+            ->assertJson([
+                'success' => true,
+                'message' => 'Your tag styles were saved.',
+            ]);
+
+        $this->assertDatabaseHas('custom_tags', [
+            'user_id' => $user->id,
+            'tag_id' => $tag->id,
+            'name' => 'Personal Name Ajax',
+        ]);
+    }
+
+    public function test_admin_publishes_global_taxonomy_via_ajax_returns_json(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        [$category, $tag] = $this->createCategoryWithTag();
+
+        $payload = [
+            [
+                'id' => $category->id,
+                'name' => 'Updated Category Ajax',
+                'color' => '#00AAFF',
+                'tags' => [
+                    [
+                        'id' => $tag->id,
+                        'name' => 'Updated Tag Ajax',
+                        'color' => '#AA00FF',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->actingAs($admin)
+            ->patchJson(route('edit-tag.update'), ['taxonomy' => json_encode($payload)])
+            ->assertOk()
+            ->assertJson([
+                'success' => true,
+                'message' => 'Tag defaults published for users.',
+            ]);
+    }
 }

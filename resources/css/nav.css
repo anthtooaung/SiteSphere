@@ -2235,4 +2235,81 @@ body::-webkit-scrollbar-track,
     background: transparent;
 }
 
+/* Custom submit button loading state styled globally */
+.save-btn,
+.btn-primary {
+    position: relative;
+}
 
+.save-btn.is-loading,
+.btn-primary.is-loading {
+    cursor: wait !important;
+    pointer-events: none !important;
+}
+
+.save-btn .button-label,
+.btn-primary .button-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: visibility 0.2s, opacity 0.2s;
+}
+
+.save-btn .button-loader,
+.btn-primary .button-loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 27px;
+    color: currentColor;
+}
+
+.save-btn .button-loader i,
+.btn-primary .button-loader i {
+    display: block;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.25;
+    animation: authButtonDotPulse 1.2s ease-in-out infinite;
+}
+
+.save-btn .button-loader i:nth-child(2),
+.btn-primary .button-loader i:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.save-btn .button-loader i:nth-child(3),
+.btn-primary .button-loader i:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.save-btn.is-loading .button-label,
+.btn-primary.is-loading .button-label {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.save-btn.is-loading .button-loader,
+.btn-primary.is-loading .button-loader {
+    display: inline-flex;
+}
+
+@keyframes authButtonDotPulse {
+    0%,
+    100% {
+        opacity: 0.22;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateEditProfileRequest;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,7 @@ class EditProfileController extends Controller
         ]);
     }
 
-    public function update(UpdateEditProfileRequest $request): RedirectResponse
+    public function update(UpdateEditProfileRequest $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validated();
         $user = $request->user();
@@ -40,6 +41,13 @@ class EditProfileController extends Controller
 
         if ($previousImage && $previousImage !== $user->user_image && $this->isLocalProfileImage($previousImage)) {
             Storage::disk('public')->delete($previousImage);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile changes saved successfully.',
+            ]);
         }
 
         return redirect()

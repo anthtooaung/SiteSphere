@@ -126,4 +126,31 @@ class SecurityPageTest extends TestCase
             ])
             ->assertSessionHasErrors('password');
     }
+
+    public function test_ajax_security_toggles_are_saved_returns_json(): void
+    {
+        $user = User::factory()->create([
+            'two_factor_enabled' => false,
+        ]);
+
+        $user->settings()->update([
+            'user_post_visible' => false,
+        ]);
+
+        $this->actingAs($user)
+            ->patchJson(route('security.update'), [
+                'two_factor_enabled' => '1',
+                'user_post_visible' => '1',
+            ])
+            ->assertOk()
+            ->assertJson([
+                'success' => true,
+                'message' => 'Security settings saved successfully.',
+            ]);
+
+        $user->refresh();
+
+        $this->assertTrue($user->two_factor_enabled);
+        $this->assertTrue((bool) $user->settings()->value('user_post_visible'));
+    }
 }

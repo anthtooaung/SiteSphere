@@ -220,6 +220,7 @@
     display:flex;
     flex-direction:column;
     justify-content:center;
+    padding-right:110px;
 }
 
 .info-grid{
@@ -271,78 +272,96 @@
 
 /* Stats */
 
-.stats-grid{
-    display:flex;
-    flex-wrap:wrap;
-    gap:22px;
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
 }
 
-.stat-card{
-    flex:1 1 calc(25% - 17px);
-    min-width:260px;
-    background:var(--card, #fbfcff);
-    border:1px solid var(--border, #e1e8f2);
-    border-radius:10px;
-    padding:26px;
-    display:flex;
-    align-items:flex-start;
-    gap:18px;
-    box-shadow:0 18px 42px rgba(15,23,42,.08);
+.stat-card {
+    background: var(--card, #fbfcff);
+    border: 1px solid var(--border, #e1e8f2);
+    border-radius: 10px;
+    padding: 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
     color: var(--text-color, inherit);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.stat-icon{
-    flex:0 0 auto;
-    width:50px;
-    height:50px;
-    border-radius:10px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:20px;
-    box-shadow:none;
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
 }
 
-.purple{
-    background:#f3e8ff;
-    color:#7c3aed;
+.stat-icon {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    box-shadow: none;
 }
 
-.green{
-    background:#dcfce7;
-    color:#16a34a;
+.purple {
+    background: #f3e8ff;
+    color: #7c3aed;
 }
 
-.blue{
-    background:#dbeafe;
-    color:#2563eb;
+.green {
+    background: #dcfce7;
+    color: #16a34a;
 }
 
-.gold{
-    background:#fef3c7;
-    color:#d97706;
+.blue {
+    background: #dbeafe;
+    color: #2563eb;
 }
 
-.stat-card h2{
-    font-size:22px;
-    margin-bottom:5px;
+.gold {
+    background: #fef3c7;
+    color: #d97706;
 }
 
-.stat-card p{
-    color:var(--muted);
-    margin-bottom:14px;
+.stat-card h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 2px;
 }
 
-.stat-card a{
-    color:var(--accent-2);
-    text-decoration:none;
-    font-weight:600;
+.stat-card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 8px;
 }
 
-.stars{
-    color:var(--muted);
-    margin-top:8px;
-    letter-spacing:2px;
+.stat-card a {
+    color: var(--accent-2);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.stat-card .bottom-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.stat-card .bottom-link:hover {
+    color: var(--accent-1);
+}
+
+.stars {
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 2px;
 }
 
 /* Reviews */
@@ -466,6 +485,9 @@
     .profile-content{
         flex-direction:column;
     }
+    .right-section{
+        padding-right:0;
+    }
 }
 
 @media(max-width:768px) {
@@ -495,8 +517,9 @@
         grid-template-columns:1fr;
     }
 
-    .stats-grid{
-        grid-template-columns:1fr;
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
     }
 
     .review-grid{
@@ -525,4 +548,56 @@
         border-radius:6px;
         font-size:11px;
     }
+}
+
+@media(max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stat-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.profile-detail-page .dashboard-content {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+.edit-btn svg {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+    color: white;
+}
+
+.verified {
+    color: var(--accent-color, #1d9bf0) !important;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.social-icons a svg {
+    width: 18px;
+    height: 18px;
+    color: var(--accent-color, #6c5ce7);
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover svg {
+    color: var(--text-color, #0d1b2a);
+}
+
+.info-item svg {
+    color: var(--accent-color, #6c5ce7);
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+    flex-shrink: 0;
 }

@@ -14,7 +14,7 @@
             ? $menuBarLocation
             : 'left';
         
-        $user = auth()->user();
+        $user = $user ?? auth()->user();
         $reviewsCount = \App\Models\UserPosts::where('user_id', $user->id)->count();
         $ratingsCount = \App\Models\Ratings::where('user_id', $user->id)->count();
         
@@ -33,7 +33,9 @@
     <x-layout.nav />
 
     <div class="dashboard-page dashboard-page--{{ $dashboardMenuLocation }} profile-detail-page">
-        <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
+        @if ($user->id === auth()->id())
+            <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
+        @endif
 
         <main class="dashboard-content profile-detail-content">
             <!-- Background Blur -->
@@ -44,10 +46,12 @@
 
                 <!-- Main Profile Card -->
                 <div class="profile-card">
-                    <a href="{{ route('edit-profile') }}" class="edit-btn" style="text-decoration: none;">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                        Edit
-                    </a>
+                    @if ($user->id === auth()->id())
+                        <a href="{{ route('edit-profile') }}" class="edit-btn" style="text-decoration: none;">
+                            <x-far-pen-to-square />
+                            Edit
+                        </a>
+                    @endif
 
                     <div class="profile-content">
                         <!-- Left -->
@@ -64,7 +68,7 @@
                                 <div class="name-row">
                                     <h2>{{ $user->name }}</h2>
                                     @if($user->is_verified)
-                                        <i class="fa-solid fa-circle-check verified" title="Verified Account"></i>
+                                        <x-fas-circle-check class="verified" title="Verified Account" />
                                     @endif
                                 </div>
 
@@ -74,11 +78,11 @@
 
                                 <div class="social-icons">
                                     <a href="mailto:{{ $user->email }}" aria-label="Email">
-                                        <i class="fa-regular fa-envelope"></i>
+                                        <x-far-envelope />
                                     </a>
                                     @if($user->user_phone)
                                         <a href="tel:{{ $user->user_phone }}" aria-label="Phone">
-                                            <i class="fa-solid fa-phone"></i>
+                                            <x-fas-phone />
                                         </a>
                                     @endif
                                 </div>
@@ -89,7 +93,7 @@
                         <div class="right-section">
                             <div class="info-grid">
                                 <div class="info-item">
-                                    <i class="fa-regular fa-envelope"></i>
+                                    <x-far-envelope />
                                     <div>
                                         <span>Email</span>
                                         <h4>{{ $user->email }}</h4>
@@ -97,7 +101,7 @@
                                 </div>
 
                                 <div class="info-item">
-                                    <i class="fa-solid fa-phone"></i>
+                                    <x-fas-phone />
                                     <div>
                                         <span>Phone</span>
                                         <h4>{{ $user->user_phone ?? 'Not specified' }}</h4>
@@ -105,7 +109,7 @@
                                 </div>
 
                                 <div class="info-item">
-                                    <i class="fa-regular fa-calendar"></i>
+                                    <x-far-calendar />
                                     <div>
                                         <span>Date of Birth</span>
                                         <h4>{{ $user->user_dob ? \Carbon\Carbon::parse($user->user_dob)->format('d F Y') : 'Not specified' }}</h4>
@@ -113,7 +117,7 @@
                                 </div>
 
                                 <div class="info-item">
-                                    <i class="fa-regular fa-clock"></i>
+                                    <x-far-clock />
                                     <div>
                                         <span>Joined</span>
                                         <h4>{{ $user->created_at ? $user->created_at->format('d F Y') : 'Not specified' }}</h4>
@@ -132,7 +136,9 @@
                 <!-- Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <i class="fa-solid fa-comment-dots stat-icon blue"></i>
+                        <span class="stat-icon blue">
+                            <x-fas-comment-dots />
+                        </span>
                         <div>
                             <h2>{{ $reviewsCount }}</h2>
                             <p>My Reviews</p>
@@ -141,7 +147,9 @@
                     </div>
 
                     <div class="stat-card">
-                        <i class="fa-solid fa-star stat-icon gold"></i>
+                        <span class="stat-icon gold">
+                            <x-fas-star />
+                        </span>
                         <div>
                             <h2>{{ $ratingsCount }}</h2>
                             <p>Rate Items</p>
@@ -150,7 +158,9 @@
                     </div>
 
                     <div class="stat-card">
-                        <i class="fa-solid fa-upload stat-icon green"></i>
+                        <span class="stat-icon green">
+                            <x-fas-upload />
+                        </span>
                         <div>
                             <h2>{{ $reviewsCount }}</h2>
                             <p>My Uploads</p>
@@ -159,7 +169,9 @@
                     </div>
 
                     <div class="stat-card">
-                        <i class="fa-solid fa-ranking-star stat-icon purple"></i>
+                        <span class="stat-icon purple">
+                            <x-fas-ranking-star />
+                        </span>
                         <div>
                             <h2>{{ number_format($averageRating, 1) }}</h2>
                             <p>Rating Received</p>
@@ -178,7 +190,7 @@
                         @forelse($recentReviews as $userPost)
                             <div class="review-card">
                                 <div class="review-card-top">
-                                    <a href="{{ $userPost->post->url }}" target="_blank">
+                                    <a href="{{ route('posts.show', $userPost->post->slug) }}">
                                         {{ $userPost->post->title }}
                                     </a>
                                     @php

@@ -43,14 +43,36 @@
                             placeholder="Search by title or URL..." data-saved-post-search>
                     </label>
 
-                    <label class="saved-post-control">
+                    <div class="saved-post-control-wrapper relative">
                         <span class="sr-only">Sort saved posts</span>
-                        <select name="sort" data-saved-post-sort>
-                            <option value="recent" @selected($savedPostFilters['sort'] === 'recent')>Recently saved</option>
-                            <option value="az" @selected($savedPostFilters['sort'] === 'az')>A-Z</option>
-                        </select>
-                        <x-fas-chevron-down class="saved-post-control-icon" aria-hidden="true" />
-                    </label>
+                        <button type="button" class="saved-post-control" id="savedPostSortButton"
+                            data-dropdown-toggle="savedPostSortDropdown" data-dropdown-placement="bottom-start"
+                            aria-expanded="false">
+                            <span class="saved-post-control-label">
+                                {{ $savedPostFilters['sort'] === 'az' ? 'A-Z' : 'Recently saved' }}
+                            </span>
+                            <x-fas-chevron-down class="saved-post-control-icon" aria-hidden="true" />
+                        </button>
+
+                        <div id="savedPostSortDropdown" class="account-menu-dropdown hidden"
+                            aria-labelledby="savedPostSortButton">
+                            <ul class="account-menu-list">
+                                <li>
+                                    <button type="button" class="account-menu-link {{ $savedPostFilters['sort'] === 'recent' ? 'active' : '' }}"
+                                        data-sort-val="recent">
+                                        Recently saved
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" class="account-menu-link {{ $savedPostFilters['sort'] === 'az' ? 'active' : '' }}"
+                                        data-sort-val="az">
+                                        A-Z
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                        <input type="hidden" name="sort" value="{{ $savedPostFilters['sort'] }}" data-saved-post-sort>
+                    </div>
 
                     <label class="saved-post-date">
                         <span>Start date</span>
@@ -115,3 +137,102 @@
         </main>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainApp = document.querySelector('[data-saved-post-page]');
+            if (!mainApp) return;
+
+            async function fetchSavedPosts(url) {
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    const newMain = doc.querySelector('.saved-post-main-app');
+                    const currentMain = document.querySelector('.saved-post-main-app');
+                    if (newMain && currentMain) {
+                        currentMain.innerHTML = newMain.innerHTML;
+                        window.history.pushState({}, '', url);
+                        bindSavedPostEvents();
+                        if (typeof initFlowbite === 'function') {
+                            initFlowbite();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch saved posts:', error);
+                }
+            }
+            function bindSavedPostEvents() {
+                const form = mainApp.querySelector('[data-saved-post-filter-form]');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const formData = new FormData(form);
+                        const params = new URLSearchParams();
+                        for (const [key, val] of formData.entries()) {
+                            if (val) {
+                                params.append(key, val);
+                            }
+                        }
+                        const url = form.action + '?' + params.toString();
+                        fetchSavedPosts(url);
+                    });
+
+                    // Handle sort dropdown option selection
+                    const sortButtons = form.querySelectorAll('[data-sort-val]');
+                    const sortInput = form.querySelector('[data-saved-post-sort]');
+                    const sortLabel = form.querySelector('.saved-post-control-label');
+                    sortButtons.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const val = btn.getAttribute('data-sort-val');
+                            if (sortInput && sortInput.value !== val) {
+                                sortInput.value = val;
+                                if (sortLabel) {
+                                    sortLabel.textContent = btn.textContent.trim();
+                                }
+                                sortButtons.forEach(b => b.classList.remove('active'));
+                                btn.classList.add('active');
+                                sortInput.dispatchEvent(new Event('change'));
+                            }
+                        });
+                    });
+
+                    // Auto-submit form when sort dropdown or date pickers change
+                    const autoFields = form.querySelectorAll('[data-saved-post-sort], [data-saved-post-start-date], [data-saved-post-end-date]');
+                    autoFields.forEach(field => {
+                        field.addEventListener('change', () => {
+                            if (typeof form.requestSubmit === 'function') {
+                                form.requestSubmit();
+                            } else {
+                                form.dispatchEvent(new Event('submit', { cancelable: true }));
+                            }
+                        });
+                    });
+                }
+                const links = mainApp.querySelectorAll('a');
+                links.forEach(link => {
+                    try {
+                        const urlObj = new URL(link.href, window.location.origin);
+                        if (urlObj.pathname === window.location.pathname) {
+                            link.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                fetchSavedPosts(link.href);
+                            });
+                        }
+                    } catch (e) {
+                        // Ignore invalid URLs
+                    }
+                });
+            }
+
+            bindSavedPostEvents();
+        });
+    </script>
+@endpush

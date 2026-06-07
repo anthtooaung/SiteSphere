@@ -17,6 +17,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SavedPostsController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\UserHoverCardController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/favicon.svg', FaviconController::class)->name('favicon');
@@ -51,8 +52,12 @@ Route::middleware('auth')->group(function (): void {
         return view('layout.menu.dashboard');
     })->name('dashboard');
 
-    Route::get('/profile', function () {
-        return view('layout.profile-detail');
+    Route::get('/profile/{slug?}', function (?string $slug = null) {
+        $user = $slug
+            ? User::where('slug', $slug)->firstOrFail()
+            : auth()->user();
+
+        return view('layout.profile-detail', compact('user'));
     })->name('profile-detail');
 
     Route::get('/menu/edit-profile', [EditProfileController::class, 'edit'])->name('edit-profile');

@@ -176,6 +176,9 @@
                         </div>
                         <div class="crop-actions">
                             <button type="button" class="crop-cancel" @click="closeCrop">Cancel</button>
+                            <template x-if="cropImageType === 'image/gif'">
+                                <button type="button" class="crop-apply" style="background: transparent; color: var(--accent-color, #6c5ce7); border: 1px solid var(--accent-color, #6c5ce7);" @click="useOriginal">Use Original</button>
+                            </template>
                             <button type="button" class="crop-apply" @click="applyCrop">Apply Crop</button>
                         </div>
                     </div>
@@ -284,14 +287,6 @@
                     }
                     const reader = new FileReader();
                     reader.addEventListener('load', (readerEvent) => {
-                        if (file.type === 'image/gif') {
-                            this.croppedAvatar = readerEvent.target.result;
-                            this.avatarPreview = readerEvent.target.result;
-                            this.showMessage('GIF selected. Save changes to keep it.', 'success');
-                            event.target.value = '';
-                            return;
-                        }
-
                         this.openCrop(readerEvent.target.result, file.type);
                     });
                     reader.readAsDataURL(file);
@@ -420,10 +415,23 @@
                     canvas.height = outputSize;
                     context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, outputSize, outputSize);
 
-                    this.croppedAvatar = canvas.toDataURL('image/png');
+                    let croppedData = canvas.toDataURL('image/png');
+                    if (this.cropImageType === 'image/gif') {
+                        croppedData = croppedData.replace('image/png', 'image/gif');
+                    } else if (this.cropImageType === 'image/jpeg' || this.cropImageType === 'image/jpg') {
+                        croppedData = canvas.toDataURL('image/jpeg', 0.9);
+                    }
+                    this.croppedAvatar = croppedData;
                     this.avatarPreview = this.croppedAvatar;
                     this.closeCrop();
                     this.showMessage('Photo cropped. Save changes to keep it.', 'success');
+                },
+
+                useOriginal() {
+                    this.croppedAvatar = this.cropImageSrc;
+                    this.avatarPreview = this.cropImageSrc;
+                    this.closeCrop();
+                    this.showMessage('Original GIF selected. Save changes to keep it.', 'success');
                 },
 
                 showMessage(text, type) {

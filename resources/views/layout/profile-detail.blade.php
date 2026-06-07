@@ -104,7 +104,7 @@
                                     <x-fas-phone />
                                     <div>
                                         <span>Phone</span>
-                                        <h4>{{ $user->user_phone ?? 'Not specified' }}</h4>
+                                        <h4>+95{{ $user->user_phone ?? 'Not specified' }}</h4>
                                     </div>
                                 </div>
 

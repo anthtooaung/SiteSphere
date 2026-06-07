@@ -264,7 +264,7 @@
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 1000,
                                 timerProgressBar: true,
                                 icon: 'success',
                                 title: data.message || 'Tag styles saved.',
@@ -285,7 +285,7 @@
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 1000,
                                 timerProgressBar: true,
                                 icon: 'error',
                                 title: errorText
@@ -297,7 +297,7 @@
                             toast: true,
                             position: 'top-end',
                             showConfirmButton: false,
-                            timer: 3000,
+                            timer: 1000,
                             timerProgressBar: true,
                             icon: 'error',
                             title: 'Could not save tag styles. Please try again.'
@@ -318,11 +318,6 @@
         <main class="dashboard-content edit-tag-content" aria-labelledby="editTagTitle">
             <section class="edit-tag-shell" data-edit-tag-page
                 x-data="editTagPage({ taxonomy: @js($taxonomy), isAdmin: @js($isAdminTagEditor) })">
-                <nav class="edit-tag-breadcrumbs" aria-label="Breadcrumb">
-                    <a href="{{ route('dashboard') }}">Settings</a>
-                    <span aria-hidden="true">/</span>
-                    <span>{{ $isAdminTagEditor ? 'Admin Tag Styles' : 'Tag Styles' }}</span>
-                </nav>
 
                 <header class="edit-tag-header">
                     <div>

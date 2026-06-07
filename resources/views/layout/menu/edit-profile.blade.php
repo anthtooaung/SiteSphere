@@ -36,14 +36,11 @@
                 x-data="editProfilePage({
                     avatarUrl: @js($avatarUrl),
                     initial: @js($profileInitial),
+                    name: @js($profileUser->name),
                     bio: @js($bio),
                 })"
                 data-edit-profile-page
             >
-                <nav class="edit-profile-breadcrumbs" aria-label="Breadcrumb">
-                    <span class="active">Profile Settings</span>
-                </nav>
-
                 <header class="edit-profile-header">
                     <h1 id="editProfileTitle">
                         <x-fas-user class="edit-profile-heading-icon" aria-hidden="true" />
@@ -79,7 +76,7 @@
                                     </button>
                                 </div>
 
-                                <p class="file-info">JPG or PNG up to 5MB. Animated GIF up to 1MB.</p>
+                                <p class="file-info">JPG or PNG or Animated GIF up to 1MB.</p>
                                 <input type="file" id="photo-input" x-ref="photoInput" accept="image/png,image/jpeg,image/gif"
                                     hidden @change="handlePhoto">
                                 <button type="button" class="upload-btn" id="upload-button" @click="choosePhoto">
@@ -88,25 +85,6 @@
                             </aside>
 
                             <div class="form-section">
-                                @if (session('success'))
-                                    <div class="form-message show success" role="status" aria-live="polite">
-                                        {{ session('success') }}
-                                    </div>
-                                @endif
-
-                                @if ($errors->any())
-                                    <div class="form-message show error" role="alert">
-                                        <strong>Please check the profile form.</strong>
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
-
-                                <div class="form-message" x-bind:class="{ 'show success': formMessageType === 'success', 'show error': formMessageType === 'error' }"
-                                    x-show="formMessage" x-cloak role="status" aria-live="polite" x-text="formMessage"></div>
 
                                 <div class="field-group">
                                     <label for="full-name">Name</label>
@@ -123,7 +101,7 @@
                                 <div class="field-group">
                                     <label for="email">Email Address</label>
                                     <input type="email" id="email" name="email" value="{{ old('email', $profileUser->email) }}"
-                                        autocomplete="email" required @class(['is-invalid' => $errors->has('email')])>
+                                        autocomplete="email" required @class(['is-invalid' => $errors->has('email')]) >
                                 </div>
 
                                 <div class="field-group">
@@ -132,7 +110,10 @@
                                         <span class="phone-prefix">+95</span>
                                         <input type="tel" id="phone" name="user_phone"
                                             value="{{ old('user_phone', $profileUser->user_phone) }}" autocomplete="tel"
-                                            maxlength="20" placeholder="9 123 456 789">
+                                            maxlength="13" placeholder="9 123 456 789"
+                                            x-ref="phoneInput"
+                                            @input="formatPhoneInput"
+                                            @blur="formatPhoneInput">
                                     </div>
                                 </div>
 
@@ -214,6 +195,54 @@
                 bio: config.bio || '',
                 formMessage: '',
                 formMessageType: 'success',
+                init() {
+                    if (this.$refs.phoneInput) {
+                        let value = this.$refs.phoneInput.value;
+                        let digits = value.replace(/\D/g, "");
+
+                        if (digits.startsWith("0095")) {
+                            digits = digits.slice(4);
+                        } else if (digits.startsWith("95")) {
+                            digits = digits.slice(2);
+                        } else if (digits.startsWith("0")) {
+                            digits = digits.slice(1);
+                        }
+
+                        digits = digits.slice(0, 10);
+
+                        if (digits) {
+                            const groups = [digits.slice(0, 1), digits.slice(1, 4), digits.slice(4, 7), digits.slice(7, 10)]
+                                .filter(Boolean);
+                            this.$refs.phoneInput.value = groups.join(" ");
+                        } else {
+                            this.$refs.phoneInput.value = "";
+                        }
+                    }
+                },
+                formatPhoneInput(event) {
+                    let value = event.target.value;
+                    let digits = value.replace(/\D/g, "");
+
+                    if (digits.startsWith("0095")) {
+                        digits = digits.slice(4);
+                    } else if (digits.startsWith("95")) {
+                        digits = digits.slice(2);
+                    } else if (digits.startsWith("0")) {
+                        digits = digits.slice(1);
+                    }
+
+                    digits = digits.slice(0, 10);
+
+                    if (!digits) {
+                        event.target.value = "";
+                        return;
+                    }
+
+                    const groups = [digits.slice(0, 1), digits.slice(1, 4), digits.slice(4, 7), digits.slice(7, 10)]
+                        .filter(Boolean);
+
+                    event.target.value = groups.join(" ");
+                },
                 cropOpen: false,
                 cropImageSrc: '',
                 cropImageType: '',
@@ -239,10 +268,8 @@
                     if (! file) {
                         return;
                     }
-
                     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                    const imageMaxSize = 5 * 1024 * 1024;
-                    const gifMaxSize = 1 * 1024 * 1024;
+                    const maxPhotoSize = 1 * 1024 * 1024; // 1MB
 
                     if (! allowedTypes.includes(file.type)) {
                         this.showMessage('Please choose a JPG, GIF, or PNG image.', 'error');
@@ -250,18 +277,11 @@
                         return;
                     }
 
-                    if (file.type === 'image/gif' && file.size > gifMaxSize) {
-                        this.showMessage('Please choose a GIF smaller than 1MB.', 'error');
+                    if (file.size > maxPhotoSize) {
+                        this.showMessage('Please choose an image smaller than 1MB.', 'error');
                         event.target.value = '';
                         return;
                     }
-
-                    if (file.type !== 'image/gif' && file.size > imageMaxSize) {
-                        this.showMessage('Please choose an image smaller than 5MB.', 'error');
-                        event.target.value = '';
-                        return;
-                    }
-
                     const reader = new FileReader();
                     reader.addEventListener('load', (readerEvent) => {
                         if (file.type === 'image/gif') {
@@ -407,8 +427,19 @@
                 },
 
                 showMessage(text, type) {
-                    this.formMessage = text;
-                    this.formMessageType = type;
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true,
+                        icon: type === 'error' ? 'error' : 'success',
+                        title: text,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
                 },
 
                 isSubmitting: false,
@@ -431,13 +462,17 @@
                         });
 
                         const data = await response.json();
-
                         if (response.ok) {
+                            const currentName = formElement.querySelector('[name="name"]')?.value || '';
+                            const initialName = config.name || '';
+                            const photoChanged = !!this.croppedAvatar;
+                            const nameChanged = currentName !== initialName;
+
                             Swal.fire({
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 1000,
                                 timerProgressBar: true,
                                 icon: 'success',
                                 title: data.message || 'Profile settings saved.',
@@ -446,6 +481,12 @@
                                     toast.onmouseleave = Swal.resumeTimer;
                                 }
                             });
+
+                            if (photoChanged || nameChanged) {
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            }
                         } else {
                             let errorText = 'An error occurred.';
                             if (data.errors) {
@@ -458,7 +499,7 @@
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 1000,
                                 timerProgressBar: true,
                                 icon: 'error',
                                 title: errorText
@@ -470,7 +511,7 @@
                             toast: true,
                             position: 'top-end',
                             showConfirmButton: false,
-                            timer: 3000,
+                            timer: 1000,
                             timerProgressBar: true,
                             icon: 'error',
                             title: 'Could not save profile settings. Please try again.'
@@ -482,5 +523,37 @@
             };
         }
     </script>
+
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    icon: 'success',
+                    title: "{{ session('success') }}"
+                });
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    title: "{{ implode(' ', $errors->all()) }}"
+                });
+            });
+        </script>
+    @endif
 @endpush
 

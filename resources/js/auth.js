@@ -133,7 +133,7 @@ const init = () => {
       toast: true,
       position: "top-end",
       showConfirmButton: false,
-      timer: 3000,
+      timer: 1000,
       timerProgressBar: true,
       didOpen: (toast) => {
         toast.onmouseenter = window.Swal.stopTimer;
@@ -221,29 +221,32 @@ const init = () => {
     document.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
   };
 
-  const formatPhoneNumber = (value) => {
+  const formatInputPhoneNumber = (value) => {
     let digits = value.replace(/\D/g, "");
 
     if (digits.startsWith("0095")) {
-      digits = digits.slice(2);
-    }
-
-    if (digits.startsWith("95")) {
+      digits = digits.slice(4);
+    } else if (digits.startsWith("95")) {
       digits = digits.slice(2);
     } else if (digits.startsWith("0")) {
       digits = digits.slice(1);
     }
 
-    digits = digits.slice(0, 10);
+    digits = digits.slice(0, 9);
 
     if (!digits) {
       return "";
     }
 
-    const groups = [digits.slice(0, 1), digits.slice(1, 4), digits.slice(4, 7), digits.slice(7, 10)]
+    const groups = [digits.slice(0, 1), digits.slice(1, 4), digits.slice(4, 7), digits.slice(7, 9)]
       .filter(Boolean);
 
-    return `+95 ${groups.join(" ")}`;
+    return groups.join(" ");
+  };
+
+  const formatPhoneNumber = (value) => {
+    const formatted = formatInputPhoneNumber(value);
+    return formatted ? `+95 ${formatted}` : "";
   };
 
   const applyPhoneFormat = () => {
@@ -251,7 +254,7 @@ const init = () => {
       return;
     }
 
-    profilePhone.value = formatPhoneNumber(profilePhone.value);
+    profilePhone.value = formatInputPhoneNumber(profilePhone.value);
   };
 
   document.addEventListener("input", (event) => {
@@ -687,10 +690,15 @@ const init = () => {
     event.preventDefault();
     clearAllErrors();
 
-    const name = document.getElementById("reg-name").value.trim();
-    const email = document.getElementById("reg-email").value.trim();
-    const password = document.getElementById("reg-password").value;
-    const confirmPassword = document.getElementById("reg-confirm").value;
+    const regNameInput = document.getElementById("reg-name");
+    const regEmailInput = document.getElementById("reg-email");
+    const regPasswordInput = document.getElementById("reg-password");
+    const regConfirmInput = document.getElementById("reg-confirm");
+
+    const name = regNameInput?.value.trim() ?? "";
+    const email = regEmailInput?.value.trim() ?? "";
+    const password = regPasswordInput?.value ?? "";
+    const confirmPassword = regConfirmInput?.value ?? "";
     const specialCharacterCount = (password.match(/[^A-Za-z0-9]/g) || [])
       .length;
 
@@ -722,6 +730,10 @@ const init = () => {
     }
 
     setButtonLoading(registerSubmitButton, true);
+    if (regNameInput) regNameInput.disabled = true;
+    if (regEmailInput) regEmailInput.disabled = true;
+    if (regPasswordInput) regPasswordInput.disabled = true;
+    if (regConfirmInput) regConfirmInput.disabled = true;
 
     try {
       const response = await fetch("/register/initiate", {
@@ -768,6 +780,10 @@ const init = () => {
       });
     } finally {
       setButtonLoading(registerSubmitButton, false);
+      if (regNameInput) regNameInput.disabled = false;
+      if (regEmailInput) regEmailInput.disabled = false;
+      if (regPasswordInput) regPasswordInput.disabled = false;
+      if (regConfirmInput) regConfirmInput.disabled = false;
     }
   });
 
@@ -801,7 +817,7 @@ const init = () => {
             title: "OTP Resent",
             text: "A new OTP code has been logged/sent successfully.",
             icon: "success",
-            timer: 1500,
+            timer: 1000,
             showConfirmButton: false,
           });
         }

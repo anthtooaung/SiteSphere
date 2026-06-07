@@ -22,7 +22,7 @@
                 toast: true,
                 position: authToastPosition,
                 showConfirmButton: false,
-                timer: 1500,
+                timer: 1000,
                 timerProgressBar: true,
                 width: 'auto',
                 height: '100px',
@@ -325,7 +325,10 @@
 
                         <div class="field-group">
                             <label for="profile-phone">Phone number</label>
-                            <input id="profile-phone" name="user_phone" class="plain-input" type="tel" inputmode="tel" autocomplete="tel" maxlength="17" placeholder="+95 9 123 456 789" data-phone-format />
+                            <div class="phone-input-wrapper">
+                                <span class="phone-prefix">+95</span>
+                                <input id="profile-phone" name="user_phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="9 123 456 789" data-phone-format />
+                            </div>
                         </div>
 
                         <div class="field-group">

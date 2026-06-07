@@ -194,4 +194,36 @@ class UploadPostTest extends TestCase
         $response->assertSee('Anonymous');
         $response->assertSee('\u0022initial\u0022:\u0022?\u0022', false);
     }
+
+    public function test_upload_page_displays_custom_user_tag_overrides(): void
+    {
+        $user = User::factory()->create();
+        $category = Categories::factory()->create([
+            'name' => 'Developer Tools',
+            'slug' => 'developer-tools',
+        ]);
+        $tag = Tags::factory()->create([
+            'name' => 'Original Tag Name',
+            'slug' => 'original-tag-name',
+            'tag_color' => '#14b8a6',
+        ]);
+
+        DB::table('category_tags')->insert([
+            'category_id' => $category->id,
+            'tag_id' => $tag->id,
+        ]);
+
+        $tag->customTags()->create([
+            'user_id' => $user->id,
+            'name' => 'Custom Upload Tag',
+            'color' => '#FF7700',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('posts.create'));
+
+        $response->assertOk();
+        $response->assertSee('Custom Upload Tag');
+        $response->assertSee('#FF7700');
+        $response->assertDontSee('Original Tag Name');
+    }
 }

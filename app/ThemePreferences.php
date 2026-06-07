@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class ThemePreferences
 {
@@ -31,15 +30,6 @@ class ThemePreferences
                 $textColor = $this->validThemeColor($settings->customTheme->text_color, $textColor);
             } elseif ($settings?->theme) {
                 $accentColor = $this->validAccentColor($settings->theme->accent_color);
-            }
-        } else {
-            try {
-                $theme = DB::table('themes')->first();
-                if ($theme) {
-                    $accentColor = $this->validAccentColor($theme->accent_color);
-                }
-            } catch (\Throwable $e) {
-                // Keep default
             }
         }
 

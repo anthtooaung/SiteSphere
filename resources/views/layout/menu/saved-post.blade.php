@@ -30,51 +30,49 @@
                     <div class="saved-post-title-group">
                         <p class="dashboard-kicker">Bookmarks</p>
                         <h1 id="savedPostTitle">Saved Post</h1>
-                        <p>
-                            {{ $totalSavedCount }} {{ \Illuminate\Support\Str::plural('website', $totalSavedCount) }} saved to your workspace.
-                        </p>
+                        <p>Manage and view your bookmarked website reviews and saved resources.</p>
                     </div>
-
-                    <form method="GET" action="{{ route('saved-post') }}" class="saved-post-toolbar"
-                        data-saved-post-filter-form>
-                        <label class="saved-post-search">
-                            <x-fas-search class="saved-post-search-icon" aria-hidden="true" />
-                            <span class="sr-only">Search saved posts</span>
-                            <input type="search" name="search" value="{{ $savedPostFilters['search'] }}"
-                                placeholder="Search by title or URL..." data-saved-post-search>
-                        </label>
-
-                        <label class="saved-post-control">
-                            <span class="sr-only">Sort saved posts</span>
-                            <select name="sort" data-saved-post-sort>
-                                <option value="recent" @selected($savedPostFilters['sort'] === 'recent')>Recently saved</option>
-                                <option value="az" @selected($savedPostFilters['sort'] === 'az')>A-Z</option>
-                            </select>
-                            <x-fas-chevron-down class="saved-post-control-icon" aria-hidden="true" />
-                        </label>
-
-                        <label class="saved-post-date">
-                            <span>Start date</span>
-                            <input type="date" name="start_date" value="{{ $savedPostFilters['start_date'] }}"
-                                data-saved-post-start-date>
-                        </label>
-
-                        <label class="saved-post-date">
-                            <span>End date</span>
-                            <input type="date" name="end_date" value="{{ $savedPostFilters['end_date'] }}"
-                                data-saved-post-end-date>
-                        </label>
-
-                        <div class="saved-post-toolbar-actions">
-                            <button type="submit" class="saved-post-filter-button">
-                                Apply
-                            </button>
-                            <a href="{{ route('saved-post') }}" class="saved-post-clear-button">
-                                Clear
-                            </a>
-                        </div>
-                    </form>
                 </header>
+
+                <form method="GET" action="{{ route('saved-post') }}" class="saved-post-toolbar"
+                    data-saved-post-filter-form>
+                    <label class="saved-post-search">
+                        <x-fas-search class="saved-post-search-icon" aria-hidden="true" />
+                        <span class="sr-only">Search saved posts</span>
+                        <input type="search" name="search" value="{{ $savedPostFilters['search'] }}"
+                            placeholder="Search by title or URL..." data-saved-post-search>
+                    </label>
+
+                    <label class="saved-post-control">
+                        <span class="sr-only">Sort saved posts</span>
+                        <select name="sort" data-saved-post-sort>
+                            <option value="recent" @selected($savedPostFilters['sort'] === 'recent')>Recently saved</option>
+                            <option value="az" @selected($savedPostFilters['sort'] === 'az')>A-Z</option>
+                        </select>
+                        <x-fas-chevron-down class="saved-post-control-icon" aria-hidden="true" />
+                    </label>
+
+                    <label class="saved-post-date">
+                        <span>Start date</span>
+                        <input type="date" name="start_date" value="{{ $savedPostFilters['start_date'] }}"
+                            data-saved-post-start-date>
+                    </label>
+
+                    <label class="saved-post-date">
+                        <span>End date</span>
+                        <input type="date" name="end_date" value="{{ $savedPostFilters['end_date'] }}"
+                            data-saved-post-end-date>
+                    </label>
+
+                    <div class="saved-post-toolbar-actions">
+                        <button type="submit" class="saved-post-filter-button">
+                            Apply
+                        </button>
+                        <a href="{{ route('saved-post') }}" class="saved-post-clear-button">
+                            Clear
+                        </a>
+                    </div>
+                </form>
 
                 <div class="saved-post-meta-row">
                     <span data-saved-post-count>

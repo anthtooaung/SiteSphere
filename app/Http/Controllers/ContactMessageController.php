@@ -46,7 +46,7 @@ class ContactMessageController extends Controller
             'toast' => true,
             'position' => 'top-end',
             'showConfirmButton' => false,
-            'timer' => 3000,
+            'timer' => 1000,
             'timerProgressBar' => true,
             'icon' => $icon,
             'title' => $title,

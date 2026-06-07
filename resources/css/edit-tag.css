@@ -35,14 +35,17 @@
 
 .edit-tag-breadcrumbs span:last-child {
     color: var(--accent-color);
-}
-
-.edit-tag-header {
+}.edit-tag-header {
     display: flex;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 18px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+    background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+    border-radius: 18px;
+    padding: 24px;
 }
-
 .dashboard-kicker {
     margin: 0 0 8px;
     color: var(--accent-color);

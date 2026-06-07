@@ -27,14 +27,7 @@
         <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
 
         <main class="dashboard-content security-content" aria-labelledby="securityTitle">
-            <section class="security-shell" data-security-page x-data="securityPage()">
-                <nav class="security-breadcrumbs" aria-label="Breadcrumb">
-                    <x-fas-house class="security-breadcrumb-icon" aria-hidden="true" />
-                    <span class="separator">›</span>
-                    <span>Settings</span>
-                    <span class="separator">›</span>
-                    <span class="active">Security</span>
-                </nav>
+            <section class="security-shell" data-security-page x-data="securityPage({{ $twoFactorEnabled ? 'true' : 'false' }}, {{ $postVisibilityEnabled ? 'true' : 'false' }})">
 
                 <header class="security-header">
                     <h1 id="securityTitle">
@@ -75,11 +68,11 @@
                                     </p>
                                 </div>
                                 <div class="toggle-area">
-                                    <span class="toggle-label">{{ $twoFactorEnabled ? 'Enabled' : 'Disabled' }}</span>
+                                    <span class="toggle-label" x-text="twoFactor ? 'Enabled' : 'Disabled'">{{ $twoFactorEnabled ? 'Enabled' : 'Disabled' }}</span>
                                     <label class="switch" aria-label="Toggle two-factor authentication">
                                         <input type="hidden" name="two_factor_enabled" value="0">
                                         <input type="checkbox" id="two-factor-toggle" name="two_factor_enabled" value="1"
-                                            @checked($twoFactorEnabled) data-security-two-factor>
+                                            x-model="twoFactor" data-security-two-factor>
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -123,11 +116,11 @@
                                     <p class="subtitle">Choose whether your posts can show your profile identity.</p>
                                 </div>
                                 <div class="toggle-area">
-                                    <span class="toggle-label">{{ $postVisibilityEnabled ? 'Visible' : 'Anonymous' }}</span>
+                                    <span class="toggle-label" x-text="visibility ? 'Visible' : 'Anonymous'">{{ $postVisibilityEnabled ? 'Visible' : 'Anonymous' }}</span>
                                     <label class="switch" aria-label="Toggle posting visibility">
                                         <input type="hidden" name="user_post_visible" value="0">
                                         <input type="checkbox" id="anonymous-posting-toggle" name="user_post_visible" value="1"
-                                            @checked($postVisibilityEnabled) data-security-visibility>
+                                            x-model="visibility" data-security-visibility>
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -208,9 +201,11 @@
 
 @push('scripts')
     <script>
-        function securityPage() {
+        function securityPage(initialTwoFactor = false, initialVisibility = false) {
             return {
                 isSubmitting: false,
+                twoFactor: initialTwoFactor,
+                visibility: initialVisibility,
                 async submitForm(formElement) {
                     if (this.isSubmitting) return;
                     this.isSubmitting = true;
@@ -235,7 +230,7 @@
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 1000,
                                 timerProgressBar: true,
                                 icon: 'success',
                                 title: data.message || 'Security settings saved.',
@@ -256,7 +251,7 @@
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 1000,
                                 timerProgressBar: true,
                                 icon: 'error',
                                 title: errorText
@@ -268,7 +263,7 @@
                             toast: true,
                             position: 'top-end',
                             showConfirmButton: false,
-                            timer: 3000,
+                            timer: 1000,
                             timerProgressBar: true,
                             icon: 'error',
                             title: 'Could not save security settings. Please try again.'

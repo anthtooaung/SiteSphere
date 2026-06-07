@@ -663,4 +663,35 @@ class HomePageTest extends TestCase
             ->assertSee('<span x-text="ratingsTotal()">2</span> ratings', false)
             ->assertSee('>4.0</span>', false);
     }
+
+    public function test_home_displays_custom_user_tag_overrides(): void
+    {
+        $user = User::factory()->create();
+        $category = Categories::factory()->create(['name' => 'Tech', 'slug' => 'tech']);
+        $tag = Tags::factory()->create(['name' => 'Original Tag', 'slug' => 'original-tag', 'tag_color' => '#111111']);
+
+        $category->tags()->attach($tag->id);
+
+        $post = Posts::factory()->create(['title' => 'Post with Custom Tag']);
+        $post->tags()->attach($tag->id);
+
+        UserPosts::factory()->create([
+            'post_id' => $post->id,
+            'user_id' => $user->id,
+            'description' => 'Test description',
+        ]);
+
+        $tag->customTags()->create([
+            'user_id' => $user->id,
+            'name' => 'Customized Tag Name',
+            'color' => '#FF0055',
+        ]);
+
+        $response = $this->actingAs($user)->get('/home');
+
+        $response->assertOk();
+        $response->assertSee('Customized Tag Name');
+        $response->assertSee('#FF0055');
+        $response->assertDontSee('Original Tag');
+    }
 }

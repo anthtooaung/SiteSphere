@@ -327,7 +327,7 @@ class RegisteredUserController extends Controller
             'toast' => true,
             'position' => $position,
             'showConfirmButton' => false,
-            'timer' => 3000,
+            'timer' => 1000,
             'timerProgressBar' => true,
             'icon' => 'success',
             'title' => $title,

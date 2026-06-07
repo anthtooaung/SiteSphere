@@ -1,21 +1,30 @@
 @php
+    $user = auth()->user();
+    $customTags = $user
+        ? \App\Models\CustomTags::query()->where('user_id', $user->id)->get()->keyBy('tag_id')
+        : collect();
+
     $categoryPayload = $categories
-        ->mapWithKeys(fn ($category) => [
-            $category->slug => [
-                'name' => $category->name,
-                'tags' => $category->tags
-                    ->map(fn ($tag) => [
-                        'id' => $tag->id,
-                        'name' => $tag->name,
-                        'color' => $tag->tag_color ?: '#6c5ce7',
-                    ])
-                    ->values(),
-            ],
-        ])
+        ->mapWithKeys(function ($category) use ($customTags) {
+            return [
+                $category->slug => [
+                    'name' => $category->name,
+                    'tags' => $category->tags
+                        ->map(function ($tag) use ($customTags) {
+                            $custom = $customTags->get($tag->id);
+                            return [
+                                'id' => $tag->id,
+                                'name' => $custom ? $custom->name : $tag->name,
+                                'color' => $custom ? $custom->color : ($tag->tag_color ?: '#6c5ce7'),
+                            ];
+                        })
+                        ->values(),
+                ],
+            ];
+        })
         ->all();
 
     $initialCategory = $categories->first();
-    $user = auth()->user();
     $isProfileVisible = $user ? (bool) ($user->settings?->user_post_visible) : false;
     $profileName = $user?->name ?? 'Reviewer';
     $oldTagIds = collect(old('tags', []))->map(fn ($tag) => (string) $tag)->values();

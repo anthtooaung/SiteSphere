@@ -176,7 +176,7 @@ const initUploadPost = () => {
       if (!records.length) {
         tagsElement.appendChild(createPreviewTagPill("No tags selected", true));
       } else {
-        records.forEach((tag) => tagsElement.appendChild(createPreviewTagPill(tag.name)));
+        records.forEach((tag) => tagsElement.appendChild(createPreviewTagPill(tag.name, false, tag.color)));
       }
     }
 
@@ -185,16 +185,25 @@ const initUploadPost = () => {
     }
   };
 
-  const createPreviewTagPill = (label, isEmpty = false) => {
+  const createPreviewTagPill = (label, isEmpty = false, color = null) => {
     const pill = document.createElement("span");
     const dot = document.createElement("span");
 
-    pill.className = isEmpty
-      ? "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_16%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_94%,var(--text-color,#0d1b2a)_6%)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)]"
-      : "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-bold [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_90%,var(--accent-color,#6c5ce7)_10%)] [color:var(--accent-color,#6c5ce7)]";
-    dot.className = isEmpty
-      ? "size-1.5 rounded-full [background:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]"
-      : "size-1.5 rounded-full [background:var(--accent-color,#6c5ce7)]";
+    const activeColor = color || "var(--accent-color,#6c5ce7)";
+
+    pill.className = "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-bold transition-all";
+    if (isEmpty) {
+      pill.style.borderColor = "color-mix(in srgb, var(--text-color,#0d1b2a) 16%, transparent)";
+      pill.style.backgroundColor = "color-mix(in srgb, var(--background-color,#ffffff) 94%, var(--text-color,#0d1b2a) 6%)";
+      pill.style.color = "color-mix(in srgb, var(--text-color,#0d1b2a) 62%, transparent)";
+      dot.className = "size-1.5 rounded-full [background:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]";
+    } else {
+      pill.style.borderColor = `color-mix(in srgb, ${activeColor} 24%, var(--background-color,#ffffff))`;
+      pill.style.backgroundColor = `color-mix(in srgb, var(--background-color,#ffffff) 90%, ${activeColor} 10%)`;
+      pill.style.color = activeColor;
+      dot.className = "size-1.5 rounded-full";
+      dot.style.backgroundColor = activeColor;
+    }
 
     pill.appendChild(dot);
     pill.append(label);

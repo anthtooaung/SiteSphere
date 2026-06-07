@@ -131,7 +131,7 @@ class SocialLoginController extends Controller
             'toast' => true,
             'position' => $this->toastPositionFor($user),
             'showConfirmButton' => false,
-            'timer' => 3000,
+            'timer' => 1000,
             'timerProgressBar' => true,
             'icon' => 'success',
             'title' => 'Signed in successfully',

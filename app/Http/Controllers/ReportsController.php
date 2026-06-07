@@ -94,7 +94,7 @@ class ReportsController extends Controller
             'toast' => true,
             'position' => $this->toastPositionFor($request),
             'showConfirmButton' => false,
-            'timer' => 3000,
+            'timer' => 1000,
             'timerProgressBar' => true,
             'icon' => 'success',
             'title' => 'Report submitted',

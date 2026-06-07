@@ -15,10 +15,45 @@ class Tag extends Component
     public string $color;
 
     /**
+     * Cache for user's custom tags to prevent N+1 queries.
+     *
+     * @var array{user_id: int, tags: array<int, CustomTags>}|null
+     */
+    private static ?array $customTagsCache = null;
+
+    /**
+     * Retrieve all custom tags for the authenticated user and cache them for the request.
+     *
+     * @return array<int, CustomTags>
+     */
+    private static function getCustomTagsForUser(int $userId): array
+    {
+        if (self::$customTagsCache === null || self::$customTagsCache['user_id'] !== $userId) {
+            self::$customTagsCache = [
+                'user_id' => $userId,
+                'tags' => CustomTags::query()
+                    ->where('user_id', $userId)
+                    ->get()
+                    ->keyBy('tag_id')
+                    ->all(),
+            ];
+        }
+
+        return self::$customTagsCache['tags'];
+    }
+
+    /**
      * Create a new component instance.
      */
     public function __construct(public mixed $tag)
     {
+        if (is_array($tag) && isset($tag['name']) && isset($tag['color'])) {
+            $this->name = (string) $tag['name'];
+            $this->color = (string) $tag['color'];
+
+            return;
+        }
+
         $resolvedTag = null;
 
         if ($tag instanceof Tags) {
@@ -48,10 +83,8 @@ class Tag extends Component
             $customTag = null;
 
             if ($user !== null) {
-                $customTag = CustomTags::query()
-                    ->where('user_id', $user->id)
-                    ->where('tag_id', $resolvedTag->id)
-                    ->first();
+                $customTags = self::getCustomTagsForUser($user->id);
+                $customTag = $customTags[$resolvedTag->id] ?? null;
             }
 
             $this->name = $customTag instanceof CustomTags ? $customTag->name : $resolvedTag->name;

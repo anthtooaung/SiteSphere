@@ -2666,3 +2666,51 @@ textarea.plain-input.is-invalid {
     transform: translateY(0);
   }
 }
+
+/* Phone Input Box (Styled as in edit-profile.css) */
+.phone-input-wrapper {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding-left: 16px;
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--field);
+  color: var(--black);
+  outline: none;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.phone-input-wrapper:focus-within {
+  border-color: var(--blue);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(53, 109, 243, 0.13);
+}
+
+.phone-prefix {
+  margin-right: 12px;
+  padding-right: 12px;
+  border-right: 1px solid rgba(53, 109, 243, 0.12);
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.phone-input-wrapper input {
+  flex: 1;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  outline: none !important;
+  min-height: auto !important;
+}
+
+.phone-input-wrapper input:focus {
+  box-shadow: none !important;
+}
+

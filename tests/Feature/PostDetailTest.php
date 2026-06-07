@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Comments;
 use App\Models\Posts;
+use App\Models\Tags;
 use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
@@ -145,5 +146,28 @@ class PostDetailTest extends TestCase
         $response->assertDontSee('Secret Contributor');
         // The anonymous placeholder should be shown
         $response->assertSee('Anonymous');
+    }
+
+    public function test_post_detail_page_displays_custom_user_tag_overrides(): void
+    {
+        $user = User::factory()->create();
+        $post = Posts::factory()->create();
+        $tag = Tags::factory()->create(['name' => 'Original Tag Name', 'tag_color' => '#222222']);
+        $post->tags()->attach($tag->id);
+
+        $tag->customTags()->create([
+            'user_id' => $user->id,
+            'name' => 'Customized Detail Tag',
+            'color' => '#00FF99',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->get(route('posts.show', $post->slug));
+
+        $response->assertOk();
+        $response->assertSee('Customized Detail Tag');
+        $response->assertSee('#00FF99');
+        $response->assertDontSee('Original Tag Name');
     }
 }

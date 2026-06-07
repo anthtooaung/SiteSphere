@@ -89,7 +89,7 @@ class WelcomePageTest extends TestCase
 
         $response = $this->get('/');
         $response->assertOk();
-        $response->assertSee('--accent-color: #059669', false);
+        $response->assertSee('--accent-color: #6c5ce7', false);
         $response->assertSee('--font-family: "Inter", sans-serif', false);
     }
 
@@ -142,5 +142,31 @@ class WelcomePageTest extends TestCase
         $response->assertOk();
         $response->assertSee('id="mobileSearchForm"', false);
         $response->assertSee('Search reviews...', false);
+    }
+
+    public function test_authenticated_user_theme_color_is_applied_to_welcome_page(): void
+    {
+        $user = User::factory()->create();
+        $customThemeId = DB::table('custom_themes')->insertGetId([
+            'user_id' => $user->id,
+            'background_color' => '#102030',
+            'text_color' => '#f8fafc',
+            'accent_color' => '#14b8a6',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('settings')
+            ->where('user_id', $user->id)
+            ->update([
+                'custom_theme_id' => $customThemeId,
+                'use_custom_theme' => true,
+                'updated_at' => now(),
+            ]);
+
+        $response = $this->actingAs($user)->get('/');
+
+        $response->assertOk();
+        $response->assertSee('--accent-color: #14b8a6', false);
     }
 }

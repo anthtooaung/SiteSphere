@@ -378,7 +378,7 @@
 @media (min-width: 1024px) {
   .tag-tooltip {
     position: absolute;
-    inset: 160px auto auto calc(100% + 18px);
+    inset: auto auto 24px calc(100% + 18px);
     width: 330px;
     height: auto;
     padding: 0;
@@ -389,7 +389,8 @@
   .tag-tooltip::before {
     position: absolute;
     left: -5px;
-    top: 245px;
+    bottom: 92px;
+    top: auto;
     z-index: 1;
     width: 10px;
     height: 10px;

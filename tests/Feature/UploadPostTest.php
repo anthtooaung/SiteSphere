@@ -226,4 +226,20 @@ class UploadPostTest extends TestCase
         $response->assertSee('#FF7700');
         $response->assertDontSee('Original Tag Name');
     }
+
+    public function test_upload_page_includes_category_color(): void
+    {
+        $user = User::factory()->create();
+        $category = Categories::factory()->create([
+            'name' => 'Design & Art',
+            'slug' => 'design-art',
+            'category_color' => '#E84393',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('posts.create'));
+
+        $response->assertOk();
+        $response->assertSee('data-category-color="#E84393"', false);
+        $response->assertSee('\u0022color\u0022:\u0022#E84393\u0022', false);
+    }
 }

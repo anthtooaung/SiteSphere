@@ -3,30 +3,7 @@
 /* =========================================================================
    1. THREE-DOT MENU
    ========================================================================= */
-(function initMenu() {
-  const btn = document.getElementById("menuBtn");
-  const dropdown = document.getElementById("menuDropdown");
-  if (!btn || !dropdown) return;
 
-  function open() {
-    dropdown.classList.add("is-open");
-    btn.classList.add("is-active");
-    btn.setAttribute("aria-expanded", "true");
-  }
-
-  function close() {
-    dropdown.classList.remove("is-open");
-    btn.classList.remove("is-active");
-    btn.setAttribute("aria-expanded", "false");
-  }
-
-  btn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    dropdown.classList.contains("is-open") ? close() : open();
-  });
-
-  document.addEventListener("click", close);
-})();
 
 /* =========================================================================
    2. DEPOSITION TAB SWITCHING
@@ -54,6 +31,22 @@
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => activate(tab.dataset.contributor));
   });
+
+  // Activate deposition tab from URL hash (e.g. #panel-user-5)
+  const hash = window.location.hash;
+  if (hash && hash.startsWith("#panel-user-")) {
+    const contributor = hash.slice(1).replace("panel-", ""); // "user-5"
+    const matchingTab = tabs.find((tab) => tab.dataset.contributor === contributor);
+    if (matchingTab) {
+      activate(contributor);
+      setTimeout(() => {
+        const targetPanel = panels.querySelector(`[data-panel="${contributor}"]`);
+        if (targetPanel) {
+          targetPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
+    }
+  }
 })();
 
 /* =========================================================================
@@ -204,6 +197,13 @@ document.querySelectorAll(".js-helpful-btn").forEach(initHelpfulBtn);
   if (currentRating > 0) {
     updatePickerUI();
     validate();
+  }
+
+  if (window.location.hash === "#reviewForm") {
+    setTimeout(() => {
+      textarea.focus();
+      textarea.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
   }
 })();
 

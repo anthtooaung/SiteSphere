@@ -217,6 +217,7 @@ class PostsController extends Controller
         }
 
         $userRating = $userId ? (Ratings::where('post_id', $posts->id)->where('user_id', $userId)->value('rating') ?? 0) : 0;
+        $saved = $userId ? $posts->bookmarks()->where('user_id', $userId)->exists() : false;
 
         return view('layout.post-detail', [
             'post' => $posts,
@@ -229,6 +230,7 @@ class PostsController extends Controller
             'commentUserRatings' => $commentUserRatings,
             'relatedPosts' => $relatedPosts,
             'userRating' => $userRating,
+            'saved' => $saved,
         ]);
     }
 

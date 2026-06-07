@@ -9,6 +9,7 @@
             return [
                 $category->slug => [
                     'name' => $category->name,
+                    'color' => $category->category_color ?: '#6c5ce7',
                     'tags' => $category->tags
                         ->map(function ($tag) use ($customTags) {
                             $custom = $customTags->get($tag->id);
@@ -103,6 +104,7 @@
                                     type="button"
                                     class="tag-category-button"
                                     data-category-button="{{ $category->slug }}"
+                                    data-category-color="{{ $category->category_color ?: '#6c5ce7' }}"
                                 >
                                     {{ $category->name }}
                                 </button>

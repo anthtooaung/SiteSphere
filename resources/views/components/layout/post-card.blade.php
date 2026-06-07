@@ -274,7 +274,9 @@
                 </div>
             </div>
 
-            <div class="space-y-1.5 px-3 py-2.5">
+            <a x-bind:href="currentProfile.user_id ? '{{ $slug ? route('posts.show', $slug) : '#' }}' + '#panel-user-' + currentProfile.user_id : '{{ $slug ? route('posts.show', $slug) : '#' }}'"
+                class="block space-y-1.5 px-3 py-2.5 rounded-b-xl transition-all duration-200 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_6%,transparent)] cursor-pointer no-underline"
+                @if(!$slug) x-on:click.prevent @endif>
                 <div class="flex items-center gap-2 text-xs">
                     <span class="font-bold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_52%,transparent)]"
                         x-text="currentProfile.time">{{ $profiles[0]['time'] ?? '' }}</span>
@@ -282,7 +284,7 @@
                 <p class="line-clamp-3 whitespace-pre-wrap break-words text-[13px] leading-5 [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)]"
                     data-post-card-description x-text="currentProfile.description">
                     {{ $profiles[0]['description'] ?? '' }}</p>
-            </div>
+            </a>
         </div>
     </section>
 
@@ -309,12 +311,20 @@
         @endif
         <div class="relative">
             @auth
-                <button type="button"
-                    class="group inline-flex items-center gap-2 rounded-md px-2 py-0.5 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_76%,transparent)] [box-shadow:0_1px_3px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] hover:[box-shadow:0_8px_18px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)]"
-                    x-on:click.stop="reviewOpen = ! reviewOpen" x-bind:aria-expanded="reviewOpen.toString()">
-                    <x-far-star class="size-3 group-hover:[color:var(--accent-color,#6c5ce7)]" />
-                    <span class="group-hover:[color:var(--accent-color,#6c5ce7)]">Review</span>
-                </button>
+                @if($slug)
+                    <a href="{{ route('posts.show', $slug) }}#reviewForm"
+                        class="group inline-flex items-center gap-2 rounded-md px-2 py-0.5 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_76%,transparent)] [box-shadow:0_1px_3px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] hover:[box-shadow:0_8px_18px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)]">
+                        <x-far-star class="size-3 group-hover:[color:var(--accent-color,#6c5ce7)]" />
+                        <span class="group-hover:[color:var(--accent-color,#6c5ce7)]">Review</span>
+                    </a>
+                @else
+                    <button type="button"
+                        class="group inline-flex items-center gap-2 rounded-md px-2 py-0.5 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_76%,transparent)] [box-shadow:0_1px_3px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] hover:[box-shadow:0_8px_18px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)]"
+                        x-on:click.stop="reviewOpen = ! reviewOpen" x-bind:aria-expanded="reviewOpen.toString()">
+                        <x-far-star class="size-3 group-hover:[color:var(--accent-color,#6c5ce7)]" />
+                        <span class="group-hover:[color:var(--accent-color,#6c5ce7)]">Review</span>
+                    </button>
+                @endif
             @endauth
             @guest
                 <a href="{{ route('login') }}"

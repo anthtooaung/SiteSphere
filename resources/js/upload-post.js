@@ -65,9 +65,19 @@ const initUploadPost = () => {
     }
   };
 
-  const selectedTagRecords = () => Object.values(categories)
-    .flatMap((category) => category.tags || [])
-    .filter((tag) => selectedTags.includes(String(tag.id)));
+  const selectedTagRecords = () => {
+    const seen = new Set();
+    return Object.values(categories)
+      .flatMap((category) => category.tags || [])
+      .filter((tag) => {
+        const idStr = String(tag.id);
+        if (selectedTags.includes(idStr) && !seen.has(idStr)) {
+          seen.add(idStr);
+          return true;
+        }
+        return false;
+      });
+  };
 
   const syncSelectedTags = () => {
     if (!selectedTagsPreview || !selectedTagsInputs) {
@@ -84,6 +94,10 @@ const initUploadPost = () => {
       const pill = document.createElement("span");
       pill.className = "selected-tag-pill";
       pill.textContent = tag.name;
+
+      const activeColor = tag.color || '#6c5ce7';
+      pill.style.backgroundColor = `color-mix(in srgb, ${activeColor} 8%, var(--background-color, #ffffff))`;
+      pill.style.color = activeColor;
 
       const removeButton = document.createElement("button");
       removeButton.type = "button";
@@ -107,7 +121,17 @@ const initUploadPost = () => {
 
   const renderCategoryButtons = () => {
     categoryButtons.forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.categoryButton === currentCategory);
+      const isActive = button.dataset.categoryButton === currentCategory;
+      button.classList.toggle("is-active", isActive);
+
+      const color = button.dataset.categoryColor || '#6c5ce7';
+      if (isActive) {
+        button.style.backgroundColor = color;
+        button.style.color = '#ffffff';
+      } else {
+        button.style.backgroundColor = `color-mix(in srgb, ${color} 10%, var(--background-color, #ffffff))`;
+        button.style.color = color;
+      }
     });
   };
 
@@ -126,7 +150,21 @@ const initUploadPost = () => {
         button.type = "button";
         button.className = "suggested-tag-button";
         button.textContent = tag.name;
-        button.classList.toggle("is-selected", selectedTags.includes(String(tag.id)));
+
+        const isSelected = selectedTags.includes(String(tag.id));
+        button.classList.toggle("is-selected", isSelected);
+
+        const activeColor = tag.color || '#6c5ce7';
+        if (isSelected) {
+          button.style.backgroundColor = activeColor;
+          button.style.color = '#ffffff';
+          button.style.boxShadow = `0 0 0 2px var(--background-color, #ffffff), 0 0 0 4px ${activeColor}`;
+        } else {
+          button.style.backgroundColor = `color-mix(in srgb, ${activeColor} 8%, var(--background-color, #ffffff))`;
+          button.style.color = activeColor;
+          button.style.boxShadow = 'none';
+        }
+
         button.addEventListener("click", (event) => {
           event.stopPropagation();
           toggleTag(String(tag.id));

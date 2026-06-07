@@ -694,4 +694,28 @@ class HomePageTest extends TestCase
         $response->assertSee('#FF0055');
         $response->assertDontSee('Original Tag');
     }
+
+    public function test_authenticated_user_sees_review_link_pointing_to_post_detail_review_textarea(): void
+    {
+        $viewer = User::factory()->create();
+        $reviewer = User::factory()->create();
+        $reviewer->settings()->update(['user_post_visible' => true]);
+        $post = Posts::factory()->create([
+            'title' => 'Review Target Post',
+            'slug' => 'review-target-post',
+        ]);
+
+        UserPosts::factory()->create([
+            'post_id' => $post->id,
+            'user_id' => $reviewer->id,
+            'description' => 'A post card test.',
+        ]);
+
+        $response = $this->actingAs($viewer)->get('/home');
+
+        $response->assertOk();
+        $response->assertSee('Review Target Post');
+        $expectedUrl = route('posts.show', 'review-target-post').'#reviewForm';
+        $response->assertSee('href="'.$expectedUrl.'"', false);
+    }
 }

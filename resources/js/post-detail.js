@@ -5,6 +5,22 @@
    ========================================================================= */
 
 
+function scrollContainerToElement(element, offset = 20) {
+  window.scrollTo(0, 0);
+  const scrollContainer = element.closest('.dashboard-content');
+  if (scrollContainer) {
+    const containerRect = scrollContainer.getBoundingClientRect();
+    const elemRect = element.getBoundingClientRect();
+    const relativeTop = elemRect.top - containerRect.top + scrollContainer.scrollTop;
+    scrollContainer.scrollTo({
+      top: relativeTop - offset,
+      behavior: "smooth"
+    });
+  } else {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 /* =========================================================================
    2. DEPOSITION TAB SWITCHING
    ========================================================================= */
@@ -32,17 +48,19 @@
     tab.addEventListener("click", () => activate(tab.dataset.contributor));
   });
 
-  // Activate deposition tab from URL hash (e.g. #panel-user-5)
+  // Activate deposition tab from URL hash (e.g. #detail-user-5 or #panel-user-5)
   const hash = window.location.hash;
-  if (hash && hash.startsWith("#panel-user-")) {
-    const contributor = hash.slice(1).replace("panel-", ""); // "user-5"
+  if (hash && (hash.startsWith("#detail-user-") || hash.startsWith("#panel-user-"))) {
+    const isDetail = hash.startsWith("#detail-user-");
+    const userId = isDetail ? hash.slice("#detail-user-".length) : hash.slice("#panel-user-".length);
+    const contributor = "user-" + userId;
     const matchingTab = tabs.find((tab) => tab.dataset.contributor === contributor);
     if (matchingTab) {
       activate(contributor);
       setTimeout(() => {
         const targetPanel = panels.querySelector(`[data-panel="${contributor}"]`);
         if (targetPanel) {
-          targetPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+          scrollContainerToElement(targetPanel, 20);
         }
       }, 100);
     }
@@ -202,7 +220,7 @@ document.querySelectorAll(".js-helpful-btn").forEach(initHelpfulBtn);
   if (window.location.hash === "#reviewForm") {
     setTimeout(() => {
       textarea.focus();
-      textarea.scrollIntoView({ behavior: "smooth", block: "center" });
+      scrollContainerToElement(textarea, 100);
     }, 100);
   }
 })();

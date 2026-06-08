@@ -274,7 +274,7 @@
                 </div>
             </div>
 
-            <a x-bind:href="currentProfile.user_id ? '{{ $slug ? route('posts.show', $slug) : '#' }}' + '#panel-user-' + currentProfile.user_id : '{{ $slug ? route('posts.show', $slug) : '#' }}'"
+            <a x-bind:href="currentProfile.user_id ? '{{ $slug ? route('posts.show', $slug) : '#' }}' + '#detail-user-' + currentProfile.user_id : '{{ $slug ? route('posts.show', $slug) : '#' }}'"
                 class="block space-y-1.5 px-3 py-2.5 rounded-b-xl transition-all duration-200 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_6%,transparent)] cursor-pointer no-underline"
                 @if(!$slug) x-on:click.prevent @endif>
                 <div class="flex items-center gap-2 text-xs">

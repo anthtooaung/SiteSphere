@@ -177,7 +177,7 @@
                                         <td data-label="Phone">
                                             @if ($listedUser->user_phone)
                                                 <a class="admin-users-contact-link"
-                                                    href="tel:{{ preg_replace('/\s+/', '', $listedUser->user_phone) }}">{{ $listedUser->user_phone }}</a>
+                                                    href="tel:{{ preg_replace('/\s+/', '', $listedUser->user_phone) }}">+95{{ $listedUser->user_phone }}</a>
                                             @else
                                                 <span class="admin-users-muted">Not provided</span>
                                             @endif

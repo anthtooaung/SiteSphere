@@ -1534,10 +1534,10 @@ button.saved-post-control {
 
 .admin-users-table th,
 .admin-users-table td {
-    padding: 16px 18px;
+    padding: 8px 12px;
     border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     color: color-mix(in srgb, var(--text-color) 76%, transparent);
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     text-align: left;
     vertical-align: middle;
 }
@@ -1545,7 +1545,7 @@ button.saved-post-control {
 .admin-users-table th {
     background: color-mix(in srgb, var(--background-color) 88%, var(--text-color) 12%);
     color: color-mix(in srgb, var(--text-color) 64%, transparent);
-    font-size: 0.76rem;
+    font-size: 0.7rem;
     font-weight: 900;
     letter-spacing: 0.02em;
     text-transform: uppercase;
@@ -1563,20 +1563,20 @@ button.saved-post-control {
     display: flex;
     width: fit-content;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     color: inherit;
 }
 
 .admin-users-avatar {
     display: grid;
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
     place-items: center;
     border-radius: 999px;
     background: color-mix(in srgb, var(--accent-color, #6c5ce7) 16%, var(--background-color, #ffffff));
     color: var(--text-color, #0d1b2a);
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 900;
     object-fit: cover;
 }
@@ -1584,13 +1584,16 @@ button.saved-post-control {
 .admin-users-name {
     display: block;
     color: var(--text-color, #0d1b2a);
+    font-size: 0.82rem;
     font-weight: 900;
+    line-height: 1.25;
 }
 
 .admin-users-sub,
 .admin-users-muted {
     color: color-mix(in srgb, var(--text-color) 52%, transparent);
-    font-size: 0.78rem;
+    font-size: 0.7rem;
+    line-height: 1.25;
 }
 
 .admin-users-contact-link {
@@ -1608,13 +1611,13 @@ button.saved-post-control {
 .admin-users-status,
 .admin-users-report-count {
     display: inline-flex;
-    min-height: 28px;
+    min-height: 22px;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    font-size: 0.72rem;
+    border-radius: 6px;
+    font-size: 0.68rem;
     font-weight: 900;
-    padding: 0 10px;
+    padding: 0 8px;
 }
 
 .admin-users-role-pill {
@@ -1661,11 +1664,11 @@ button.saved-post-control {
 
 .admin-users-action-btn {
     display: inline-grid;
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     place-items: center;
     border: 1px solid currentColor;
-    border-radius: 8px;
+    border-radius: 6px;
     background: var(--background-color, #ffffff);
     cursor: pointer;
     transition:
@@ -1675,8 +1678,8 @@ button.saved-post-control {
 }
 
 .admin-users-action-btn svg {
-    width: 14px;
-    height: 14px;
+    width: 11px;
+    height: 11px;
 }
 
 .admin-users-action-btn:hover:not(:disabled) {
@@ -1865,7 +1868,7 @@ button.saved-post-control {
         align-items: center;
         justify-content: space-between;
         gap: 14px;
-        padding: 12px 14px;
+        padding: 8px 10px;
         text-align: right;
     }
 

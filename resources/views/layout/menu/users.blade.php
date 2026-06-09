@@ -174,7 +174,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                             <span class="sr-only">Filter by role</span>
                             <button type="button" class="admin-users-select justify-between w-full" id="adminUsersRoleButton"
                                 data-dropdown-toggle="adminUsersRoleDropdown" data-dropdown-placement="bottom-start"
-                                aria-expanded="false" style="min-width: 120px; outline: none !important; cursor: pointer;">
+                                aria-expanded="false" style="min-width: 140px; outline: none !important; cursor: pointer;">
                                 <span class="admin-users-control-label truncate" x-text="role === 'all' ? 'All roles' : role.charAt(0).toUpperCase() + role.slice(1)">
                                     {{ $userFilters['role'] === 'all' ? 'All roles' : ucfirst($userFilters['role']) }}
                                 </span>
@@ -205,7 +205,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                             <span class="sr-only">Filter by account status</span>
                             <button type="button" class="admin-users-select justify-between w-full" id="adminUsersStatusButton"
                                 data-dropdown-toggle="adminUsersStatusDropdown" data-dropdown-placement="bottom-start"
-                                aria-expanded="false" style="min-width: 120px; outline: none !important; cursor: pointer;">
+                                aria-expanded="false" style="min-width: 140px; outline: none !important; cursor: pointer;">
                                 <span class="admin-users-control-label truncate" x-text="status === 'all' ? 'All status' : status.charAt(0).toUpperCase() + status.slice(1)">
                                     {{ $userFilters['status'] === 'all' ? 'All status' : ucfirst($userFilters['status']) }}
                                 </span>
@@ -239,7 +239,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                         <label class="admin-users-date">
                             <span>Joined date</span>
                             <input type="date" name="joined_date" value="{{ $userFilters['joined_date'] }}"
-                                data-users-joined-date>
+                                placeholder="mm/dd/yyyy" data-users-joined-date>
                         </label>
 
                         <div class="admin-users-filter-actions">
@@ -249,7 +249,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                     <i></i><i></i><i></i>
                                 </span>
                             </button>
-                            <button type="button" class="admin-users-secondary-button save-btn" @click="clearForm" :class="{ 'is-loading': isClearing }" :disabled="isFiltering || isClearing" style="background: transparent;">
+                            <button type="button" class="admin-users-secondary-button save-btn" @click="clearForm" :class="{ 'is-loading': isClearing }" :disabled="isFiltering || isClearing">
                                 <span class="button-label">Clear</span>
                                 <span class="button-loader" aria-hidden="true">
                                     <i></i><i></i><i></i>

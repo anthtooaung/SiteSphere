@@ -54,7 +54,7 @@
 
 - All remaining tasks have been addressed and completed successfully in this session.
 
-# Limit token remain
+# Limit token remain rule
 ## 20% remaining token
 - If token reach 20% then stop the current process and fill in this **finishedInUsers.md** (what finished, what remain)
 
@@ -84,4 +84,7 @@
 - All backend tests (`UsersPageTest.php`) are passing.
 
 ### What Remain
-- No pending tasks remaining for the `users.blade.php` administration module.
+- Redesign `admin-users-filter-container` to a high-fidelity, professional, and enterprise-grade UI matching the database color theme.
+- Add "All Users" title and subtitle "Showing 1-X of Y users".
+- Create a perfectly horizontally aligned row of input components (Search, All roles, All status, Date picker, Apply, Clear) with consistent height (48px) and minimal thin borders.
+- Style buttons appropriately (Primary Apply button, Outline Clear button).

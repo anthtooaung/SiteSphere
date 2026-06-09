@@ -1392,18 +1392,17 @@ button.saved-post-control {
 
 .admin-users-actions-card {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px 28px;
 }
 
 .admin-users-table-actions {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
 }
 
 .admin-users-filter-container {
@@ -1413,27 +1412,29 @@ button.saved-post-control {
 
 .admin-users-title-wrapper {
     flex-shrink: 0;
-    white-space: nowrap;
 }
 
 .admin-users-table-actions h2 {
     margin: 0;
-    font-size: 1.24rem;
+    font-size: 1.35rem;
     font-weight: 900;
+    color: var(--text-color, #0d1b2a);
+    font-family: var(--font-family, inherit);
 }
 
 .admin-users-table-actions p {
     margin: 4px 0 0;
     color: color-mix(in srgb, var(--text-color) 60%, transparent);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 600;
 }
 
 .admin-users-controls {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 14px;
 }
 
 .admin-users-search,
@@ -1445,28 +1446,26 @@ button.saved-post-control {
 .admin-users-search,
 .admin-users-select {
     display: flex;
-    min-height: 46px;
+    height: 48px;
     align-items: center;
     gap: 10px;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--background-color) 88%, var(--text-color) 12%);
-    padding: 0 14px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 16%, transparent);
+    border-radius: 10px;
+    background: transparent;
+    padding: 0 16px;
     transition:
         background 180ms ease,
         border-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
+        box-shadow 180ms ease;
 }
 
 .admin-users-search:hover,
 .admin-users-select:hover {
-    background: color-mix(in srgb, var(--background-color) 82%, var(--text-color) 18%);
-    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent-color, #6c5ce7) 40%, transparent);
 }
 
 .admin-users-search {
-    width: 240px;
+    width: 280px;
 }
 
 .admin-users-search:focus-within,
@@ -1518,40 +1517,40 @@ button.saved-post-control {
 }
 
 .admin-users-date {
+    position: relative;
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .admin-users-date span {
-    color: color-mix(in srgb, var(--text-color) 52%, transparent);
+    position: absolute;
+    top: -18px;
+    left: 2px;
+    color: color-mix(in srgb, var(--text-color) 60%, transparent);
     font-size: 0.75rem;
     font-weight: 700;
     white-space: nowrap;
 }
 
 .admin-users-date input {
-    min-height: 46px;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--background-color) 88%, var(--text-color) 12%);
+    height: 48px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 16%, transparent);
+    border-radius: 10px;
+    background: transparent;
     color: var(--text-color, #0d1b2a);
     font: inherit;
-    font-size: 0.88rem;
+    font-size: 0.92rem;
     font-weight: 700;
     outline: 0;
-    padding: 0 14px;
+    padding: 0 16px;
     transition:
-        background 180ms ease,
         border-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
+        box-shadow 180ms ease;
 }
 
 .admin-users-date input:hover {
-    background: color-mix(in srgb, var(--background-color) 82%, var(--text-color) 18%);
-    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent-color, #6c5ce7) 40%, transparent);
 }
 
 .admin-users-date input::-webkit-calendar-picker-indicator {
@@ -1581,29 +1580,39 @@ button.saved-post-control {
 .admin-users-primary-button,
 .admin-users-secondary-button {
     display: inline-flex;
-    min-height: 32px;
+    height: 48px;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font: inherit;
-    font-size: 0.8rem;
+    font-size: 0.92rem;
     font-weight: 700;
     text-decoration: none;
-    padding: 0 14px;
+    padding: 0 24px;
     position: relative;
+    transition: all 0.2s ease;
 }
 
 .admin-users-primary-button {
-    border: 0;
+    border: 1px solid transparent;
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 90%, var(--text-color) 10%);
+    color: var(--background-color, #ffffff);
+}
+
+.admin-users-primary-button:hover {
     background: var(--accent-color, #6c5ce7);
-    color: #ffffff;
 }
 
 .admin-users-secondary-button {
-    border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
-    background: var(--background-color, #ffffff);
-    color: color-mix(in srgb, var(--text-color) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text-color) 20%, transparent);
+    background: transparent;
+    color: var(--text-color, #0d1b2a);
+}
+
+.admin-users-secondary-button:hover {
+    border-color: var(--text-color);
+    background: color-mix(in srgb, var(--text-color) 4%, transparent);
 }
 
 .admin-users-table-wrap {
@@ -1618,7 +1627,7 @@ button.saved-post-control {
 
 .admin-users-table th,
 .admin-users-table td {
-    padding: 14px 10px;
+    padding: 18px 14px;
     border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     color: color-mix(in srgb, var(--text-color) 76%, transparent);
     font-size: 0.75rem;
@@ -1627,6 +1636,16 @@ button.saved-post-control {
     word-wrap: break-word;
     overflow-wrap: break-word;
     line-height: 1.45;
+}
+
+.admin-users-table th:first-child,
+.admin-users-table td:first-child {
+    padding-left: 28px;
+}
+
+.admin-users-table th:last-child,
+.admin-users-table td:last-child {
+    padding-right: 28px;
 }
 
 .admin-users-table th {

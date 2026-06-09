@@ -1638,14 +1638,38 @@ button.saved-post-control {
     white-space: nowrap;
 }
 
-.admin-users-table th:nth-child(1) { width: 20%; }
-.admin-users-table th:nth-child(2) { width: 18%; }
-.admin-users-table th:nth-child(3) { width: 14%; }
-.admin-users-table th:nth-child(4) { width: 7%; }
-.admin-users-table th:nth-child(5) { width: 11%; text-align: center; }
-.admin-users-table th:nth-child(6) { width: 6%; }
-.admin-users-table th:nth-child(7) { width: 11%; }
-.admin-users-table th:nth-child(8) { width: 13%; }
+.admin-users-table th:nth-child(1) {
+    width: 20%;
+}
+
+.admin-users-table th:nth-child(2) {
+    width: 18%;
+}
+
+.admin-users-table th:nth-child(3) {
+    width: 14%;
+}
+
+.admin-users-table th:nth-child(4) {
+    width: 7%;
+}
+
+.admin-users-table th:nth-child(5) {
+    width: 11%;
+    text-align: center;
+}
+
+.admin-users-table th:nth-child(6) {
+    width: 6%;
+}
+
+.admin-users-table th:nth-child(7) {
+    width: 11%;
+}
+
+.admin-users-table th:nth-child(8) {
+    width: 13%;
+}
 
 .admin-users-table tbody tr:hover {
     background: color-mix(in srgb, var(--background-color) 92%, var(--accent-color, #6c5ce7) 8%);
@@ -1721,32 +1745,32 @@ button.saved-post-control {
 }
 
 .admin-users-role-pill {
-    background: var(--background-color);
+    /* background: var(--background-color); */
     color: #0369a1;
 }
 
 .admin-users-role-pill.admin {
-    background: var(--background-color);
+    /* background: var(--background-color); */
     color: #4338ca;
 }
 
 .admin-users-status.safe {
-    background: var(--background-color);
+    /* background: var(--background-color); */
     color: #166534;
 }
 
 .admin-users-status.warning {
-    background: var(--background-color);
+    /* background: var(--background-color); */
     color: #92400e;
 }
 
 .admin-users-status.restricted {
-    background: var(--background-color);
+    /* background: var(--background-color); */
     color: #991b1b;
 }
 
 .admin-users-report-count {
-    background: var(--background-color);
+    /* background: var(--background-color); */
     color: #1d4ed8;
 }
 
@@ -1823,9 +1847,12 @@ button.saved-post-control {
 }
 
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0.4;
     }
+
     50% {
         opacity: 0.7;
     }

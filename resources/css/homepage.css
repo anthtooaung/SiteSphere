@@ -940,7 +940,8 @@
     display: block;
     margin-bottom: 10px;
     padding: 16px 22px 14px;
-    background: var(--background-color, #ffffff);
+    background:
+        color-mix(in srgb, var(--background-color, #ffffff) 96%, var(--text-color, #0d1b2a) 4%);
     border: 0;
     border-radius: 16px;
     box-shadow: 0 10px 28px color-mix(in srgb, var(--accent-color, #6c5ce7) 18%, transparent);
@@ -1661,10 +1662,10 @@
     min-width: 40px;
     height: 40px;
     padding: 0 14px;
-    border: 1px solid #d5dde8;
+    border: 1px solid color-mix(in srgb, var(--text-color) 20%, transparent);
     border-radius: 8px;
-    background: white;
-    color: #344054;
+    background: var(--background-color);
+    color: var(--text-color);
     cursor: pointer;
     font-weight: 800;
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
@@ -1672,14 +1673,14 @@
 }
 
 .pagination button:hover {
-    border-color: #93c5fd;
-    color: var(--accent-color, #6c5ce7);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
 }
 
 .pagination button.active {
-    background: var(--accent-color, #6c5ce7);
-    border-color: var(--accent-color, #6c5ce7);
-    color: white;
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--background-color);
 }
 
 /* ================================= */
@@ -2313,10 +2314,6 @@
 .home-page .show-more-btn:hover,
 .home-page .show-more-btn:active,
 .home-page .show-more-btn:focus,
-.home-page .pagination button:hover,
-.home-page .pagination button:active,
-.home-page .pagination button:focus,
-.home-page .pagination button.active,
 .home-page .sort-control select:hover,
 .home-page .sort-control select:focus {
     background: var(--background-color, #ffffff);
@@ -2368,9 +2365,6 @@
 .home-page .show-more-btn:hover,
 .home-page .show-more-btn:active,
 .home-page .show-more-btn:focus,
-.home-page .pagination button:hover,
-.home-page .pagination button:active,
-.home-page .pagination button:focus,
 .home-page .sort-control select:hover,
 .home-page .sort-control select:focus {
     color: var(--home-muted-color);
@@ -2562,8 +2556,7 @@
 .home-page .review-card,
 .home-page .review-card h2,
 .home-page .review-card p,
-.home-page .card-tags span,
-.home-page .pagination button {
+.home-page .card-tags span {
     color: var(--home-muted-color);
 }
 
@@ -2655,7 +2648,6 @@
 .home-page .show-tags-btn,
 .home-page .show-more-btn,
 .home-page .tag-filter-btn,
-.home-page .pagination button,
 .home-page .filter-title i,
 .home-page .filter-title .filter-icon,
 .home-page .selected-box i,
@@ -2702,11 +2694,6 @@
     transform: none;
 }
 
-.pagination button.active {
-    background: white;
-    border: 1px solid #d5dde8;
-    color: var(--home-muted-color);
-}
 
 @media (max-width:900px) {
 

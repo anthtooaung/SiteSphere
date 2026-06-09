@@ -15,15 +15,23 @@
             : 'left';
         
         $user = $user ?? auth()->user();
-        $reviewsCount = \App\Models\UserPosts::where('user_id', $user->id)->count();
+        $isOwnProfile = auth()->check() && $user->id === auth()->id();
+
+        // Base query for UserPosts, filter out hidden posts if not the owner
+        $userPostsQuery = \App\Models\UserPosts::where('user_id', $user->id);
+        if (!$isOwnProfile) {
+            $userPostsQuery->where('user_hidden', false);
+        }
+
+        $reviewsCount = (clone $userPostsQuery)->count();
         $ratingsCount = \App\Models\Ratings::where('user_id', $user->id)->count();
         
         // Average rating received on posts reviewed by this user
-        $postIds = \App\Models\UserPosts::where('user_id', $user->id)->pluck('post_id');
+        $postIds = (clone $userPostsQuery)->pluck('post_id');
         $averageRating = \App\Models\Ratings::whereIn('post_id', $postIds)->avg('rating') ?: 0;
         
         // User's recent reviews/posts
-        $recentReviews = \App\Models\UserPosts::where('user_id', $user->id)
+        $recentReviews = (clone $userPostsQuery)
             ->with(['post.tags'])
             ->latest()
             ->take(4)

@@ -745,7 +745,7 @@
 
 .post-detail-page .aud-score-meta {
   font-size: 0.72rem;
-  color: #8c99b2;
+  color: var(--text-color);
 }
 
 .post-detail-page .aud-verdict-consensus {

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Comments;
 use App\Models\Notificatioins;
 use App\Models\Posts;
 use App\Models\Reports;
@@ -151,19 +152,25 @@ class AdminReportsPageTest extends TestCase
         $this->assertFalse($report->fresh()->admin_read);
     }
 
-    public function test_comment_and_user_tabs_are_disabled_coming_soon_items(): void
+    public function test_comment_and_user_tabs_are_enabled_and_functional(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
+        $commentReport = $this->createCommentReport('Malicious link comment content', 'Spam Link');
+        $userReport = $this->createUserReport('FlaggedUserSB', 'Harassment');
 
         $this->actingAs($admin)
             ->get(route('reports'))
             ->assertOk()
             ->assertSee('data-report-tab="comments"', false)
             ->assertSee('data-report-tab="users"', false)
-            ->assertSee('COMMENT <span>Coming soon</span>', false)
-            ->assertSee('USER <span>Coming soon</span>', false)
+            ->assertDontSee('COMMENT <span>Coming soon</span>', false)
+            ->assertDontSee('USER <span>Coming soon</span>', false)
             ->assertSee('Comment reports')
-            ->assertSee('User reports');
+            ->assertSee('User reports')
+            ->assertSee('Malicious link comment content')
+            ->assertSee('FlaggedUserSB')
+            ->assertSee('Spam Link')
+            ->assertSee('Harassment');
     }
 
     public function test_opening_report_notification_marks_notification_read_but_not_report_read(): void
@@ -219,5 +226,51 @@ class AdminReportsPageTest extends TestCase
             'created_at' => $createdAt ?? now(),
             'updated_at' => $createdAt ?? now(),
         ])->load(['post', 'reporter']);
+    }
+
+    private function createCommentReport(
+        string $content,
+        string $reason,
+        bool $read = false,
+        ?Carbon $createdAt = null,
+        ?User $reporter = null,
+    ): Reports {
+        $reporter ??= User::factory()->create(['role' => 'user']);
+        $post = Posts::factory()->create();
+        $comment = Comments::factory()->create([
+            'post_id' => $post->id,
+            'content' => $content,
+        ]);
+
+        return Reports::query()->create([
+            'user_id' => $reporter->id,
+            'target_name' => 'comments',
+            'target_id' => $comment->id,
+            'reason' => $reason,
+            'admin_read' => $read,
+            'created_at' => $createdAt ?? now(),
+            'updated_at' => $createdAt ?? now(),
+        ])->load(['comment', 'reporter']);
+    }
+
+    private function createUserReport(
+        string $targetName,
+        string $reason,
+        bool $read = false,
+        ?Carbon $createdAt = null,
+        ?User $reporter = null,
+    ): Reports {
+        $reporter ??= User::factory()->create(['role' => 'user']);
+        $targetUser = User::factory()->create(['name' => $targetName]);
+
+        return Reports::query()->create([
+            'user_id' => $reporter->id,
+            'target_name' => 'users',
+            'target_id' => $targetUser->id,
+            'reason' => $reason,
+            'admin_read' => $read,
+            'created_at' => $createdAt ?? now(),
+            'updated_at' => $createdAt ?? now(),
+        ])->load(['targetUser', 'reporter']);
     }
 }

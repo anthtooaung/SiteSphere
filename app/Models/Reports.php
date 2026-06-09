@@ -35,4 +35,14 @@ class Reports extends Model
     {
         return $this->belongsTo(Posts::class, 'target_id');
     }
+
+    public function comment(): BelongsTo
+    {
+        return $this->belongsTo(Comments::class, 'target_id');
+    }
+
+    public function targetUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'target_id');
+    }
 }

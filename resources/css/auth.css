@@ -189,7 +189,7 @@ body.modal-open {
   color: var(--white);
   font-size: 1rem;
   font-weight: 900;
-  box-shadow: 0 14px 28px rgba(53, 109, 243, 0.24);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.24);
   overflow: hidden;
 }
 
@@ -211,7 +211,7 @@ body.modal-open {
   border-radius: 999px;
   background: var(--white);
   content: "";
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18);
+  box-shadow: 0 5px 8px rgba(255, 255, 255, 0.18);
 }
 
 .brand-word {
@@ -237,7 +237,7 @@ body.modal-open {
   border-color: rgba(255, 255, 255, 0.5);
   background: var(--white);
   color: var(--blue);
-  box-shadow: 0 14px 32px rgba(5, 8, 22, 0.18);
+  box-shadow: 0 5px 8px rgba(5, 8, 22, 0.18);
 }
 
 .auth-shell.is-register .brand-mark::before {
@@ -246,7 +246,7 @@ body.modal-open {
 
 .auth-shell.is-register .brand-mark::after {
   background: var(--blue);
-  box-shadow: 0 0 0 3px rgba(53, 109, 243, 0.14);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.14);
 }
 
 .form-stage {
@@ -402,12 +402,12 @@ body.modal-open {
   border-color: rgba(53, 109, 243, 0.45);
   outline: none;
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(53, 109, 243, 0.14);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.14);
 }
 
 .social-button:active {
   transform: translateY(1px) scale(0.96);
-  box-shadow: 0 8px 16px rgba(53, 109, 243, 0.12);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.12);
 }
 
 .social-button svg {
@@ -522,7 +522,7 @@ body.modal-open {
 .input-wrap input:focus {
   border-color: var(--blue);
   background: var(--white);
-  box-shadow: 0 0 0 4px rgba(53, 109, 243, 0.13);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.13);
 }
 
 .password-hint {
@@ -609,7 +609,7 @@ body.modal-open {
   border: 1px solid rgba(53, 109, 243, 0.16);
   border-radius: 16px;
   background: var(--white);
-  box-shadow: 0 30px 90px rgba(5, 8, 22, 0.28);
+  box-shadow: 0 5px 8px rgba(5, 8, 22, 0.28);
   padding: 30px;
 }
 
@@ -691,7 +691,7 @@ body.modal-open {
 .plain-input:focus {
   border-color: var(--blue);
   background: var(--white);
-  box-shadow: 0 0 0 4px rgba(53, 109, 243, 0.13);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.13);
 }
 
 .textarea-input {
@@ -781,7 +781,7 @@ body.modal-open {
 
 .secondary-button:active {
   transform: translateY(1px) scale(0.98);
-  box-shadow: 0 8px 18px rgba(53, 109, 243, 0.12);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.12);
 }
 
 .file-input {
@@ -905,7 +905,7 @@ body.modal-open {
   padding: 0 20px;
   font-size: 0.9rem;
   font-weight: 900;
-  box-shadow: 0 18px 34px rgba(53, 109, 243, 0.24);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.24);
   transition:
     background 180ms ease,
     transform 180ms ease,
@@ -963,12 +963,12 @@ body.modal-open {
   background: var(--blue-dark);
   outline: none;
   transform: translateY(-1px);
-  box-shadow: 0 22px 40px rgba(33, 84, 216, 0.28);
+  box-shadow: 0 5px 8px rgba(33, 84, 216, 0.28);
 }
 
 .primary-button:active {
   transform: translateY(1px) scale(0.98);
-  box-shadow: 0 10px 22px rgba(33, 84, 216, 0.22);
+  box-shadow: 0 5px 8px rgba(33, 84, 216, 0.22);
 }
 
 @keyframes authButtonDotPulse {
@@ -1190,7 +1190,7 @@ body.modal-open {
   color: var(--blue);
   font-size: 0;
   animation: timelineCheckPop 430ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  box-shadow: 0 10px 26px rgba(5, 8, 22, 0.18);
+  box-shadow: 0 5px 8px rgba(5, 8, 22, 0.18);
 }
 
 .auth-shell[data-flow-step="otp"] .register-timeline li[data-guide="account"] span::before,
@@ -1224,7 +1224,7 @@ body.modal-open {
   background: var(--white);
   color: var(--blue);
   animation: timelineActivePop 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  box-shadow: 0 10px 26px rgba(5, 8, 22, 0.18);
+  box-shadow: 0 5px 8px rgba(5, 8, 22, 0.18);
 }
 
 .auth-shell[data-flow-step="account"] .register-timeline li[data-guide="account"] strong,
@@ -1523,7 +1523,7 @@ body.modal-open {
 
   .auth-shell.is-register .brand-mark::after {
     background: var(--white);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18);
+    box-shadow: 0 5px 8px rgba(255, 255, 255, 0.18);
   }
 
   .label-row {
@@ -1808,14 +1808,14 @@ body.modal-open {
 #otpForm.is-otp-error .otp-digit {
   border-color: rgba(239, 68, 68, 0.52);
   background: #fff7f7;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.11);
+  box-shadow: 0 5px 8px rgba(239, 68, 68, 0.11);
 }
 
 #otpForm.is-otp-success .otp-digit {
   border-color: rgba(34, 197, 94, 0.48);
   background: #f2fff7;
   animation: otpSuccessPop 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+  box-shadow: 0 5px 8px rgba(34, 197, 94, 0.12);
 }
 
 @keyframes flowStepIn {
@@ -2190,7 +2190,7 @@ body.modal-open {
   }
 
   .auth-shell.is-mobile-handoff .slider-panel {
-    box-shadow: 0 22px 52px rgba(53, 109, 243, 0.22);
+    box-shadow: 0 5px 8px rgba(53, 109, 243, 0.22);
     will-change: min-height, transform;
   }
 
@@ -2627,7 +2627,7 @@ body.modal-open {
 .plain-input.is-invalid,
 textarea.plain-input.is-invalid {
   border-color: #ef4444 !important;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
+  box-shadow: 0 5px 8px rgba(239, 68, 68, 0.15) !important;
 }
 
 .field-error-message {
@@ -2689,7 +2689,7 @@ textarea.plain-input.is-invalid {
 .phone-input-wrapper:focus-within {
   border-color: var(--blue);
   background: var(--white);
-  box-shadow: 0 0 0 4px rgba(53, 109, 243, 0.13);
+  box-shadow: 0 5px 8px rgba(53, 109, 243, 0.13);
 }
 
 .phone-prefix {

@@ -140,14 +140,13 @@
     padding: 0.8rem 1.5rem;
     border-radius: 999px;
     background: #ffffff;
-    box-shadow: 0 1.25rem 2.5rem rgb(0 0 0 / 0.24);
+    box-shadow: 0 5px 8px rgb(0 0 0 / 0.24);
     transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .welcome-search-bar:focus-within {
     box-shadow:
-        0 0 0 3px color-mix(in srgb, var(--accent-color) 22%, transparent),
-        0 1.25rem 2.5rem rgb(0 0 0 / 0.24);
+        0 5px 8px color-mix(in srgb, var(--accent-color) 22%, transparent), 0 5px 8px rgb(0 0 0 / 0.24);
     transform: translateY(-1px);
 }
 
@@ -230,12 +229,12 @@
     border: 1px solid var(--welcome-border);
     border-radius: 0.5rem;
     background: var(--welcome-surface);
-    box-shadow: 0 1rem 2.25rem rgb(15 23 42 / 0.06);
+    box-shadow: 0 5px 8px rgb(15 23 42 / 0.06);
     transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 
 .welcome-review-card:hover {
-    box-shadow: 0 1.25rem 2.75rem rgb(15 23 42 / 0.12);
+    box-shadow: 0 5px 8px rgb(15 23 42 / 0.12);
     transform: translateY(-5px);
 }
 
@@ -345,7 +344,7 @@
 
 .welcome-outline-button:hover,
 .welcome-outline-button:focus-visible {
-    box-shadow: 0 0.4rem 1rem color-mix(in srgb, var(--accent-color) 28%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color) 28%, transparent);
     color: var(--accent-color);
 }
 
@@ -421,7 +420,7 @@
 .welcome-form-group input:focus,
 .welcome-form-group textarea:focus {
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 16%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color) 16%, transparent);
 }
 
 .welcome-form-group textarea {

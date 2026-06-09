@@ -42,7 +42,7 @@
     gap: 18px;
     border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
     border-radius: 18px;
     padding: 24px;
 }
@@ -108,7 +108,7 @@
     border: 1px solid color-mix(in srgb, var(--accent-color) 18%, transparent);
     border-radius: 16px;
     background: color-mix(in srgb, var(--background-color) 96%, white 4%);
-    box-shadow: 0 18px 45px color-mix(in srgb, var(--accent-color) 10%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color) 10%, transparent);
 }
 
 .edit-tag-summary article {
@@ -573,13 +573,13 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 8px 18px color-mix(in srgb, var(--accent-color) 16%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color) 16%, transparent);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .thread-share-icon-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px color-mix(in srgb, var(--accent-color) 22%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color) 22%, transparent);
 }
 
 .thread-share-overlay {
@@ -605,7 +605,7 @@
     border-radius: 16px;
     background: var(--background-color);
     color: var(--text-color);
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.25);
     padding: 24px;
 }
 
@@ -732,7 +732,7 @@
     justify-content: center;
     color: #FFFFFF;
     background: var(--accent-color);
-    box-shadow: 0 4px 10px color-mix(in srgb, var(--accent-color) 24%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color) 24%, transparent);
     opacity: 0;
     transform: scale(0.7);
     transition: opacity 0.18s ease, transform 0.18s ease;

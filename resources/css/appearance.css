@@ -29,7 +29,7 @@
 .appearance-errors {
     border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
 }
 
 .appearance-header {
@@ -174,7 +174,7 @@
 .appearance-layout-option:hover,
 .appearance-layout-option:focus-within {
     border-color: color-mix(in srgb, var(--accent-color, #6c5ce7) 45%, transparent);
-    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
     transform: translateY(-2px);
 }
 
@@ -183,7 +183,7 @@
 .appearance-layout-option:has(input:checked) {
     border-color: var(--accent-color, #6c5ce7);
     background: color-mix(in srgb, var(--accent-color, #6c5ce7) 10%, var(--background-color, #ffffff) 90%);
-    box-shadow: 0 14px 30px color-mix(in srgb, var(--accent-color, #6c5ce7) 14%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 14%, transparent);
 }
 
 .appearance-mode-option input,
@@ -320,7 +320,7 @@
     height: 22px;
     border-radius: 999px;
     background: #ffffff;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.22);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.22);
     content: "";
     transition: transform 180ms ease;
 }
@@ -364,7 +364,7 @@
     border: 6px solid color-mix(in srgb, var(--theme-swatch) 18%, #ffffff 82%);
     border-radius: 999px;
     background: var(--theme-swatch);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 5px 8px rgba(255, 255, 255, 0.55);
 }
 
 .appearance-custom-panel {
@@ -489,7 +489,7 @@
     height: 24px;
     border-radius: 999px;
     background: var(--accent-color, #6c5ce7);
-    box-shadow: 0 8px 18px color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, transparent);
     content: "";
 }
 
@@ -545,7 +545,7 @@
     border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 98%, #ffffff 2%);
-    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.12);
 }
 
 .appearance-page .font-search-results.show {
@@ -634,7 +634,7 @@
 .appearance-page .font-select:focus,
 .appearance-page .font-preview-box:focus {
     border-color: var(--accent-color, #6c5ce7);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-color, #6c5ce7) 14%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 14%, transparent);
     outline: none;
 }
 
@@ -672,7 +672,7 @@
     border: 1px solid var(--accent-color, #6c5ce7);
     border-radius: 10px;
     background: var(--accent-color, #6c5ce7);
-    box-shadow: 0 12px 24px color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, transparent);
     color: #ffffff;
     cursor: pointer;
     font: inherit;
@@ -688,7 +688,7 @@
 
 .appearance-page .save-btn:hover,
 .appearance-page .save-btn:focus-visible {
-    box-shadow: 0 16px 30px color-mix(in srgb, var(--accent-color, #6c5ce7) 34%, transparent);
+    box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 34%, transparent);
     filter: brightness(1.04);
     outline: none;
     transform: translateY(-1px);

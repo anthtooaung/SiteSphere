@@ -27,7 +27,7 @@
   border-radius: 20px;
   background: var(--background-color, #ffffff);
   padding: 24px;
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
 }
 
 .upload-post-scroll {
@@ -128,7 +128,7 @@
 .upload-field textarea:focus,
 .tag-trigger-box:focus {
   border-color: var(--accent-color, #6c5ce7);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, #6c5ce7) 14%, transparent);
+  box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 14%, transparent);
 }
 
 .upload-field .is-invalid,
@@ -203,12 +203,12 @@
   flex: 1;
   background: var(--accent-color, #6c5ce7);
   color: #ffffff;
-  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent-color, #6c5ce7) 20%, transparent);
+  box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 20%, transparent);
 }
 
 .upload-submit-button.is-publish-ready {
   background: #059669;
-  box-shadow: 0 12px 26px rgba(5, 150, 105, 0.18);
+  box-shadow: 0 5px 8px rgba(5, 150, 105, 0.18);
 }
 
 .upload-discard-button:hover,
@@ -241,7 +241,7 @@
   border-radius: 20px;
   background: var(--background-color, #ffffff);
   padding: 16px;
-  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
+  box-shadow: 0 5px 8px rgba(15, 23, 42, 0.18);
 }
 
 .tag-tooltip-search {
@@ -325,7 +325,7 @@
 }
 
 .suggested-tag-button.is-selected {
-  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--accent-color, #6c5ce7);
+  box-shadow: 0 5px 8px #ffffff, 0 5px 8px var(--accent-color, #6c5ce7);
 }
 
 .selected-tag-pill {
@@ -402,7 +402,7 @@
   }
 
   .tag-tooltip-card {
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
   }
 }
 

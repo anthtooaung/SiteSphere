@@ -114,7 +114,7 @@
     font-weight:600;
     cursor:pointer;
     font-size:13px;
-    box-shadow:0 8px 18px rgba(37,99,235,.18);
+    box-shadow:0 5px 8px rgba(37,99,235,.18);
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
@@ -142,7 +142,7 @@
     height:120px;
     border-radius:50%;
     object-fit:cover;
-    box-shadow:0 15px 35px rgba(0,0,0,.1);
+    box-shadow:0 5px 8px rgba(0,0,0,.1);
 }
 
 .profile-img-placeholder {
@@ -156,7 +156,7 @@
     align-items: center;
     font-size: 48px;
     font-weight: 800;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-info{
@@ -287,14 +287,14 @@
     display: flex;
     align-items: flex-start;
     gap: 14px;
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.04);
     color: var(--text-color, inherit);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
 }
 
 .stat-icon {

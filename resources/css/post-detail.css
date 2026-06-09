@@ -199,7 +199,7 @@
   transform: translateX(-50%);
   background: hsl(calc(var(--ph-hue) - 8) 30% 90% / 0.5);
   border-radius: 48% 48% 0 0 / 60% 60% 0 0;
-  box-shadow: 0 -10px 0 -4px hsl(var(--ph-hue) 30% 96% / 0.001);
+  box-shadow: 0 5px 8px hsl(var(--ph-hue) 30% 96% / 0.001);
 }
 
 .post-detail-page .ss-avatar-photo::before {
@@ -239,8 +239,7 @@
 
 .post-detail-page .ss-avatar.has-ring {
   box-shadow:
-    0 0 0 2px var(--paper),
-    0 0 0 4px var(--accent);
+    0 5px 8px var(--paper), 0 5px 8px var(--accent);
 }
 
 .post-detail-page [data-photos="off"] .ss-avatar.is-photo .ss-avatar-photo {
@@ -267,7 +266,7 @@
   border-radius: 999px;
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 4px 12px color-mix(in oklab, var(--accent) 36%, transparent);
+  box-shadow: 0 5px 8px color-mix(in oklab, var(--accent) 36%, transparent);
 }
 
 .post-detail-page .ss-verified-seal>span {
@@ -1036,7 +1035,7 @@
 
 .post-detail-page .aud-composer.is-flash {
   border-color: var(--good);
-  box-shadow: 0 0 0 3px var(--good-wash);
+  box-shadow: 0 5px 8px var(--good-wash);
 }
 
 .post-detail-page .aud-composer-top {
@@ -1072,7 +1071,7 @@
   outline: none;
   border-color: var(--accent);
   background: var(--paper);
-  box-shadow: 0 0 0 3px var(--accent-wash);
+  box-shadow: 0 5px 8px var(--accent-wash);
 }
 
 .post-detail-page .aud-composer-foot {

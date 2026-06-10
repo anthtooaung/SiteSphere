@@ -13,29 +13,6 @@
         $dashboardMenuLocation = in_array($menuBarLocation ?? 'left', ['top', 'right', 'bottom', 'left'], true)
             ? $menuBarLocation
             : 'left';
-        
-        $user = $user ?? auth()->user();
-        $isOwnProfile = auth()->check() && $user->id === auth()->id();
-
-        // Base query for UserPosts, filter out hidden posts if not the owner
-        $userPostsQuery = \App\Models\UserPosts::where('user_id', $user->id);
-        if (!$isOwnProfile) {
-            $userPostsQuery->where('user_hidden', false);
-        }
-
-        $reviewsCount = (clone $userPostsQuery)->count();
-        $ratingsCount = \App\Models\Ratings::where('user_id', $user->id)->count();
-        
-        // Average rating received on posts reviewed by this user
-        $postIds = (clone $userPostsQuery)->pluck('post_id');
-        $averageRating = \App\Models\Ratings::whereIn('post_id', $postIds)->avg('rating') ?: 0;
-        
-        // User's recent reviews/posts
-        $recentReviews = (clone $userPostsQuery)
-            ->with(['post.tags'])
-            ->latest()
-            ->take(4)
-            ->get();
     @endphp
 
     <x-layout.nav />
@@ -202,9 +179,7 @@
                                         {{ $userPost->post->title }}
                                     </a>
                                     @php
-                                        $postRating = \App\Models\Ratings::where('post_id', $userPost->post_id)
-                                            ->where('user_id', $user->id)
-                                            ->first()?->rating;
+                                        $postRating = $recentReviewRatings->get($userPost->post_id);
                                     @endphp
                                     <span>★ {{ $postRating ? number_format($postRating, 1) : 'N/A' }}</span>
                                 </div>

@@ -13,11 +13,11 @@ use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationOpenController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\ProfileDetailController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SavedPostsController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\UserHoverCardController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/favicon.svg', FaviconController::class)->name('favicon');
@@ -52,13 +52,7 @@ Route::middleware('auth')->group(function (): void {
         return view('layout.menu.dashboard');
     })->name('dashboard');
 
-    Route::get('/profile/{slug?}', function (?string $slug = null) {
-        $user = $slug
-            ? User::where('slug', $slug)->firstOrFail()
-            : auth()->user();
-
-        return view('layout.profile-detail', compact('user'));
-    })->name('profile-detail');
+    Route::get('/profile/{slug?}', ProfileDetailController::class)->name('profile-detail');
 
     Route::get('/menu/edit-profile', [EditProfileController::class, 'edit'])->name('edit-profile');
     Route::patch('/menu/edit-profile', [EditProfileController::class, 'update'])->name('edit-profile.update');

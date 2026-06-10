@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -71,6 +72,35 @@ class HomePageTest extends TestCase
             ->assertSee('href="'.route('login').'"', false)
             ->assertSee('data-auth-required="bookmark"', false)
             ->assertSee('data-auth-required="review"', false);
+    }
+
+    public function test_home_limits_initial_server_render_to_twenty_four_posts(): void
+    {
+        $viewer = User::factory()->create();
+        $reviewer = User::factory()->create();
+
+        for ($index = 1; $index <= 25; $index++) {
+            $post = Posts::factory()->create([
+                'title' => 'Server Limited Post '.str_pad((string) $index, 2, '0', STR_PAD_LEFT),
+                'created_at' => now()->addSeconds($index),
+                'updated_at' => now()->addSeconds($index),
+            ]);
+
+            UserPosts::factory()->create([
+                'post_id' => $post->id,
+                'user_id' => $reviewer->id,
+                'description' => 'Server limited post description '.$index,
+            ]);
+        }
+
+        $response = $this->actingAs($viewer)->get('/home');
+
+        $response
+            ->assertOk()
+            ->assertSee('<strong id="resultsCount">24</strong>', false)
+            ->assertSee('Server Limited Post 25')
+            ->assertSee('Server Limited Post 02')
+            ->assertDontSee('Server Limited Post 01');
     }
 
     public function test_authenticated_users_can_view_empty_home_without_review_cards(): void
@@ -254,6 +284,41 @@ class HomePageTest extends TestCase
             ->assertSee('aria-label="Notifications"', false)
             ->assertDontSee('noti-badge', false)
             ->assertDontSee('Read notification only');
+    }
+
+    public function test_home_nav_notification_dropdown_uses_cached_unread_notifications(): void
+    {
+        Cache::flush();
+
+        $user = User::factory()->create();
+        $sender = User::factory()->create();
+
+        Notificatioins::factory()->create([
+            'to_user_id' => $user->id,
+            'from_user_id' => $sender->id,
+            'message' => 'Cached unread notification',
+            'is_read' => false,
+        ]);
+
+        $this->actingAs($user)
+            ->get('/home')
+            ->assertOk()
+            ->assertSee('Cached unread notification');
+
+        $notificationQueries = 0;
+        DB::listen(function ($query) use (&$notificationQueries): void {
+            if (str_contains($query->sql, 'from "notificatioins"') || str_contains($query->sql, 'from `notificatioins`')) {
+                $notificationQueries++;
+            }
+        });
+
+        $this->actingAs($user)
+            ->get('/home')
+            ->assertOk()
+            ->assertSee('aria-label="1 unread notifications"', false)
+            ->assertSee('Cached unread notification');
+
+        $this->assertSame(0, $notificationQueries);
     }
 
     public function test_home_uses_light_mode_theme_and_font_variables(): void

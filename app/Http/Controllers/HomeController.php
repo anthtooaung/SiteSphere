@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
+    private const SERVER_POST_LIMIT = 24;
+
     public function __invoke(Request $request): View
     {
         $initialCategory = $request->query('category');
@@ -41,6 +43,7 @@ class HomeController extends Controller
             ->whereHas('userPosts', fn ($query) => $query
                 ->where('user_hidden', false))
             ->latest()
+            ->limit(self::SERVER_POST_LIMIT)
             ->get()
             ->map(function (Posts $post) use ($customTags): array {
                 $primaryTag = $post->tags->first();

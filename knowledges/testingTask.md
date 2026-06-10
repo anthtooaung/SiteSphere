@@ -66,37 +66,31 @@
 - **`HomeController`** — Uses eager loading: `with(['userPosts', 'tags.categories'])`, `withAvg`, `withCount`.
 - **`AdminReportsController::index()`** — Uses `with(['post:id,title,slug,url', 'reporter:id,name,email,user_image'])` for eager loading.
 
-### 🔴 Critical N+1 Issues Still Present
+### ✅ High Priority Fixes Applied
 
-1. **`profile-detail.blade.php` lines 204-208 — N+1 in Recent Reviews loop:**
-   ```php
-   @foreach($recentReviews as $userPost)
-       $postRating = \App\Models\Ratings::where('post_id', $userPost->post_id)
-           ->where('user_id', $user->id)
-           ->first()?->rating;
-   @endforeach
-   ```
-   **This runs 1 extra query per review card** (up to 4 queries). Should be pre-fetched before the loop.
+1. **`profile-detail.blade.php` Recent Reviews N+1 fixed**
+   - Added `App\Http\Controllers\ProfileDetailController`.
+   - Replaced the `/profile/{slug?}` route closure with the invokable controller.
+   - Preloads recent review ratings in one query keyed by `post_id`.
+   - Blade now renders `$recentReviewRatings->get($userPost->post_id)` instead of querying inside the loop.
 
-   **Fix:** Before the `@forelse`, add:
-   ```php
-   $userRatings = \App\Models\Ratings::where('user_id', $user->id)
-       ->whereIn('post_id', $recentReviews->pluck('post_id'))
-       ->pluck('rating', 'post_id');
-   ```
-   Then in the loop: `$postRating = $userRatings->get($userPost->post_id);`
+2. **`profile-detail.blade.php` raw Blade queries moved to controller**
+   - Review counts, rating counts, post IDs, average rating, recent reviews, and recent review ratings are now prepared in `ProfileDetailController`.
+   - Own-profile vs other-profile visibility is preserved: hidden reviews are only included for the profile owner.
 
-2. **`profile-detail.blade.php` — All queries run in Blade `@php` block (lines 12-38):**
-   The profile page runs 5+ raw queries directly in the view file:
-   - `UserPosts::where('user_id', ...)->count()` (1 query)
-   - `Ratings::where('user_id', ...)->count()` (1 query)
-   - `UserPosts::where('user_id', ...)->pluck('post_id')` (1 query)
-   - `Ratings::whereIn('post_id', ...)->avg('rating')` (1 query)
-   - `UserPosts::where('user_id', ...)->with(['post.tags'])->latest()->take(4)->get()` (1 query + 2 eager loads)
+3. **`HomeController` no longer loads every post**
+   - Added a fixed server-side render limit of 24 posts.
+   - Existing JavaScript six-card pagination still works for the rendered batch.
+   - This prevents the home page from loading the full `posts` table into memory on first render.
 
-   **These queries should be moved to the controller** (the route closure in `web.php` that returns this view), not run in the Blade template.
+4. **`NotiBtn` notification queries cached**
+   - Unread notification count and latest 5 unread notifications are cached per user for 30 seconds.
+   - Cached payload stores plain arrays and rehydrates lightweight models for the Blade component.
+   - This avoids repeated notification `COUNT` + `SELECT` queries on every authenticated page render during the TTL.
 
-3. **`PostsController::show()` — Multiple relationship calls without combining:**
+### 🔴 Critical / Medium Query Issues Still Present
+
+1. **`PostsController::show()` — Multiple relationship calls without combining:**
    - `$posts->ratings()->avg('rating')` (1 query)
    - `$posts->ratings()->count()` (1 query)
    - `$posts->userPosts()->where('user_hidden', false)->count()` (1 query)
@@ -111,35 +105,20 @@
    - Combine avg + count with `withAggregate` or a single raw query
    - Use `loadCount` instead of separate `->count()` calls
 
-4. **`UserHoverCardController` — 2 separate queries that could be 1:**
+2. **`UserHoverCardController` — 2 separate queries that could be 1:**
    ```php
    $uploadsCount = UserPosts::where('user_id', $user->id)->count();
    $postIds = UserPosts::where('user_id', $user->id)->pluck('post_id');
    ```
    Could be combined into one query.
 
-5. **`HomeController` — Uses `->get()` without pagination:**
-   ```php
-   ->latest()
-   ->get()
-   ->map(...)
-   ```
-   **All posts are loaded into memory.** This will cause serious performance issues as the database grows. Should use `->paginate()` or `->simplePaginate()`.
-
-6. **`AppearanceController::presetThemes()` — Runs `firstOrCreate` inside a `map()` loop:**
+3. **`AppearanceController::presetThemes()` — Runs `firstOrCreate` inside a `map()` loop:**
    ```php
    collect(self::PRESET_THEMES)->map(function (...) {
        $theme = Themes::query()->firstOrCreate(['accent_color' => $accentColor]);
    })
    ```
    This runs 4 separate `firstOrCreate` calls (1 per preset theme). Should batch-load or cache.
-
-7. **`NotiBtn` component — Runs 2 queries on every page load:**
-   The notification button is rendered on every authenticated page (inside `<x-layout.nav>`). It runs:
-   - `COUNT` query for unread count
-   - `SELECT` query for the 5 latest unread notifications
-   
-   These queries run on every single page load for logged-in users. Could be cached for 30-60 seconds.
 
 ---
 
@@ -158,7 +137,7 @@
 
 1. **Dashboard page is nearly empty** — Just shows "Welcome back, {name}. Your workspace is ready." with no cards, stats, charts, or widgets. For an admin dashboard, this feels incomplete.
 
-2. **Home page has no pagination** — All posts load at once. No "Load more" button, no infinite scroll, no page numbers. If there are many posts, the page will be very long.
+2. **Home page pagination is partially improved** — The server render is now capped at 24 posts, and the existing JavaScript pagination still paginates the rendered cards. A future enhancement could add true server-side page links, "Load more", or infinite scroll for browsing beyond the first batch.
 
 3. **Profile Detail → "My Uploads" and "My Reviews" show the same count** (`$reviewsCount` is used for both at lines 151 and 173). These should be different metrics or the labels should match.
 
@@ -175,14 +154,23 @@
 | Static cache in View composer | `AppServiceProvider.php` | Eliminated N×(5+ queries) per page for theme/font/settings |
 | Single GROUP BY for report summary | `AdminReportsController.php` | 3 queries → 1 query |
 | Single conditional aggregate for user summary | `AdminUsersController.php` | 4 queries → 1 query |
+| Profile detail controller extraction | `ProfileDetailController.php`, `profile-detail.blade.php`, `web.php` | Removed raw profile queries from Blade and fixed Recent Reviews ratings N+1 |
+| Home initial post cap | `HomeController.php` | Prevents first render from loading every post into memory |
+| Notification button cache | `NotiBtn.php` | Caches unread count + latest 5 unread notifications per user for 30 seconds |
+
+# Verification After Latest Fixes
+
+- `php artisan test --compact tests/Feature/ProfileTest.php` — **passed** (3 tests, 12 assertions)
+- `php artisan test --compact tests/Feature/HomePageTest.php` — **passed** (25 tests, 188 assertions)
+- `vendor/bin/pint --dirty --format agent` — **passed / formatted dirty PHP files**
 
 # What Remains (Recommendations for future fixes)
 
 ### High Priority
-- [ ] Fix N+1 query in `profile-detail.blade.php` Recent Reviews loop (ratings query per card)
-- [ ] Move all raw queries from `profile-detail.blade.php` @php block into the route controller closure in `web.php`
-- [ ] Add pagination to `HomeController` — currently loads ALL posts with `->get()`
-- [ ] Cache `NotiBtn` component queries (runs 2 queries on every page for logged-in users)
+- [x] Fix N+1 query in `profile-detail.blade.php` Recent Reviews loop (ratings query per card)
+- [x] Move all raw queries from `profile-detail.blade.php` @php block into `ProfileDetailController`
+- [x] Limit `HomeController` initial post loading to 24 rendered posts
+- [x] Cache `NotiBtn` component queries for logged-in users
 
 ### Medium Priority
 - [ ] Consolidate `PostsController::show()` count queries (avg, count, comments_count) into withAggregate/loadCount

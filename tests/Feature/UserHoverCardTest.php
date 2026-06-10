@@ -9,6 +9,7 @@ use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
 use Database\Seeders\ThemesSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class UserHoverCardTest extends TestCase
@@ -60,6 +61,16 @@ class UserHoverCardTest extends TestCase
             'rating' => 4,
         ]);
 
+        $userPostQueries = 0;
+
+        DB::listen(function ($query) use (&$userPostQueries): void {
+            $sql = strtolower($query->sql);
+
+            if (str_contains($sql, 'from "user_posts"') || str_contains($sql, 'from `user_posts`')) {
+                $userPostQueries++;
+            }
+        });
+
         $response = $this->get(route('users.hover-card', $user->id));
 
         $response->assertOk();
@@ -73,5 +84,6 @@ class UserHoverCardTest extends TestCase
         // Check stats: Uploads should be 2, Rating average should be 4.5
         $response->assertSee('2');
         $response->assertSee('4.5');
+        $this->assertSame(1, $userPostQueries);
     }
 }

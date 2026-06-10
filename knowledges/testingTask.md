@@ -161,11 +161,19 @@
 | Profile layout correction | `ProfileDetailController.php`, `profile-detail.blade.php`, `profile-detail.css` | Added the no-menu profile layout path and distinct upload/review counts |
 | Saved Posts loading feedback | `resources/views/layout/menu/saved-post.blade.php`, `resources/css/nav.css` | Added AJAX loading state hooks and visible loading feedback |
 | Save-button loaders verified | `resources/views/layout/menu/edit-profile.blade.php`, `resources/views/layout/menu/edit-tag.blade.php`, `resources/views/layout/menu/security.blade.php` | Confirmed `.is-loading` bindings are already present and covered by tests |
+| Welcome real data | `WelcomeController.php`, `welcome.blade.php` | Replaced hardcoded Most Reviewed Websites cards with visible review counts and rating averages from the database |
+| Dashboard widgets | `DashboardController.php`, `dashboard.blade.php`, `nav.css` | Added authenticated dashboard stat cards and recent visible reviews |
+| Preset theme batching | `AppearanceController.php` | Replaced four preset `firstOrCreate` lookups with one batched `whereIn` lookup and create-only-missing behavior |
+| Hover-card query cleanup | `UserHoverCardController.php` | Reused one `user_posts` lookup for upload count and rated post IDs |
 
 # Verification After Latest Fixes
 
 - `php artisan test --compact tests/Feature/PostDetailTest.php` — **passed** (6 tests, 25 assertions)
 - `php artisan test --compact tests/Feature/ProfileTest.php tests/Feature/SavedPostPageTest.php tests/Feature/EditProfilePageTest.php tests/Feature/EditTagPageTest.php tests/Feature/SecurityPageTest.php` — **passed** (39 tests, 201 assertions)
+- `php artisan test --compact tests/Feature/WelcomePageTest.php` — **passed** (8 tests, 54 assertions)
+- `php artisan test --compact tests/Feature/DashboardMenuTest.php` — **passed** (12 tests, 125 assertions)
+- `php artisan test --compact tests/Feature/AppearancePageTest.php` — **passed** (8 tests, 61 assertions)
+- `php artisan test --compact tests/Feature/UserHoverCardTest.php` — **passed** (1 test, 8 assertions)
 - `vendor/bin/pint --dirty --format agent` — **passed / formatted dirty PHP files**
 
 # What Remains (Recommendations for future fixes)
@@ -184,7 +192,7 @@
 - [x] Fix profile detail layout gap when viewing another user's profile (no sidebar but sidebar offset still applied)
 
 ### Low Priority
-- [ ] Replace hardcoded welcome page "Most Reviewed Websites" with real DB data
-- [ ] Add dashboard widgets/stats to the empty Dashboard page
-- [ ] Batch-load preset themes in `AppearanceController::presetThemes()` instead of 4x `firstOrCreate`
-- [ ] Combine `UserHoverCardController` 2 queries into 1
+- [x] Replace hardcoded welcome page "Most Reviewed Websites" with real DB data
+- [x] Add dashboard widgets/stats to the empty Dashboard page
+- [x] Batch-load preset themes in `AppearanceController::presetThemes()` instead of 4x `firstOrCreate`
+- [x] Combine `UserHoverCardController` 2 queries into 1

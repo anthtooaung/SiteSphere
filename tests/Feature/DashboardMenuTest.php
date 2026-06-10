@@ -2,7 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Bookmarks;
+use App\Models\Posts;
+use App\Models\Ratings;
 use App\Models\User;
+use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +38,58 @@ class DashboardMenuTest extends TestCase
             ->assertSee('data-menu-bar-location="left"', false)
             ->assertSee('Dashboard')
             ->assertSee('Welcome back, '.$user->name);
+    }
+
+    public function test_dashboard_renders_user_stats_and_recent_reviews(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        $otherUser = User::factory()->create(['role' => 'user']);
+        $reviewedPost = Posts::factory()->create(['title' => 'Reviewed Dashboard Site']);
+        $savedPost = Posts::factory()->create();
+        $hiddenPost = Posts::factory()->create(['title' => 'Hidden Dashboard Site']);
+
+        UserPosts::factory()->create([
+            'user_id' => $user->id,
+            'post_id' => $reviewedPost->id,
+            'user_hidden' => false,
+        ]);
+        UserPosts::factory()->create([
+            'user_id' => $user->id,
+            'post_id' => $hiddenPost->id,
+            'user_hidden' => true,
+        ]);
+        UserPosts::factory()->create([
+            'user_id' => $otherUser->id,
+            'post_id' => Posts::factory()->create()->id,
+            'user_hidden' => false,
+        ]);
+        Bookmarks::factory()->create([
+            'user_id' => $user->id,
+            'post_id' => $savedPost->id,
+        ]);
+        Ratings::factory()->create([
+            'user_id' => $user->id,
+            'post_id' => $reviewedPost->id,
+        ]);
+        Ratings::factory()->create([
+            'user_id' => $user->id,
+            'post_id' => $savedPost->id,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('dashboard'));
+
+        $response
+            ->assertOk()
+            ->assertSeeText('My Reviews')
+            ->assertSeeText('Saved Posts')
+            ->assertSeeText('Ratings Given')
+            ->assertSeeText('Reviewed Websites')
+            ->assertSeeText('Recent reviews')
+            ->assertSeeText('Reviewed Dashboard Site')
+            ->assertDontSeeText('Hidden Dashboard Site');
+
+        $this->assertStringContainsString('<strong>1</strong>', $response->getContent());
+        $this->assertStringContainsString('<strong>2</strong>', $response->getContent());
     }
 
     public function test_dashboard_menu_uses_each_valid_menu_bar_location(): void

@@ -106,9 +106,15 @@ class AppearanceController extends Controller
      */
     private function presetThemes(): Collection
     {
+        $accentColors = array_keys(self::PRESET_THEMES);
+        $themes = Themes::query()
+            ->whereIn('accent_color', $accentColors)
+            ->get()
+            ->keyBy('accent_color');
+
         return collect(self::PRESET_THEMES)
-            ->map(function (string $name, string $accentColor): array {
-                $theme = Themes::query()->firstOrCreate([
+            ->map(function (string $name, string $accentColor) use ($themes): array {
+                $theme = $themes->get($accentColor) ?? Themes::query()->create([
                     'accent_color' => $accentColor,
                 ]);
 

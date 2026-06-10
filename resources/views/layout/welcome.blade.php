@@ -60,65 +60,49 @@
             <h2 id="reviewedWebsitesTitle" class="welcome-section-title welcome-reveal">Most Reviewed Websites</h2>
 
             <div class="welcome-review-grid">
-                <article class="welcome-review-card welcome-reveal">
-                    <div class="welcome-card-head">
-                        <div class="welcome-name-box">
-                            <h3>Process Academy</h3>
-                            <span>process-academy.org</span>
-                        </div>
-                        <div class="welcome-stars" aria-label="5 out of 5 stars">★★★★★</div>
-                    </div>
-                    <p class="welcome-card-desc">
-                        An essential hub for modern workflow optimization. Their library covers everything from advanced
-                        cloud infrastructure to automated team management.
-                    </p>
-                    <div class="welcome-score-wrap">
-                        <div class="welcome-score-info"><span>Trust Score</span><span>98%</span></div>
-                        <div class="welcome-score-bg">
-                            <div class="welcome-score-fill" data-width="98%"></div>
-                        </div>
-                    </div>
-                </article>
+                @forelse ($mostReviewedPosts as $post)
+                    @php
+                        $averageRating = round((float) ($post->average_rating ?? 0), 1);
+                        $filledStars = max(0, min(5, (int) round($averageRating)));
+                        $trustScore = (int) round(($averageRating / 5) * 100);
+                    @endphp
 
-                <article class="welcome-review-card welcome-reveal">
-                    <div class="welcome-card-head">
-                        <div class="welcome-name-box">
-                            <h3>DesignFlow AI</h3>
-                            <span>designflow.io</span>
+                    <article class="welcome-review-card welcome-reveal">
+                        <div class="welcome-card-head">
+                            <div class="welcome-name-box">
+                                <h3>
+                                    <a href="{{ route('posts.show', $post->slug) }}">{{ $post->title }}</a>
+                                </h3>
+                                <span>{{ parse_url($post->url, PHP_URL_HOST) ?: $post->url }}</span>
+                            </div>
+                            <div class="welcome-stars" aria-label="{{ $averageRating }} out of 5 stars">
+                                {{ str_repeat('★', $filledStars).str_repeat('☆', 5 - $filledStars) }}
+                            </div>
                         </div>
-                        <div class="welcome-stars" aria-label="4 out of 5 stars">★★★★☆</div>
-                    </div>
-                    <p class="welcome-card-desc">
-                        Pushing the boundaries of generative design. This platform allows creatives to iterate at lightning
-                        speed while maintaining high-fidelity output.
-                    </p>
-                    <div class="welcome-score-wrap">
-                        <div class="welcome-score-info"><span>Trust Score</span><span>89%</span></div>
-                        <div class="welcome-score-bg">
-                            <div class="welcome-score-fill" data-width="89%"></div>
+                        <p class="welcome-card-desc">
+                            Reviewed by {{ $post->visible_reviews_count }} {{ \Illuminate\Support\Str::plural('member', $post->visible_reviews_count) }} with an average rating of {{ number_format($averageRating, 1) }}.
+                        </p>
+                        <div class="welcome-score-wrap">
+                            <div class="welcome-score-info"><span>Trust Score</span><span>{{ $trustScore }}%</span></div>
+                            <div class="welcome-score-bg">
+                                <div class="welcome-score-fill" data-width="{{ $trustScore }}%"></div>
+                            </div>
                         </div>
-                    </div>
-                </article>
-
-                <article class="welcome-review-card welcome-reveal">
-                    <div class="welcome-card-head">
-                        <div class="welcome-name-box">
-                            <h3>Lunaver Cloud</h3>
-                            <span>lunaver.cloud</span>
+                    </article>
+                @empty
+                    <article class="welcome-review-card welcome-reveal">
+                        <div class="welcome-card-head">
+                            <div class="welcome-name-box">
+                                <h3>No reviewed websites yet</h3>
+                                <span>Be the first to share one.</span>
+                            </div>
+                            <div class="welcome-stars" aria-label="0 out of 5 stars">☆☆☆☆☆</div>
                         </div>
-                        <div class="welcome-stars" aria-label="4 out of 5 stars">★★★★☆</div>
-                    </div>
-                    <p class="welcome-card-desc">
-                        A powerhouse for decentralized hosting and edge computing. Users love the transparent pricing model
-                        and the robust security protocols.
-                    </p>
-                    <div class="welcome-score-wrap">
-                        <div class="welcome-score-info"><span>Trust Score</span><span>94%</span></div>
-                        <div class="welcome-score-bg">
-                            <div class="welcome-score-fill" data-width="94%"></div>
-                        </div>
-                    </div>
-                </article>
+                        <p class="welcome-card-desc">
+                            Real reviewed websites will appear here as soon as members publish visible reviews.
+                        </p>
+                    </article>
+                @endforelse
             </div>
 
             <div class="welcome-see-more">

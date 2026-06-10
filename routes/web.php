@@ -7,6 +7,7 @@ use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CommentReactionsController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditProfileController;
 use App\Http\Controllers\EditTagsController;
 use App\Http\Controllers\FaviconController;
@@ -18,13 +19,12 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SavedPostsController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\UserHoverCardController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/favicon.svg', FaviconController::class)->name('favicon');
 
-Route::get('/', function () {
-    return view('layout.welcome');
-})->name('welcome');
+Route::get('/', WelcomeController::class)->name('welcome');
 
 // home doesn't need to use auth it will show all
 Route::get('/home', HomeController::class)->name('home');
@@ -48,9 +48,7 @@ Route::post('/contact', [ContactMessageController::class, 'store'])
     ->name('contact.store');
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('/menu/dashboard', function () {
-        return view('layout.menu.dashboard');
-    })->name('dashboard');
+    Route::get('/menu/dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('/profile/{slug?}', ProfileDetailController::class)->name('profile-detail');
 

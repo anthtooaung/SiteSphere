@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Posts;
+use App\Models\Ratings;
 use App\Models\User;
+use App\Models\UserPosts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\TestResponse;
@@ -51,8 +54,64 @@ class WelcomePageTest extends TestCase
         $response->assertSee('https://github.com/anthtooaung', false);
         $response->assertSee('https://www.linkedin.com/in/ant-htoo-aung-460006395', false);
         $response->assertSeeText('Most Reviewed Websites');
-        $response->assertSeeText('Process Academy');
+        $response->assertSeeText('No reviewed websites yet');
         $response->assertSeeText('Get in touch');
+    }
+
+    public function test_welcome_page_renders_most_reviewed_websites_from_database(): void
+    {
+        $firstReviewer = User::factory()->create();
+        $secondReviewer = User::factory()->create();
+        $topPost = Posts::factory()->create([
+            'title' => 'Laravel Boost Hub',
+            'url' => 'https://boost.example.test',
+        ]);
+        $secondPost = Posts::factory()->create([
+            'title' => 'Query Scout',
+            'url' => 'https://query-scout.example.test',
+        ]);
+        $hiddenOnlyPost = Posts::factory()->create([
+            'title' => 'Hidden Placeholder',
+            'url' => 'https://hidden.example.test',
+        ]);
+
+        UserPosts::factory()->count(3)->create([
+            'post_id' => $topPost->id,
+            'user_hidden' => false,
+        ]);
+        UserPosts::factory()->create([
+            'post_id' => $secondPost->id,
+            'user_hidden' => false,
+        ]);
+        UserPosts::factory()->create([
+            'post_id' => $hiddenOnlyPost->id,
+            'user_hidden' => true,
+        ]);
+
+        Ratings::factory()->create([
+            'user_id' => $firstReviewer->id,
+            'post_id' => $topPost->id,
+            'rating' => 5,
+        ]);
+        Ratings::factory()->create([
+            'user_id' => $secondReviewer->id,
+            'post_id' => $topPost->id,
+            'rating' => 4,
+        ]);
+
+        $response = $this->get('/');
+
+        $response
+            ->assertOk()
+            ->assertSeeText('Laravel Boost Hub')
+            ->assertSeeText('boost.example.test')
+            ->assertSeeText('Reviewed by 3 members')
+            ->assertSeeText('average rating of 4.5')
+            ->assertSeeText('Query Scout')
+            ->assertDontSeeText('Hidden Placeholder')
+            ->assertDontSeeText('Process Academy')
+            ->assertDontSeeText('DesignFlow AI')
+            ->assertDontSeeText('Lunaver Cloud');
     }
 
     public function test_guest_welcome_page_includes_theme_and_font_variables(): void

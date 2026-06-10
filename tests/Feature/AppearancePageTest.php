@@ -58,6 +58,37 @@ class AppearancePageTest extends TestCase
             ->assertDontSee('appearance-font-option', false);
     }
 
+    public function test_preset_themes_are_batch_loaded_for_appearance_page(): void
+    {
+        $this->seed(ThemesSeeder::class);
+        $user = User::factory()->create();
+        $presetThemeQueries = 0;
+
+        DB::listen(function ($query) use (&$presetThemeQueries): void {
+            $sql = strtolower($query->sql);
+
+            if (
+                str_contains($sql, 'select')
+                && (str_contains($sql, 'from "themes"') || str_contains($sql, 'from `themes`'))
+                && str_contains($sql, 'accent_color')
+                && str_contains($sql, ' in ')
+            ) {
+                $presetThemeQueries++;
+            }
+        });
+
+        $response = $this->actingAs($user)->get(route('appearance'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Default Purple')
+            ->assertSee('Crimson Red')
+            ->assertSee('Golden Yellow')
+            ->assertSee('Emerald Green');
+
+        $this->assertSame(1, $presetThemeQueries);
+    }
+
     public function test_viewing_appearance_page_does_not_persist_unsaved_changes(): void
     {
         $user = User::factory()->create();

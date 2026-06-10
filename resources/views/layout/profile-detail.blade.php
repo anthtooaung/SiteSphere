@@ -17,8 +17,13 @@
 
     <x-layout.nav />
 
-    <div class="dashboard-page dashboard-page--{{ $dashboardMenuLocation }} profile-detail-page">
-        @if ($user->id === auth()->id())
+    <div @class([
+        'dashboard-page',
+        'dashboard-page--'.$dashboardMenuLocation,
+        'dashboard-page--no-menu' => ! $isOwnProfile,
+        'profile-detail-page',
+    ])>
+        @if ($isOwnProfile)
             <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
         @endif
 
@@ -147,7 +152,7 @@
                             <x-fas-upload />
                         </span>
                         <div>
-                            <h2>{{ $reviewsCount }}</h2>
+                            <h2>{{ $uploadsCount }}</h2>
                             <p>My Uploads</p>
                             <a href="{{ route('home') }}" class="bottom-link">View uploads &rarr;</a>
                         </div>

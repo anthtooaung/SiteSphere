@@ -52,6 +52,8 @@ class EditProfilePageTest extends TestCase
             ->assertSee('data-bio-counter', false)
             ->assertSee('Animated GIF up to 1MB')
             ->assertSee('Save Changes')
+            ->assertSee(":class=\"{ 'is-loading': isSubmitting }\"", false)
+            ->assertSee(':disabled="isSubmitting"', false)
             ->assertSee('value="Lin Thant Aung"', false)
             ->assertSee('value="lin@example.com"', false)
             ->assertSee('value="2005-10-12"', false)

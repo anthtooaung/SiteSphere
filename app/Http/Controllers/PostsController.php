@@ -137,21 +137,19 @@ class PostsController extends Controller
                 ->with('user.settings')
                 ->latest(),
         ]);
+        $posts->loadCount([
+            'ratings',
+            'comments',
+            'userPosts as audits_count' => fn ($query) => $query->where('user_hidden', false),
+        ]);
+        $posts->loadAvg('ratings as average_rating', 'rating');
 
         $userId = auth()->id();
 
-        // Calculate average rating
-        $averageRating = (float) $posts->ratings()->avg('rating') ?: 0.0;
-        $averageRating = round($averageRating, 1);
-
-        // Count reviews (general reviews / ratings)
-        $ratingsCount = $posts->ratings()->count();
-
-        // Count audits (expert audits)
-        $auditsCount = $posts->userPosts()->where('user_hidden', false)->count();
-
-        // Count comments
-        $commentsCount = $posts->comments()->count();
+        $averageRating = round((float) ($posts->average_rating ?? 0), 1);
+        $ratingsCount = (int) $posts->ratings_count;
+        $auditsCount = (int) $posts->audits_count;
+        $commentsCount = (int) $posts->comments_count;
 
         // Calculate ratings distribution (1 to 5 stars)
         $ratingDistribution = [

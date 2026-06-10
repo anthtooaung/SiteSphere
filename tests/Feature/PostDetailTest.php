@@ -4,12 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Comments;
 use App\Models\Posts;
+use App\Models\Ratings;
 use App\Models\Tags;
 use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
 use Database\Seeders\ThemesSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class PostDetailTest extends TestCase
@@ -169,5 +171,66 @@ class PostDetailTest extends TestCase
         $response->assertSee('Customized Detail Tag');
         $response->assertSee('#00FF99');
         $response->assertDontSee('Original Tag Name');
+    }
+
+    public function test_post_detail_queries_stay_bounded_with_many_comments_and_ratings(): void
+    {
+        $viewer = User::factory()->create();
+        $post = Posts::factory()->create([
+            'title' => 'Query Bound Post',
+        ]);
+        $tag = Tags::factory()->create();
+        $post->tags()->attach($tag->id);
+
+        for ($index = 1; $index <= 6; $index++) {
+            $reviewer = User::factory()->create();
+            $reviewer->settings()->update(['user_post_visible' => true]);
+
+            $reviewedPost = $index <= 5 ? $post : Posts::factory()->create();
+
+            UserPosts::factory()->create([
+                'user_id' => $reviewer->id,
+                'post_id' => $reviewedPost->id,
+                'description' => 'Query bound review '.$index,
+            ]);
+
+            Ratings::factory()->create([
+                'user_id' => $reviewer->id,
+                'post_id' => $reviewedPost->id,
+                'rating' => ($index % 5) + 1,
+            ]);
+        }
+
+        for ($index = 1; $index <= 10; $index++) {
+            Comments::factory()->create([
+                'user_id' => User::factory()->create()->id,
+                'post_id' => $post->id,
+                'content' => 'Query bound comment '.$index,
+            ]);
+        }
+
+        $queryCount = 0;
+        DB::listen(function ($query) use (&$queryCount): void {
+            if (
+                str_contains($query->sql, 'from "posts"')
+                || str_contains($query->sql, 'from `posts`')
+                || str_contains($query->sql, 'from "ratings"')
+                || str_contains($query->sql, 'from `ratings`')
+                || str_contains($query->sql, 'from "comments"')
+                || str_contains($query->sql, 'from `comments`')
+                || str_contains($query->sql, 'from "user_posts"')
+                || str_contains($query->sql, 'from `user_posts`')
+            ) {
+                $queryCount++;
+            }
+        });
+
+        $this->actingAs($viewer)
+            ->get(route('posts.show', $post->slug))
+            ->assertOk()
+            ->assertSee('Query Bound Post')
+            ->assertSee('User Comments');
+
+        $this->assertLessThanOrEqual(12, $queryCount);
     }
 }

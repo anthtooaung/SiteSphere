@@ -26,7 +26,7 @@
 
 ### ⚠️ Issues Found
 
-1. **Profile Detail when viewing another user's profile** — the sidebar menu is conditionally hidden (`@if ($user->id === auth()->id())`). When viewing someone else's profile, the entire left sidebar disappears but the content layout class `dashboard-page--left` still applies, leaving a large empty gap on the left. The layout should adjust (remove the sidebar offset or use a full-width layout) when the menu is absent.
+1. **Profile Detail when viewing another user's profile** — resolved by adding a no-menu profile layout path. The page now drops the sidebar offset when viewing another user's profile so the content can use the full width cleanly.
 
 2. **Post Detail page has no sidebar menu** — `post-detail.blade.php` renders `<main class="dashboard-content post-detail-content">` without `<x-layout.menu>`, so the content is full-width. This is likely intentional but differs from other dashboard pages. *(Minor — acceptable design decision.)*
 
@@ -51,9 +51,9 @@
 
 2. **Home page** — No skeleton or loading state. All posts are fetched with `->get()` (no pagination!) and rendered server-side. If the post count grows, this will become slow with no visual feedback. **No pagination exists on the home page.**
 
-3. **Saved Posts page** — The AJAX loading doesn't show any skeleton or spinner. When `fetchSavedPosts()` runs, the user sees the old content until the new content is swapped in via `innerHTML`. No intermediate loading state is shown.
+3. **Saved Posts page** — resolved by adding an AJAX loading indicator, disabling the filter controls while the request is in flight, and showing a visible loading state during `fetchSavedPosts()`.
 
-4. **Edit Profile / Edit Tag / Security pages** — Save buttons do not have loading states (no `.is-loading` class or spinner). Only Appearance page has this.
+4. **Edit Profile / Edit Tag / Security pages** — verified and already implemented. The save buttons use `.is-loading` bindings and are covered by feature tests.
 
 ---
 
@@ -139,9 +139,9 @@
 
 2. **Home page pagination is partially improved** — The server render is now capped at 24 posts, and the existing JavaScript pagination still paginates the rendered cards. A future enhancement could add true server-side page links, "Load more", or infinite scroll for browsing beyond the first batch.
 
-3. **Profile Detail → "My Uploads" and "My Reviews" show the same count** (`$reviewsCount` is used for both at lines 151 and 173). These should be different metrics or the labels should match.
+3. **Profile Detail → "My Uploads" and "My Reviews" now use distinct counts**. "My Reviews" reflects authored ratings, while "My Uploads" reflects uploaded reviewed posts.
 
-4. **Saved Post page** toolbar doesn't show a loading state during AJAX filter operations. Users have no feedback that something is happening.
+4. **Saved Post page** toolbar now shows a loading state during AJAX filter operations, so users get feedback while new results are fetched.
 
 5. **Welcome page "Most Reviewed Websites" section** uses **hardcoded placeholder data** (Process Academy, DesignFlow AI, Lunaver Cloud). These are not real entries from the database. This is misleading. Should either pull real data from the DB or clearly label as examples.
 
@@ -157,11 +157,15 @@
 | Profile detail controller extraction | `ProfileDetailController.php`, `profile-detail.blade.php`, `web.php` | Removed raw profile queries from Blade and fixed Recent Reviews ratings N+1 |
 | Home initial post cap | `HomeController.php` | Prevents first render from loading every post into memory |
 | Notification button cache | `NotiBtn.php` | Caches unread count + latest 5 unread notifications per user for 30 seconds |
+| Post detail aggregate consolidation | `PostsController.php` | Replaced separate avg/count queries with `loadCount`/`loadAvg` |
+| Profile layout correction | `ProfileDetailController.php`, `profile-detail.blade.php`, `profile-detail.css` | Added the no-menu profile layout path and distinct upload/review counts |
+| Saved Posts loading feedback | `resources/views/layout/menu/saved-post.blade.php`, `resources/css/nav.css` | Added AJAX loading state hooks and visible loading feedback |
+| Save-button loaders verified | `resources/views/layout/menu/edit-profile.blade.php`, `resources/views/layout/menu/edit-tag.blade.php`, `resources/views/layout/menu/security.blade.php` | Confirmed `.is-loading` bindings are already present and covered by tests |
 
 # Verification After Latest Fixes
 
-- `php artisan test --compact tests/Feature/ProfileTest.php` — **passed** (3 tests, 12 assertions)
-- `php artisan test --compact tests/Feature/HomePageTest.php` — **passed** (25 tests, 188 assertions)
+- `php artisan test --compact tests/Feature/PostDetailTest.php` — **passed** (6 tests, 25 assertions)
+- `php artisan test --compact tests/Feature/ProfileTest.php tests/Feature/SavedPostPageTest.php tests/Feature/EditProfilePageTest.php tests/Feature/EditTagPageTest.php tests/Feature/SecurityPageTest.php` — **passed** (39 tests, 201 assertions)
 - `vendor/bin/pint --dirty --format agent` — **passed / formatted dirty PHP files**
 
 # What Remains (Recommendations for future fixes)
@@ -173,11 +177,11 @@
 - [x] Cache `NotiBtn` component queries for logged-in users
 
 ### Medium Priority
-- [ ] Consolidate `PostsController::show()` count queries (avg, count, comments_count) into withAggregate/loadCount
-- [ ] Fix "My Uploads" vs "My Reviews" using same `$reviewsCount` value in profile detail
-- [ ] Add loading/skeleton state to Saved Posts AJAX filter
-- [ ] Add `.is-loading` spinner to Edit Profile, Edit Tag, Security save buttons
-- [ ] Fix profile detail layout gap when viewing another user's profile (no sidebar but sidebar offset still applied)
+- [x] Consolidate `PostsController::show()` count queries (avg, count, comments_count) into withAggregate/loadCount
+- [x] Fix "My Uploads" vs "My Reviews" using separate counts in profile detail
+- [x] Add loading/skeleton state to Saved Posts AJAX filter
+- [x] Add `.is-loading` spinner to Edit Profile, Edit Tag, Security save buttons
+- [x] Fix profile detail layout gap when viewing another user's profile (no sidebar but sidebar offset still applied)
 
 ### Low Priority
 - [ ] Replace hardcoded welcome page "Most Reviewed Websites" with real DB data

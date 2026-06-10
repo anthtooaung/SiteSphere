@@ -985,6 +985,46 @@
     width: 100%;
 }
 
+.saved-post-main-app.is-loading .saved-post-grid,
+.saved-post-main-app.is-loading .saved-post-empty {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.saved-post-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 10px 14px;
+    border: 1px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--background-color) 94%, var(--accent-color, #6c5ce7) 6%);
+    color: var(--text-color, #0d1b2a);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.saved-post-loading[hidden] {
+    display: none;
+}
+
+.saved-post-loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 28%, transparent);
+    border-top-color: var(--accent-color, #6c5ce7);
+    border-radius: 999px;
+    animation: savedPostSpin 0.75s linear infinite;
+}
+
+@keyframes savedPostSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .saved-post-header {
     display: flex;
     align-items: flex-start;

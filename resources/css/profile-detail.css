@@ -18,6 +18,14 @@
     min-height: calc(100vh - 64px);
 }
 
+.profile-detail-page.dashboard-page--no-menu {
+    display: block;
+}
+
+.profile-detail-page.dashboard-page--no-menu .profile-detail-content {
+    width: 100%;
+}
+
 .scroll-reveal{
     opacity:0;
     transform:translateY(24px);

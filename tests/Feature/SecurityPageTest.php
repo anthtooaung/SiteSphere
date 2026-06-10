@@ -49,7 +49,9 @@ class SecurityPageTest extends TestCase
             ->assertSee('id="current-password"', false)
             ->assertSee('id="new-password"', false)
             ->assertSee('id="confirm-password"', false)
-            ->assertSee('Save Changes');
+            ->assertSee('Save Changes')
+            ->assertSee(":class=\"{ 'is-loading': isSubmitting }\"", false)
+            ->assertSee(':disabled="isSubmitting"', false);
     }
 
     public function test_security_toggles_are_saved(): void

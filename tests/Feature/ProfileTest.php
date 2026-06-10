@@ -108,4 +108,46 @@ class ProfileTest extends TestCase
             ->assertDontSee('Hidden Profile Review')
             ->assertDontSee('Hidden profile review description.');
     }
+
+    public function test_other_users_profile_uses_no_menu_layout_and_distinct_upload_count(): void
+    {
+        $profileOwner = User::factory()->create();
+        $viewer = User::factory()->create();
+
+        $firstPost = Posts::factory()->create(['title' => 'First Upload']);
+        $secondPost = Posts::factory()->create(['title' => 'Second Upload']);
+        $thirdPost = Posts::factory()->create(['title' => 'Rated Elsewhere']);
+
+        UserPosts::factory()->create([
+            'user_id' => $profileOwner->id,
+            'post_id' => $firstPost->id,
+            'description' => 'First upload description.',
+            'user_hidden' => false,
+        ]);
+        UserPosts::factory()->create([
+            'user_id' => $profileOwner->id,
+            'post_id' => $secondPost->id,
+            'description' => 'Second upload description.',
+            'user_hidden' => false,
+        ]);
+
+        Ratings::factory()->count(3)->sequence(
+            ['user_id' => $profileOwner->id, 'post_id' => $firstPost->id, 'rating' => 5],
+            ['user_id' => $profileOwner->id, 'post_id' => $secondPost->id, 'rating' => 4],
+            ['user_id' => $profileOwner->id, 'post_id' => $thirdPost->id, 'rating' => 3],
+        )->create();
+
+        $response = $this
+            ->actingAs($viewer)
+            ->get(route('profile-detail', $profileOwner->slug));
+
+        $response
+            ->assertOk()
+            ->assertSee('dashboard-page--no-menu', false)
+            ->assertSee('My Reviews')
+            ->assertSee('3')
+            ->assertSee('My Uploads')
+            ->assertSee('2')
+            ->assertDontSee('x-layout.menu');
+    }
 }

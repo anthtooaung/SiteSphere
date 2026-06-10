@@ -26,10 +26,11 @@ class ProfileDetailController extends Controller
             ->where('user_id', $user->id)
             ->when(! $isOwnProfile, fn ($query) => $query->where('user_hidden', false));
 
-        $reviewsCount = (clone $userPostsQuery)->count();
+        $uploadsCount = (clone $userPostsQuery)->count();
         $ratingsCount = Ratings::query()
             ->where('user_id', $user->id)
             ->count();
+        $reviewsCount = $ratingsCount;
         $postIds = (clone $userPostsQuery)->pluck('post_id');
         $averageRating = Ratings::query()
             ->whereIn('post_id', $postIds)
@@ -50,6 +51,7 @@ class ProfileDetailController extends Controller
             'user' => $user,
             'isOwnProfile' => $isOwnProfile,
             'reviewsCount' => $reviewsCount,
+            'uploadsCount' => $uploadsCount,
             'ratingsCount' => $ratingsCount,
             'averageRating' => $averageRating,
             'recentReviews' => $recentReviews,

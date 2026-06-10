@@ -105,6 +105,11 @@
                     </span>
                 </div>
 
+                <div class="saved-post-loading" data-saved-post-loading hidden aria-live="polite">
+                    <span class="saved-post-loading-spinner" aria-hidden="true"></span>
+                    <span>Loading saved posts...</span>
+                </div>
+
                 @if ($savedPosts->isEmpty())
                     <section class="saved-post-empty" data-saved-post-empty>
                         <x-fas-bookmark class="saved-post-empty-icon" aria-hidden="true" />
@@ -145,6 +150,8 @@
             if (!mainApp) return;
 
             async function fetchSavedPosts(url) {
+                setSavedPostLoading(true);
+
                 try {
                     const response = await fetch(url, {
                         headers: {
@@ -164,11 +171,33 @@
                         if (typeof initFlowbite === 'function') {
                             initFlowbite();
                         }
+                        setSavedPostLoading(false);
+                    } else {
+                        setSavedPostLoading(false);
                     }
                 } catch (error) {
                     console.error('Failed to fetch saved posts:', error);
+                    setSavedPostLoading(false);
                 }
             }
+
+            function setSavedPostLoading(isLoading) {
+                const currentMain = document.querySelector('.saved-post-main-app');
+                const form = currentMain?.querySelector('[data-saved-post-filter-form]');
+                const loading = currentMain?.querySelector('[data-saved-post-loading]');
+                const controls = form?.querySelectorAll('input, button, select, textarea') || [];
+
+                currentMain?.classList.toggle('is-loading', isLoading);
+
+                if (loading) {
+                    loading.hidden = !isLoading;
+                }
+
+                controls.forEach(control => {
+                    control.disabled = isLoading;
+                });
+            }
+
             function bindSavedPostEvents() {
                 const form = mainApp.querySelector('[data-saved-post-filter-form]');
                 if (form) {

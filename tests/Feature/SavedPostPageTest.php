@@ -89,6 +89,26 @@ class SavedPostPageTest extends TestCase
             ->assertSee('Showing 1 of 1');
     }
 
+    public function test_saved_post_page_exposes_ajax_loading_state_hooks(): void
+    {
+        $user = User::factory()->create();
+        $post = $this->createVisiblePost('Loading Hook Saved Website');
+
+        Bookmarks::factory()->create([
+            'user_id' => $user->id,
+            'post_id' => $post->id,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('saved-post'))
+            ->assertOk()
+            ->assertSee('data-saved-post-loading', false)
+            ->assertSee('Loading saved posts...')
+            ->assertSee('saved-post-main-app', false)
+            ->assertSee('setSavedPostLoading(true)', false)
+            ->assertSee('setSavedPostLoading(false)', false);
+    }
+
     public function test_users_cannot_save_their_own_posts(): void
     {
         $user = User::factory()->create();

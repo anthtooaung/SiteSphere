@@ -40,7 +40,9 @@ class EditTagPageTest extends TestCase
             ->assertSee('Reset to Defaults')
             ->assertDontSee('Admin Tag Styles')
             ->assertDontSee('Publish to users')
-            ->assertSee('resources/css/edit-tag.css', false);
+            ->assertSee('resources/css/edit-tag.css', false)
+            ->assertSee(":class=\"{ 'is-loading': isSubmitting }\"", false)
+            ->assertSee(':disabled="isSubmitting"', false);
     }
 
     public function test_admins_see_admin_tag_page_and_publish_controls(): void
@@ -54,6 +56,8 @@ class EditTagPageTest extends TestCase
             ->assertSee('Admin Tag Styles')
             ->assertSee('Publish to users')
             ->assertSee('Add Category')
+            ->assertSee(":class=\"{ 'is-loading': isSubmitting }\"", false)
+            ->assertSee(':disabled="isSubmitting"', false)
             ->assertDontSee('Reset to Defaults');
     }
 

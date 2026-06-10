@@ -5,12 +5,12 @@ namespace Tests\Feature;
 use App\Models\User;
 use Database\Seeders\FontsSeeder;
 use Database\Seeders\ThemesSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
     protected function setUp(): void
     {

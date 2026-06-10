@@ -28,50 +28,65 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share user preference values with all views so Blade can easily read them.
         View::composer('*', function ($view) {
-            $themePreferences = app(ThemePreferences::class);
-            $colors = $themePreferences->colorsFor(Auth::user());
-            $toastPosition = 'top-end';
-            $fontFamily = null;
-            $menuBarLocation = 'left';
-            $isDarkMode = $colors['background'] === '#000000';
+            static $cachedData = null;
+            static $cachedUserId = null;
+            static $cachedAuthCheck = null;
 
-            if (Auth::check()) {
+            $currentUserId = Auth::id();
+            $currentAuthCheck = Auth::check();
+
+            if ($cachedData === null || $cachedUserId !== $currentUserId || $cachedAuthCheck !== $currentAuthCheck) {
+                $themePreferences = app(ThemePreferences::class);
                 $user = Auth::user();
-                $settings = $user->settings()->with(['theme', 'customTheme'])->first();
-                $fontFamily = $user->currentFonts()
-                    ->latest('user_current_fonts.created_at')
-                    ->value('font_family');
+                $colors = $themePreferences->colorsFor($user);
+                $toastPosition = 'top-end';
+                $fontFamily = null;
+                $menuBarLocation = 'left';
+                $isDarkMode = $colors['background'] === '#000000';
 
-                if ($fontFamily) {
-                    $fontFamily = Str::of((string) preg_replace('/[^A-Za-z0-9\s,\-_"\'()]/', '', $fontFamily))
-                        ->trim()
-                        ->toString();
-                }
-
-                if ($settings && in_array($settings->noti_location, ['top-start', 'top-end', 'bottom-end', 'bottom-start'], true)) {
-                    $toastPosition = $settings->noti_location;
-                }
-
-                if ($settings && in_array($settings->menuBar_location, ['top', 'right', 'bottom', 'left'], true)) {
-                    $menuBarLocation = $settings->menuBar_location;
-                }
-
-                $isDarkMode = (bool) ($settings?->dark_mode ?? false);
-            } else {
-                try {
-                    $fontFamily = DB::table('fonts')
-                        ->where('is_default', true)
+                if ($user) {
+                    $settings = $user->settings()->with(['theme', 'customTheme'])->first();
+                    $fontFamily = $user->currentFonts()
+                        ->latest('user_current_fonts.created_at')
                         ->value('font_family');
-                } catch (\Throwable $e) {
-                    $fontFamily = null;
+
+                    if ($fontFamily) {
+                        $fontFamily = Str::of((string) preg_replace('/[^A-Za-z0-9\s,\-_"\'()]/', '', $fontFamily))
+                            ->trim()
+                            ->toString();
+                    }
+
+                    if ($settings && in_array($settings->noti_location, ['top-start', 'top-end', 'bottom-end', 'bottom-start'], true)) {
+                        $toastPosition = $settings->noti_location;
+                    }
+
+                    if ($settings && in_array($settings->menuBar_location, ['top', 'right', 'bottom', 'left'], true)) {
+                        $menuBarLocation = $settings->menuBar_location;
+                    }
+
+                    $isDarkMode = (bool) ($settings?->dark_mode ?? false);
+                } else {
+                    try {
+                        $fontFamily = DB::table('fonts')
+                            ->where('is_default', true)
+                            ->value('font_family');
+                    } catch (\Throwable $e) {
+                        $fontFamily = null;
+                    }
                 }
+
+                $cachedData = [
+                    'themeColors' => $colors,
+                    'toastPosition' => $toastPosition,
+                    'fontFamily' => $fontFamily,
+                    'menuBarLocation' => $menuBarLocation,
+                    'isDarkMode' => $isDarkMode,
+                ];
+                $cachedUserId = $currentUserId;
+                $cachedAuthCheck = $currentAuthCheck;
             }
 
-            $view->with('themeColors', $colors);
-            $view->with('toastPosition', $toastPosition);
-            $view->with('fontFamily', $fontFamily);
-            $view->with('menuBarLocation', $menuBarLocation);
-            $view->with('isDarkMode', $isDarkMode);
+            $view->with($cachedData);
         });
 
         Blade::if('mobile', function () {

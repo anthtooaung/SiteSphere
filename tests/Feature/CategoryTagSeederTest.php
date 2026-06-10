@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use Database\Seeders\TagsSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class CategoryTagSeederTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
     public function test_category_and_tag_seed_data_is_imported_from_text_file(): void
     {

@@ -4,7 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\SocialAccount;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 class SocialLoginTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
     public function test_social_redirect_sends_users_to_the_provider(): void
     {

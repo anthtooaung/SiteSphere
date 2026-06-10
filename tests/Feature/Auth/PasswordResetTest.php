@@ -5,14 +5,14 @@ namespace Tests\Feature\Auth;
 use App\Mail\PasswordResetOtpMail;
 use App\Models\OtpVerifications;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
     public function test_reset_password_otp_request_screen_can_be_rendered(): void
     {

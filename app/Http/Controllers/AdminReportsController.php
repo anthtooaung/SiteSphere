@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comments;
+use App\Models\Posts;
 use App\Models\Reports;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
@@ -24,12 +26,13 @@ class AdminReportsController extends Controller
         $reports = Reports::query()
             ->where('target_name', 'posts')
             ->with([
-                'post:id,title,url',
+                'post:id,title,slug,url',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applySearch($query, $filters['search']))
             ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('admin_read', false))
             ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('admin_read', true))
+            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderBy('admin_read', 'asc'))
             ->when($filters['reported_date'] !== '', fn (Builder $query) => $query->whereDate('created_at', $filters['reported_date']))
             ->latest()
             ->paginate(12, ['*'], 'posts_page')
@@ -38,12 +41,14 @@ class AdminReportsController extends Controller
         $commentReports = Reports::query()
             ->where('target_name', 'comments')
             ->with([
-                'comment:id,content',
+                'comment:id,content,post_id',
+                'comment.post:id,slug',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyCommentSearch($query, $filters['search']))
             ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('admin_read', false))
             ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('admin_read', true))
+            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderBy('admin_read', 'asc'))
             ->when($filters['reported_date'] !== '', fn (Builder $query) => $query->whereDate('created_at', $filters['reported_date']))
             ->latest()
             ->paginate(12, ['*'], 'comments_page')
@@ -52,12 +57,13 @@ class AdminReportsController extends Controller
         $userReports = Reports::query()
             ->where('target_name', 'users')
             ->with([
-                'targetUser:id,name,email,user_image',
+                'targetUser:id,name,slug,email,user_image',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyUserSearch($query, $filters['search']))
             ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('admin_read', false))
             ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('admin_read', true))
+            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderBy('admin_read', 'asc'))
             ->when($filters['reported_date'] !== '', fn (Builder $query) => $query->whereDate('created_at', $filters['reported_date']))
             ->latest()
             ->paginate(12, ['*'], 'users_page')
@@ -147,17 +153,21 @@ class AdminReportsController extends Controller
         });
     }
 
-    /**
-     * @return array<string, int>
-     */
     private function summary(): array
     {
-        $baseQuery = Reports::query();
+        $counts = Reports::query()
+            ->selectRaw('admin_read, count(*) as count')
+            ->groupBy('admin_read')
+            ->pluck('count', 'admin_read');
+
+        $unread = (int) ($counts->get(0, 0) + $counts->get(false, 0));
+        $read = (int) ($counts->get(1, 0) + $counts->get(true, 0));
+        $total = $unread + $read;
 
         return [
-            'total' => (clone $baseQuery)->count(),
-            'unread' => (clone $baseQuery)->where('admin_read', false)->count(),
-            'read' => (clone $baseQuery)->where('admin_read', true)->count(),
+            'total' => $total,
+            'unread' => $unread,
+            'read' => $read,
         ];
     }
 
@@ -168,5 +178,36 @@ class AdminReportsController extends Controller
         abort_unless($user?->role === 'admin', 403);
 
         return $user;
+    }
+
+    public function markUnread(Request $request, Reports $report): RedirectResponse
+    {
+        $this->authorizeAdmin($request);
+
+        abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
+
+        $report->forceFill(['admin_read' => false])->save();
+
+        return back()->with('success', 'Report marked as unread.');
+    }
+
+    public function deletePost(Request $request, int $id): RedirectResponse
+    {
+        $this->authorizeAdmin($request);
+
+        $post = Posts::findOrFail($id);
+        $post->delete();
+
+        return back()->with('success', 'Post has been soft deleted.');
+    }
+
+    public function deleteComment(Request $request, int $id): RedirectResponse
+    {
+        $this->authorizeAdmin($request);
+
+        $comment = Comments::findOrFail($id);
+        $comment->delete();
+
+        return back()->with('success', 'Comment has been soft deleted.');
     }
 }

@@ -7,13 +7,13 @@ use App\Models\AuditLogs;
 use App\Models\User;
 use Carbon\Carbon;
 use Database\Seeders\FontsSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class UsersPageTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
     protected function setUp(): void
     {

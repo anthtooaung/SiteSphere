@@ -113,22 +113,22 @@ class AdminUsersController extends Controller
         };
     }
 
-    /**
-     * @return array<string, int>
-     */
     private function summary(): array
     {
+        $counts = User::withTrashed()
+            ->selectRaw('
+                COUNT(*) as total,
+                SUM(CASE WHEN deleted_at IS NULL AND report_count = 0 THEN 1 ELSE 0 END) as safe,
+                SUM(CASE WHEN deleted_at IS NULL AND report_count BETWEEN 1 AND 2 THEN 1 ELSE 0 END) as warning,
+                SUM(CASE WHEN deleted_at IS NOT NULL OR report_count >= 3 THEN 1 ELSE 0 END) as restricted
+            ')
+            ->first();
+
         return [
-            'total' => User::withTrashed()->count(),
-            'safe' => User::query()->where('report_count', 0)->count(),
-            'warning' => User::query()->whereBetween('report_count', [1, 2])->count(),
-            'restricted' => User::withTrashed()
-                ->where(function (Builder $query): void {
-                    $query
-                        ->whereNotNull('deleted_at')
-                        ->orWhere('report_count', '>=', 3);
-                })
-                ->count(),
+            'total' => (int) ($counts->total ?? 0),
+            'safe' => (int) ($counts->safe ?? 0),
+            'warning' => (int) ($counts->warning ?? 0),
+            'restricted' => (int) ($counts->restricted ?? 0),
         ];
     }
 

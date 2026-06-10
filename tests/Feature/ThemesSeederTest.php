@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use Database\Seeders\ThemesSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ThemesSeederTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
     public function test_themes_seeder_creates_the_requested_accent_colors(): void
     {

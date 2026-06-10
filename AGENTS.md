@@ -21,6 +21,11 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - alpinejs (ALPINEJS) - v3
 - tailwindcss (TAILWINDCSS) - v3
 
+## Task & Resource Management
+
+- Always start with the easiest tasks (those requiring the least token usage) to build momentum and save context space.
+- Monitor token usage: If the token limit reaches under 20% capacity, you must immediately stop the current process and write comprehensive documentation for the data and tasks you have currently finished.
+
 ## Skills Activation
 
 This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
@@ -30,6 +35,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
+- Always consider the overall project design and visual consistency when making any changes to the design or UI.
 
 ## Verification Scripts
 

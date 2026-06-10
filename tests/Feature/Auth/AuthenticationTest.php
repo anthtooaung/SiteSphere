@@ -5,7 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Mail\LoginTwoFactorOtpMail;
 use App\Models\OtpVerifications;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use SweetAlert2\Laravel\Swal;
@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
+    use LazilyRefreshDatabase;
 
     public function test_login_screen_can_be_rendered(): void
     {

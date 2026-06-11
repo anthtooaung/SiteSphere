@@ -9,7 +9,7 @@ COPY resources ./resources
 COPY vite.config.js postcss.config.js tailwind.config.js ./
 RUN npm run build
 
-FROM php:8.5-apache
+FROM php:8.3-apache
 
 WORKDIR /var/www/html
 

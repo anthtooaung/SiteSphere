@@ -1,6 +1,6 @@
 @desktop
 <a href="{{ route('posts.create') }}"
-   {{ $attributes->merge(['class' => 'write-button']) }}
+   {{ $attributes->merge(['class' => 'write-button transition-transform duration-300 hover:rotate-90']) }}
    data-tooltip-placement="bottom"
    data-tooltip-target="create-post"
    style="background-color: var(--accent-color); font-family: var(--font-family);"
@@ -13,7 +13,7 @@
 @enddesktop
 
 @mobile
-<a href="{{ route('posts.create') }}" {{ $attributes->merge(['class' => 'mobile-add-button']) }} aria-label="Write review" style="background-color: var(--accent-color); font-family: var(--font-family);">
+<a href="{{ route('posts.create') }}" {{ $attributes->merge(['class' => 'mobile-add-button transition-transform duration-300 hover:rotate-90']) }} aria-label="Write review" style="background-color: var(--accent-color); font-family: var(--font-family);">
     <x-fas-plus class="icon" style="font-size: 1.2rem; color: #ffffff;"/>
 </a>
 @endmobile

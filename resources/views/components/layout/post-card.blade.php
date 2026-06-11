@@ -72,6 +72,28 @@
         },
         reportDetailsCount() {
             return this.reportDetails.length;
+        },
+        authAlert(action) {
+            if (!window.Swal) {
+                window.location.href = '{{ route('login') }}';
+                return;
+            }
+
+            window.Swal.fire({
+                title: 'Authentication Required',
+                text: `Please log in to ${action} this content.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Log In',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: 'var(--accent-color, #6c5ce7)',
+                background: 'var(--background-color, #ffffff)',
+                color: 'var(--text-color, #0d1b2a)',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '{{ route('login') }}';
+                }
+            });
         }
     }" x-on:click.outside="if (! reportOpen) { reviewOpen = false; actionsOpen = false }">
     <header class="space-y-3 px-4 pb-3 pt-4 sm:px-5">
@@ -160,18 +182,20 @@
                     @endauth
 
                     @guest
-                        <a href="{{ route('login') }}"
+                        <button type="button"
                             class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
-                            role="menuitem" data-auth-required="bookmark" data-post-card-action="bookmark">
+                            role="menuitem" data-auth-required="bookmark" data-post-card-action="bookmark"
+                            x-on:click.stop="authAlert('save')">
                             <x-far-bookmark class="size-3" />
                             <span>Save Post</span>
-                        </a>
-                        <a href="{{ route('login') }}"
+                        </button>
+                        <button type="button"
                             class="mt-1 flex min-h-9 w-full items-center gap-2 rounded-lg border-t px-2.5 py-1.5 pt-2 text-left transition-all duration-[180ms] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
-                            role="menuitem" data-auth-required="report" data-post-card-action="report">
+                            role="menuitem" data-auth-required="report" data-post-card-action="report"
+                            x-on:click.stop="authAlert('report')">
                             <x-fas-flag class="size-3" aria-hidden="true" />
                             <span>Report</span>
-                        </a>
+                        </button>
                     @endguest
                 </div>
             </div>
@@ -327,12 +351,13 @@
                 @endif
             @endauth
             @guest
-                <a href="{{ route('login') }}"
+                <button type="button"
                     class="group inline-flex items-center gap-2 rounded-md px-2 py-0.5 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_76%,transparent)] [box-shadow:0_1px_3px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)] hover:[box-shadow:0_8px_18px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)]"
-                    data-auth-required="review">
+                    data-auth-required="review"
+                    x-on:click.stop="authAlert('review')">
                     <x-far-star class="size-3 group-hover:[color:var(--accent-color,#6c5ce7)]" />
                     <span class="group-hover:[color:var(--accent-color,#6c5ce7)]">Review</span>
-                </a>
+                </button>
             @endguest
         </div>
     </footer>

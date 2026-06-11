@@ -160,6 +160,15 @@ const init = () => {
       });
     }
 
+    if (window.Swal) {
+      return window.Swal.fire({
+        ...options,
+        confirmButtonColor: "var(--accent-color, #6c5ce7)",
+        background: "var(--background-color, #ffffff)",
+        color: "var(--text-color, #0d1b2a)",
+      });
+    }
+
     const title = options.title ? `${options.title}\n\n` : "";
     const text = options.text || "";
 

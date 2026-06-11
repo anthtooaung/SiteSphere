@@ -1539,6 +1539,56 @@
     justify-content: start;
 }
 
+.home-empty-state {
+    display: grid;
+    min-height: 300px;
+    place-items: center;
+    align-content: center;
+    gap: 12px;
+    padding: 34px;
+    border: 1px dashed color-mix(in srgb, var(--accent-color, #6c5ce7) 26%, transparent);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--background-color) 92%, var(--accent-color, #6c5ce7) 8%);
+    text-align: center;
+}
+
+.home-empty-icon {
+    width: 34px;
+    height: 34px;
+    color: var(--accent-color, #6c5ce7);
+}
+
+.home-empty-state h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.home-empty-state p {
+    max-width: 420px;
+    margin: 0;
+    color: color-mix(in srgb, var(--text-color) 64%, transparent);
+    line-height: 1.6;
+}
+
+.clear-filters-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent-color, #6c5ce7);
+    color: var(--background-color, #ffffff);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 8px;
+}
+
+.clear-filters-btn:hover {
+    opacity: 0.9;
+}
+
 /* Review Cards */
 .review-card {
     width: 100%;

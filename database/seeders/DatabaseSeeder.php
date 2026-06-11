@@ -15,8 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FontsSeeder::class,
             ThemesSeeder::class,
-            CategoriesSeeder::class,
-            TagsSeeder::class,
+            AdminUserSeeder::class,
         ]);
 
         // User::factory(10)->create();

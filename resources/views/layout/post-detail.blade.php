@@ -102,7 +102,19 @@
                                             @if (Auth::user()?->role === 'admin')
                                                 <form method="POST" action="{{ route('posts.ban', $post->id) }}"
                                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
-                                                    x-on:submit.prevent="if(confirm('Are you sure you want to ban and soft delete this post? This action will also hide all audit descriptions.')) $el.submit()">
+                                                    x-on:submit.prevent="Swal.fire({
+                                                        title: 'Are you sure?',
+                                                        text: 'You want to ban and soft delete this post? This action will also hide all audit descriptions.',
+                                                        icon: 'warning',
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: '#b91c1c',
+                                                        cancelButtonColor: '#6c757d',
+                                                        confirmButtonText: 'Yes, ban it!'
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            $el.submit();
+                                                        }
+                                                    })">
                                                     @csrf
                                                     <button type="submit"
                                                         class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
@@ -567,7 +579,19 @@
                                                                 @if (Auth::user()?->role === 'admin')
                                                                     <form method="POST" action="{{ route('audits.ban', $userPost->id) }}"
                                                                         class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
-                                                                        x-on:submit.prevent="if(confirm('Are you sure you want to hide this audit description?')) $el.submit()">
+                                                                        x-on:submit.prevent="Swal.fire({
+                                                                            title: 'Are you sure?',
+                                                                            text: 'You want to hide this audit description?',
+                                                                            icon: 'warning',
+                                                                            showCancelButton: true,
+                                                                            confirmButtonColor: '#b91c1c',
+                                                                            cancelButtonColor: '#6c757d',
+                                                                            confirmButtonText: 'Yes, hide it!'
+                                                                        }).then((result) => {
+                                                                            if (result.isConfirmed) {
+                                                                                $el.submit();
+                                                                            }
+                                                                        })">
                                                                         @csrf
                                                                         <button type="submit"
                                                                             class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"

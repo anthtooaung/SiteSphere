@@ -98,6 +98,14 @@ const tagFilterCount = document.getElementById('tagFilterCount');
 const tagFilterReset = document.getElementById('tagFilterReset');
 const tagFilterCheckboxes = document.querySelectorAll('.tag-filter-check input');
 const clearAllFiltersBtn = document.getElementById('clearAllFilters');
+const homeEmptyState = document.getElementById('homeEmptyState');
+const emptyStateClearBtn = document.getElementById('emptyStateClearBtn');
+const emptyStateCreateBtn = document.getElementById('emptyStateCreateBtn');
+const emptyStateSearchIcon = document.getElementById('emptyStateSearchIcon');
+const emptyStatePlusIcon = document.getElementById('emptyStatePlusIcon');
+const emptyStateTitle = document.getElementById('emptyStateTitle');
+const emptyStateText = document.getElementById('emptyStateText');
+
 const resultsCount = document.getElementById('resultsCount');
 const sortSelect = document.getElementById('sortSelect');
 
@@ -309,6 +317,10 @@ function clearAllSelectedFilters(){
 
 if(clearAllFiltersBtn){
     clearAllFiltersBtn.addEventListener('click', clearAllSelectedFilters);
+}
+
+if(emptyStateClearBtn){
+    emptyStateClearBtn.addEventListener('click', clearAllSelectedFilters);
 }
 
 /* MOBILE SIDEBAR */
@@ -1175,6 +1187,31 @@ function displayCards(){
     cards.forEach(card => {
         card.style.display = 'none';
     });
+
+    if (homeEmptyState) {
+        if (filteredCards.length === 0) {
+            homeEmptyState.style.display = 'grid';
+
+            // Check if truly empty (no cards at all) or just filtered out
+            if (cards.length === 0) {
+                emptyStateSearchIcon.style.display = 'none';
+                emptyStatePlusIcon.style.display = 'block';
+                emptyStateTitle.textContent = 'No websites found';
+                emptyStateText.textContent = 'Be the first to share a useful resource with the community.';
+                emptyStateClearBtn.style.display = 'none';
+                emptyStateCreateBtn.style.display = 'inline-block';
+            } else {
+                emptyStateSearchIcon.style.display = 'block';
+                emptyStatePlusIcon.style.display = 'none';
+                emptyStateTitle.textContent = 'No websites found';
+                emptyStateText.textContent = 'Try adjusting your filters to find what you\'re looking for.';
+                emptyStateClearBtn.style.display = 'inline-block';
+                emptyStateCreateBtn.style.display = 'none';
+            }
+        } else {
+            homeEmptyState.style.display = 'none';
+        }
+    }
 
     const start = (currentPage - 1) * cardsPerPage;
 

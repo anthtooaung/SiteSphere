@@ -93,6 +93,19 @@
                 @endforeach
             </section>
 
+            <section class="home-empty-state" id="homeEmptyState" style="display: none;">
+                <div id="emptyStateSearchIcon">
+                    <x-fas-search class="home-empty-icon" aria-hidden="true" />
+                </div>
+                <div id="emptyStatePlusIcon" style="display: none;">
+                    <x-fas-plus class="home-empty-icon" aria-hidden="true" />
+                </div>
+                <h2 id="emptyStateTitle">No websites found</h2>
+                <p id="emptyStateText">Try adjusting your filters to find what you're looking for.</p>
+                <button type="button" class="clear-filters-btn" id="emptyStateClearBtn">Clear All Filters</button>
+                <a href="{{ route('posts.create') }}" class="clear-filters-btn" id="emptyStateCreateBtn" style="display: none; text-decoration: none;">Create New One</a>
+            </section>
+
             <div class="pagination" id="pagination"></div>
         </main>
     </div>

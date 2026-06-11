@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLogs;
 use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\Reports;
@@ -193,20 +194,36 @@ class AdminReportsController extends Controller
 
     public function deletePost(Request $request, int $id): RedirectResponse
     {
-        $this->authorizeAdmin($request);
+        $admin = $this->authorizeAdmin($request);
 
         $post = Posts::findOrFail($id);
         $post->delete();
+
+        AuditLogs::query()->create([
+            'user_id' => $admin->id,
+            'action' => 'delete_post',
+            'target_type' => Posts::class,
+            'target_id' => $post->id,
+            'reason' => 'Post soft deleted by an admin from the reports dashboard.',
+        ]);
 
         return back()->with('success', 'Post has been soft deleted.');
     }
 
     public function deleteComment(Request $request, int $id): RedirectResponse
     {
-        $this->authorizeAdmin($request);
+        $admin = $this->authorizeAdmin($request);
 
         $comment = Comments::findOrFail($id);
         $comment->delete();
+
+        AuditLogs::query()->create([
+            'user_id' => $admin->id,
+            'action' => 'delete_comment',
+            'target_type' => Comments::class,
+            'target_id' => $comment->id,
+            'reason' => 'Comment soft deleted by an admin from the reports dashboard.',
+        ]);
 
         return back()->with('success', 'Comment has been soft deleted.');
     }

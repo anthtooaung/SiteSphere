@@ -65,3 +65,4 @@ composer run test
 
 ## Rules
 - IF Token usage reach the **20%** then stop the current processing task and write the documentation in the `knowledges` folder of `remainTask.md` file
+- When adding a UI component or changing the design, **always** implement it by considering the dynamic user preferences stored in the database (e.g., custom themes, accent colors, menu locations, font families, dark mode). Avoid hardcoding styles that would break personalization.

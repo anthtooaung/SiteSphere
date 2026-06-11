@@ -99,12 +99,38 @@
                     this.openCategory = category.uid;
                     this.editingCategory = category.uid;
                 },
-                removeCategory(category) {
-                    if (! this.isAdmin || ! confirm('Delete this category?')) {
+                async removeCategory(category) {
+                    if (! this.isAdmin) {
                         return;
                     }
 
-                    this.categories = this.categories.filter((item) => item.uid !== category.uid);
+                    const result = await Swal.fire({
+                        title: 'Delete Category?',
+                        text: `Are you sure you want to delete "${category.name}"? This action cannot be undone.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        background: 'var(--background-color)',
+                        color: 'var(--text-color)',
+                        customClass: {
+                            title: 'font-sans'
+                        },
+                        didOpen: (popup) => {
+                            popup.style.fontFamily = 'var(--font-family)';
+                        }
+                    });
+
+                    if (result.isConfirmed) {
+                        this.categories = this.categories.filter((item) => item.uid !== category.uid);
+                        this.$nextTick(() => {
+                            const formElement = document.querySelector('[data-edit-tag-form]');
+                            if (formElement) {
+                                formElement.submit();
+                            }
+                        });
+                    }
                 },
                 addTag(category) {
                     if (! this.isAdmin) {
@@ -121,12 +147,38 @@
                     this.openCategory = category.uid;
                     this.editingCategory = category.uid;
                 },
-                removeTag(category, tag) {
-                    if (! this.isAdmin || ! confirm('Delete this tag?')) {
+                async removeTag(category, tag) {
+                    if (! this.isAdmin) {
                         return;
                     }
 
-                    category.tags = category.tags.filter((item) => item.uid !== tag.uid);
+                    const result = await Swal.fire({
+                        title: 'Delete Tag?',
+                        text: `Are you sure you want to delete "${tag.name}"? This action cannot be undone.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        background: 'var(--background-color)',
+                        color: 'var(--text-color)',
+                        customClass: {
+                            title: 'font-sans'
+                        },
+                        didOpen: (popup) => {
+                            popup.style.fontFamily = 'var(--font-family)';
+                        }
+                    });
+
+                    if (result.isConfirmed) {
+                        category.tags = category.tags.filter((item) => item.uid !== tag.uid);
+                        this.$nextTick(() => {
+                            const formElement = document.querySelector('[data-edit-tag-form]');
+                            if (formElement) {
+                                formElement.submit();
+                            }
+                        });
+                    }
                 },
                 shareModalOpen: false,
                 shareSourceCategory: null,
@@ -238,73 +290,6 @@
                         }
                     }
                     return this.categories.flatMap((category) => category.tags || []).slice(0, 7);
-                },
-                isSubmitting: false,
-                async submitForm(formElement) {
-                    if (this.isSubmitting) return;
-                    this.isSubmitting = true;
-
-                    const formData = new FormData(formElement);
-
-                    try {
-                        const response = await fetch(formElement.action, {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            body: formData
-                        });
-
-                        const data = await response.json();
-
-                        if (response.ok) {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: data.message || 'Tag styles saved.',
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal.stopTimer;
-                                    toast.onmouseleave = Swal.resumeTimer;
-                                }
-                            });
-                        } else {
-                            let errorText = 'An error occurred.';
-                            if (data.errors) {
-                                errorText = Object.values(data.errors).flat().join(' ');
-                            } else if (data.message) {
-                                errorText = data.message;
-                            }
-
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                                icon: 'error',
-                                title: errorText
-                            });
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1000,
-                            timerProgressBar: true,
-                            icon: 'error',
-                            title: 'Could not save tag styles. Please try again.'
-                        });
-                    } finally {
-                        this.isSubmitting = false;
-                    }
                 }
             };
         };
@@ -330,18 +315,6 @@
                     </div>
                 </header>
 
-                @if (session('success'))
-                    <div class="edit-tag-message success" role="status" data-edit-tag-success>
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if ($errors->has('taxonomy'))
-                    <div class="edit-tag-message error" role="alert" data-edit-tag-error>
-                        {{ $errors->first('taxonomy') }}
-                    </div>
-                @endif
-
                 <section class="edit-tag-summary" aria-label="Tag summary">
                     <article>
                         <span>Categories</span>
@@ -357,7 +330,7 @@
                     </article>
                 </section>
 
-                <form method="POST" action="{{ route('edit-tag.update') }}" class="edit-tag-grid" data-edit-tag-form @submit.prevent="submitForm($el)">
+                <form method="POST" action="{{ route('edit-tag.update') }}" class="edit-tag-grid" data-edit-tag-form>
                     @csrf
                     @method('PATCH')
                     <input type="hidden" name="taxonomy" :value="payload()" data-edit-tag-payload>
@@ -396,7 +369,7 @@
                                             <span class="thread-category-color" :style="{ backgroundColor: category.color }"></span>
                                             <template x-if="isAdmin && isEditing(category)">
                                                 <input class="thread-category-name-input" type="text" x-model="category.name"
-                                                    aria-label="Category name">
+                                                    aria-label="Category name" @click.stop>
                                             </template>
                                             <template x-if="! (isAdmin && isEditing(category))">
                                                 <span class="thread-category-name" x-text="category.name"></span>
@@ -498,7 +471,7 @@
                                         <x-fas-plus class="btn-icon" aria-hidden="true" />
                                         <span>Add Category</span>
                                     </button>
-                                    <button type="submit" class="btn-primary" data-edit-tag-publish :class="{ 'is-loading': isSubmitting }" :disabled="isSubmitting">
+                                    <button type="submit" class="btn-primary" data-edit-tag-publish>
                                         <span class="button-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <path d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
@@ -506,21 +479,15 @@
                                             </svg>
                                             <span>Publish to users</span>
                                         </span>
-                                        <span class="button-loader" aria-hidden="true">
-                                            <i></i><i></i><i></i>
-                                        </span>
                                     </button>
                                 @else
-                                    <button type="submit" class="btn-primary" data-edit-tag-save :class="{ 'is-loading': isSubmitting }" :disabled="isSubmitting">
+                                    <button type="submit" class="btn-primary" data-edit-tag-save>
                                         <span class="button-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <path d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
                                                 <path d="M2 1.5A1.5 1.5 0 0 1 3.5 0h7.086a1.5 1.5 0 0 1 1.061.44l3.914 3.913A1.5 1.5 0 0 1 16 5.414V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v5h-.5A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0H2v1.5Zm3 9A1 1 0 0 0 4 11.5V16h8v-4.5a1 1 0 0 0-1-1H5Z" />
                                             </svg>
                                             <span>Save Changes</span>
-                                        </span>
-                                        <span class="button-loader" aria-hidden="true">
-                                            <i></i><i></i><i></i>
                                         </span>
                                     </button>
                                 @endif
@@ -607,4 +574,33 @@
             </section>
         </main>
     </div>
+
+    @if(session('success') || $errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const isSuccess = {{ session()->has('success') ? 'true' : 'false' }};
+                const message = `{!! session('success') ?? $errors->first() !!}`;
+
+                Swal.fire({
+                    toast: true,
+                    position: '{{ $toastPosition ?? "top-end" }}',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    icon: isSuccess ? 'success' : 'error',
+                    title: message,
+                    background: 'var(--background-color)',
+                    color: 'var(--text-color)',
+                    customClass: {
+                        title: 'font-sans'
+                    },
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                        toast.style.fontFamily = 'var(--font-family)';
+                    }
+                });
+            });
+        </script>
+    @endif
 @endsection

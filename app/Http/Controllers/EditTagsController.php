@@ -46,7 +46,7 @@ class EditTagsController extends Controller
         ]);
     }
 
-    public function update(UpdateEditTagsRequest $request): RedirectResponse|JsonResponse
+    public function update(UpdateEditTagsRequest $request): RedirectResponse
     {
         $user = $request->user();
 
@@ -55,24 +55,10 @@ class EditTagsController extends Controller
         if ($user->role === 'admin') {
             $this->updateGlobalTaxonomy($request->taxonomyPayload(), $user);
 
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Tag defaults published for users.',
-                ]);
-            }
-
             return back()->with('success', 'Tag defaults published for users.');
         }
 
         $this->updateUserOverrides($request->taxonomyPayload(), $user);
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Your tag styles were saved.',
-            ]);
-        }
 
         return back()->with('success', 'Your tag styles were saved.');
     }
@@ -210,12 +196,6 @@ class EditTagsController extends Controller
                             return;
                         }
 
-                        if ($tag->posts_count > 0) {
-                            throw ValidationException::withMessages([
-                                'taxonomy' => "Cannot remove {$tag->name} because it is used by existing posts.",
-                            ]);
-                        }
-
                         $category->tags()->detach($tag->id);
 
                         if ($tag->categories()->count() === 0) {
@@ -280,14 +260,6 @@ class EditTagsController extends Controller
     private function deleteCategoryOrFail(Categories $category): void
     {
         $category->loadMissing('tags.posts');
-
-        $usedTag = $category->tags->first(fn (Tags $tag): bool => $tag->posts->isNotEmpty());
-
-        if ($usedTag instanceof Tags) {
-            throw ValidationException::withMessages([
-                'taxonomy' => "Cannot delete {$category->name} because {$usedTag->name} is used by existing posts.",
-            ]);
-        }
 
         foreach ($category->tags as $tag) {
             $category->tags()->detach($tag->id);

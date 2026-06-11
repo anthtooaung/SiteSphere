@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/posts/{post}/bookmark', [BookmarksController::class, 'store'])->name('posts.bookmark');
     Route::post('/posts/{post}/report', [ReportsController::class, 'store'])->name('posts.report');
     Route::post('/posts/{post}/ban', [PostsController::class, 'ban'])->name('posts.ban');
+    Route::post('/audits/{userPost}/ban', [PostsController::class, 'banAudit'])->name('audits.ban');
 
     Route::post('/posts/{posts:slug}/comments', [CommentsController::class, 'store'])->name('posts.comments.store');
     Route::post('/comments/{comment}/react', [CommentReactionsController::class, 'toggle'])->name('comments.react');

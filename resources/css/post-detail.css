@@ -930,7 +930,7 @@
 
 .post-detail-page .aud-depo-panel-head {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   gap: 16px;
   align-items: center;
   padding-bottom: 18px;

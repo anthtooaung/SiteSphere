@@ -91,21 +91,44 @@ class PostsController extends Controller
 
         abort_unless($user?->role === 'admin', 403);
 
-        UserPosts::query()
-            ->where('post_id', $post->id)
-            ->update(['user_hidden' => true]);
+        DB::transaction(function () use ($post, $user): void {
+            UserPosts::query()
+                ->where('post_id', $post->id)
+                ->update(['user_hidden' => true]);
 
-        AuditLogs::query()->create([
-            'user_id' => $user->id,
-            'action' => 'ban_post',
-            'target_type' => Posts::class,
-            'target_id' => $post->id,
-            'reason' => 'Post hidden from the home feed by an admin.',
-        ]);
+            $post->delete();
+
+            AuditLogs::query()->create([
+                'user_id' => $user->id,
+                'action' => 'ban_post',
+                'target_type' => Posts::class,
+                'target_id' => $post->id,
+                'reason' => 'Post soft deleted and all descriptions hidden by an admin.',
+            ]);
+        });
 
         return redirect()
             ->route('home')
-            ->with('success', 'Post banned.');
+            ->with('success', 'Post banned and soft deleted.');
+    }
+
+    public function banAudit(Request $request, UserPosts $userPost): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+
+        $userPost->update(['user_hidden' => true]);
+
+        AuditLogs::query()->create([
+            'user_id' => $user->id,
+            'action' => 'ban_audit',
+            'target_type' => UserPosts::class,
+            'target_id' => $userPost->id,
+            'reason' => 'Audit description hidden by an admin.',
+        ]);
+
+        return back()->with('success', 'Audit description hidden.');
     }
 
     private function uniqueSlug(string $title, ?Posts $ignorePost = null): string

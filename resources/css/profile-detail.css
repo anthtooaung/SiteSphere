@@ -102,12 +102,11 @@
 
 .profile-card{
     position:relative;
-    backdrop-filter:blur(20px);
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 8px;
     padding:24px;
-    box-shadow: 0 10px 30px var(--shadow);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 .edit-btn{
@@ -290,12 +289,12 @@
 .stat-card {
     background: var(--card, #fbfcff);
     border: 1px solid var(--border, #e1e8f2);
-    border-radius: 10px;
-    padding: 18px;
+    border-radius: 8px;
+    padding: 16px;
     display: flex;
     align-items: flex-start;
     gap: 14px;
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     color: var(--text-color, inherit);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -381,9 +380,9 @@
     gap:0;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 40px;
-    box-shadow: 0 10px 30px var(--shadow);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 .review-top{

@@ -13,7 +13,7 @@
 ])
 
 <article
-    {{ $attributes->merge(['class' => 'review-card w-full max-w-md overflow-hidden rounded-[20px] border [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_18px_50px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_14%,transparent)]']) }}
+    {{ $attributes->merge(['class' => 'review-card w-full max-w-md overflow-hidden rounded-[8px] border [border-color:color-mix(in_srgb,var(--text-color,#182230)_10%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_4px_14px_rgba(15,23,42,0.06)]']) }}
     x-data="{
         profiles: {{ \Illuminate\Support\Js::from($profiles) }},
         activeProfile: 0,
@@ -99,7 +99,7 @@
     <header class="space-y-3 px-4 pb-3 pt-4 sm:px-5">
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
-                <h2 class="line-clamp-2 min-h-10 max-h-10 overflow-hidden break-words text-base font-extrabold leading-5 tracking-normal [color:var(--text-color,#0d1b2a)]"
+                <h2 class="line-clamp-2 min-h-[44px] overflow-hidden break-words text-[16px] font-extrabold leading-[1.35] tracking-normal [color:var(--text-color,#0d1b2a)]"
                     title="{{ $title }}" data-post-card-title>
                     @if($slug)
                         <a href="{{ route('posts.show', $slug) }}" class="hover:underline hover:[color:var(--accent-color)] transition-colors">

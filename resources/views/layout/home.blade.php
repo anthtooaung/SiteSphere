@@ -23,6 +23,17 @@
                 </div>
             </section>
 
+            <div class="results-toolbar">
+                <p><strong id="resultsCount">{{ $posts->count() }}</strong> websites found</p>
+                <label class="sort-control" for="sortSelect">
+                    <select id="sortSelect" aria-label="Sort websites">
+                        <option value="best">Best match</option>
+                        <option value="rating">Highest rating</option>
+                        <option value="newest">Newest</option>
+                    </select>
+                </label>
+            </div>
+
             <header class="hero">
                 <div class="active-filters-wrapper">
                     <div class="active-filters-heading">
@@ -60,17 +71,6 @@
                     </div>
                 </div>
             </header>
-
-            <div class="results-toolbar">
-                <p><strong id="resultsCount">{{ $posts->count() }}</strong> websites found</p>
-                <label class="sort-control" for="sortSelect">
-                    <select id="sortSelect" aria-label="Sort websites">
-                        <option value="best">Best match</option>
-                        <option value="rating">Highest rating</option>
-                        <option value="newest">Newest</option>
-                    </select>
-                </label>
-            </div>
 
             <section class="reviews-grid" id="reviewsGrid">
                 @foreach ($posts as $post)

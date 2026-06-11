@@ -1,3 +1,45 @@
 @import url('index.css');
 @import url('nav.css');
 @import url('hover-profile.css');
+
+@layer components {
+    :root {
+        --ui-radius: 8px;
+        --ui-radius-sm: 6px;
+        --ui-border: color-mix(in srgb, var(--text-color, #0d1b2a) 10%, transparent);
+        --ui-border-strong: color-mix(in srgb, var(--text-color, #0d1b2a) 14%, transparent);
+        --ui-surface: color-mix(in srgb, var(--background-color, #ffffff) 96%, #ffffff 4%);
+        --ui-surface-muted: color-mix(in srgb, var(--background-color, #ffffff) 94%, var(--accent-color, #6c5ce7) 6%);
+        --ui-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        --ui-shadow-hover: 0 10px 24px rgba(15, 23, 42, 0.10);
+        --ui-focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent-color, #6c5ce7) 18%, transparent);
+    }
+
+    .ui-card {
+        border: 1px solid var(--ui-border);
+        border-radius: var(--ui-radius);
+        background: var(--ui-surface);
+        box-shadow: var(--ui-shadow);
+    }
+
+    .ui-control {
+        min-height: 42px;
+        border: 1px solid var(--ui-border);
+        border-radius: var(--ui-radius);
+        background: var(--background-color, #ffffff);
+        color: var(--text-color, #0d1b2a);
+        transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .ui-control:hover {
+        border-color: color-mix(in srgb, var(--accent-color, #6c5ce7) 32%, transparent);
+    }
+
+    .ui-control:focus,
+    .ui-control:focus-visible,
+    .ui-control:focus-within {
+        border-color: var(--accent-color, #6c5ce7);
+        box-shadow: var(--ui-focus-ring);
+        outline: none;
+    }
+}

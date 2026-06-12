@@ -363,22 +363,33 @@
                             <template x-for="category in filteredCategories()" :key="category.uid">
                                 <article class="thread-category" :class="{ 'is-open': openCategory === category.uid }"
                                     data-edit-tag-category>
-                                    <button type="button" class="thread-category-toggle" @click="toggleCategory(category)"
-                                        :aria-expanded="(openCategory === category.uid).toString()">
-                                        <span class="thread-category-head">
-                                            <span class="thread-category-color" :style="{ backgroundColor: category.color }"></span>
-                                            <template x-if="isAdmin && isEditing(category)">
-                                                <input class="thread-category-name-input" type="text" x-model="category.name"
-                                                    aria-label="Category name" @click.stop>
-                                            </template>
-                                            <template x-if="! (isAdmin && isEditing(category))">
-                                                <span class="thread-category-name" x-text="category.name"></span>
-                                            </template>
-                                            <span class="thread-category-count" x-text="category.tags.length"></span>
-                                        </span>
-                                        <span class="thread-chevron" aria-hidden="true">⌄</span>
-                                    </button>
-
+                                    <div class="thread-category-toggle-wrapper">
+                                        <template x-if="isAdmin && isEditing(category)">
+                                            <div class="thread-category-toggle thread-category-toggle--editing">
+                                                <span class="thread-category-head">
+                                                    <span class="thread-category-color" :style="{ backgroundColor: category.color }"></span>
+                                                    <input class="thread-category-name-input" type="text" x-model="category.name"
+                                                        aria-label="Category name" @click.stop @keydown.enter.prevent>
+                                                    <span class="thread-category-count" x-text="category.tags.length"></span>
+                                                </span>
+                                                <button type="button" class="thread-chevron-btn" @click="toggleCategory(category)"
+                                                    :aria-expanded="(openCategory === category.uid).toString()" aria-label="Toggle category">
+                                                    <span class="thread-chevron" aria-hidden="true">⌄</span>
+                                                </button>
+                                            </div>
+                                        </template>
+                                        <template x-if="! (isAdmin && isEditing(category))">
+                                            <button type="button" class="thread-category-toggle" @click="toggleCategory(category)"
+                                                :aria-expanded="(openCategory === category.uid).toString()">
+                                                <span class="thread-category-head">
+                                                    <span class="thread-category-color" :style="{ backgroundColor: category.color }"></span>
+                                                    <span class="thread-category-name" x-text="category.name"></span>
+                                                    <span class="thread-category-count" x-text="category.tags.length"></span>
+                                                </span>
+                                                <span class="thread-chevron" aria-hidden="true">⌄</span>
+                                            </button>
+                                        </template>
+                                    </div>
                                     <div class="thread-dropdown" x-show="openCategory === category.uid" x-cloak>
                                         <div class="thread-actions">
                                             <button type="button" class="thread-btn" @click="startEditing(category)" :class="{ 'is-active': isEditing(category) }"><span x-text="isEditing(category) ? 'Done Editing' : 'Edit'"></span></button>
@@ -413,7 +424,7 @@
                                                     :style="{ backgroundColor: tint(tag.color), color: tag.color }"
                                                     data-edit-tag-chip>
                                                     <template x-if="isEditing(category)">
-                                                        <input type="text" x-model="tag.name" @input="syncTagColors(tag, 'name')" aria-label="Tag name" class="outline-none">
+                                                        <input type="text" x-model="tag.name" @input="syncTagColors(tag, 'name')" aria-label="Tag name" class="outline-none" @keydown.space.stop @keyup.space.stop @keypress.space.stop @keydown.enter.prevent>
                                                     </template>
                                                     <template x-if="! isEditing(category)">
                                                         <span class="thread-tag-name" x-text="tag.name"></span>

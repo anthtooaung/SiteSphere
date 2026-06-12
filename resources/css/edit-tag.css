@@ -253,8 +253,32 @@
 }
 
 .thread-category.is-open .thread-category-toggle,
-.thread-category-toggle:hover {
+.thread-category.is-open .thread-category-toggle--editing,
+.thread-category-toggle:hover,
+.thread-category-toggle--editing:hover {
     background: color-mix(in srgb, var(--accent-color) 8%, transparent);
+}
+
+.thread-category-toggle--editing {
+    width: 100%;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px;
+}
+
+.thread-chevron-btn {
+    border: 0;
+    background: transparent;
+    color: var(--accent-color);
+    cursor: pointer;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .thread-category-head {
@@ -555,6 +579,7 @@
     }
 
     .thread-category-toggle,
+    .thread-category-toggle--editing,
     .thread-dropdown,
     .edit-tag-card {
         padding: 16px;

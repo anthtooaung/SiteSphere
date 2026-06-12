@@ -5,6 +5,19 @@
 
 @push('styles')
     @vite('resources/css/welcome.css')
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        html, body {
+            -ms-overflow-style: none !important;  /* IE and Edge */
+            scrollbar-width: none !important;  /* Firefox */
+        }
+    </style>
 @endpush
 
 @push('scripts')

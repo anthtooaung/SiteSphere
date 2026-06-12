@@ -30,11 +30,11 @@
 <button
     id="mobileDropdownDividerButton"
     data-dropdown-toggle="mobileDropdownDivider"
-    class="auth-menu-button mobile-user-pill"
+    data-dropdown-placement="top"
+    class="mobile-nav-item"
     type="button"
-    style="border: 1px solid color-mix(in srgb, var(--background-color) 20%, transparent); background: color-mix(in srgb, var(--background-color) 12%, transparent); padding: 6px 12px; gap: 8px; border-radius: 999px;"
 >
-    <x-far-user class="icon size-4" />
+    <x-far-user class="icon" />
     <span>Login</span>
 </button>
 

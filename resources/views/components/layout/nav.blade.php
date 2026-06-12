@@ -7,30 +7,22 @@
                 <x-app-logo></x-app-logo>
                 <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">SiteSphere</span>
             </a>
-           @auth
-                <x-search-btn></x-search-btn>
-           @endauth
         </div>
 
 {{--        center path--}}
         <div class="items-center justify-between w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
             <ul class="flex p-4 md:p-0 mt-4 md:space-x-8 rtl:space-x-reverse md:mt-0 ">
-                @auth
-                    <li>
-                        <x-home-btn/>
-                    </li>
-                    <li>
-                        <x-category-btn />
-                    </li>
-                @endauth
-                @guest
-                    <li>
-                        <x-home-btn/>
-                    </li>
+                <li>
+                    <x-home-btn/>
+                </li>
+                <li>
+                    <x-category-btn />
+                </li>
+                @if(request()->routeIs('welcome'))
                     <li>
                         <x-about-btn />
                     </li>
-                @endguest
+                @endif
             </ul>
         </div>
 
@@ -39,22 +31,13 @@
             <ul class="flex items-center justify-center p-4 md:p-0 mt-4 md:space-x-4 rtl:space-x-reverse md:mt-0 ">
                @auth
                     <li>
-                        <x-create-post-btn />
-                    </li>
-                    <li>
-                        <x-noti-btn />
-                    </li>
-
-                    <li>
                         <x-profile-menu-btn />
                     </li>
-               @endauth
-                @guest
-
+               @else
                     <li>
                         <x-login-out-menu-btn/>
                     </li>
-                @endguest
+                @endauth
             </ul>
         </div>
     </div>
@@ -70,69 +53,31 @@
             <x-app-logo class="size-6"></x-app-logo>
             <span>SiteSphere</span>
         </a>
-        @auth
-            <div class="mobile-user-pill">
-                @if(Auth::user()->user_image)
-                    <img src="{{ Auth::user()->getAvatarUrl() }}" alt="{{ Auth::user()->name }}" class="size-6 rounded-full object-cover" />
-                @else
-                    <x-fas-check-circle class="size-4" style="color: var(--accent-color);" />
-                @endif
-                <span>{{ Auth::user()->name }}</span>
-            </div>
-        @endauth
-        @guest
-           <x-login-out-menu-btn/>
-        @endguest
     </header>
-
-    <!-- Mobile Search (only for authenticated users) -->
-    @auth
-        @unless(request()->routeIs('welcome'))
-        <section class="mobile-search" aria-label="Mobile search">
-            <form method="post" id="mobileSearchForm" class="w-full">
-                @csrf
-                <label class="mobile-search-inner">
-                    <x-fas-search class="icon"/>
-                    <input
-                        type="search"
-                        placeholder="Search reviews..."
-                        aria-label="Search reviews"
-                    />
-                </label>
-            </form>
-        </section>
-        @endunless
-    @endauth
 
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav" aria-label="Primary mobile navigation">
         <!-- Home Button -->
         <x-home-btn />
 
-        @auth
-            <!-- Categories Trigger -->
-            <x-category-btn mobile-mode="trigger" />
+        <!-- Categories Trigger -->
+        <x-category-btn mobile-mode="trigger" />
 
-            <!-- Create Post Button -->
-            <x-create-post-btn />
-
-            <!-- Notifications Button -->
-            <x-noti-btn />
-
-            <!-- Profile Button -->
-            <x-profile-menu-btn />
-        @endauth
-
-        @guest
+        @if(request()->routeIs('welcome'))
             <!-- About Button -->
             <x-about-btn />
+        @endif
 
-        @endguest
+        @auth
+            <!-- Profile Button -->
+            <x-profile-menu-btn />
+        @else
+            <!-- Login Button -->
+            <x-login-out-menu-btn />
+        @endauth
     </nav>
 
-    @auth
-        <x-category-btn mobile-mode="overlay" />
-    @endauth
+    <x-category-btn mobile-mode="overlay" />
 
     <!-- Mobile Navigation Interactions Script -->
     <script>

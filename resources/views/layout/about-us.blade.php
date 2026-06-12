@@ -8,6 +8,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        html, body {
+            -ms-overflow-style: none !important;  /* IE and Edge */
+            scrollbar-width: none !important;  /* Firefox */
+        }
+    </style>
 @endpush
 
 @push('scripts')

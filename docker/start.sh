@@ -18,5 +18,8 @@ php artisan storage:link --force
 echo "Running migrations..."
 php artisan migrate --force
 
+echo "Starting Laravel Queue Worker..."
+php artisan queue:work --tries=3 &
+
 echo "Starting Apache..."
 exec apache2-foreground

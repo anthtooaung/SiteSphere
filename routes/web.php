@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\AdminReportsController;
 use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\AppearanceController;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/favicon.svg', FaviconController::class)->name('favicon');
 
 Route::get('/', WelcomeController::class)->name('welcome');
+Route::get('/about', AboutUsController::class)->name('about-us');
 
 // home doesn't need to use auth it will show all
 Route::get('/home', HomeController::class)->name('home');

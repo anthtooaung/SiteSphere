@@ -1,0 +1,733 @@
+/* ============================================================
+   About Us Page Styles
+   Extracted from standalone index.html — scoped under .aboutus-main
+   ============================================================ */
+
+.aboutus-main {
+    --bg: #ffffff;
+    --bg-soft: #f8fafc;
+    --bg-card: #ffffff;
+    --primary: #6c5ce7;
+    --primary-soft: rgba(108, 92, 231, 0.08);
+    --secondary: #a29bfe;
+    --text: #0f172a;
+    --text-muted: #334155;
+    --border: rgba(148, 163, 184, 0.25);
+    --shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    --radius-lg: 20px;
+    --radius-md: 16px;
+    --max-width: 1200px;
+
+    min-height: 100vh;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(108, 92, 231, 0.06), transparent 35rem),
+        radial-gradient(circle at 85% 15%, rgba(162, 155, 254, 0.04), transparent 30rem),
+        var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    overflow-x: hidden;
+}
+
+.aboutus-main a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.aboutus-main .aboutus-container {
+    width: min(100% - 24px, var(--max-width));
+    margin-inline: auto;
+}
+
+.aboutus-main .aboutus-section-padding {
+    padding: 60px 0;
+}
+
+.aboutus-main .aboutus-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(108, 92, 231, 0.05);
+    color: var(--primary);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.aboutus-main .aboutus-section-head {
+    max-width: 800px;
+    margin: 0 auto 28px;
+    text-align: center;
+}
+
+.aboutus-main .aboutus-section-head h2 {
+    margin-top: 10px;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.aboutus-main .aboutus-section-head p {
+    margin-top: 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+/* --- HERO SECTION --- */
+.aboutus-main .aboutus-hero {
+    position: relative;
+    padding: 60px 0 40px;
+}
+
+.aboutus-main .aboutus-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.25), transparent);
+}
+
+.aboutus-main .aboutus-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: 32px;
+    align-items: center;
+}
+
+.aboutus-main .aboutus-hero h1 {
+    margin-top: 10px;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: var(--text);
+}
+
+.aboutus-main .aboutus-hero h1 span {
+    display: inline;
+    color: var(--primary);
+}
+
+.aboutus-main .aboutus-hero-body-content {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.aboutus-main .aboutus-hero-copy {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.aboutus-main .aboutus-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.aboutus-main .aboutus-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: transform 0.2s ease, background 0.2s ease;
+    cursor: pointer;
+}
+
+.aboutus-main .aboutus-btn:hover {
+    transform: translateY(-1px);
+}
+
+.aboutus-main .aboutus-btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.15);
+}
+
+.aboutus-main .aboutus-btn-ghost {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.aboutus-main .aboutus-btn-ghost:hover {
+    background: rgba(108, 92, 231, 0.05);
+}
+
+.aboutus-main .aboutus-hero-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: #ffffff;
+    box-shadow: var(--shadow);
+}
+
+.aboutus-main .aboutus-panel-header-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.aboutus-main .aboutus-panel-logo {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 1.6rem;
+}
+
+.aboutus-main .aboutus-panel-header-wrap h4 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.aboutus-main .aboutus-panel-list {
+    display: grid;
+    gap: 18px;
+    height: 100%;
+}
+
+.aboutus-main .aboutus-panel-list .aboutus-panel-item {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 14px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    align-items: flex-start;
+}
+
+.aboutus-main .aboutus-panel-item .icon {
+    color: var(--primary);
+    margin-top: 4px;
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+}
+
+.aboutus-main .aboutus-panel-item strong {
+    display: block;
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.aboutus-main .aboutus-panel-item span {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.5;
+    display: block;
+    text-align: left;
+}
+
+/* --- CENTERED METRICS GRID --- */
+.aboutus-main .aboutus-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.aboutus-main .aboutus-metric-card,
+.aboutus-main .aboutus-story-card {
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+}
+
+.aboutus-main .aboutus-metric-card {
+    padding: 28px 24px;
+    border-radius: var(--radius-md);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.aboutus-main .aboutus-metric-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+}
+
+.aboutus-main .aboutus-metric-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+}
+
+.aboutus-main .aboutus-metric-icon .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.aboutus-main .aboutus-metric-card h3 {
+    margin-top: 12px;
+    font-size: 1.15rem;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.aboutus-main .aboutus-metric-card p {
+    margin-top: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+/* --- PREMIUM MAXIMIZED STORY AREA --- */
+.aboutus-main .aboutus-story-container {
+    width: min(100% - 32px, var(--max-width));
+    margin-inline: auto;
+}
+
+.aboutus-main .aboutus-story-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: stretch;
+}
+
+.aboutus-main .aboutus-story-card {
+    position: relative;
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(145deg, #ffffff, var(--bg-soft));
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.aboutus-main .aboutus-story-card .aboutus-eyebrow {
+    margin-bottom: 20px;
+    align-self: flex-start;
+}
+
+.aboutus-main .aboutus-story-card h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 20px;
+}
+
+.aboutus-main .aboutus-story-card p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.7;
+    text-align: left;
+}
+
+.aboutus-main .aboutus-highlight {
+    color: var(--primary);
+    font-weight: 600;
+    padding: 2px 4px;
+    border-radius: 4px;
+    background: rgba(108, 92, 231, 0.08);
+}
+
+.aboutus-main .aboutus-story-points {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.aboutus-main .aboutus-story-point {
+    position: relative;
+    padding: 26px 30px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: #ffffff;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    overflow: hidden;
+    flex: 1;
+}
+
+.aboutus-main .aboutus-story-point-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.aboutus-main .aboutus-story-icon-badge {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.aboutus-main .aboutus-story-icon-badge .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.aboutus-main .aboutus-story-point h3 {
+    color: var(--text);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: 1;
+}
+
+.aboutus-main .aboutus-story-point-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.aboutus-main .aboutus-story-point p {
+    color: var(--text-muted);
+    font-size: 0.94rem;
+    line-height: 1.55;
+    text-align: left;
+}
+
+.aboutus-main .aboutus-story-sub-details {
+    margin-top: 4px;
+    padding-left: 16px;
+    display: grid;
+    gap: 4px;
+}
+
+.aboutus-main .aboutus-story-sub-details li {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    list-style-type: square;
+}
+
+/* --- TEAM CAROUSEL SECTION --- */
+.aboutus-main .aboutus-text-center {
+    text-align: center;
+}
+
+.aboutus-main .aboutus-carousel-container {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aboutus-main .aboutus-carousel-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+.aboutus-main .aboutus-carousel-card {
+    position: absolute;
+    width: 380px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 35px;
+    text-align: center;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s, z-index 0.6s;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    backface-visibility: hidden;
+}
+
+@media (max-width: 500px) {
+    .aboutus-main .aboutus-carousel-card {
+        width: 280px;
+        padding: 20px;
+    }
+
+    .aboutus-main .aboutus-carousel-container {
+        height: 560px;
+    }
+}
+
+.aboutus-main .aboutus-carousel-card.active {
+    opacity: 1;
+    z-index: 3;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+    pointer-events: auto;
+    border-color: rgba(108, 92, 231, 0.4);
+    box-shadow: 0 20px 40px rgba(108, 92, 231, 0.1);
+}
+
+.aboutus-main .aboutus-carousel-card.prev {
+    opacity: 0.45;
+    z-index: 2;
+    transform: translate3d(-55%, 0, -150px) scale(0.85) rotateY(25deg);
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.aboutus-main .aboutus-carousel-card.next {
+    opacity: 0.45;
+    z-index: 2;
+    transform: translate3d(55%, 0, -150px) scale(0.85) rotateY(-25deg);
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .aboutus-main .aboutus-carousel-card.prev {
+        transform: translate3d(-45%, 0, -120px) scale(0.8) rotateY(15deg);
+    }
+
+    .aboutus-main .aboutus-carousel-card.next {
+        transform: translate3d(45%, 0, -120px) scale(0.8) rotateY(-15deg);
+    }
+}
+
+.aboutus-main .aboutus-carousel-card.hidden {
+    opacity: 0;
+    z-index: 1;
+    transform: translate3d(0, 0, -200px) scale(0.7);
+}
+
+.aboutus-main .aboutus-member-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2);
+}
+
+.aboutus-main .aboutus-member-avatar .icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.aboutus-main .aboutus-carousel-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text);
+}
+
+.aboutus-main .aboutus-role {
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    min-height: 2.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aboutus-main .aboutus-bio {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    height: 110px;
+    overflow-y: auto;
+    padding-right: 5px;
+    text-align: left;
+}
+
+.aboutus-main .aboutus-bio::-webkit-scrollbar {
+    width: 4px;
+}
+
+.aboutus-main .aboutus-bio::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+}
+
+.aboutus-main .aboutus-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+    justify-content: center;
+}
+
+.aboutus-main .aboutus-tags span {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.aboutus-main .aboutus-member-email {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.aboutus-main .aboutus-member-email a {
+    color: var(--primary);
+    transition: color 0.2s;
+}
+
+.aboutus-main .aboutus-member-email a:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+.aboutus-main .aboutus-carousel-btn {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 15;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.aboutus-main .aboutus-carousel-btn:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.aboutus-main .aboutus-prev-btn {
+    left: -5px;
+}
+
+.aboutus-main .aboutus-next-btn {
+    right: -5px;
+}
+
+@media (max-width: 768px) {
+    .aboutus-main .aboutus-carousel-btn {
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    .aboutus-main .aboutus-prev-btn {
+        left: 5px;
+    }
+
+    .aboutus-main .aboutus-next-btn {
+        right: 5px;
+    }
+}
+
+/* --- SCROLL REVEAL --- */
+.aboutus-main .aboutus-scroll-reveal {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.aboutus-main .aboutus-scroll-reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- RESPONSIVE STRUCTURAL OVERRIDES --- */
+@media (max-width: 1024px) {
+    .aboutus-main .aboutus-story-wrap {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .aboutus-main .aboutus-story-card {
+        padding: 32px;
+    }
+
+    .aboutus-main .aboutus-story-point {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 860px) {
+    .aboutus-main .aboutus-hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .aboutus-main .aboutus-hero {
+        padding-top: 40px;
+    }
+
+    .aboutus-main .aboutus-section-padding {
+        padding: 44px 0;
+    }
+}
+
+@media (max-width: 620px) {
+    .aboutus-main .aboutus-hero-actions {
+        flex-direction: column;
+    }
+
+    .aboutus-main .aboutus-btn {
+        width: 100%;
+    }
+}

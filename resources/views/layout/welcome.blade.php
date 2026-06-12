@@ -11,6 +11,17 @@
     @vite('resources/js/welcome.js')
 @endpush
 
+@section('theme-style')
+    <style>
+        :root {
+            --accent-color: #6c5ce7;
+            --background-color: #ffffff;
+            --text-color: #0d1b2a;
+            --font-family: Figtree, sans-serif;
+        }
+    </style>
+@overwrite
+
 @section('content')
     <x-layout.nav />
     <div class="md:mt-20"></div>

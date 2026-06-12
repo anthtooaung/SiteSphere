@@ -25,6 +25,8 @@ export default defineConfig({
                 'resources/js/profile-detail.js',
                 'resources/css/post-detail.css',
                 'resources/js/post-detail.js',
+                'resources/css/about-us.css',
+                'resources/js/about-us.js',
             ],
             refresh: true,
         }),

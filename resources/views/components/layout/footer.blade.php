@@ -62,7 +62,7 @@
                 </h4>
                 <ul class="flex flex-col items-center gap-3.5 text-sm sm:items-start">
                     <li>
-                        <a href="{{ route('welcome') }}" class="group flex items-center gap-2.5 py-0.5 text-slate-400 transition-all duration-300 hover:translate-x-1.5 hover:text-white">
+                        <a href="{{ route('about-us') }}" class="group flex items-center gap-2.5 py-0.5 text-slate-400 transition-all duration-300 hover:translate-x-1.5 hover:text-white">
                             <x-fas-circle-info class="w-4 text-center text-xs text-slate-600 transition-all group-hover:scale-110 group-hover:text-white" />
                             <span>About Us</span>
                         </a>

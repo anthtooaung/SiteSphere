@@ -1,6 +1,7 @@
 @import url('index.css');
 @import url('nav.css');
 @import url('hover-profile.css');
+@import url('activity-log.css');
 
 @layer components {
     :root {

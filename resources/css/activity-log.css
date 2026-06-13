@@ -1,0 +1,50 @@
+.activity-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.calendar-day-cell {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    border-radius: var(--ui-radius, 8px);
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.calendar-day-cell:hover {
+    background: var(--ui-surface-muted);
+    border-color: var(--ui-border-strong);
+}
+
+.calendar-day-cell.is-selected {
+    background: var(--accent-color);
+    color: #ffffff;
+}
+
+.calendar-day-cell.is-today {
+    border-color: var(--accent-color);
+    font-weight: 800;
+}
+
+.activity-indicator {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    margin-top: 2px;
+}
+
+.calendar-header-day {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: color-mix(in srgb, var(--text-color) 40%, transparent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-bottom: 8px;
+}

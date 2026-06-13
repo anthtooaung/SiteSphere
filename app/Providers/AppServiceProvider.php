@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use Jenssegers\Agent\Agent;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +28,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Password::defaults(function () {
+            $rule = Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols();
+
+            return app()->environment('production')
+                ? $rule->uncompromised()
+                : $rule;
+        });
+
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }

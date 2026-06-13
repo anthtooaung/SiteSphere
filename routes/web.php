@@ -81,6 +81,9 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/menu/users/{user}', [AdminUsersController::class, 'destroy'])->name('users.destroy');
     Route::patch('/menu/users/{user}/restore', [AdminUsersController::class, 'restore'])->withTrashed()->name('users.restore');
 
+    Route::get('/menu/dashboard/activity-log', [\App\Http\Controllers\AdminActivityLogController::class, 'index'])->name('admin.activity-log');
+    Route::get('/api/admin/activity/{date}', [\App\Http\Controllers\AdminActivityLogController::class, 'show'])->name('admin.activity-date');
+
     Route::post('/notifications/{notification}/open', NotificationOpenController::class)->name('notifications.open');
 });
 

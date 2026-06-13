@@ -56,6 +56,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
      * User settings relation
      */
     public function settings(): HasOne

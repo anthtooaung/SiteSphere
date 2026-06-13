@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLogs;
 use App\Models\Bookmarks;
 use App\Models\Posts;
 use App\Models\Ratings;
+use App\Models\Reports;
+use App\Models\User;
 use App\Models\UserPosts;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -18,6 +21,36 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
+        if ($user->isAdmin()) {
+            $totalUsers = User::count();
+            $totalReviews = UserPosts::count();
+            $totalReports = Reports::count();
+
+            $recentAuditLogs = AuditLogs::query()
+                ->latest()
+                ->take(4)
+                ->get();
+
+            $topPosts = Posts::query()
+                ->with(['tags.categories'])
+                ->withAvg('ratings', 'rating')
+                ->withCount('comments')
+                ->orderBy('ratings_avg_rating', 'desc')
+                ->take(5)
+                ->get();
+
+            return view('layout.menu.dashboard', [
+                'isAdmin' => true,
+                'stats' => [
+                    'totalUsers' => $totalUsers,
+                    'totalReviews' => $totalReviews,
+                    'totalReports' => $totalReports,
+                ],
+                'recentActivity' => $recentAuditLogs,
+                'topPosts' => $topPosts,
+            ]);
+        }
+
         $recentReviews = UserPosts::query()
             ->with(['post:id,title,slug,url'])
             ->where('user_id', $user->id)
@@ -27,6 +60,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('layout.menu.dashboard', [
+            'isAdmin' => false,
             'stats' => [
                 'visibleReviews' => UserPosts::query()
                     ->where('user_id', $user->id)
@@ -39,7 +73,7 @@ class DashboardController extends Controller
                     ->where('user_id', $user->id)
                     ->count(),
                 'reviewedWebsites' => Posts::query()
-                    ->whereHas('userPosts', fn ($query) => $query->where('user_hidden', false))
+                    ->whereHas('userPosts', fn ($query) => $query->where('user_id', $user->id)->where('user_hidden', false))
                     ->count(),
             ],
             'recentReviews' => $recentReviews,

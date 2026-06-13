@@ -37,7 +37,25 @@ class DashboardMenuTest extends TestCase
             ->assertSee('layout-menu--left', false)
             ->assertSee('data-menu-bar-location="left"', false)
             ->assertSee('Dashboard')
-            ->assertSee('Welcome back, '.$user->name);
+            ->assertSee('Admin Dashboard')
+            ->assertSee('System Overview');
+    }
+
+    public function test_admin_dashboard_shows_platform_metrics(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        
+        // Create some data to see in stats
+        User::factory()->count(5)->create(['role' => 'user']);
+        
+        $response = $this->actingAs($admin)->get(route('dashboard'));
+        
+        $response->assertOk()
+            ->assertSeeText('Total Users')
+            ->assertSeeText('Total Reviews')
+            ->assertSeeText('Total Reports')
+            ->assertSeeText('Recent Activity')
+            ->assertSeeText('Top Posts');
     }
 
     public function test_dashboard_renders_user_stats_and_recent_reviews(): void
@@ -271,5 +289,27 @@ class DashboardMenuTest extends TestCase
             ->assertSee('href="'.route('edit-tag').'"', false)
             ->assertSee('class="layout-menu-link active"', false)
             ->assertSee('aria-current="page"', false);
+    }
+
+    public function test_admin_dashboard_shows_top_posts_with_category(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $category = \App\Models\Categories::factory()->create(['name' => 'Test Category']);
+        $tag = \App\Models\Tags::factory()->create();
+        $tag->categories()->attach($category);
+        
+        $post = Posts::factory()->create(['title' => 'Top Rated Post']);
+        $post->tags()->attach($tag);
+        
+        Ratings::factory()->create([
+            'post_id' => $post->id,
+            'rating' => 5,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('dashboard'));
+        
+        $response->assertOk()
+            ->assertSeeText('Top Rated Post')
+            ->assertSeeText('Test Category');
     }
 }

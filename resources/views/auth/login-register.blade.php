@@ -153,7 +153,7 @@
                         </x-input-field>
 
                         <!-- Password input field -->
-                        <x-input-field id="reg-password" name="password" label="Password" plain="true" type="password" placeholder="Create password" autocomplete="new-password" minlength="8" aria-describedby="passwordHint" title="Use at least 8 characters and at least 3 special characters." required>
+                        <x-input-field id="reg-password" name="password" label="Password" plain="true" type="password" placeholder="Create password" autocomplete="new-password" minlength="8" required>
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path d="M7 10V8a5 5 0 0 1 10 0v2" />
                                 <path d="M6.5 10h11A1.5 1.5 0 0 1 19 11.5v7A1.5 1.5 0 0 1 17.5 20h-11A1.5 1.5 0 0 1 5 18.5v-7A1.5 1.5 0 0 1 6.5 10z" />

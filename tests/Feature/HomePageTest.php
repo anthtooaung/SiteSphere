@@ -76,8 +76,9 @@ class HomePageTest extends TestCase
 
     public function test_home_limits_initial_server_render_to_twenty_four_posts(): void
     {
-        $viewer = User::factory()->create();
         $reviewer = User::factory()->create();
+        $reviewer->settings()->update(['user_post_visible' => true]);
+        $viewer = User::factory()->create();
 
         for ($index = 1; $index <= 25; $index++) {
             $post = Posts::factory()->create([
@@ -97,14 +98,14 @@ class HomePageTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('<strong id="resultsCount">24</strong>', false)
+            ->assertSee('<strong id="resultsCount" x-text="totalResults">25</strong>', false)
             ->assertSee('Server Limited Post 25')
             ->assertSee('Server Limited Post 02')
             ->assertDontSee('Server Limited Post 01');
-    }
+        }
 
-    public function test_authenticated_users_can_view_empty_home_without_review_cards(): void
-    {
+        public function test_authenticated_users_can_view_empty_home_without_review_cards(): void
+        {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/home');
@@ -112,9 +113,9 @@ class HomePageTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('Discover Useful Websites')
-            ->assertSee('<strong id="resultsCount">0</strong>', false)
+            ->assertSee('<strong id="resultsCount" x-text="totalResults">0</strong>', false)
             ->assertDontSee('Aurora Pay checkout keeps timing out')
-            ->assertDontSee('class="review-card', false)
+            ->assertDontSee('data-post-card-title', false)
             ->assertDontSee('cdnjs.cloudflare.com/ajax/libs/font-awesome', false)
             ->assertDontSee('class="fas', false)
             ->assertSee('href="'.route('home').'"', false)
@@ -177,7 +178,6 @@ class HomePageTest extends TestCase
             ->assertSee('data-filter-component="category"', false)
             ->assertSee('value="developer-tools"', false)
             ->assertSee('Developer Tools')
-            ->assertSee('id="tagFilterTemplate"', false)
             ->assertSee('data-filter-component="tag"', false)
             ->assertSee('class="tag-check"', false);
     }
@@ -502,18 +502,14 @@ class HomePageTest extends TestCase
             ->assertSee('data-menu-bar-location="left"', false);
     }
 
-    public function test_home_review_grid_uses_six_card_pages_and_three_desktop_columns(): void
+    public function test_home_review_grid_uses_auto_fill_and_three_desktop_columns_fallback(): void
     {
         $homepageCss = file_get_contents(resource_path('css/homepage.css'));
-        $homepageJs = file_get_contents(resource_path('js/homepage.js'));
 
-        $this->assertStringContainsString('grid-template-columns: repeat(3, minmax(0, 320px));', $homepageCss);
-        $this->assertStringContainsString('column-gap: 18px;', $homepageCss);
-        $this->assertStringContainsString('row-gap: 24px;', $homepageCss);
-        $this->assertStringContainsString('justify-content: start;', $homepageCss);
-        $this->assertStringContainsString('const cardsPerPage = 6;', $homepageJs);
-        $this->assertStringContainsString('if(pageCount <= 1)', $homepageJs);
-        $this->assertStringContainsString('pagination.hidden = true;', $homepageJs);
+        $this->assertStringContainsString('grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));', $homepageCss);
+        $this->assertStringContainsString('gap: 20px;', $homepageCss);
+        $this->assertStringContainsString('align-items: stretch;', $homepageCss);
+        $this->assertStringContainsString('justify-content: stretch;', $homepageCss);
     }
 
     public function test_home_renders_one_card_per_post_with_many_descriptions(): void
@@ -564,7 +560,7 @@ class HomePageTest extends TestCase
 
         $homepageCss = file_get_contents(resource_path('css/homepage.css'));
 
-        $this->assertSame(1, substr_count($content, 'class="review-card'));
+        $this->assertSame(1, substr_count($content, '<article'));
         $this->assertStringContainsString('first-reviewer-avatar.jpg', $content);
         $this->assertStringNotContainsString('hover:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]', $cardHtml);
         $this->assertStringContainsString('.home-page [data-profile-tabs]', $homepageCss);

@@ -31,6 +31,12 @@
             <ul class="flex items-center justify-center p-4 md:p-0 mt-4 md:space-x-4 rtl:space-x-reverse md:mt-0 ">
                @auth
                     <li>
+                        <x-create-post-btn />
+                    </li>
+                    <li>
+                        <x-noti-btn />
+                    </li>
+                    <li>
                         <x-profile-menu-btn />
                     </li>
                @else
@@ -69,6 +75,12 @@
         @endif
 
         @auth
+            <!-- Upload Button -->
+            <x-create-post-btn />
+
+            <!-- Notification Button -->
+            <x-noti-btn />
+
             <!-- Profile Button -->
             <x-profile-menu-btn />
         @else

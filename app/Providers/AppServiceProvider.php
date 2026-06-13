@@ -101,12 +101,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with($cachedData);
         });
 
-        Blade::if('mobile', function () use ($agent) {
-            return $agent->isMobile();
+        Blade::if('mobile', function () {
+            return (new Agent)->isMobile();
         });
 
-        Blade::if('desktop', function () use ($agent) {
-            return $agent->isDesktop();
+        Blade::if('desktop', function () {
+            return (new Agent)->isDesktop();
         });
     }
 }

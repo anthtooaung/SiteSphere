@@ -437,7 +437,7 @@
                 showMessage(text, type) {
                     Swal.fire({
                         toast: true,
-                        position: 'top-end',
+                        position: '{{ $toastPosition ?? "top-end" }}',
                         showConfirmButton: false,
                         timer: 1000,
                         timerProgressBar: true,
@@ -478,7 +478,7 @@
 
                             Swal.fire({
                                 toast: true,
-                                position: 'top-end',
+                                position: '{{ $toastPosition ?? "top-end" }}',
                                 showConfirmButton: false,
                                 timer: 1000,
                                 timerProgressBar: true,
@@ -505,7 +505,7 @@
 
                             Swal.fire({
                                 toast: true,
-                                position: 'top-end',
+                                position: '{{ $toastPosition ?? "top-end" }}',
                                 showConfirmButton: false,
                                 timer: 1000,
                                 timerProgressBar: true,
@@ -517,7 +517,7 @@
                         console.error(error);
                         Swal.fire({
                             toast: true,
-                            position: 'top-end',
+                            position: '{{ $toastPosition ?? "top-end" }}',
                             showConfirmButton: false,
                             timer: 1000,
                             timerProgressBar: true,
@@ -537,7 +537,7 @@
             document.addEventListener('DOMContentLoaded', () => {
                 Swal.fire({
                     toast: true,
-                    position: 'top-end',
+                    position: '{{ $toastPosition ?? "top-end" }}',
                     showConfirmButton: false,
                     timer: 1000,
                     timerProgressBar: true,
@@ -553,7 +553,7 @@
             document.addEventListener('DOMContentLoaded', () => {
                 Swal.fire({
                     toast: true,
-                    position: 'top-end',
+                    position: '{{ $toastPosition ?? "top-end" }}',
                     showConfirmButton: false,
                     timer: 1000,
                     timerProgressBar: true,

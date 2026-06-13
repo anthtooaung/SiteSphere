@@ -43,9 +43,14 @@
 
         <div class="section-content" id="ratingContent">
             <div class="rating-options">
-                <label class="rating-check"><input type="checkbox" value="all"><span>All</span></label>
+                <label class="rating-check"><input type="checkbox" value="all" :checked="filters.rating.length === 0" @change="clearFilters()"><span>All</span></label>
                 @foreach ([5, 4, 3, 2, 1] as $rating)
-                    <label class="rating-check"><input type="checkbox" value="{{ $rating }}"><span>{{ $rating }}+ Rating</span></label>
+                    <label class="rating-check">
+                        <input type="checkbox" value="{{ $rating }}" 
+                               :checked="filters.rating.includes('{{ $rating }}')"
+                               @change="toggleFilter('rating', '{{ $rating }}')">
+                        <span>{{ $rating }}+ Rating</span>
+                    </label>
                 @endforeach
             </div>
         </div>
@@ -63,34 +68,33 @@
         <div class="section-content" id="categoryContent">
             <div class="category-search-box">
                 <x-fas-search class="search-icon" aria-hidden="true" />
-                <input type="text" id="categorySearch" placeholder="Search categories...">
+                <input type="text" id="categorySearch" placeholder="Search categories..." x-model="search.category">
             </div>
 
             <div class="category-list-container">
                 <label class="category-check" data-filter-component="category">
-                    <input type="checkbox" value="All">
+                    <input type="checkbox" value="All" :checked="filters.category.length === 0" @change="clearFilters()">
                     <span>All</span>
                 </label>
 
-                @foreach ($categories->take(5) as $category)
-                    <label class="category-check" data-filter-component="category">
-                        <input type="checkbox" value="{{ $category->slug }}">
+                @foreach ($categories as $index => $category)
+                    <label class="category-check" data-filter-component="category"
+                           x-show="'{{ strtolower($category->name) }}'.includes(search.category.toLowerCase()) && ({{ $index }} < 5 || search.showMoreCategories || search.category.length > 0)">
+                        <input type="checkbox" value="{{ $category->slug }}"
+                               :checked="filters.category.includes('{{ $category->slug }}')"
+                               @change="toggleFilter('category', '{{ $category->slug }}')">
                         <span>{{ $category->name }}</span>
                     </label>
                 @endforeach
-
-                <div class="extra-categories" id="extraCategories">
-                    @foreach ($categories->skip(5) as $category)
-                        <label class="category-check" data-filter-component="category">
-                            <input type="checkbox" value="{{ $category->slug }}">
-                            <span>{{ $category->name }}</span>
-                        </label>
-                    @endforeach
-                </div>
             </div>
 
             @if ($categories->count() > 5)
-                <button class="show-category-btn" id="showCategoryBtn" type="button">Show More Categories</button>
+                <button class="show-category-btn" id="showCategoryBtn" type="button" 
+                        x-show="search.category.length === 0"
+                        @click="search.showMoreCategories = !search.showMoreCategories"
+                        x-text="search.showMoreCategories ? 'Show Less Categories' : 'Show More Categories'">
+                    Show More Categories
+                </button>
             @endif
         </div>
     </div>
@@ -108,18 +112,28 @@
             <div class="tag-tools">
                 <div class="tag-search-box">
                     <x-fas-search class="search-icon" aria-hidden="true" />
-                    <input type="text" id="tagSearch" placeholder="Search tags...">
+                    <input type="text" id="tagSearch" placeholder="Search tags..." x-model="search.tag">
                 </div>
             </div>
 
-            <div class="tags-container" id="tagsContainer"></div>
-            <template id="tagFilterTemplate">
-                <label class="tag-check" data-filter-component="tag">
-                    <input type="checkbox" value="tag">
-                    <span>Tag</span>
-                </label>
-            </template>
-            <button class="show-tags-btn" id="showTagsBtn" type="button">Show More Tags</button>
+            <div class="tags-container" id="tagsContainer">
+                <template x-for="tag in visibleTags" :key="tag">
+                    <label class="tag-check" data-filter-component="tag">
+                        <input type="checkbox" 
+                               :value="tag"
+                               :checked="filters.tags.includes(tag)"
+                               @change="toggleFilter('tags', tag)">
+                        <span x-text="tag"></span>
+                    </label>
+                </template>
+            </div>
+            
+            <button class="show-tags-btn" id="showTagsBtn" type="button" 
+                    x-show="filteredTags.length > 10"
+                    @click="search.showMoreTags = !search.showMoreTags"
+                    x-text="search.showMoreTags ? 'Show Less Tags' : 'Show More Tags'">
+                Show More Tags
+            </button>
         </div>
     </div>
 </aside>

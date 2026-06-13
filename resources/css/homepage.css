@@ -3233,3 +3233,67 @@
         display: block;
     }
 }
+
+/* LOAD MORE BUTTON & SKELETONS */
+.load-more-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 200px;
+    height: 48px;
+    padding: 0 24px;
+    background: var(--accent-color, #6c5ce7);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px color-mix(in srgb, var(--accent-color, #6c5ce7) 20%, transparent);
+}
+
+.load-more-btn:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 85%, #000000);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px color-mix(in srgb, var(--accent-color, #6c5ce7) 25%, transparent);
+}
+
+.load-more-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.load-more-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.load-more-btn .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* SKELETON PULSE ANIMATION */
+.review-card.skeleton {
+    background: color-mix(in srgb, var(--background-color, #ffffff) 96%, var(--text-color, #0d1b2a) 4%) !important;
+    border-color: color-mix(in srgb, var(--text-color, #0d1b2a) 8%, transparent) !important;
+    pointer-events: none;
+    user-select: none;
+    animation: skeleton-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes skeleton-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+[x-cloak] { display: none !important; }

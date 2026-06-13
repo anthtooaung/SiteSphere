@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Settings;
 use App\Models\User;
 
 class ThemePreferences
@@ -9,17 +10,19 @@ class ThemePreferences
     public const DEFAULT_ACCENT_COLOR = '#6c5ce7';
 
     /**
+     * Resolve theme colors for the given user, optionally using pre-loaded settings
+     * to avoid a redundant database query when the caller already has them.
+     *
      * @return array{accent: string, background: string, text: string}
      */
-    public function colorsFor(?User $user): array
+    public function colorsFor(?User $user, ?Settings $settings = null): array
     {
-        $isDarkMode = false;
         $accentColor = self::DEFAULT_ACCENT_COLOR;
         $backgroundColor = '#ffffff';
         $textColor = '#0d1b2a';
 
         if ($user) {
-            $settings = $user->settings()->with(['theme', 'customTheme'])->first();
+            $settings ??= $user->settings()->with(['theme', 'customTheme'])->first();
             $isDarkMode = (bool) ($settings?->dark_mode ?? false);
             $backgroundColor = $isDarkMode ? '#000000' : '#ffffff';
             $textColor = $isDarkMode ? '#ffffff' : '#0d1b2a';

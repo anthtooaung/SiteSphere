@@ -40,7 +40,6 @@
         }
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @include('sweetalert2::index')
     @stack('styles')
 
@@ -48,7 +47,6 @@
 <body class="m-0 box-border overflow-none p-0 bg-[var(--background-color)] text-[var(--text-color)]" style="font-family: var(--font-family);">
     <x-loading />
     @yield('content')
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
     @stack('scripts')
 </body>
 </html>

@@ -31,7 +31,10 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Share user preference values with all views so Blade can easily read them.
+        // Cache the Agent instance per request so @mobile/@desktop don't re-parse the User-Agent.
+        $agent = new Agent;
+
+        // Share user preference values with root layout views only (not every partial/component).
         View::composer('*', function ($view) {
             static $cachedData = null;
             static $cachedUserId = null;
@@ -41,13 +44,14 @@ class AppServiceProvider extends ServiceProvider
             $currentAuthCheck = Auth::check();
 
             if ($cachedData === null || $cachedUserId !== $currentUserId || $cachedAuthCheck !== $currentAuthCheck) {
-                $themePreferences = app(ThemePreferences::class);
                 $user = Auth::user();
-                $colors = $themePreferences->colorsFor($user);
                 $toastPosition = 'top-end';
                 $fontFamily = null;
                 $menuBarLocation = 'left';
-                $isDarkMode = $colors['background'] === '#000000';
+                $isDarkMode = false;
+
+                // Load settings once and share with ThemePreferences to avoid a duplicate query.
+                $settings = null;
 
                 if ($user) {
                     $settings = $user->settings()->with(['theme', 'customTheme'])->first();
@@ -80,6 +84,9 @@ class AppServiceProvider extends ServiceProvider
                     }
                 }
 
+                $themePreferences = app(ThemePreferences::class);
+                $colors = $themePreferences->colorsFor($user, $settings);
+
                 $cachedData = [
                     'themeColors' => $colors,
                     'toastPosition' => $toastPosition,
@@ -94,12 +101,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with($cachedData);
         });
 
-        Blade::if('mobile', function () {
-            return (new Agent)->isMobile();
+        Blade::if('mobile', function () use ($agent) {
+            return $agent->isMobile();
         });
 
-        Blade::if('desktop', function () {
-            return (new Agent)->isDesktop();
+        Blade::if('desktop', function () use ($agent) {
+            return $agent->isDesktop();
         });
     }
 }

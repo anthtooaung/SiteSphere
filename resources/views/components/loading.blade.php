@@ -111,7 +111,7 @@
                 return;
             }
 
-            const minimumVisibleMilliseconds = 1000;
+            const minimumVisibleMilliseconds = 300;
             let shownAt = 0;
             let hideTimeout = null;
 

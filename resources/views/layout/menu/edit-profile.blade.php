@@ -454,6 +454,21 @@
 
                 async submitForm(formElement) {
                     if (this.isSubmitting) return;
+
+                    const result = await Swal.fire({
+                        title: 'Save Changes?',
+                        text: 'Are you sure you want to apply these profile settings?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: 'var(--accent-color, #6c5ce7)',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, save it!'
+                    });
+
+                    if (!result.isConfirmed) {
+                        return;
+                    }
+
                     this.isSubmitting = true;
 
                     const formData = new FormData(formElement);

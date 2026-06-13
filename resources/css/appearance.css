@@ -29,7 +29,7 @@
 .appearance-errors {
     border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .appearance-header {
@@ -179,7 +179,7 @@
     padding: 28px 16px 20px 16px;
     text-align: center;
     justify-items: center;
-    box-shadow: 0 3px 0 rgba(15, 23, 42, 0.12), 0 8px 18px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 3px 0 rgba(15, 23, 42, 0.12), 0 8px 18px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transition: all 0.2s ease-in-out;
 }
 
@@ -188,7 +188,7 @@
 .appearance-layout-option:hover,
 .appearance-layout-option:focus-within {
     border-color: color-mix(in srgb, var(--accent-color, #6c5ce7) 45%, transparent);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transform: translateY(-2px);
 }
 
@@ -196,7 +196,7 @@
 .appearance-theme-grid:not(.is-disabled) .appearance-theme-option:focus-within {
     border-color: color-mix(in srgb, var(--accent-color, #6c5ce7) 45%, transparent);
     transform: translateY(-4px);
-    box-shadow: 0 7px 0 rgba(15, 23, 42, 0.12), 0 14px 26px rgba(15, 23, 42, 0.10);
+    box-shadow: 0 7px 0 rgba(15, 23, 42, 0.12), 0 14px 26px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .appearance-mode-option:has(input:checked),
@@ -351,7 +351,7 @@
     height: 22px;
     border-radius: 999px;
     background: #ffffff;
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.22);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     content: "";
     transition: transform 180ms ease;
 }
@@ -411,7 +411,7 @@
     color: var(--accent-color, #6c5ce7);
     background: #ffffff;
     border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px  color-mix(in srgb, var(--text-color) 8%, transparent);
     z-index: 2;
 }
 
@@ -602,7 +602,7 @@
     border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 98%, #ffffff 2%);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .appearance-page .font-search-results.show {

@@ -116,7 +116,7 @@
     cursor: pointer;
     border: 0;
 
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 
@@ -268,7 +268,7 @@
 .category-search-box input:focus {
     border-color: var(--accent-color, #6c5ce7);
 
-    box-shadow: 0 5px 8px rgba(37, 99, 235, 0.12);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .category-search-box i {
@@ -711,7 +711,7 @@
 
     border-color: var(--accent-color, #6c5ce7);
 
-    box-shadow: 0 5px 8px rgba(37, 99, 235, 0.12);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 /* ICON */
@@ -751,7 +751,7 @@
 
     margin: 0;
 
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.10);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 
     display: none;
 
@@ -967,7 +967,7 @@
     border: 0;
     border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, transparent);
     border-radius: 8px;
-    box-shadow: var(--ui-shadow, 0 8px 24px rgba(15, 23, 42, 0.06));
+    box-shadow: var(--ui-shadow, 0 8px 24px  color-mix(in srgb, var(--text-color) 8%, transparent));
 }
 
 .content-kicker {
@@ -1741,7 +1741,7 @@
     color: var(--text-color);
     cursor: pointer;
     font-weight: 800;
-    box-shadow: 0 5px 8px rgba(16, 24, 40, 0.04);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transition: 0.2s ease;
 }
 
@@ -1881,7 +1881,7 @@
         cursor: pointer;
         border: 0;
 
-        box-shadow: 0 5px 8px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     }
 
     /* MAIN CONTENT */
@@ -3145,7 +3145,7 @@
         border: 1px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 20%, var(--background-color, #ffffff));
         border-radius: 8px;
         background: color-mix(in srgb, var(--background-color, #ffffff) 96%, #ffffff 4%);
-        box-shadow: 0 5px 8px rgba(15, 23, 42, 0.14);
+        box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     }
 
     .home-page .home-aside--top .section-content {
@@ -3164,7 +3164,7 @@
         border-radius: 8px;
         background: color-mix(in srgb, var(--background-color, #ffffff) 96%, #ffffff 4%);
         cursor: pointer;
-        box-shadow: 0 5px 8px rgba(16, 24, 40, 0.04);
+        box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
         color: var(--text-color, #182230);
     }
 

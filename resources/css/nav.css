@@ -26,7 +26,7 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 6px 18px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 /* Nav Link Hover Underline scale & Lift Animations */
@@ -100,7 +100,7 @@
     border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 12px 28px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transform: translateX(-50%) !important;
     font-family: var(--font-family, inherit);
 }
@@ -272,7 +272,7 @@
     font-size: 0.62rem;
     font-weight: 900;
     line-height: 1;
-    box-shadow: 0 5px 8px rgba(255, 118, 117, 0.28);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .noti-dropdown {
@@ -285,7 +285,7 @@
     border-radius: 8px;
     background: var(--background-color, #ffffff);
     color: var(--text-color, #182230);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 12px 28px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .noti-dropdown-header {
@@ -471,7 +471,7 @@
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
     color: var(--text-color);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 12px 28px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .auth-menu-list {
@@ -519,7 +519,7 @@
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
     color: var(--text-color);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 12px 28px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .account-menu-list {
@@ -730,7 +730,7 @@
     border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 12px 28px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transform: translateX(-50%) translateY(10px);
 }
 
@@ -738,7 +738,7 @@
     top: auto;
     bottom: 100%;
     transform: translateX(-50%) translateY(-10px);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 12px 28px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .layout-menu-topbar-dropdown-link {
@@ -945,7 +945,7 @@
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
     padding: 24px;
-    box-shadow: var(--ui-shadow, 0 8px 24px rgba(15, 23, 42, 0.06));
+    box-shadow: var(--ui-shadow, 0 8px 24px  color-mix(in srgb, var(--text-color) 8%, transparent));
 }
 
 .dashboard-kicker {
@@ -994,7 +994,7 @@
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
     padding: 18px;
-    box-shadow: var(--ui-shadow, 0 8px 24px rgba(15, 23, 42, 0.06));
+    box-shadow: var(--ui-shadow, 0 8px 24px  color-mix(in srgb, var(--text-color) 8%, transparent));
 }
 
 .dashboard-stat-card span {
@@ -1115,7 +1115,7 @@
     border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: var(--ui-shadow, 0 8px 24px rgba(15, 23, 42, 0.06));
+    box-shadow: var(--ui-shadow, 0 8px 24px  color-mix(in srgb, var(--text-color) 8%, transparent));
 }
 
 .saved-post-title-group h1 {
@@ -1142,7 +1142,7 @@
     border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     border-radius: 8px;
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: var(--ui-shadow, 0 8px 24px rgba(15, 23, 42, 0.06));
+    box-shadow: var(--ui-shadow, 0 8px 24px  color-mix(in srgb, var(--text-color) 8%, transparent));
 }
 
 .saved-post-search,
@@ -1416,7 +1416,7 @@ button.saved-post-control {
 .admin-users-summary-card {
     border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .admin-users-header {
@@ -1941,7 +1941,7 @@ button.saved-post-control {
 }
 
 .admin-users-action-btn:hover:not(:disabled) {
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transform: translateY(-1px);
 }
 
@@ -2177,7 +2177,7 @@ button.saved-post-control {
         border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
         border-radius: 12px;
         background: var(--background-color, #ffffff);
-        box-shadow: 0 5px 8px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     }
 
     .admin-users-table td {
@@ -2278,7 +2278,7 @@ button.saved-post-control {
     justify-content: space-between;
     padding: 16px 20px;
     color: var(--background-color);
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     border-bottom: 1px solid color-mix(in srgb, var(--background-color) 15%, transparent);
     transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1),
         color 400ms cubic-bezier(0.25, 0.8, 0.25, 1),
@@ -2394,7 +2394,7 @@ button.saved-post-control {
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
     border-radius: 22px;
     background: color-mix(in srgb, var(--background-color) 80%, transparent);
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 }

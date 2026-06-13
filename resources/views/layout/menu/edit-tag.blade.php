@@ -482,7 +482,21 @@
                                         <x-fas-plus class="btn-icon" aria-hidden="true" />
                                         <span>Add Category</span>
                                     </button>
-                                    <button type="submit" class="btn-primary" data-edit-tag-publish>
+                                    <button type="button" class="btn-primary" data-edit-tag-publish @click="
+                                        Swal.fire({
+                                            title: 'Publish Tags?',
+                                            text: 'Are you sure you want to publish these tags to all users?',
+                                            icon: 'question',
+                                            showCancelButton: true,
+                                            confirmButtonColor: 'var(--accent-color, #6c5ce7)',
+                                            cancelButtonColor: '#d33',
+                                            confirmButtonText: 'Yes, publish!'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                document.querySelector('[data-edit-tag-form]').submit();
+                                            }
+                                        })
+                                    ">
                                         <span class="button-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <path d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
@@ -492,7 +506,21 @@
                                         </span>
                                     </button>
                                 @else
-                                    <button type="submit" class="btn-primary" data-edit-tag-save>
+                                    <button type="button" class="btn-primary" data-edit-tag-save @click="
+                                        Swal.fire({
+                                            title: 'Save Tags?',
+                                            text: 'Are you sure you want to save these tag styles?',
+                                            icon: 'question',
+                                            showCancelButton: true,
+                                            confirmButtonColor: 'var(--accent-color, #6c5ce7)',
+                                            cancelButtonColor: '#d33',
+                                            confirmButtonText: 'Yes, save it!'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                document.querySelector('[data-edit-tag-form]').submit();
+                                            }
+                                        })
+                                    ">
                                         <span class="button-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <path d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />

@@ -140,7 +140,7 @@
     padding: 0.8rem 1.5rem;
     border-radius: 999px;
     background: #ffffff;
-    box-shadow: 0 5px 8px rgb(0 0 0 / 0.24);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
@@ -229,12 +229,12 @@
     border: 1px solid var(--welcome-border);
     border-radius: 0.5rem;
     background: var(--welcome-surface);
-    box-shadow: 0 5px 8px rgb(15 23 42 / 0.06);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 
 .welcome-review-card:hover {
-    box-shadow: 0 5px 8px rgb(15 23 42 / 0.12);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transform: translateY(-5px);
 }
 

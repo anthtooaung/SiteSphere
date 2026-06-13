@@ -15,7 +15,7 @@
 .reports-coming-soon article {
     border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .reports-header {
@@ -141,7 +141,7 @@
     border-radius: 14px;
     border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     background: color-mix(in srgb, var(--background-color) 96%, #ffffff 4%);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .reports-table-actions {
@@ -538,7 +538,7 @@
 }
 
 .reports-icon-btn:hover:not(:disabled) {
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     transform: translateY(-1px);
 }
 

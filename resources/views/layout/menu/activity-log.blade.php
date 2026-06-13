@@ -133,6 +133,15 @@
                     }
                 } catch (error) {
                     console.error('Activity fetch error:', error);
+                    Swal.fire({
+                        toast: true,
+                        position: '{{ $toastPosition ?? "top-end" }}',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        icon: 'error',
+                        title: 'Failed to load activity feed'
+                    });
                 } finally {
                     this.loading = false;
                 }

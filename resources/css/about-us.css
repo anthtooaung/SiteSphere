@@ -155,7 +155,7 @@
 .aboutus-main .aboutus-btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
-    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.15);
+    box-shadow: 0 8px 20px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .aboutus-main .aboutus-btn-ghost {
@@ -481,7 +481,7 @@
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s, z-index 0.6s;
     opacity: 0;
     pointer-events: none;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 15px 35px  color-mix(in srgb, var(--text-color) 8%, transparent);
     backface-visibility: hidden;
 }
 
@@ -502,7 +502,7 @@
     transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
     pointer-events: auto;
     border-color: rgba(108, 92, 231, 0.4);
-    box-shadow: 0 20px 40px rgba(108, 92, 231, 0.1);
+    box-shadow: 0 20px 40px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .aboutus-main .aboutus-carousel-card.prev {
@@ -548,7 +548,7 @@
     justify-content: center;
     font-size: 2rem;
     margin: 0 auto 20px auto;
-    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2);
+    box-shadow: 0 8px 20px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .aboutus-main .aboutus-member-avatar .icon {
@@ -644,7 +644,7 @@
     cursor: pointer;
     z-index: 15;
     transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .aboutus-main .aboutus-carousel-btn:hover {

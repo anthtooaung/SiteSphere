@@ -106,7 +106,7 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     padding:24px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 24px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .edit-btn{
@@ -121,7 +121,7 @@
     font-weight:600;
     cursor:pointer;
     font-size:13px;
-    box-shadow:0 5px 8px rgba(37,99,235,.18);
+    box-shadow:0 5px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
@@ -149,7 +149,7 @@
     height:120px;
     border-radius:50%;
     object-fit:cover;
-    box-shadow:0 5px 8px rgba(0,0,0,.1);
+    box-shadow:0 5px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .profile-img-placeholder {
@@ -163,7 +163,7 @@
     align-items: center;
     font-size: 48px;
     font-weight: 800;
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .user-info{
@@ -294,14 +294,14 @@
     display: flex;
     align-items: flex-start;
     gap: 14px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 24px  color-mix(in srgb, var(--text-color) 8%, transparent);
     color: var(--text-color, inherit);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .stat-icon {
@@ -382,7 +382,7 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 40px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 24px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .review-top{

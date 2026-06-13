@@ -127,8 +127,8 @@ class WelcomePageTest extends TestCase
 
     public function test_guest_welcome_page_uses_database_default_font_and_theme(): void
     {
-        DB::table('themes')->truncate();
-        DB::table('fonts')->truncate();
+        DB::table('themes')->delete();
+        DB::table('fonts')->delete();
 
         DB::table('themes')->insert([
             'accent_color' => '#059669',

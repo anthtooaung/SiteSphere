@@ -58,7 +58,7 @@
 .security-message {
     border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, transparent);
     background: color-mix(in srgb, var(--background-color, #ffffff) 96%, #ffffff 4%);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .security-header {
@@ -177,7 +177,7 @@
     height: 32px;
     border-radius: 50%;
     background-color: #ffffff;
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.22);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     content: "";
     transition: transform 220ms ease;
 }
@@ -227,7 +227,7 @@
     border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 10%, transparent);
     border-radius: 10px;
     background: color-mix(in srgb, var(--background-color, #ffffff) 98%, #ffffff 2%);
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.16);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
     color: var(--text-color, #0d1b2a);
     font-size: 0.78rem;
     font-weight: 500;

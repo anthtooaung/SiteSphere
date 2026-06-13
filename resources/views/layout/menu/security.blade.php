@@ -37,22 +37,7 @@
                     <p>Manage account protection, posting visibility, and password changes.</p>
                 </header>
 
-                @if (session('success'))
-                    <div class="security-message show success" role="status" aria-live="polite">
-                        {{ session('success') }}
-                    </div>
-                @endif
 
-                @if ($errors->any())
-                    <div class="security-message show error" role="alert">
-                        <strong>Please check your security settings.</strong>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
 
                 <form method="POST" action="{{ route('security.update') }}" class="security-form" data-security-form @submit.prevent="submitForm($el)">
                     @csrf
@@ -223,6 +208,21 @@
                 visibility: initialVisibility,
                 async submitForm(formElement) {
                     if (this.isSubmitting) return;
+
+                    const result = await Swal.fire({
+                        title: 'Save Changes?',
+                        text: 'Are you sure you want to apply these security settings?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: 'var(--accent-color, #6c5ce7)',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, save it!'
+                    });
+
+                    if (!result.isConfirmed) {
+                        return;
+                    }
+
                     this.isSubmitting = true;
 
                     const formData = new FormData(formElement);
@@ -290,5 +290,37 @@
             };
         }
     </script>
+
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    toast: true,
+                    position: '{{ $toastPosition ?? "top-end" }}',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    icon: 'success',
+                    title: "{{ session('success') }}"
+                });
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    toast: true,
+                    position: '{{ $toastPosition ?? "top-end" }}',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    title: "{{ implode(' ', $errors->all()) }}"
+                });
+            });
+        </script>
+    @endif
 @endpush
 

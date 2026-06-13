@@ -27,7 +27,7 @@
   border-radius: 20px;
   background: var(--background-color, #ffffff);
   padding: 24px;
-  box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .upload-post-scroll {
@@ -208,7 +208,7 @@
 
 .upload-submit-button.is-publish-ready {
   background: #059669;
-  box-shadow: 0 5px 8px rgba(5, 150, 105, 0.18);
+  box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .upload-discard-button:hover,
@@ -241,7 +241,7 @@
   border-radius: 20px;
   background: var(--background-color, #ffffff);
   padding: 16px;
-  box-shadow: 0 5px 8px rgba(15, 23, 42, 0.18);
+  box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
 .tag-tooltip-search {
@@ -402,7 +402,7 @@
   }
 
   .tag-tooltip-card {
-    box-shadow: 0 5px 8px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
   }
 }
 

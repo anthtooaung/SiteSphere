@@ -43,4 +43,26 @@
         box-shadow: var(--ui-focus-ring);
         outline: none;
     }
+
+    /* SweetAlert2 Theming Overrides */
+    div.swal2-popup {
+        background: var(--ui-surface, var(--background-color, #ffffff));
+        color: var(--text-color, #0d1b2a);
+        border: 1px solid var(--ui-border);
+        border-radius: var(--ui-radius);
+        box-shadow: 0 5px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
+    }
+
+    div.swal2-popup.swal2-toast {
+        box-shadow: 0 10px 24px color-mix(in srgb, var(--text-color) 12%, transparent);
+    }
+
+    .swal2-title,
+    .swal2-html-container {
+        color: var(--text-color, #0d1b2a) !important;
+    }
+
+    .swal2-timer-progress-bar {
+        background: var(--accent-color, #6c5ce7) !important;
+    }
 }

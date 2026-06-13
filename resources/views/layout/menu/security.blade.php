@@ -127,11 +127,25 @@
                             </div>
                         </article>
 
-                        <article class="security-card" x-data="{ current: false, password: false, confirm: false }">
-                            <h2>Change Password</h2>
-                            <p class="subtitle">Leave password fields empty if you only want to save toggle changes.</p>
+                        <article class="security-card" x-data="{ showForm: {{ $errors->has('current_password') || $errors->has('password') ? 'true' : 'false' }}, current: false, password: false, confirm: false }">
+                            <div class="security-card-header">
+                                <div>
+                                    <h2>Change Password</h2>
+                                    <p class="subtitle">Update your account password to keep your account secure.</p>
+                                </div>
+                                <div class="toggle-area">
+                                    <button type="button" class="update-password-btn" 
+                                        @click="showForm = !showForm"
+                                        x-text="showForm ? 'Cancel' : 'Update Password'"
+                                        :aria-expanded="showForm.toString()"
+                                        aria-controls="password-fields-container">
+                                        Update Password
+                                    </button>
+                                </div>
+                            </div>
 
-                            <div class="password-form">
+                            <div id="password-fields-container" x-show="showForm" x-collapse x-cloak>
+                                <div class="password-form">
                                 <div class="field-group">
                                     <label for="current-password">Current Password</label>
                                     <div class="password-input-wrapper">
@@ -172,6 +186,7 @@
                                         </button>
                                     </div>
                                 </div>
+                            </div>
                             </div>
                         </article>
                     </section>

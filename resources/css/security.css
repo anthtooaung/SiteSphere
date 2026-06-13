@@ -384,6 +384,32 @@
     height: 18px;
 }
 
+.update-password-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 40%, transparent);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--accent-color, #6c5ce7);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 850;
+    padding: 8px 16px;
+    transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.update-password-btn:hover {
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 10%, transparent);
+    border-color: var(--accent-color, #6c5ce7);
+}
+
+.update-password-btn:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, transparent);
+    outline-offset: 3px;
+}
+
 .footer-actions {
     display: flex;
     justify-content: flex-end;

@@ -102,10 +102,10 @@ class HomePageTest extends TestCase
             ->assertSee('Server Limited Post 25')
             ->assertSee('Server Limited Post 02')
             ->assertDontSee('Server Limited Post 01');
-        }
+    }
 
-        public function test_authenticated_users_can_view_empty_home_without_review_cards(): void
-        {
+    public function test_authenticated_users_can_view_empty_home_without_review_cards(): void
+    {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/home');

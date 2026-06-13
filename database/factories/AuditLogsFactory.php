@@ -18,7 +18,12 @@ class AuditLogsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => \App\Models\User::factory(),
+            'action' => $this->faker->word(),
+            'category' => $this->faker->randomElement(['moderation', 'success', 'announcement', 'system']),
+            'target_type' => 'App\Models\Post',
+            'target_id' => $this->faker->randomNumber(),
+            'reason' => $this->faker->sentence(),
         ];
     }
 }

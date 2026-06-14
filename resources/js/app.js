@@ -16,9 +16,22 @@ window.sitesphereSwal = {
             fontFamily: style.getPropertyValue('--font-family').trim() || 'Figtree, sans-serif'
         };
     },
+    async getSwal() {
+        if (window.Swal) {
+            return window.Swal;
+        }
+        try {
+            window.Swal = (await import('https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.esm.all.min.js')).default;
+            return window.Swal;
+        } catch (error) {
+            console.error('Failed to load SweetAlert2:', error);
+            return { fire: () => ({ isConfirmed: false }) };
+        }
+    },
     async confirm(options = {}) {
         const theme = this.getTheme();
-        return await window.Swal.fire({
+        const Swal = await this.getSwal();
+        return await Swal.fire({
             icon: options.icon || 'question',
             title: options.title || 'Are you sure?',
             text: options.text || '',
@@ -33,9 +46,10 @@ window.sitesphereSwal = {
             ...options
         });
     },
-    toast(options = {}) {
+    async toast(options = {}) {
         const theme = this.getTheme();
-        window.Swal.fire({
+        const Swal = await this.getSwal();
+        Swal.fire({
             toast: true,
             position: options.position || 'top-end',
             showConfirmButton: false,
@@ -46,8 +60,8 @@ window.sitesphereSwal = {
             background: theme.background,
             color: theme.color,
             didOpen: (toast) => {
-                toast.onmouseenter = window.Swal.stopTimer;
-                toast.onmouseleave = window.Swal.resumeTimer;
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
                 toast.style.fontFamily = theme.fontFamily;
             },
             ...options

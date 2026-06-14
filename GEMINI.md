@@ -65,4 +65,5 @@ composer run test
 
 ## Rules
 - IF Token usage reach the **20%** then stop the current processing task and write the documentation in the `knowledges` folder of `remainTask.md` file
+- IF Token usage reach the **95%** then switch the model to either `gemini-3.1-pro` or `gemini-3.5-flash` for the remainder of the task.
 - When adding a UI component or changing the design, **always** implement it by considering the dynamic user preferences stored in the database (e.g., custom themes, accent colors, menu locations, font families, dark mode). Avoid hardcoding styles that would break personalization.

@@ -129,14 +129,9 @@
                     async submitForm(formElement) {
                         if (this.isSubmitting) return;
 
-                        const result = await Swal.fire({
+                        const result = await window.sitesphereSwal.confirm({
                             title: 'Save Changes?',
-                            text: 'Are you sure you want to apply these appearance settings?',
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, save it!'
+                            text: 'Are you sure you want to apply these appearance settings?'
                         });
 
                         if (result.isConfirmed) {
@@ -361,18 +356,8 @@
                 @if (session('success'))
                     <script>
                         document.addEventListener('DOMContentLoaded', () => {
-                            Swal.fire({
-                                toast: true,
-                                position: '{{ $selectedToastPosition }}',
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: '{{ session('success') }}',
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal.stopTimer;
-                                    toast.onmouseleave = Swal.resumeTimer;
-                                }
+                            window.sitesphereSwal.toast({
+                                title: '{{ session('success') }}'
                             });
                         });
                     </script>

@@ -320,3 +320,31 @@ This document maps every button click action and its corresponding database inte
   - **Action:** Marks a notification as read and redirects the user to the target content.
   - **DB Interaction:** Update `Notificatioins`.
 
+## Database Mutation Summary
+
+| Action | Route / Controller | Tables Affected | Operation |
+| :--- | :--- | :--- | :--- |
+| **Register** | `RegisteredUserController@store` | `Users` | INSERT |
+| **Social Login** | `SocialiteController@callback` | `Users`, `SocialAccounts` | INSERT/UPDATE |
+| **Complete Profile** | `ProfileController@update` | `Users` | UPDATE |
+| **Verify OTP** | `VerifyOtpController@store` | `OtpVerifications` | INSERT/UPDATE |
+| **Resend OTP** | `ResendOtpController@store` | `OtpVerifications` | INSERT |
+| **Reset Password** | `NewPasswordController@store` | `Users`, `OtpVerifications` | UPDATE |
+| **Bookmark Post** | `BookmarkController@toggle` | `Bookmarks` | INSERT/DELETE |
+| **Report Content** | `ReportController@store` | `Reports` | INSERT |
+| **Ban Post/User** | `Admin\ModerationController` | `Posts`, `Users` | UPDATE |
+| **Post Comment / Rate** | `CommentController@store` | `Comments`, `Ratings` | INSERT |
+| **React to Comment** | `CommentReactionController@toggle` | `CommentReactions` | INSERT/DELETE |
+| **Update Appearance** | `SettingsController@updateAppearance` | `Settings`, `CustomThemes`, `Users` | UPDATE |
+| **Update Security** | `SettingsController@updateSecurity` | `Users`, `Settings` | UPDATE |
+| **Update Profile** | `ProfileController@update` | `Users` | UPDATE |
+| **Update/Reset Tags** | `TagController@update` / `destroy` | `CustomTags` (User) | INSERT/UPDATE/DELETE |
+| **Manage Taxonomy** | `Admin\TaxonomyController` | `Categories`, `Tags`, `AuditLogs` | INSERT/UPDATE/DELETE |
+| **Manage Reports** | `Admin\ReportController` | `Reports` | UPDATE |
+| **Moderation Delete** | `Admin\ModerationController` | `Posts`, `Comments` | DELETE (Soft) |
+| **Manage Users** | `Admin\UserController` | `Users` | UPDATE/DELETE/RESTORE |
+| **Notification Read** | `NotificationController@read` | `Notificatioins` | UPDATE |
+
+> **Note:** Actions performed on `NotificationItem` and most Moderation/Taxonomy actions are Admin restricted. `Notificatioins` table is spelled as `Notificatioins` in the current schema.
+
+

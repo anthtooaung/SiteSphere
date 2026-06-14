@@ -516,7 +516,7 @@
                                         <x-fas-plus class="btn-icon" aria-hidden="true" />
                                         <span>Add Category</span>
                                     </button>
-                                    <button type="button" class="btn-primary" data-edit-tag-publish @click="confirmSubmit('Publish Tags?', 'Are you sure you want to publish these tags to all users?')">
+                                    <button type="button" class="btn-primary" data-edit-tag-publish @click="confirmSubmit('Publish Tags?', 'Are you sure you want to publish these tags to all users?')" :class="{ 'is-loading': isSubmitting }" :disabled="isSubmitting">
                                         <span class="button-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <path d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
@@ -526,7 +526,7 @@
                                         </span>
                                     </button>
                                 @else
-                                    <button type="button" class="btn-primary" data-edit-tag-save @click="confirmSubmit('Save Tags?', 'Are you sure you want to save these tag styles?')">
+                                    <button type="button" class="btn-primary" data-edit-tag-save @click="confirmSubmit('Save Tags?', 'Are you sure you want to save these tag styles?')" :class="{ 'is-loading': isSubmitting }" :disabled="isSubmitting">
                                         <span class="button-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <path d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />

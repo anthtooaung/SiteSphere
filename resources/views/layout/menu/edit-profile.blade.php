@@ -465,82 +465,9 @@
                         confirmButtonText: 'Yes, save it!'
                     });
 
-                    if (!result.isConfirmed) {
-                        return;
-                    }
-
-                    this.isSubmitting = true;
-
-                    const formData = new FormData(formElement);
-
-                    try {
-                        const response = await fetch(formElement.action, {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            body: formData
-                        });
-
-                        const data = await response.json();
-                        if (response.ok) {
-                            const currentName = formElement.querySelector('[name="name"]')?.value || '';
-                            const initialName = config.name || '';
-                            const photoChanged = !!this.croppedAvatar;
-                            const nameChanged = currentName !== initialName;
-
-                            Swal.fire({
-                                toast: true,
-                                position: '{{ $toastPosition ?? "top-end" }}',
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: data.message || 'Profile settings saved.',
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal.stopTimer;
-                                    toast.onmouseleave = Swal.resumeTimer;
-                                }
-                            });
-
-                            if (photoChanged || nameChanged) {
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1000);
-                            }
-                        } else {
-                            let errorText = 'An error occurred.';
-                            if (data.errors) {
-                                errorText = Object.values(data.errors).flat().join(' ');
-                            } else if (data.message) {
-                                errorText = data.message;
-                            }
-
-                            Swal.fire({
-                                toast: true,
-                                position: '{{ $toastPosition ?? "top-end" }}',
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                                icon: 'error',
-                                title: errorText
-                            });
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        Swal.fire({
-                            toast: true,
-                            position: '{{ $toastPosition ?? "top-end" }}',
-                            showConfirmButton: false,
-                            timer: 1000,
-                            timerProgressBar: true,
-                            icon: 'error',
-                            title: 'Could not save profile settings. Please try again.'
-                        });
-                    } finally {
-                        this.isSubmitting = false;
+                    if (result.isConfirmed) {
+                        this.isSubmitting = true;
+                        formElement.submit();
                     }
                 }
             };

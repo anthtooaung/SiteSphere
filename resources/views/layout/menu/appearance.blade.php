@@ -75,7 +75,6 @@
                     themes: @js($presetThemeOptions),
                     fonts: @js($fontOptions),
                     isSubmitting: false,
-                    initialMenuLocation: '{{ $selectedMenuLocation }}',
                     selectedTheme() {
                         return this.themes.find((theme) => theme.id === Number(this.selectedThemeId)) || this.themes[0];
                     },
@@ -140,78 +139,9 @@
                             confirmButtonText: 'Yes, save it!'
                         });
 
-                        if (!result.isConfirmed) {
-                            return;
-                        }
-
-                        this.isSubmitting = true;
-
-                        const formData = new FormData(formElement);
-
-                        try {
-                            const response = await fetch(formElement.action, {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '',
-                                    'X-Requested-With': 'XMLHttpRequest'
-                                },
-                                body: formData
-                            });
-
-                            const data = await response.json();
-
-                            if (response.ok) {
-                                const locationChanged = formData.get('menuBar_location') !== this.initialMenuLocation;
-                                Swal.fire({
-                                    toast: true,
-                                    position: formData.get('noti_location') || 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 1000,
-                                    timerProgressBar: true,
-                                    icon: 'success',
-                                    title: data.message || 'Appearance settings saved.',
-                                    didOpen: (toast) => {
-                                        toast.onmouseenter = Swal.stopTimer;
-                                        toast.onmouseleave = Swal.resumeTimer;
-                                    },
-                                    ...(locationChanged ? {
-                                        willClose: () => {
-                                            location.reload();
-                                        }
-                                    } : {})
-                                });
-                            } else {
-                                let errorText = 'An error occurred.';
-                                if (data.errors) {
-                                    errorText = Object.values(data.errors).flat().join(' ');
-                                } else if (data.message) {
-                                    errorText = data.message;
-                                }
-
-                                Swal.fire({
-                                    toast: true,
-                                    position: '{{ $toastPosition ?? "top-end" }}',
-                                    showConfirmButton: false,
-                                    timer: 1000,
-                                    timerProgressBar: true,
-                                    icon: 'error',
-                                    title: errorText
-                                });
-                            }
-                        } catch (error) {
-                            console.error(error);
-                            Swal.fire({
-                                toast: true,
-                                position: '{{ $toastPosition ?? "top-end" }}',
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                                icon: 'error',
-                                title: 'Could not save appearance settings. Please try again.'
-                            });
-                        } finally {
-                            this.isSubmitting = false;
+                        if (result.isConfirmed) {
+                            this.isSubmitting = true;
+                            formElement.submit();
                         }
                     }
                 }"

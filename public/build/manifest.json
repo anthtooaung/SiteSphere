@@ -1,0 +1,173 @@
+{
+  "resources/css/about-us.css": {
+    "file": "assets/about-us-DEcIBZOO.css",
+    "name": "about-us",
+    "names": [
+      "about-us.css"
+    ],
+    "src": "resources/css/about-us.css",
+    "isEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-gJdw8Qj-.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/css/appearance.css": {
+    "file": "assets/appearance-CcM7Ecn_.css",
+    "name": "appearance",
+    "names": [
+      "appearance.css"
+    ],
+    "src": "resources/css/appearance.css",
+    "isEntry": true
+  },
+  "resources/css/auth.css": {
+    "file": "assets/auth-DpxuvKPr.css",
+    "name": "auth",
+    "names": [
+      "auth.css"
+    ],
+    "src": "resources/css/auth.css",
+    "isEntry": true
+  },
+  "resources/css/edit-profile.css": {
+    "file": "assets/edit-profile-D2ikRKXI.css",
+    "name": "edit-profile",
+    "names": [
+      "edit-profile.css"
+    ],
+    "src": "resources/css/edit-profile.css",
+    "isEntry": true
+  },
+  "resources/css/edit-tag.css": {
+    "file": "assets/edit-tag-Ce3JU3gr.css",
+    "name": "edit-tag",
+    "names": [
+      "edit-tag.css"
+    ],
+    "src": "resources/css/edit-tag.css",
+    "isEntry": true
+  },
+  "resources/css/homepage.css": {
+    "file": "assets/homepage-CAI3NfHU.css",
+    "name": "homepage",
+    "names": [
+      "homepage.css"
+    ],
+    "src": "resources/css/homepage.css",
+    "isEntry": true
+  },
+  "resources/css/post-detail.css": {
+    "file": "assets/post-detail-CcQUrb8m.css",
+    "name": "post-detail",
+    "names": [
+      "post-detail.css"
+    ],
+    "src": "resources/css/post-detail.css",
+    "isEntry": true
+  },
+  "resources/css/profile-detail.css": {
+    "file": "assets/profile-detail-DwupMGuY.css",
+    "name": "profile-detail",
+    "names": [
+      "profile-detail.css"
+    ],
+    "src": "resources/css/profile-detail.css",
+    "isEntry": true
+  },
+  "resources/css/reports.css": {
+    "file": "assets/reports-DZnlLPiF.css",
+    "name": "reports",
+    "names": [
+      "reports.css"
+    ],
+    "src": "resources/css/reports.css",
+    "isEntry": true
+  },
+  "resources/css/security.css": {
+    "file": "assets/security-BlrgRii_.css",
+    "name": "security",
+    "names": [
+      "security.css"
+    ],
+    "src": "resources/css/security.css",
+    "isEntry": true
+  },
+  "resources/css/upload-post.css": {
+    "file": "assets/upload-post-D7Le89Yx.css",
+    "name": "upload-post",
+    "names": [
+      "upload-post.css"
+    ],
+    "src": "resources/css/upload-post.css",
+    "isEntry": true
+  },
+  "resources/css/welcome.css": {
+    "file": "assets/welcome-ClMwL5_E.css",
+    "name": "welcome",
+    "names": [
+      "welcome.css"
+    ],
+    "src": "resources/css/welcome.css",
+    "isEntry": true
+  },
+  "resources/js/about-us.js": {
+    "file": "assets/about-us-19lCaPL-.js",
+    "name": "about-us",
+    "src": "resources/js/about-us.js",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-B5jh3k8v.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/auth.js": {
+    "file": "assets/auth-BoTqWs1n.js",
+    "name": "auth",
+    "src": "resources/js/auth.js",
+    "isEntry": true
+  },
+  "resources/js/homepage.js": {
+    "file": "assets/homepage-BCqAzC8H.js",
+    "name": "homepage",
+    "src": "resources/js/homepage.js",
+    "isEntry": true
+  },
+  "resources/js/post-detail.js": {
+    "file": "assets/post-detail-CVOlIW0L.js",
+    "name": "post-detail",
+    "src": "resources/js/post-detail.js",
+    "isEntry": true
+  },
+  "resources/js/profile-detail.js": {
+    "file": "assets/profile-detail-_ktBVSMf.js",
+    "name": "profile-detail",
+    "src": "resources/js/profile-detail.js",
+    "isEntry": true
+  },
+  "resources/js/reset-password.js": {
+    "file": "assets/reset-password-COLYC4GN.js",
+    "name": "reset-password",
+    "src": "resources/js/reset-password.js",
+    "isEntry": true
+  },
+  "resources/js/upload-post.js": {
+    "file": "assets/upload-post-CXaIxo-k.js",
+    "name": "upload-post",
+    "src": "resources/js/upload-post.js",
+    "isEntry": true
+  },
+  "resources/js/welcome.js": {
+    "file": "assets/welcome-CGVh2Q2y.js",
+    "name": "welcome",
+    "src": "resources/js/welcome.js",
+    "isEntry": true
+  }
+}

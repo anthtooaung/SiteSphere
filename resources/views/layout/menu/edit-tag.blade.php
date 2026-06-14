@@ -47,14 +47,9 @@
                 async confirmSubmit(title, text) {
                     if (this.isSubmitting) return;
 
-                    const result = await Swal.fire({
+                    const result = await window.sitesphereSwal.confirm({
                         title: title,
-                        text: text,
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, proceed!'
+                        text: text
                     });
 
                     if (result.isConfirmed) {
@@ -63,13 +58,10 @@
                     }
                 },
                 async confirmReset(formElement) {
-                    const result = await Swal.fire({
+                    const result = await window.sitesphereSwal.confirm({
                         title: 'Reset to Defaults?',
                         text: 'Are you sure you want to revert all tag styles to system defaults? This cannot be undone.',
                         icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
                         confirmButtonText: 'Yes, reset them!'
                     });
 
@@ -138,22 +130,11 @@
                         return;
                     }
 
-                    const result = await Swal.fire({
+                    const result = await window.sitesphereSwal.confirm({
                         title: 'Delete Category?',
                         text: `Are you sure you want to delete "${category.name}"? This action cannot be undone.`,
                         icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, delete it!',
-                        background: 'var(--background-color)',
-                        color: 'var(--text-color)',
-                        customClass: {
-                            title: 'font-sans'
-                        },
-                        didOpen: (popup) => {
-                            popup.style.fontFamily = 'var(--font-family)';
-                        }
+                        confirmButtonText: 'Yes, delete it!'
                     });
 
                     if (result.isConfirmed) {
@@ -186,22 +167,11 @@
                         return;
                     }
 
-                    const result = await Swal.fire({
+                    const result = await window.sitesphereSwal.confirm({
                         title: 'Delete Tag?',
                         text: `Are you sure you want to delete "${tag.name}"? This action cannot be undone.`,
                         icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, delete it!',
-                        background: 'var(--background-color)',
-                        color: 'var(--text-color)',
-                        customClass: {
-                            title: 'font-sans'
-                        },
-                        didOpen: (popup) => {
-                            popup.style.fontFamily = 'var(--font-family)';
-                        }
+                        confirmButtonText: 'Yes, delete it!'
                     });
 
                     if (result.isConfirmed) {
@@ -623,27 +593,10 @@
     @if(session('success') || $errors->any())
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const isSuccess = {{ session()->has('success') ? 'true' : 'false' }};
-                const message = `{!! session('success') ?? $errors->first() !!}`;
-
-                Swal.fire({
-                    toast: true,
-                    position: '{{ $toastPosition ?? "top-end" }}',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    icon: isSuccess ? 'success' : 'error',
-                    title: message,
-                    background: 'var(--background-color)',
-                    color: 'var(--text-color)',
-                    customClass: {
-                        title: 'font-sans'
-                    },
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                        toast.style.fontFamily = 'var(--font-family)';
-                    }
+                window.sitesphereSwal.toast({
+                    icon: '{{ session('success') ? 'success' : 'error' }}',
+                    title: `{!! session('success') ?? $errors->first() !!}`,
+                    position: '{{ $toastPosition ?? "top-end" }}'
                 });
             });
         </script>

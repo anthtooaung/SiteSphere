@@ -6,4 +6,53 @@ import 'flowbite';
 
 window.Alpine = Alpine;
 
+window.sitesphereSwal = {
+    getTheme() {
+        const style = getComputedStyle(document.documentElement);
+        return {
+            background: style.getPropertyValue('--background-color').trim() || '#ffffff',
+            color: style.getPropertyValue('--text-color').trim() || '#0d1b2a',
+            confirmButtonColor: style.getPropertyValue('--accent-color').trim() || '#6c5ce7',
+            fontFamily: style.getPropertyValue('--font-family').trim() || 'Figtree, sans-serif'
+        };
+    },
+    async confirm(options = {}) {
+        const theme = this.getTheme();
+        return await window.Swal.fire({
+            icon: options.icon || 'question',
+            title: options.title || 'Are you sure?',
+            text: options.text || '',
+            showCancelButton: true,
+            cancelButtonColor: '#d33',
+            background: theme.background,
+            color: theme.color,
+            confirmButtonColor: theme.confirmButtonColor,
+            didOpen: (popup) => {
+                popup.style.fontFamily = theme.fontFamily;
+            },
+            ...options
+        });
+    },
+    toast(options = {}) {
+        const theme = this.getTheme();
+        window.Swal.fire({
+            toast: true,
+            position: options.position || 'top-end',
+            showConfirmButton: false,
+            timer: options.timer || 3000,
+            timerProgressBar: true,
+            icon: options.icon || 'success',
+            title: options.title || '',
+            background: theme.background,
+            color: theme.color,
+            didOpen: (toast) => {
+                toast.onmouseenter = window.Swal.stopTimer;
+                toast.onmouseleave = window.Swal.resumeTimer;
+                toast.style.fontFamily = theme.fontFamily;
+            },
+            ...options
+        });
+    }
+};
+
 Alpine.start();

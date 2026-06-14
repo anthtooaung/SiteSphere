@@ -7,6 +7,22 @@ This document maps every button click action and its corresponding database inte
 
 ### Public & Auth Pages
 
+#### Global Navigation & Footer
+- **[Login / Register] / [Profile Menu]** - Navigation Bar
+  - **Type:** Navigation / Dropdown Toggle
+  - **Action:** Opens the login/register modals or the authenticated user profile dropdown menu.
+  - **DB Interaction:** None (UI action).
+
+- **Mobile Bottom Nav Items** - Mobile Navigation Bar
+  - **Type:** Navigation
+  - **Action:** Navigates to Home, Create Post, Notifications, or Profile.
+  - **DB Interaction:** None directly (triggers page load).
+
+- **Footer Links (Create Post, About, Social Links)** - Footer
+  - **Type:** Navigation
+  - **Action:** Opens new pages or external social media profiles (LinkedIn, Telegram, GitHub).
+  - **DB Interaction:** None.
+
 #### Welcome Page (`/`)
 - **[Explore]** - Hero Section
   - **Type:** Navigation
@@ -21,7 +37,7 @@ This document maps every button click action and its corresponding database inte
 - **[Submit]** - Contact Form Section
   - **Type:** Mutation
   - **Action:** Submits the contact form.
-  - **DB Interaction:** Write to `ContactMessages` / Send email via `ContactMessageController@store`.
+  - **DB Interaction:** Send email via `ContactMessageController@store` (No database mutation).
 
 #### Auth Pages (`/login`, `/register`, `/forgot-password`, `/reset-password`)
 - **[Login]** - Login Form
@@ -59,10 +75,45 @@ This document maps every button click action and its corresponding database inte
   - **Action:** Initiates password reset process or finalizes new password.
   - **DB Interaction:** Write to `OtpVerifications`, Update `Users`.
 
+- **[showRegister] / [showLogin]** - Auth Modals/Toggles
+  - **Type:** Navigation
+  - **Action:** Toggles between login and registration views (often via JS).
+  - **DB Interaction:** None.
+
+- **[confirmRegisterBtn]** - Final Registration Step
+  - **Type:** Mutation
+  - **Action:** Submits the complete registration form.
+  - **DB Interaction:** Write to `Users`.
+
+- **[backToProfileBtn] / [closeRegistrationFlow]** - Registration UI
+  - **Type:** Navigation
+  - **Action:** Navigates back a step or dismisses the registration flow overlay.
+  - **DB Interaction:** None.
+
+- **[Show password]** - Auth Inputs
+  - **Type:** UI Toggle
+  - **Action:** Toggles visibility of the password input field.
+  - **DB Interaction:** None.
+
 #### Home Page (`/home`)
-- **[Menu]** - Sidebar Toggle
+- **[Menu] / [sidebarToggle]** - Sidebar Toggles
   - **Type:** Navigation
   - **Action:** Toggles the sidebar menu via JS.
+  - **DB Interaction:** None.
+
+- **[showCategoryBtn]** - Categories Toggle
+  - **Type:** UI Toggle
+  - **Action:** Expands or collapses the category filter list.
+  - **DB Interaction:** None.
+
+- **Author Profile Link** - Post Card
+  - **Type:** Navigation
+  - **Action:** Navigates to the author's public profile (`/profile/{slug}`).
+  - **DB Interaction:** None.
+
+- **[Read Reviews] / [Visit Website]** - Post Card
+  - **Type:** Navigation
+  - **Action:** Redirects to the Post Detail page or opens the external website link in a new tab.
   - **DB Interaction:** None.
 
 - **[Clear All Filters]** - Filters Section
@@ -101,6 +152,11 @@ This document maps every button click action and its corresponding database inte
   - **Action:** Toggles a reaction (like) on a comment.
   - **DB Interaction:** Write/Delete from `CommentReactions`.
 
+- **[See more]** - Comment Toggles
+  - **Type:** UI Toggle
+  - **Action:** Expands truncated long comments to show full text.
+  - **DB Interaction:** None.
+
 #### Profile Detail Page (`/profile/{slug?}`)
 - **[Edit Profile]** - Profile Header
   - **Type:** Navigation
@@ -111,3 +167,8 @@ This document maps every button click action and its corresponding database inte
   - **Type:** Navigation
   - **Action:** Redirects to the specific user's profile detail page.
   - **DB Interaction:** None.
+
+- **Profile Links (Email, Phone, "View all reviews")** - Profile Card
+  - **Type:** Navigation
+  - **Action:** Opens the email client, initiates a phone call, or filters the profile to show all user reviews.
+  - **DB Interaction:** None (Client-side triggers or mailto/tel links).

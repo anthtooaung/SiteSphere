@@ -209,14 +209,9 @@
                 async submitForm(formElement) {
                     if (this.isSubmitting) return;
 
-                    const result = await Swal.fire({
+                    const result = await window.sitesphereSwal.confirm({
                         title: 'Save Changes?',
-                        text: 'Are you sure you want to apply these security settings?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, save it!'
+                        text: 'Are you sure you want to apply these security settings?'
                     });
 
                     if (result.isConfirmed) {
@@ -231,13 +226,7 @@
     @if (session('success'))
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                Swal.fire({
-                    toast: true,
-                    position: '{{ $toastPosition ?? "top-end" }}',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true,
-                    icon: 'success',
+                window.sitesphereSwal.toast({
                     title: "{{ session('success') }}"
                 });
             });
@@ -247,12 +236,7 @@
     @if ($errors->any())
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                Swal.fire({
-                    toast: true,
-                    position: '{{ $toastPosition ?? "top-end" }}',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true,
+                window.sitesphereSwal.toast({
                     icon: 'error',
                     title: "{{ implode(' ', $errors->all()) }}"
                 });

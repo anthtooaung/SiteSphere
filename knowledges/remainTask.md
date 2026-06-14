@@ -34,6 +34,11 @@ This document maps every button click action and its corresponding database inte
   - **Action:** Creates a new user account.
   - **DB Interaction:** Write to `Users`.
 
+- **[Continue with Google / GitHub]** - Social Login
+  - **Type:** Mutation
+  - **Action:** Authenticates or registers the user via Socialite.
+  - **DB Interaction:** Read/Write `SocialAccounts` and `Users`.
+
 - **[Continue Profile / Skip Profile]** - Registration Flow
   - **Type:** Navigation / Mutation
   - **Action:** Updates profile details or skips to the next step.
@@ -55,6 +60,11 @@ This document maps every button click action and its corresponding database inte
   - **DB Interaction:** Write to `OtpVerifications`, Update `Users`.
 
 #### Home Page (`/home`)
+- **[Menu]** - Sidebar Toggle
+  - **Type:** Navigation
+  - **Action:** Toggles the sidebar menu via JS.
+  - **DB Interaction:** None.
+
 - **[Clear All Filters]** - Filters Section
   - **Type:** Filter
   - **Action:** Clears active category, tag, or rating filters via AlpineJS.
@@ -97,7 +107,7 @@ This document maps every button click action and its corresponding database inte
   - **Action:** Redirects to Edit Profile page.
   - **DB Interaction:** None.
 
-- **[Give rating / View all ratings]** - Stats Section
+- **[View Profile (Message)]** - Profile Card
   - **Type:** Navigation
-  - **Action:** Redirects to the Home page to browse ratings.
+  - **Action:** Redirects to the specific user's profile detail page.
   - **DB Interaction:** None.

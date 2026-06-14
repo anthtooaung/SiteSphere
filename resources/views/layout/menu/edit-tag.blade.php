@@ -19,6 +19,7 @@
         window.editTagPage = function (initialState) {
             return {
                 isAdmin: Boolean(initialState.isAdmin),
+                isSubmitting: false,
                 categories: (initialState.taxonomy || []).map((category) => ({
                     ...category,
                     uid: category.id || `new-${crypto.randomUUID()}`,
@@ -42,6 +43,39 @@
                             color: tag.color,
                         })),
                     })));
+                },
+                async confirmSubmit(title, text) {
+                    if (this.isSubmitting) return;
+
+                    const result = await Swal.fire({
+                        title: title,
+                        text: text,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: 'var(--accent-color, #6c5ce7)',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, proceed!'
+                    });
+
+                    if (result.isConfirmed) {
+                        this.isSubmitting = true;
+                        document.querySelector('[data-edit-tag-form]').submit();
+                    }
+                },
+                async confirmReset(formElement) {
+                    const result = await Swal.fire({
+                        title: 'Reset to Defaults?',
+                        text: 'Are you sure you want to revert all tag styles to system defaults? This cannot be undone.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, reset them!'
+                    });
+
+                    if (result.isConfirmed) {
+                        formElement.submit();
+                    }
                 },
                 filteredCategories() {
                     const query = this.search.trim().toLowerCase();
@@ -482,21 +516,7 @@
                                         <x-fas-plus class="btn-icon" aria-hidden="true" />
                                         <span>Add Category</span>
                                     </button>
-                                    <button type="button" class="btn-primary" data-edit-tag-publish @click="
-                                        Swal.fire({
-                                            title: 'Publish Tags?',
-                                            text: 'Are you sure you want to publish these tags to all users?',
-                                            icon: 'question',
-                                            showCancelButton: true,
-                                            confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-                                            cancelButtonColor: '#d33',
-                                            confirmButtonText: 'Yes, publish!'
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                document.querySelector('[data-edit-tag-form]').submit();
-                                            }
-                                        })
-                                    ">
+                                    <button type="button" class="btn-primary" data-edit-tag-publish @click="confirmSubmit('Publish Tags?', 'Are you sure you want to publish these tags to all users?')">
                                         <span class="button-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <path d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
@@ -506,21 +526,7 @@
                                         </span>
                                     </button>
                                 @else
-                                    <button type="button" class="btn-primary" data-edit-tag-save @click="
-                                        Swal.fire({
-                                            title: 'Save Tags?',
-                                            text: 'Are you sure you want to save these tag styles?',
-                                            icon: 'question',
-                                            showCancelButton: true,
-                                            confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-                                            cancelButtonColor: '#d33',
-                                            confirmButtonText: 'Yes, save it!'
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                document.querySelector('[data-edit-tag-form]').submit();
-                                            }
-                                        })
-                                    ">
+                                    <button type="button" class="btn-primary" data-edit-tag-save @click="confirmSubmit('Save Tags?', 'Are you sure you want to save these tag styles?')">
                                         <span class="button-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <path d="M8.5 1.5A1.5 1.5 0 0 1 10 3v1.5A1.5 1.5 0 0 1 8.5 6h-3A1.5 1.5 0 0 1 4 4.5v-3h4.5Z" />
@@ -537,7 +543,7 @@
 
                 @unless ($isAdminTagEditor)
                     <form method="POST" action="{{ route('edit-tag.reset') }}" class="edit-tag-reset-form"
-                        data-edit-tag-reset-form>
+                        data-edit-tag-reset-form @submit.prevent="confirmReset($el)">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn-secondary" data-edit-tag-reset>

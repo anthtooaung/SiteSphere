@@ -254,27 +254,29 @@ class PostsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Posts $posts)
+    public function updateDescription(Request $request, Posts $post): RedirectResponse
     {
-        //
+        $this->authorize('update', $post);
+
+        $validated = $request->validate([
+            'description' => 'required|string|max:5000',
+        ]);
+
+        $post->userPosts()
+            ->where('user_id', $request->user()->id)
+            ->update(['description' => $validated['description']]);
+
+        return back()->with('success', 'Description updated successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePostsRequest $request, Posts $posts)
+    public function destroyDescription(Request $request, Posts $post): RedirectResponse
     {
-        //
-    }
+        $this->authorize('delete', $post);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Posts $posts)
-    {
-        //
+        $post->userPosts()
+            ->where('user_id', $request->user()->id)
+            ->delete();
+
+        return back()->with('success', 'Description deleted successfully.');
     }
 }

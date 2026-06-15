@@ -23,6 +23,16 @@ class CommentsController extends Controller
 
         $user = $request->user();
 
+        // Prevent author from commenting
+        if ($posts->userPosts()->where('user_id', $user->id)->exists()) {
+            return back()->withErrors(['error' => 'You cannot comment on your own post.']);
+        }
+
+        // Limit to one comment per post
+        if (Comments::query()->where('user_id', $user->id)->where('post_id', $posts->id)->exists()) {
+            return back()->withErrors(['error' => 'You have already commented on this post.']);
+        }
+
         DB::transaction(function () use ($posts, $user, $validated): void {
             Comments::query()->create([
                 'user_id' => $user->id,
@@ -42,5 +52,33 @@ class CommentsController extends Controller
         });
 
         return back()->with('success', 'Review submitted successfully.');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Comments $comment): RedirectResponse
+    {
+        $this->authorize('update', $comment);
+
+        $validated = $request->validate([
+            'content' => 'required|string|max:2000',
+        ]);
+
+        $comment->update($validated);
+
+        return back()->with('success', 'Comment updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Comments $comment): RedirectResponse
+    {
+        $this->authorize('delete', $comment);
+
+        $comment->delete();
+
+        return back()->with('success', 'Comment deleted successfully.');
     }
 }

@@ -34,12 +34,16 @@ Route::get('/home', HomeController::class)->name('home');
 Route::middleware('auth')->group(function (): void {
     Route::get('/posts/create', [PostsController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostsController::class, 'store'])->name('posts.store');
+    Route::patch('/posts/{post}/description', [PostsController::class, 'updateDescription'])->name('posts.description.update');
+    Route::delete('/posts/{post}/description', [PostsController::class, 'destroyDescription'])->name('posts.description.destroy');
     Route::post('/posts/{post}/bookmark', [BookmarksController::class, 'store'])->name('posts.bookmark');
     Route::post('/posts/{post}/report', [ReportsController::class, 'store'])->name('posts.report');
     Route::post('/posts/{post}/ban', [PostsController::class, 'ban'])->name('posts.ban');
     Route::post('/audits/{userPost}/ban', [PostsController::class, 'banAudit'])->name('audits.ban');
 
     Route::post('/posts/{posts:slug}/comments', [CommentsController::class, 'store'])->name('posts.comments.store');
+    Route::patch('/comments/{comment}', [CommentsController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/{comment}/react', [CommentReactionsController::class, 'toggle'])->name('comments.react');
 });
 

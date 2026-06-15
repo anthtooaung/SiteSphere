@@ -1,68 +1,54 @@
-@extends('dashboard')
+<?php
 
-@section('title')
-    Dashboard
-@endsection
+$content = file_get_contents('resources/views/layout/menu/dashboard.blade.php');
 
-@section('content')
-    @php
-        $dashboardMenuLocation = in_array($menuBarLocation ?? 'left', ['top', 'right', 'bottom', 'left'], true)
-            ? $menuBarLocation
-            : 'left';
-    @endphp
-
-    <x-layout.nav />
-
-    <div class="dashboard-page dashboard-page--{{ $dashboardMenuLocation }}">
-        <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
-
-        <main class="dashboard-content dashboard-home-content" aria-labelledby="dashboardTitle">
-            @if($isAdmin)
+$newAdminContent = <<<HTML
+            @if(\$isAdmin)
                 @php
-                    $jsStats = [
+                    \$jsStats = [
                         [
                             "name" => "Site Reviews",
-                            "value" => $stats['totalReviews'],
-                            "logVal" => log10(max(1, $stats['totalReviews'])),
+                            "value" => \$stats['totalReviews'],
+                            "logVal" => log10(max(1, \$stats['totalReviews'])),
                             "color" => "#8b5cf6",
                             "icon" => "magnifying-glass",
                             "trendHtml" => ""
                         ],
                         [
                             "name" => "Total Users",
-                            "value" => $stats['totalUsers'],
-                            "logVal" => log10(max(1, $stats['totalUsers'])),
+                            "value" => \$stats['totalUsers'],
+                            "logVal" => log10(max(1, \$stats['totalUsers'])),
                             "color" => "#6366f1",
                             "icon" => "users",
                             "trendHtml" => ""
                         ],
                         [
                             "name" => "Open Reports",
-                            "value" => $stats['totalReports'],
-                            "logVal" => log10(max(1, $stats['totalReports'])),
+                            "value" => \$stats['totalReports'],
+                            "logVal" => log10(max(1, \$stats['totalReports'])),
                             "color" => "#ef4444",
                             "icon" => "flag",
                             "trendHtml" => ""
                         ]
                     ];
                     
-                    $jsActs = $recentActivity->map(function($log) {
-                        $colorStr = $log->getColor();
-                        $iconStr = $log->getIcon();
-                        $iconStr = str_replace('fa-', '', $iconStr);
+                    \$jsActs = \$recentActivity->map(function(\$log) {
+                        \$colorStr = \$log->getColor();
+                        \$iconStr = \$log->getIcon();
+                        \$iconStr = str_replace('fa-', '', \$iconStr);
                         return [
-                            "color" => $colorStr,
-                            "icon" => $iconStr,
-                            "txt" => $log->action,
-                            "time" => $log->created_at->diffForHumans()
+                            "color" => \$colorStr,
+                            "icon" => \$iconStr,
+                            "txt" => \$log->action,
+                            "time" => \$log->created_at->diffForHumans()
                         ];
                     })->toArray();
                     
-                    $jsPosts = $topPosts->map(function($post) {
+                    \$jsPosts = \$topPosts->map(function(\$post) {
                         return [
-                            "title" => $post->title,
-                            "rating" => round($post->ratings_avg_rating ?? 0),
-                            "comments" => $post->comments_count
+                            "title" => \$post->title,
+                            "rating" => round(\$post->ratings_avg_rating ?? 0),
+                            "comments" => \$post->comments_count
                         ];
                     })->toArray();
                 @endphp
@@ -72,9 +58,9 @@
                 @push('scripts')
                     <script>
                         window.AdminDashboardData = {
-                            stats: @json($jsStats),
-                            recentActivity: @json($jsActs),
-                            topPosts: @json($jsPosts)
+                            stats: @json(\$jsStats),
+                            recentActivity: @json(\$jsActs),
+                            topPosts: @json(\$jsPosts)
                         };
                     </script>
                     @vite('resources/js/admin-dashboard.js')
@@ -152,7 +138,7 @@
                                   <span class="kpi-lbl">Total Users</span>
                                 </div>
                                 <div class="ov9-kpi-bottom">
-                                  <div class="kpi-val" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalUsers']) }}</div>
+                                  <div class="kpi-val" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format(\$stats['totalUsers']) }}</div>
                                 </div>
                               </div>
                               <div class="ov9-kpi-right">
@@ -171,7 +157,7 @@
                                   <span class="kpi-lbl">Reviews</span>
                                 </div>
                                 <div class="ov9-kpi-bottom">
-                                  <div class="kpi-val" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalReviews']) }}</div>
+                                  <div class="kpi-val" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format(\$stats['totalReviews']) }}</div>
                                 </div>
                               </div>
                               <div class="ov9-kpi-right">
@@ -190,7 +176,7 @@
                                   <span class="kpi-lbl">Reports</span>
                                 </div>
                                 <div class="ov9-kpi-bottom">
-                                  <div class="kpi-val kpi-val--danger" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalReports']) }}</div>
+                                  <div class="kpi-val kpi-val--danger" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format(\$stats['totalReports']) }}</div>
                                 </div>
                               </div>
                               <div class="ov9-kpi-right">
@@ -246,53 +232,12 @@
                     </div>
                   </div>
                 </div>
-            @else
-                <section class="dashboard-panel">
-                    <p class="dashboard-kicker">Dashboard</p>
-                    <h1 id="dashboardTitle">Welcome back, {{ auth()->user()->name }}</h1>
-                    <p>
-                        Your workspace is ready with your latest review activity.
-                    </p>
-                </section>
+HTML;
 
-                <section class="dashboard-stat-grid" aria-label="Dashboard statistics">
-                    <article class="dashboard-stat-card">
-                        <span>Total Reviews</span>
-                        <strong>{{ number_format($stats['totalReviews']) }}</strong>
-                    </article>
+$pattern = '/@if\(\$isAdmin\).*?(?=@else\b)/s';
+$content = preg_replace($pattern, $newAdminContent, $content);
+$content = str_replace('@if($isAdmin) x-data="{ activeKpi: null, hoveredKpi: null }" @endif', '', $content);
+file_put_contents('resources/views/layout/menu/dashboard.blade.php', $content);
 
-                    <article class="dashboard-stat-card">
-                        <span>Saved Posts</span>
-                        <strong>{{ number_format($stats['savedPosts']) }}</strong>
-                    </article>
-
-                    <article class="dashboard-stat-card">
-                        <span>Ratings Given</span>
-                        <strong>{{ number_format($stats['ratingsGiven']) }}</strong>
-                    </article>
-
-                    <article class="dashboard-stat-card">
-                        <span>Reviewed Websites</span>
-                        <strong>{{ number_format($stats['reviewedWebsites']) }}</strong>
-                    </article>
-                </section>
-
-                <section class="dashboard-panel dashboard-activity-panel" aria-labelledby="dashboardRecentReviewsTitle">
-                    <div class="dashboard-section-heading">
-                        <p class="dashboard-kicker">Recent Activity</p>
-                        <h2 id="dashboardRecentReviewsTitle">Recent reviews</h2>
-                    </div>
-
-                    @forelse ($recentReviews as $review)
-                        <a class="dashboard-activity-link" href="{{ route('posts.show', $review->post->slug) }}">
-                            <span>{{ $review->post->title }}</span>
-                            <small>{{ $review->created_at->diffForHumans() }}</small>
-                        </a>
-                    @empty
-                        <p class="dashboard-empty-state">No reviews yet.</p>
-                    @endforelse
-                </section>
-            @endif
-        </main>
-    </div>
-@endsection
+echo "Replaced.";
+?>

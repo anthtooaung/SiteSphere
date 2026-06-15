@@ -34,17 +34,17 @@ class CommentsPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Comments $comments): bool
+    public function update(User $user, Comments $comment): bool
     {
-        return false;
+        return $user->id === $comment->user_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Comments $comments): bool
+    public function delete(User $user, Comments $comment): bool
     {
-        return false;
+        return $user->id === $comment->user_id;
     }
 
     /**

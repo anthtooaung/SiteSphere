@@ -203,10 +203,11 @@
 
         {{-- stars section --}}
         <div
-            class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_88%,var(--accent-color,#6c5ce7)_12%)]">
+            class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_88%,var(--accent-color,#6c5ce7)_12%)]"
+            role="img" x-bind:aria-label="averageRating() + ' out of 5 stars'">
             <span class="text-[13px] font-extrabold leading-none [color:var(--accent-color,#6c5ce7)]"
                 x-text="averageRating()">{{ number_format((float) $averageRating, 1) }}</span>
-            <div class="flex items-center gap-0.5 [color:var(--accent-color,#6c5ce7)]">
+            <div class="flex items-center gap-0.5 [color:var(--accent-color,#6c5ce7)]" aria-hidden="true">
                 @foreach (range(1, 5) as $star)
                     <x-fas-star class="size-2.5"
                         x-bind:class="Number(averageRating()) >= {{ $star }} ? '[color:var(--accent-color,#6c5ce7)]' :
@@ -298,9 +299,8 @@
                 </div>
             </div>
 
-            <a x-bind:href="currentProfile.user_id ? '{{ $slug ? route('posts.show', $slug) : '#' }}' + '#detail-user-' + currentProfile.user_id : '{{ $slug ? route('posts.show', $slug) : '#' }}'"
-                class="block space-y-1.5 px-3 py-2.5 rounded-b-xl transition-all duration-200 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_6%,transparent)] cursor-pointer no-underline"
-                @if(!$slug) x-on:click.prevent @endif>
+            <a x-bind:href="'{{ $slug ? route('posts.show', $slug) : '#' }}' + '#panel-user-' + (currentProfile.user_id ? currentProfile.user_id : 'anonymous-' + activeProfile)"
+                class="block space-y-1.5 px-3 py-2.5 rounded-b-xl transition-all duration-200 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_6%,transparent)] cursor-pointer no-underline">
                 <div class="flex items-center gap-2 text-xs">
                     <span class="font-bold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_52%,transparent)]"
                         x-text="currentProfile.time">{{ $profiles[0]['time'] ?? '' }}</span>

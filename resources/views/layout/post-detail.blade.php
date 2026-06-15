@@ -507,8 +507,8 @@
                                         @endphp
                                         <article
                                             class="aud-depo-panel"
-                                            id="panel-user-{{ $userPost->user->id }}"
-                                            data-panel="user-{{ $userPost->user->id }}"
+                                            id="panel-user-{{ $isProfileVisible ? $userPost->user->id : 'anonymous-' . $loop->index }}"
+                                            data-panel="user-{{ $isProfileVisible ? $userPost->user->id : 'anonymous-' . $loop->index }}"
                                             @if(!$loop->first) hidden @endif
                                             x-data="{
                                                 actionsOpen: false,

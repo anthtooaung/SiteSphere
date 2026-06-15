@@ -34,17 +34,17 @@ class PostsPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Posts $posts): bool
+    public function update(User $user, Posts $post): bool
     {
-        return false;
+        return $post->userPosts()->where('user_id', $user->id)->exists();
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Posts $posts): bool
+    public function delete(User $user, Posts $post): bool
     {
-        return false;
+        return $post->userPosts()->where('user_id', $user->id)->exists();
     }
 
     /**

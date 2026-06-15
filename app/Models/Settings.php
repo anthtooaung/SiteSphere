@@ -15,6 +15,20 @@ class Settings extends Model
     use HasFactory;
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'dark_mode' => 'boolean',
+            'user_post_visible' => 'boolean',
+            'use_custom_theme' => 'boolean',
+        ];
+    }
+
+    /**
      * Theme relation (default theme)
      */
     public function theme(): BelongsTo

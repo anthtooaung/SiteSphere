@@ -14,6 +14,18 @@ class UserPosts extends Model
 
     protected $guarded = [];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'user_hidden' => 'boolean',
+        ];
+    }
+
     public function post(): BelongsTo
     {
         return $this->belongsTo(Posts::class, 'post_id');

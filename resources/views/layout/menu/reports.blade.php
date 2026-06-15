@@ -703,33 +703,28 @@ $reportFilters = $reportFilters ?? [
                 </div>`;
         }
 
-        Swal.fire({
+        window.sitesphereSwal.fire({
             title: title,
             html: content,
             confirmButtonText: 'Close System View',
-            confirmButtonColor: '#1e293b',
             width: '600px'
         });
     }
 
-    function executeDelete(type, id) {
-        Swal.fire({
+    async function executeDelete(type, id) {
+        window.sitesphereSwal.confirm({
             title: `Delete ${type}?`,
             text: `This will completely delete this ${type.toLowerCase()} record (#${id}) from database clusters. This action is completely irreversible.`,
             icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#be123c',
             confirmButtonText: `Delete ${type}`
         });
     }
 
-    function executeSuspend(id, user) {
-        Swal.fire({
+    async function executeSuspend(id, user) {
+        window.sitesphereSwal.confirm({
             title: 'Suspend User Account?',
             text: `Terminating session tokens and blacklisting authentication keys for user profile ${user} (ID: #${id}).`,
             icon: 'error',
-            showCancelButton: true,
-            confirmButtonColor: '#be123c',
             confirmButtonText: 'Suspend Account'
         });
     }

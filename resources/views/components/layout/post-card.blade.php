@@ -315,7 +315,7 @@
     <footer
         class="relative flex items-center  justify-between gap-3 border-t px-4 py-3 sm:px-5 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_96%,var(--accent-color,#6c5ce7)_4%)]">
         @if($slug)
-            <a href="{{ route('posts.show', $slug) }}#reviewLedger"
+            <a href="{{ route('posts.show', $slug) }}"
                 class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--accent-color,#6c5ce7)]">
                 <x-far-comment class="size-5" />
                 <span>Comments</span>

@@ -15,7 +15,7 @@ class UserHoverCardController extends Controller
      */
     public function __invoke(Request $request, User $user): View
     {
-        $postIds = UserPosts::where('user_id', $user->id)->pluck('post_id');
+        $postIds = UserPosts::where('user_id', $user->id)->where('user_hidden', false)->pluck('post_id');
         $uploadsCount = $postIds->count();
         $averageRating = Ratings::whereIn('post_id', $postIds)->avg('rating') ?: 0.0;
         $averageRating = round((float) $averageRating, 1);

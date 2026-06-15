@@ -207,8 +207,8 @@
 
                 <section class="dashboard-stat-grid" aria-label="Dashboard statistics">
                     <article class="dashboard-stat-card">
-                        <span>My Reviews</span>
-                        <strong>{{ number_format($stats['visibleReviews']) }}</strong>
+                        <span>Total Reviews</span>
+                        <strong>{{ number_format($stats['totalReviews']) }}</strong>
                     </article>
 
                     <article class="dashboard-stat-card">
@@ -239,7 +239,7 @@
                             <small>{{ $review->created_at->diffForHumans() }}</small>
                         </a>
                     @empty
-                        <p class="dashboard-empty-state">No visible reviews yet.</p>
+                        <p class="dashboard-empty-state">No reviews yet.</p>
                     @endforelse
                 </section>
             @endif

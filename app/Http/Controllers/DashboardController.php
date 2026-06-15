@@ -54,7 +54,6 @@ class DashboardController extends Controller
         $recentReviews = UserPosts::query()
             ->with(['post:id,title,slug,url'])
             ->where('user_id', $user->id)
-            ->where('user_hidden', false)
             ->latest('id')
             ->take(4)
             ->get();
@@ -62,9 +61,8 @@ class DashboardController extends Controller
         return view('layout.menu.dashboard', [
             'isAdmin' => false,
             'stats' => [
-                'visibleReviews' => UserPosts::query()
+                'totalReviews' => UserPosts::query()
                     ->where('user_id', $user->id)
-                    ->where('user_hidden', false)
                     ->count(),
                 'savedPosts' => Bookmarks::query()
                     ->where('user_id', $user->id)
@@ -73,7 +71,7 @@ class DashboardController extends Controller
                     ->where('user_id', $user->id)
                     ->count(),
                 'reviewedWebsites' => Posts::query()
-                    ->whereHas('userPosts', fn ($query) => $query->where('user_id', $user->id)->where('user_hidden', false))
+                    ->whereHas('userPosts', fn ($query) => $query->where('user_id', $user->id))
                     ->count(),
             ],
             'recentReviews' => $recentReviews,

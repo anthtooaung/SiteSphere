@@ -112,10 +112,10 @@
                             </div>
                         </article>
 
-                        <article class="security-card" x-data="{ showForm: {{ $errors->has('current_password') || $errors->has('password') ? 'true' : 'false' }}, current: false, password: false, confirm: false }">
-                            @php
-                                $isOauthOnly = $securityUser->isOauthOnly();
-                            @endphp
+                        @php
+                            $isOauthOnly = $securityUser->isOauthOnly();
+                        @endphp
+                        <article class="security-card @if($isOauthOnly) is-disabled @endif" x-data="{ showForm: {{ $errors->has('current_password') || $errors->has('password') ? 'true' : 'false' }}, current: false, password: false, confirm: false }">
                             <div class="security-card-header">
                                 <div>
                                     <h2>Change Password</h2>

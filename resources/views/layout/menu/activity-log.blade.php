@@ -45,7 +45,7 @@
 
             <div class="shell">
               <nav class="breadcrumb" aria-label="Breadcrumb">
-                <a href="{{ route('admin.dashboard') }}">
+                <a href="{{ route('dashboard') }}">
                   <i class="fa-solid fa-shield-halved"></i><span>Admin Dashboard</span>
                 </a>
                 <span class="breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>

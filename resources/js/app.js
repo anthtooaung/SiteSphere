@@ -6,7 +6,7 @@ import 'flowbite';
 
 window.Alpine = Alpine;
 
-window.sitesphereSwal = {
+const sitesphereSwal = {
     getTheme() {
         const style = getComputedStyle(document.documentElement);
         return {
@@ -17,69 +17,71 @@ window.sitesphereSwal = {
         };
     },
     async getSwal() {
-        if (window.Swal) {
-            return window.Swal;
-        }
+        if (window.Swal) return window.Swal;
         try {
-            window.Swal = (await import('https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.esm.all.min.js')).default;
+            const module = await import('https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.esm.all.min.js');
+            window.Swal = module.default;
             return window.Swal;
         } catch (error) {
             console.error('Failed to load SweetAlert2:', error);
-            return { fire: () => Promise.resolve({ isConfirmed: false }) };
+            return { 
+                fire: (opt) => Promise.resolve({ isConfirmed: false }),
+                mixin: () => ({ fire: () => Promise.resolve({ isConfirmed: false }) })
+            };
         }
     },
     async fire(options = {}) {
         const theme = this.getTheme();
         const Swal = await this.getSwal();
+        const { didOpen, ...rest } = options;
         return await Swal.fire({
             background: theme.background,
             color: theme.color,
             confirmButtonColor: theme.confirmButtonColor,
             didOpen: (popup) => {
                 popup.style.fontFamily = theme.fontFamily;
+                if (didOpen) didOpen(popup);
             },
-            ...options
+            ...rest
         });
     },
     async confirm(options = {}) {
-        const theme = this.getTheme();
-        const Swal = await this.getSwal();
-        return await Swal.fire({
-            icon: options.icon || 'question',
-            title: options.title || 'Are you sure?',
-            text: options.text || '',
+        const { didOpen, ...rest } = options;
+        return await this.fire({
+            icon: 'question',
+            title: 'Are you sure?',
             showCancelButton: true,
             cancelButtonColor: '#d33',
-            background: theme.background,
-            color: theme.color,
-            confirmButtonColor: theme.confirmButtonColor,
+            ...rest,
             didOpen: (popup) => {
-                popup.style.fontFamily = theme.fontFamily;
-            },
-            ...options
+                if (didOpen) didOpen(popup);
+            }
         });
     },
     async toast(options = {}) {
         const theme = this.getTheme();
         const Swal = await this.getSwal();
-        Swal.fire({
+        const { didOpen, ...rest } = options;
+        return await Swal.fire({
             toast: true,
             position: options.position || window.toastPosition || 'top-end',
             showConfirmButton: false,
-            timer: options.timer || 3000,
+            timer: 3000,
             timerProgressBar: true,
-            icon: options.icon || 'success',
-            title: options.title || '',
+            icon: 'success',
             background: theme.background,
             color: theme.color,
             didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
                 toast.style.fontFamily = theme.fontFamily;
+                if (didOpen) didOpen(toast);
             },
-            ...options
+            ...rest
         });
     }
 };
+
+window.sitesphereSwal = sitesphereSwal;
 
 Alpine.start();

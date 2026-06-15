@@ -460,7 +460,7 @@
                                 <nav class="aud-depo-index" aria-label="Auditors" id="depoNav">
                                     @foreach($post->userPosts as $userPost)
                                         @php
-                                            $isProfileVisible = (bool) ($userPost->user->settings?->user_post_visible);
+                                            $isProfileVisible = ! $userPost->user_hidden;
                                             $displayName = $isProfileVisible ? $userPost->user->name : 'Anonymous';
                                             $initials = $isProfileVisible 
                                                 ? collect(explode(' ', $userPost->user->name))->map(fn($n) => Str::substr($n, 0, 1))->join('')
@@ -497,7 +497,7 @@
                                 <div id="depoPanels">
                                     @foreach($post->userPosts as $userPost)
                                         @php
-                                            $isProfileVisible = (bool) ($userPost->user->settings?->user_post_visible);
+                                            $isProfileVisible = ! $userPost->user_hidden;
                                             $displayName = $isProfileVisible ? $userPost->user->name : 'Anonymous';
                                             $initials = $isProfileVisible 
                                                 ? collect(explode(' ', $userPost->user->name))->map(fn($n) => Str::substr($n, 0, 1))->join('')

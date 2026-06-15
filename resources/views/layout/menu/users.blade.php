@@ -60,13 +60,10 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                     async confirmAction(event, message, confirmText) {
                         event.preventDefault();
                         const form = event.target;
-                        const result = await window.Swal.fire({
+                        const result = await window.sitesphereSwal.confirm({
                             title: 'Are you sure?',
                             text: message,
                             icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-                            cancelButtonColor: '#d33',
                             confirmButtonText: confirmText
                         });
                         if (result.isConfirmed) {

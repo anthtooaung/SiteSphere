@@ -19,82 +19,110 @@
     <x-layout.nav />
 
     <div class="dashboard-page dashboard-page--{{ $dashboardMenuLocation }}"
-         x-data="activityLogController()">
+        >
         <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
 
-        <main class="dashboard-content dashboard-home-content" aria-labelledby="activityLogTitle">
-            <section class="dashboard-panel mb-4">
-                <p class="dashboard-kicker">Admin Records</p>
-                <h1 id="activityLogTitle" class="text-2xl font-black text-slate-900 uppercase tracking-tight">Activity Log</h1>
-                <p class="text-slate-500">Track platform changes and user actions via an interactive calendar.</p>
-            </section>
+                <main class="dashboard-content dashboard-home-content" aria-labelledby="activityLogTitle">
+            @php
+                $actsExpanded = [];
+                foreach ($auditLogs as $date => $logs) {
+                    foreach ($logs as $log) {
+                        $iconStr = str_replace('fa-', '', $log->getIcon());
+                        $actsExpanded[] = [
+                            'date' => $date,
+                            'color' => $log->getColor(),
+                            'icon' => $iconStr,
+                            'txt' => $log->action,
+                            'time' => $log->created_at->diffForHumans(),
+                        ];
+                    }
+                }
+            @endphp
+            @push('styles')
+                @vite('resources/css/admin-activity.css')
+            @endpush
+            
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {{-- Calendar Pane --}}
-                <section class="dashboard-panel bg-white p-6 rounded-lg border border-slate-200">
-                    <div class="mb-6 flex items-center justify-between">
-                        <h2 class="text-lg font-black text-slate-900 uppercase tracking-tight">{{ $monthName }} {{ $selectedYear }}</h2>
-                        <div class="flex gap-2">
-                            <button @click="prevMonth()" class="h-9 w-9 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
-                                <i class="fa-solid fa-chevron-left text-xs"></i>
-                            </button>
-                            <button @click="nextMonth()" class="h-9 w-9 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
-                                <i class="fa-solid fa-chevron-right text-xs"></i>
-                            </button>
+            <div class="shell">
+              <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="{{ route('admin.dashboard') }}">
+                  <i class="fa-solid fa-shield-halved"></i><span>Admin Dashboard</span>
+                </a>
+                <span class="breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
+                <span class="breadcrumb-current">Activity Log</span>
+              </nav>
+
+              <div class="page-header">
+                <div class="page-header-label">
+                  <i class="fa-solid fa-clock-rotate-left"></i> Activity Log
+                </div>
+                <h1>Admin Activity Log</h1>
+              </div>
+
+              <div class="expanded-card">
+                <div class="expanded-head">
+                  <div class="expanded-head-left">
+                    <div class="card-icon" style="background: #eff6ff; color: #3b82f6">
+                      <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <span class="card-title">Admin Activity Log</span>
+                  </div>
+                </div>
+
+                <div class="expanded-body">
+                  <div class="cal-widget">
+                    <div class="cal-header">
+                      <button class="cal-nav" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                      <div class="cal-header-mid" style="position: relative">
+                        <button class="cal-month-btn" id="cal-month-btn" type="button">
+                          <span id="cal-month-label"></span>
+                          <i class="fa-solid fa-chevron-down mc"></i>
+                        </button>
+                        <span class="cal-term-label"></span>
+                        <div class="cal-month-picker" id="cal-month-picker">
+                          <div class="cmp-year-row">
+                            <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                            <span class="cmp-year-label" id="picker-year"></span>
+                            <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+                          </div>
+                          <div class="cmp-month-grid" id="picker-month-grid"></div>
                         </div>
+                      </div>
+                      <button class="cal-nav" type="button"><i class="fa-solid fa-chevron-right"></i></button>
                     </div>
+                    <div class="cal-grid" id="cal-grid"></div>
+                  </div>
 
-                    <div class="activity-calendar-grid">
-                        @foreach(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $day)
-                            <div class="calendar-header-day">{{ $day }}</div>
-                        @endforeach
-
-                        @for($i = 0; $i < $firstDayOfWeek; $i++)
-                            <div></div>
-                        @endfor
-
-                        @for($day = 1; $day <= $daysInMonth; $day++)
-                            @php
-                                $date = \Carbon\Carbon::createFromDate($selectedYear, $selectedMonth, $day)->format('Y-m-d');
-                                $hasLogs = $auditLogs->has($date);
-                                $isToday = $date === $today;
-                            @endphp
-                            <div
-                                @click="selectDate('{{ $date }}')"
-                                :class="{ 'is-selected': selectedDate === '{{ $date }}', 'is-today': '{{ $isToday ? 'true' : 'false' }}' === 'true' }"
-                                class="calendar-day-cell text-sm font-bold text-slate-700"
-                            >
-                                {{ $day }}
-                                @if($hasLogs)
-                                    <span class="activity-indicator" style="background: {{ $auditLogs[$date]->first()->getColor() }}"></span>
-                                @endif
-                            </div>
-                        @endfor
+                  <div class="act-log-card">
+                    <div class="alc-header">
+                      <div>
+                        <div class="alc-weekday" id="alc-weekday"></div>
+                        <div class="alc-date-big" id="alc-date-big"></div>
+                      </div>
+                      <span class="alc-badge" id="alc-badge"></span>
                     </div>
-                </section>
+                    <div class="alc-body" id="alc-body"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                {{-- Activity Feed Pane --}}
-                <section class="dashboard-panel bg-white p-6 rounded-lg border border-slate-200">
-                    <div class="mb-6">
-                        <p class="dashboard-kicker">Activity Feed</p>
-                        <h2 class="text-lg font-black text-slate-900 uppercase tracking-tight" x-text="formatDate(selectedDate)"></h2>
+            <div id="log-modal">
+              <div class="modal-card" onclick="event.stopPropagation()">
+                <div class="modal-head">
+                  <div class="modal-head-left">
+                    <div class="card-icon" style="background: #eff6ff; color: #3b82f6">
+                      <i class="fa-solid fa-clock-rotate-left"></i>
                     </div>
-
-                    <div id="activityFeed" class="relative min-h-[300px]">
-                        <div x-show="loading" class="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-lg">
-                            <div class="flex flex-col items-center gap-3">
-                                <div class="h-10 w-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Fetching logs...</span>
-                            </div>
-                        </div>
-
-                        {{-- Initially empty, filled by AJAX --}}
-                        <div class="flex flex-col items-center justify-center h-full py-20 text-slate-300" x-show="!loading && !selectedDate">
-                            <i class="fa-solid fa-calendar-day text-5xl mb-4 opacity-20"></i>
-                            <p class="text-sm font-bold uppercase tracking-widest">Select a date to view activity</p>
-                        </div>
+                    <div>
+                      <div class="modal-title" id="modal-title">Detailed Admin Log</div>
+                      <div class="modal-sub" id="modal-sub">All actions</div>
                     </div>
-                </section>
+                  </div>
+                  <button class="modal-close" type="button"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+              </div>
             </div>
         </main>
     </div>

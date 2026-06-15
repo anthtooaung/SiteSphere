@@ -38,6 +38,7 @@ class SecurityController extends Controller
         if (! empty($validated['password'])) {
             $user->forceFill([
                 'password' => Hash::make($validated['password']),
+                'password_set' => true,
             ])->save();
         }
 

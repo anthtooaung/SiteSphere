@@ -9,6 +9,9 @@
     </title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <x-google-fonts />
+    <script>
+        window.toastPosition = {{ Illuminate\Support\Js::from($toastPosition ?? 'top-end') }};
+    </script>
     @php($resolvedFontFamily = $fontFamily ?: 'Figtree, sans-serif')
     @auth
         <style>

@@ -76,6 +76,7 @@ class SocialLoginController extends Controller
             [
                 'name' => $this->nameFor($socialiteUser, $email),
                 'password' => Str::password(32),
+                'password_set' => false,
                 'user_image' => $socialiteUser->getAvatar(),
                 'is_verified' => true,
             ],

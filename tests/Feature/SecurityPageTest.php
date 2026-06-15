@@ -54,6 +54,26 @@ class SecurityPageTest extends TestCase
             ->assertSee(':disabled="isSubmitting"', false);
     }
 
+    public function test_password_change_is_disabled_for_oauth_only_users(): void
+    {
+        $user = User::factory()->create([
+            'password_set' => false,
+        ]);
+
+        $user->socialAccounts()->create([
+            'provider' => 'google',
+            'provider_id' => 'google-123',
+        ]);
+
+        $this->assertTrue($user->isOauthOnly());
+
+        $this->actingAs($user)
+            ->get(route('security'))
+            ->assertOk()
+            ->assertSee('disabled title="Password is managed via OAuth"', false)
+            ->assertSee('Password management is handled by your linked social account.');
+    }
+
     public function test_security_toggles_are_saved(): void
     {
         $user = User::factory()->create([

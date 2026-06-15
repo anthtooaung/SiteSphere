@@ -113,13 +113,23 @@
                         </article>
 
                         <article class="security-card" x-data="{ showForm: {{ $errors->has('current_password') || $errors->has('password') ? 'true' : 'false' }}, current: false, password: false, confirm: false }">
+                            @php
+                                $isOauthOnly = $securityUser->isOauthOnly();
+                            @endphp
                             <div class="security-card-header">
                                 <div>
                                     <h2>Change Password</h2>
-                                    <p class="subtitle">Update your account password to keep your account secure.</p>
+                                    <p class="subtitle">
+                                        @if ($isOauthOnly)
+                                            Password management is handled by your linked social account.
+                                        @else
+                                            Update your account password to keep your account secure.
+                                        @endif
+                                    </p>
                                 </div>
                                 <div class="toggle-area">
                                     <button type="button" class="update-password-btn" 
+                                        @if ($isOauthOnly) disabled title="Password is managed via OAuth" @endif
                                         @click="showForm = !showForm"
                                         x-text="showForm ? 'Cancel' : 'Update Password'"
                                         :aria-expanded="showForm.toString()"

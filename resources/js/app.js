@@ -51,7 +51,7 @@ window.sitesphereSwal = {
         const Swal = await this.getSwal();
         Swal.fire({
             toast: true,
-            position: options.position || 'top-end',
+            position: options.position || window.toastPosition || 'top-end',
             showConfirmButton: false,
             timer: options.timer || 3000,
             timerProgressBar: true,

@@ -15,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'slug', 'password', 'user_dob', 'user_phone', 'user_bio', 'user_image', 'two_factor_enabled', 'is_verified'])]
+#[Fillable(['name', 'email', 'slug', 'password', 'password_set', 'user_dob', 'user_phone', 'user_bio', 'user_image', 'two_factor_enabled', 'is_verified'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -61,6 +61,14 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Determine if the user is an OAuth-only user (no password set).
+     */
+    public function isOauthOnly(): bool
+    {
+        return $this->socialAccounts()->exists() && ! $this->password_set;
     }
 
     /**

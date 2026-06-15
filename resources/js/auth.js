@@ -131,7 +131,7 @@ const init = () => {
 
     return window.Swal.mixin({
       toast: true,
-      position: "top-end",
+      position: window.toastPosition || "top-end",
       showConfirmButton: false,
       timer: 1000,
       timerProgressBar: true,

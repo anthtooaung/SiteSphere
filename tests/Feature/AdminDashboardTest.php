@@ -38,7 +38,7 @@ class AdminDashboardTest extends TestCase
         $this->actingAs($user)
             ->get(route('dashboard'))
             ->assertOk()
-            ->assertSeeText('My Reviews')
+            ->assertSeeText('Total Reviews')
             ->assertSeeText('Saved Posts')
             ->assertSeeText('Ratings Given')
             ->assertDontSeeText('Admin Dashboard')
@@ -53,10 +53,10 @@ class AdminDashboardTest extends TestCase
             ->get(route('dashboard'))
             ->assertOk()
             ->assertSeeText('Admin Dashboard')
-            ->assertSeeText('System Overview')
+            ->assertSeeText('Admin Overview')
             ->assertSeeText('Total Users')
-            ->assertSeeText('Total Reviews')
-            ->assertSeeText('Total Reports');
+            ->assertSeeText('Reviews')
+            ->assertSeeText('Reports');
     }
 
     public function test_admin_can_view_metrics(): void

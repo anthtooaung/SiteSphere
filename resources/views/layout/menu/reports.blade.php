@@ -88,6 +88,18 @@ $reportFilters = $reportFilters ?? [
                     } finally {
                         this.isLoading = false;
                     }
+                },
+                async confirmAction(e, title, text, confirmButtonText, icon = 'warning') {
+                    e.preventDefault();
+                    const result = await window.sitesphereSwal.confirm({
+                        title: title,
+                        text: text,
+                        icon: icon,
+                        confirmButtonText: confirmButtonText
+                    });
+                    if (result.isConfirmed) {
+                        e.target.submit();
+                    }
                 }
             }">
             <header class="reports-header">
@@ -325,7 +337,7 @@ $reportFilters = $reportFilters ?? [
                                         </form>
                                         @endif
 
-                                        <form method="POST" action="{{ route('reports.delete.post', $report->target_id) }}" onsubmit="return confirm('Are you sure you want to delete this post? This action will soft-delete the post.');">
+                                        <form method="POST" action="{{ route('reports.delete.post', $report->target_id) }}" @submit="confirmAction($event, 'Delete Post?', 'This action will soft-delete the post.', 'Delete Post')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="reports-icon-btn delete-action" title="Delete Post" aria-label="Delete Post">
@@ -465,7 +477,7 @@ $reportFilters = $reportFilters ?? [
                                         </form>
                                         @endif
 
-                                        <form method="POST" action="{{ route('reports.delete.comment', $report->target_id) }}" onsubmit="return confirm('Are you sure you want to delete this comment? This action will soft-delete the comment.');">
+                                        <form method="POST" action="{{ route('reports.delete.comment', $report->target_id) }}" @submit="confirmAction($event, 'Delete Comment?', 'This action will soft-delete the comment.', 'Delete Comment')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="reports-icon-btn delete-action" title="Delete Comment" aria-label="Delete Comment">
@@ -622,9 +634,13 @@ $reportFilters = $reportFilters ?? [
                                         </form>
                                         @endif
 
-                                        <button type="button" class="reports-icon-btn suspend-action" onclick="executeSuspend('{{ $report->target_id }}', '{{ e($targetUser?->name) }}')" title="Suspend Account" aria-label="Suspend Account">
-                                            <x-fas-ban aria-hidden="true" />
-                                        </button>
+                                        <form method="POST" action="{{ route('users.destroy', $report->target_id) }}" @submit="confirmAction($event, 'Suspend User Account?', 'Terminating session tokens and blacklisting authentication keys for user profile {{ e($targetUser?->name ?? 'Unknown') }} (ID: #{{ $report->target_id }}).', 'Suspend Account', 'error')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="reports-icon-btn suspend-action" title="Suspend Account" aria-label="Suspend Account">
+                                                <x-fas-ban aria-hidden="true" />
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -708,24 +724,6 @@ $reportFilters = $reportFilters ?? [
             html: content,
             confirmButtonText: 'Close System View',
             width: '600px'
-        });
-    }
-
-    async function executeDelete(type, id) {
-        window.sitesphereSwal.confirm({
-            title: `Delete ${type}?`,
-            text: `This will completely delete this ${type.toLowerCase()} record (#${id}) from database clusters. This action is completely irreversible.`,
-            icon: 'warning',
-            confirmButtonText: `Delete ${type}`
-        });
-    }
-
-    async function executeSuspend(id, user) {
-        window.sitesphereSwal.confirm({
-            title: 'Suspend User Account?',
-            text: `Terminating session tokens and blacklisting authentication keys for user profile ${user} (ID: #${id}).`,
-            icon: 'error',
-            confirmButtonText: 'Suspend Account'
         });
     }
 </script>

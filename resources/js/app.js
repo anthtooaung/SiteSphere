@@ -25,8 +25,21 @@ window.sitesphereSwal = {
             return window.Swal;
         } catch (error) {
             console.error('Failed to load SweetAlert2:', error);
-            return { fire: () => ({ isConfirmed: false }) };
+            return { fire: () => Promise.resolve({ isConfirmed: false }) };
         }
+    },
+    async fire(options = {}) {
+        const theme = this.getTheme();
+        const Swal = await this.getSwal();
+        return await Swal.fire({
+            background: theme.background,
+            color: theme.color,
+            confirmButtonColor: theme.confirmButtonColor,
+            didOpen: (popup) => {
+                popup.style.fontFamily = theme.fontFamily;
+            },
+            ...options
+        });
     },
     async confirm(options = {}) {
         const theme = this.getTheme();

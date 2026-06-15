@@ -28,7 +28,6 @@ class HomeController extends Controller
         $postsQuery = Posts::query()
             ->with([
                 'userPosts' => fn ($query) => $query
-                    ->where('user_hidden', false)
                     ->with('user.settings')
                     ->latest(),
                 'tags.categories',
@@ -41,8 +40,7 @@ class HomeController extends Controller
                     ->when($userId, fn ($query) => $query->where('user_id', $userId))
                     ->when(! $userId, fn ($query) => $query->whereRaw('1 = 0')),
             ])
-            ->whereHas('userPosts', fn ($query) => $query
-                ->where('user_hidden', false));
+            ->whereHas('userPosts');
 
         $posts = $postsQuery
             // Apply category filter
@@ -122,7 +120,7 @@ class HomeController extends Controller
                     'profiles' => $post->userPosts
                         ->map(function ($userPost): array {
                             $user = $userPost->user;
-                            $isProfileVisible = (bool) $user?->settings?->user_post_visible;
+                            $isProfileVisible = ! $userPost->user_hidden;
                             $name = $user?->name ?? 'Reviewer';
 
                             return [

@@ -15,10 +15,10 @@ class WelcomeController extends Controller
         $mostReviewedPosts = Posts::query()
             ->select(['id', 'title', 'slug', 'url'])
             ->withCount([
-                'userPosts as visible_reviews_count' => fn ($query) => $query->where('user_hidden', false),
+                'userPosts as visible_reviews_count',
             ])
             ->withAvg('ratings as average_rating', 'rating')
-            ->whereHas('userPosts', fn ($query) => $query->where('user_hidden', false))
+            ->whereHas('userPosts')
             ->orderByDesc('visible_reviews_count')
             ->latest('id')
             ->take(3)

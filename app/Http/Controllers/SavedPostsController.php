@@ -24,7 +24,7 @@ class SavedPostsController extends Controller
         $user = $request->user();
         $totalSavedCount = Bookmarks::query()
             ->where('user_id', $user->id)
-            ->whereHas('post.userPosts', fn ($query) => $query->where('user_hidden', false))
+            ->whereHas('post.userPosts')
             ->count();
 
         $customTags = $user
@@ -33,7 +33,7 @@ class SavedPostsController extends Controller
 
         $bookmarks = Bookmarks::query()
             ->where('user_id', $user->id)
-            ->whereHas('post.userPosts', fn ($query) => $query->where('user_hidden', false))
+            ->whereHas('post.userPosts')
             ->when($search !== '', fn ($query) => $query->whereHas('post', fn ($query) => $query
                 ->where('title', 'like', "%{$search}%")
                 ->orWhere('url', 'like', "%{$search}%")))
@@ -43,7 +43,6 @@ class SavedPostsController extends Controller
                 'post' => fn ($query) => $query
                     ->with([
                         'userPosts' => fn ($query) => $query
-                            ->where('user_hidden', false)
                             ->with('user.settings')
                             ->latest(),
                         'tags.categories',
@@ -106,7 +105,7 @@ class SavedPostsController extends Controller
             'profiles' => $post->userPosts
                 ->map(function ($userPost): array {
                     $user = $userPost->user;
-                    $isProfileVisible = (bool) $user?->settings?->user_post_visible;
+                    $isProfileVisible = ! $userPost->user_hidden;
                     $name = $user?->name ?? 'Reviewer';
 
                     return [

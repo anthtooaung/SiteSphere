@@ -643,11 +643,13 @@ class HomePageTest extends TestCase
             'post_id' => $mixedPost->id,
             'user_id' => $visibleReviewer->id,
             'description' => 'Visible reviewer description.',
+            'user_hidden' => false,
         ]);
         UserPosts::factory()->create([
             'post_id' => $mixedPost->id,
             'user_id' => $hiddenReviewer->id,
             'description' => 'Hidden reviewer description.',
+            'user_hidden' => true,
         ]);
 
         $response = $this->actingAs($viewer)->get('/home');
@@ -662,7 +664,7 @@ class HomePageTest extends TestCase
             ->assertDontSee('@hidden_reviewer');
     }
 
-    public function test_home_does_not_render_user_hidden_contributions(): void
+    public function test_home_renders_user_hidden_contributions_as_anonymous(): void
     {
         $viewer = User::factory()->create();
         $reviewer = User::factory()->create(['name' => 'Hidden Contribution']);
@@ -675,7 +677,7 @@ class HomePageTest extends TestCase
         UserPosts::factory()->create([
             'post_id' => $post->id,
             'user_id' => $reviewer->id,
-            'description' => 'This user hidden contribution should not render.',
+            'description' => 'This user hidden contribution should render anonymously.',
             'user_hidden' => true,
         ]);
 
@@ -683,8 +685,10 @@ class HomePageTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertDontSee('User Hidden Post')
-            ->assertDontSee('This user hidden contribution should not render.');
+            ->assertSee('User Hidden Post')
+            ->assertSee('This user hidden contribution should render anonymously.')
+            ->assertSee('Anonymous')
+            ->assertDontSee('@hidden_contribution');
     }
 
     public function test_comments_and_ratings_are_post_level_totals(): void

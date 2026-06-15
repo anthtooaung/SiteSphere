@@ -123,10 +123,45 @@ class UploadPostTest extends TestCase
             'post_id' => $post->id,
             'user_id' => $user->id,
             'description' => 'A strong description of why this package is useful.',
+            'user_hidden' => ! ($user->settings->user_post_visible ?? true),
         ]);
         $this->assertDatabaseHas('post_tags', [
             'post_id' => $post->id,
             'tag_id' => $tag->id,
+        ]);
+    }
+
+    public function test_storing_post_respects_user_post_visibility_setting(): void
+    {
+        $user = User::factory()->create();
+        $user->settings()->update(['user_post_visible' => true]);
+        $tag = Tags::factory()->create();
+
+        $this->actingAs($user)->post(route('posts.store'), [
+            'title' => 'Visible Post',
+            'url' => 'https://visible.test',
+            'description' => 'Visible description',
+            'tags' => [$tag->id],
+        ]);
+
+        $this->assertDatabaseHas('user_posts', [
+            'user_id' => $user->id,
+            'user_hidden' => false,
+        ]);
+
+        $user2 = User::factory()->create();
+        $user2->settings()->update(['user_post_visible' => false]);
+
+        $this->actingAs($user2)->post(route('posts.store'), [
+            'title' => 'Hidden Post',
+            'url' => 'https://hidden.test',
+            'description' => 'Hidden description',
+            'tags' => [$tag->id],
+        ]);
+
+        $this->assertDatabaseHas('user_posts', [
+            'user_id' => $user2->id,
+            'user_hidden' => true,
         ]);
     }
 

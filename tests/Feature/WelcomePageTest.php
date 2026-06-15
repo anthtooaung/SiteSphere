@@ -108,7 +108,7 @@ class WelcomePageTest extends TestCase
             ->assertSeeText('Reviewed by 3 members')
             ->assertSeeText('average rating of 4.5')
             ->assertSeeText('Query Scout')
-            ->assertDontSeeText('Hidden Placeholder')
+            ->assertSeeText('Hidden Placeholder')
             ->assertDontSeeText('Process Academy')
             ->assertDontSeeText('DesignFlow AI')
             ->assertDontSeeText('Lunaver Cloud');

@@ -74,7 +74,7 @@ class PostsController extends Controller
                 'post_id' => $post->id,
                 'user_id' => $user->id,
                 'description' => $validated['description'],
-                'user_hidden' => false,
+                'user_hidden' => ! ($user->settings?->user_post_visible ?? true),
             ]);
 
             $post->tags()->syncWithoutDetaching($validated['tags']);
@@ -156,14 +156,13 @@ class PostsController extends Controller
         $posts->load([
             'tags.categories',
             'userPosts' => fn ($query) => $query
-                ->where('user_hidden', false)
                 ->with('user.settings')
                 ->latest(),
         ]);
         $posts->loadCount([
             'ratings',
             'comments',
-            'userPosts as audits_count' => fn ($query) => $query->where('user_hidden', false),
+            'userPosts as audits_count',
         ]);
         $posts->loadAvg('ratings as average_rating', 'rating');
 
@@ -214,10 +213,10 @@ class PostsController extends Controller
             ->whereKeyNot($posts->id)
             ->whereHas('tags', fn ($query) => $query->whereIn('tags.id', $tagIds))
             ->with([
-                'userPosts' => fn ($query) => $query->where('user_hidden', false),
+                'userPosts',
             ])
             ->withAvg('ratings as average_rating', 'rating')
-            ->withCount(['userPosts as audits_count' => fn ($query) => $query->where('user_hidden', false)])
+            ->withCount(['userPosts as audits_count'])
             ->latest()
             ->take(5)
             ->get();
@@ -227,10 +226,10 @@ class PostsController extends Controller
                 ->whereKeyNot($posts->id)
                 ->whereNotIn('id', $relatedPosts->pluck('id'))
                 ->with([
-                    'userPosts' => fn ($query) => $query->where('user_hidden', false),
+                    'userPosts',
                 ])
                 ->withAvg('ratings as average_rating', 'rating')
-                ->withCount(['userPosts as audits_count' => fn ($query) => $query->where('user_hidden', false)])
+                ->withCount(['userPosts as audits_count'])
                 ->latest()
                 ->take(5 - $relatedPosts->count())
                 ->get();

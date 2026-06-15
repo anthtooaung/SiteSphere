@@ -14,189 +14,235 @@
     <x-layout.nav />
 
     <div class="dashboard-page dashboard-page--{{ $dashboardMenuLocation }}"
-         @if($isAdmin) x-data="{ activeKpi: null, hoveredKpi: null }" @endif>
-        <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
+                     @if($isAdmin)
+                @php
+                    $jsStats = [
+                        [
+                            "name" => "Site Reviews",
+                            "value" => $stats['totalReviews'],
+                            "logVal" => log10(max(1, $stats['totalReviews'])),
+                            "color" => "#8b5cf6",
+                            "icon" => "magnifying-glass",
+                            "trendHtml" => ""
+                        ],
+                        [
+                            "name" => "Total Users",
+                            "value" => $stats['totalUsers'],
+                            "logVal" => log10(max(1, $stats['totalUsers'])),
+                            "color" => "#6366f1",
+                            "icon" => "users",
+                            "trendHtml" => ""
+                        ],
+                        [
+                            "name" => "Open Reports",
+                            "value" => $stats['totalReports'],
+                            "logVal" => log10(max(1, $stats['totalReports'])),
+                            "color" => "#ef4444",
+                            "icon" => "flag",
+                            "trendHtml" => ""
+                        ]
+                    ];
+                    
+                    $jsActs = $recentActivity->map(function($log) {
+                        $colorStr = $log->getColor();
+                        $iconStr = $log->getIcon();
+                        $iconStr = str_replace('fa-', '', $iconStr);
+                        return [
+                            "color" => $colorStr,
+                            "icon" => $iconStr,
+                            "txt" => $log->action,
+                            "time" => $log->created_at->diffForHumans()
+                        ];
+                    })->toArray();
+                    
+                    $jsPosts = $topPosts->map(function($post) {
+                        return [
+                            "title" => $post->title,
+                            "rating" => round($post->ratings_avg_rating ?? 0),
+                            "comments" => $post->comments_count
+                        ];
+                    })->toArray();
+                @endphp
+                @push('styles')
+                    @vite('resources/css/admin-dashboard.css')
+                @endpush
+                @push('scripts')
+                    <script>
+                        window.AdminDashboardData = {
+                            stats: @json($jsStats),
+                            recentActivity: @json($jsActs),
+                            topPosts: @json($jsPosts)
+                        };
+                    </script>
+                    @vite('resources/js/admin-dashboard.js')
+                @endpush
 
-        <main class="dashboard-content dashboard-home-content" aria-labelledby="dashboardTitle">
-            @if($isAdmin)
-                <section class="dashboard-panel mb-4">
-                    <p class="dashboard-kicker">Admin Dashboard</p>
-                    <h1 id="dashboardTitle" class="text-2xl font-black text-slate-900">System Overview</h1>
-                    <p class="text-slate-500">Real-time metrics and platform activity at a glance.</p>
-                </section>
+                <div class="shell">
+                  <div class="page-header">
+                    <div class="page-header-label">
+                      <i class="fa-solid fa-shield-halved"></i> Admin Panel
+                    </div>
+                    <h1>Admin Dashboard</h1>
+                  </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    @php
-                        $total = max(1, $stats['totalUsers'] + $stats['totalReviews'] + $stats['totalReports']);
-                        $uP = ($stats['totalUsers'] / $total) * 100;
-                        $rvP = ($stats['totalReviews'] / $total) * 100;
-                        $rpP = ($stats['totalReports'] / $total) * 100;
-                    @endphp
-
-                    <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {{-- Users Card --}}
-                        <article
-                            @click="activeKpi = activeKpi === 'users' ? null : 'users'"
-                            @mouseenter="hoveredKpi = 'users'"
-                            @mouseleave="hoveredKpi = null"
-                            :class="{ 'ring-2 ring-indigo-500 shadow-lg scale-[1.02]': activeKpi === 'users', 'opacity-50 grayscale-[0.5]': (activeKpi && activeKpi !== 'users') || (hoveredKpi && hoveredKpi !== 'users') }"
-                            class="dashboard-stat-card cursor-pointer transition-all duration-300 bg-white">
-                            <div class="flex flex-col">
-                                <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Users</span>
-                                <strong class="text-3xl text-slate-900 mt-1">{{ number_format($stats['totalUsers']) }}</strong>
+                  <div class="infographic-section mb">
+                    <div class="infographic-card">
+                      <div class="infographic-head">
+                        <div class="infographic-head-left">
+                          <div class="infographic-head-icon">
+                            <i class="fa-solid fa-chart-pie"></i>
+                          </div>
+                          <div>
+                            <div class="infographic-head-title">Admin Overview</div>
+                          </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                          <div class="overview-month-wrap">
+                            <button class="overview-month-btn" id="overview-month-btn">
+                              <span id="overview-month-label">{{ now()->format('M Y') }}</span>
+                              <i class="fa-solid fa-chevron-down omc"></i>
+                            </button>
+                            <div class="overview-month-picker" id="overview-month-picker">
+                              <div class="cmp-year-row">
+                                <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                                <span class="cmp-year-label" id="overview-picker-year">{{ now()->year }}</span>
+                                <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+                              </div>
+                              <div class="cmp-month-grid" id="overview-picker-month-grid"></div>
                             </div>
-                            <svg class="w-full h-12 mt-4 text-indigo-500 opacity-20" viewBox="0 0 100 20">
-                                <path d="M0 15 Q 10 5, 20 12 T 40 8 T 60 15 T 80 5 T 100 12" fill="none" stroke="currentColor" stroke-width="2" />
-                            </svg>
-                        </article>
+                          </div>
+                        </div>
+                      </div>
 
-                        {{-- Reviews Card --}}
-                        <article
-                            @click="activeKpi = activeKpi === 'reviews' ? null : 'reviews'"
-                            @mouseenter="hoveredKpi = 'reviews'"
-                            @mouseleave="hoveredKpi = null"
-                            :class="{ 'ring-2 ring-emerald-500 shadow-lg scale-[1.02]': activeKpi === 'reviews', 'opacity-50 grayscale-[0.5]': (activeKpi && activeKpi !== 'reviews') || (hoveredKpi && hoveredKpi !== 'reviews') }"
-                            class="dashboard-stat-card cursor-pointer transition-all duration-300 bg-white">
-                            <div class="flex flex-col">
-                                <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Reviews</span>
-                                <strong class="text-3xl text-slate-900 mt-1">{{ number_format($stats['totalReviews']) }}</strong>
+                      <div class="infographic-body">
+                        <div class="ov9-row" style="display: flex" id="ov-layout-9">
+                          <div class="ov9-pie-tile">
+                            <div class="ov9-pie-head">
+                              <span class="ov9-pie-head-title">User Activity Distribution</span>
                             </div>
-                            <svg class="w-full h-12 mt-4 text-emerald-500 opacity-20" viewBox="0 0 100 20">
-                                <path d="M0 10 Q 15 18, 30 10 T 60 5 T 100 15" fill="none" stroke="currentColor" stroke-width="2" />
-                            </svg>
-                        </article>
+                            <div class="ov9-pie-body">
+                              <div style="position: relative; width: 260px; height: 260px">
+                                <svg id="cat-svg-9" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="display: block; width: 260px; height: 260px"></svg>
+                                <div id="cat-labels-9" style="position: absolute; inset: 0; pointer-events: none"></div>
+                              </div>
+                            </div>
+                            <div class="ov9-pie-legend">
+                              <span class="ov9-leg-item">
+                                <span class="ov9-leg-dot" style="background: #8b5cf6"></span>
+                                <span class="ov9-leg-txt">Reviews</span>
+                              </span>
+                              <span class="ov9-leg-item">
+                                <span class="ov9-leg-dot" style="background: #6366f1"></span>
+                                <span class="ov9-leg-txt">Users</span>
+                              </span>
+                              <span class="ov9-leg-item">
+                                <span class="ov9-leg-dot" style="background: #ef4444"></span>
+                                <span class="ov9-leg-txt">Reports</span>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="ov9-kpi-col">
+                            <div class="ov9-kpi ov9-kpi--users" data-ov9-idx="1">
+                              <div class="ov9-kpi-left">
+                                <div class="ov9-kpi-top">
+                                  <span class="ov9-kpi-icon" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;"><i class="fa-solid fa-users"></i></span>
+                                  <span class="kpi-lbl">Total Users</span>
+                                </div>
+                                <div class="ov9-kpi-bottom">
+                                  <div class="kpi-val" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalUsers']) }}</div>
+                                </div>
+                              </div>
+                              <div class="ov9-kpi-right">
+                                <div class="ov9-spark-wrap">
+                                  <svg class="ov9-spark" viewBox="0 0 100 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs><linearGradient id="sg9u" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.18"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0"/></linearGradient></defs>
+                                    <path d="M0,32 C14,27 22,15 36,20 C48,25 56,10 68,15 C80,20 90,11 100,16 L100,48 L0,48 Z" fill="url(#sg9u)"/><path d="M0,32 C14,27 22,15 36,20 C48,25 56,10 68,15 C80,20 90,11 100,16" fill="none" stroke="#6366f1" stroke-width="1.8" stroke-linecap="round"/>
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="ov9-kpi ov9-kpi--audits" data-ov9-idx="0">
+                              <div class="ov9-kpi-left">
+                                <div class="ov9-kpi-top">
+                                  <span class="ov9-kpi-icon" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                  <span class="kpi-lbl">Reviews</span>
+                                </div>
+                                <div class="ov9-kpi-bottom">
+                                  <div class="kpi-val" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalReviews']) }}</div>
+                                </div>
+                              </div>
+                              <div class="ov9-kpi-right">
+                                <div class="ov9-spark-wrap">
+                                  <svg class="ov9-spark" viewBox="0 0 100 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs><linearGradient id="sg9a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.18"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient></defs>
+                                    <path d="M0,18 C12,22 22,34 36,27 C48,20 56,32 68,23 C80,14 90,24 100,19 L100,48 L0,48 Z" fill="url(#sg9a)"/><path d="M0,18 C12,22 22,34 36,27 C48,20 56,32 68,23 C80,14 90,24 100,19" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round"/>
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="ov9-kpi ov9-kpi--reports" data-ov9-idx="2">
+                              <div class="ov9-kpi-left">
+                                <div class="ov9-kpi-top">
+                                  <span class="ov9-kpi-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fa-solid fa-flag"></i></span>
+                                  <span class="kpi-lbl">Reports</span>
+                                </div>
+                                <div class="ov9-kpi-bottom">
+                                  <div class="kpi-val kpi-val--danger" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalReports']) }}</div>
+                                </div>
+                              </div>
+                              <div class="ov9-kpi-right">
+                                <div class="ov9-spark-wrap">
+                                  <svg class="ov9-spark" viewBox="0 0 100 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs><linearGradient id="sg9r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.18"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0"/></linearGradient></defs>
+                                    <path d="M0,22 C12,15 22,34 36,22 C48,10 56,26 68,17 C80,8 90,22 100,13 L100,48 L0,48 Z" fill="url(#sg9r)"/><path d="M0,22 C12,15 22,34 36,22 C48,10 56,26 68,17 C80,8 90,22 100,13" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="cat-popup" style="display: none; position: absolute; z-index: -1; pointer-events: none;"></div>
+                    </div>
+                  </div>
 
-                        {{-- Reports Card --}}
-                        <article
-                            @click="activeKpi = activeKpi === 'reports' ? null : 'reports'"
-                            @mouseenter="hoveredKpi = 'reports'"
-                            @mouseleave="hoveredKpi = null"
-                            :class="{ 'ring-2 ring-rose-500 shadow-lg scale-[1.02]': activeKpi === 'reports', 'opacity-50 grayscale-[0.5]': (activeKpi && activeKpi !== 'reports') || (hoveredKpi && hoveredKpi !== 'reports') }"
-                            class="dashboard-stat-card cursor-pointer transition-all duration-300 bg-white">
-                            <div class="flex flex-col">
-                                <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Reports</span>
-                                <strong class="text-3xl text-slate-900 mt-1">{{ number_format($stats['totalReports']) }}</strong>
-                            </div>
-                            <svg class="w-full h-12 mt-4 text-rose-500 opacity-20" viewBox="0 0 100 20">
-                                <path d="M0 5 Q 20 15, 40 5 T 80 15 T 100 5" fill="none" stroke="currentColor" stroke-width="2" />
-                            </svg>
-                        </article>
+                  <div class="row row-lower">
+                    <div class="card">
+                      <div class="card-head">
+                        <div class="card-head-left">
+                          <div class="card-icon" style="background: #eff6ff; color: #3b82f6">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                          </div>
+                          <span class="card-title">Recent Activity</span>
+                        </div>
+                      </div>
+                      <div class="act-body">
+                        <div style="flex: 1; min-width: 0">
+                          <div class="timeline" id="activity-list"></div>
+                        </div>
+                        <div class="act-legend">
+                          <span class="act-legend-item"><i class="fa-solid fa-ban" style="color: #ef4444; font-size: 16px"></i> Ban / Delete</span>
+                          <span class="act-legend-item"><i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 16px"></i> Resolved / Approved</span>
+                          <span class="act-legend-item"><i class="fa-solid fa-bullhorn" style="color: #7c3aed; font-size: 16px"></i> Announcement / Bulk</span>
+                          <span class="act-legend-item"><i class="fa-solid fa-sliders" style="color: #3b82f6; font-size: 16px"></i> Warning / Settings</span>
+                        </div>
+                      </div>
+                      <a href="{{ route('admin.activity-log') }}" class="see-more-link">See More</a>
                     </div>
 
-                    {{-- Donut Chart --}}
-                    <div class="dashboard-panel flex items-center justify-center p-6 bg-white rounded-lg border border-slate-200">
-                        <svg class="w-48 h-48 transform -rotate-90" viewBox="0 0 42 42">
-                            <circle class="text-slate-100" stroke-width="4" stroke="currentColor" fill="transparent" r="15.91549430918954" cx="21" cy="21" />
-
-                            {{-- Users Segment --}}
-                            <circle class="text-indigo-500 transition-all duration-500"
-                                    stroke-width="4"
-                                    :class="{ 'opacity-20': (activeKpi && activeKpi !== 'users') || (hoveredKpi && hoveredKpi !== 'users') }"
-                                    stroke-dasharray="{{ $uP }} {{ 100 - $uP }}"
-                                    stroke-dashoffset="0"
-                                    stroke="currentColor" fill="transparent" r="15.91549430918954" cx="21" cy="21" />
-
-                            {{-- Reviews Segment --}}
-                            <circle class="text-emerald-500 transition-all duration-500"
-                                    stroke-width="4"
-                                    :class="{ 'opacity-20': (activeKpi && activeKpi !== 'reviews') || (hoveredKpi && hoveredKpi !== 'reviews') }"
-                                    stroke-dasharray="{{ $rvP }} {{ 100 - $rvP }}"
-                                    stroke-dashoffset="{{ -$uP }}"
-                                    stroke="currentColor" fill="transparent" r="15.91549430918954" cx="21" cy="21" />
-
-                            {{-- Reports Segment --}}
-                            <circle class="text-rose-500 transition-all duration-500"
-                                    stroke-width="4"
-                                    :class="{ 'opacity-20': (activeKpi && activeKpi !== 'reports') || (hoveredKpi && hoveredKpi !== 'reports') }"
-                                    stroke-dasharray="{{ $rpP }} {{ 100 - $rpP }}"
-                                    stroke-dashoffset="{{ -($uP + $rvP) }}"
-                                    stroke="currentColor" fill="transparent" r="15.91549430918954" cx="21" cy="21" />
-
-                            <g class="transform rotate-90 origin-center">
-                                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" class="fill-slate-900 font-black text-[3px] uppercase tracking-tighter">
-                                    Metrics
-                                </text>
-                            </g>
-                        </svg>
+                    <div class="card">
+                      <div class="card-head">
+                        <div class="card-head-left">
+                          <div class="card-icon" style="background: #fefce8; color: #ca8a04">
+                            <i class="fa-solid fa-trophy"></i>
+                          </div>
+                          <span class="card-title">Top Rated Posts</span>
+                        </div>
+                      </div>
+                      <div id="top-posts"></div>
                     </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {{-- Recent Activity Timeline --}}
-                    <section class="dashboard-panel bg-white p-6 rounded-lg border border-slate-200 h-full" aria-labelledby="activityTitle">
-                        <div class="mb-8 flex items-center justify-between">
-                            <div>
-                                <p class="dashboard-kicker">System Logs</p>
-                                <h2 id="activityTitle" class="text-lg font-black text-slate-900 uppercase tracking-tight">Recent Activity</h2>
-                            </div>
-                            <div class="h-10 w-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                            </div>
-                        </div>
-                        <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:w-0.5 before:-translate-x-px before:bg-slate-100">
-                            @foreach($recentActivity as $log)
-                                <div class="relative flex items-start gap-6 group">
-                                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white ring-4 ring-white shadow-sm transition-transform group-hover:scale-110" style="color: {{ $log->getColor() }}; border: 1px solid {{ $log->getColor() }}20">
-                                        <i class="fa-solid {{ $log->getIcon() }}"></i>
-                                    </div>
-                                    <div class="flex flex-col pt-1">
-                                        <p class="text-sm font-bold text-slate-900 leading-tight">{{ $log->action }}</p>
-                                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ $log->created_at->diffForHumans() }}</span>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </section>
-
-                    {{-- Top Posts Leaderboard --}}
-                    <section class="dashboard-panel bg-white p-6 rounded-lg border border-slate-200 h-full" aria-labelledby="leaderboardTitle">
-                        <div class="mb-8 flex justify-between items-center">
-                            <div>
-                                <p class="dashboard-kicker">Engagement</p>
-                                <h2 id="leaderboardTitle" class="text-lg font-black text-slate-900 uppercase tracking-tight">Top Posts</h2>
-                            </div>
-                            <div class="h-10 w-10 bg-amber-50 rounded-lg flex items-center justify-center text-amber-500">
-                                <i class="fa-solid fa-trophy"></i>
-                            </div>
-                        </div>
-                        <div class="space-y-3">
-                            @foreach($topPosts as $index => $post)
-                                <div class="group flex items-center justify-between p-4 rounded-lg bg-slate-50 border border-slate-100 transition-all hover:bg-white hover:shadow-md hover:border-indigo-100">
-                                    <div class="flex items-center gap-4">
-                                        <span @class([
-                                            'flex h-10 w-10 items-center justify-center rounded-lg text-sm font-black shadow-sm',
-                                            'bg-amber-400 text-white' => $index === 0,
-                                            'bg-slate-300 text-white' => $index === 1,
-                                            'bg-orange-400 text-white' => $index === 2,
-                                            'bg-white text-slate-400 border border-slate-200' => $index > 2,
-                                        ])>
-                                            #{{ $index + 1 }}
-                                        </span>
-                                        <div class="flex flex-col">
-                                            <a href="{{ route('posts.show', $post->slug) }}" class="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors truncate max-w-[180px]">
-                                                {{ $post->title }}
-                                            </a>
-                                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ $post->tags->first()?->categories->first()?->name ?? 'Uncategorized' }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex flex-col items-end">
-                                            <span class="flex items-center gap-1.5 text-amber-500 text-sm font-black">
-                                                <i class="fa-solid fa-star text-[10px]"></i>
-                                                {{ number_format($post->ratings_avg_rating ?? 0, 1) }}
-                                            </span>
-                                            <span class="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold">
-                                                <i class="fa-solid fa-comment text-[9px]"></i>
-                                                {{ $post->comments_count }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </section>
-                </div>
-            @else
+                  </div>
+                </div>@else
                 <section class="dashboard-panel">
                     <p class="dashboard-kicker">Dashboard</p>
                     <h1 id="dashboardTitle">Welcome back, {{ auth()->user()->name }}</h1>

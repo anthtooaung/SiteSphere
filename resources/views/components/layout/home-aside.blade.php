@@ -10,17 +10,41 @@
     $isDropdownAside = in_array($menuBarLocation, ['top', 'bottom'], true);
 @endphp
 
-<button class="menu-icon" id="sidebarToggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
-    <x-fas-bars aria-hidden="true" />
-</button>
+<div x-data="{ open: false }" @keydown.escape.window="open = false">
+    {{-- Trigger --}}
+    <button class="menu-icon" id="sidebarToggle" type="button" @click="open = true" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
+        <x-fas-bars aria-hidden="true" />
+    </button>
 
-<aside
-    id="sidebar"
-    data-menu-bar-location="{{ $menuBarLocation }}"
-    data-dropdown-aside="{{ $isDropdownAside ? 'true' : 'false' }}"
-    {{ $attributes->class(['sidebar', 'home-aside', 'home-aside--'.$menuBarLocation, 'home-aside--dropdown' => $isDropdownAside]) }}
->
-    <div class="sidebar-header">
+    {{-- Backdrop --}}
+    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-40" @click="open = false" x-transition.opacity></div>
+
+    {{-- Bottom Sheet --}}
+    <aside
+        id="sidebar"
+        x-show="open"
+        x-cloak
+        data-menu-bar-location="{{ $menuBarLocation }}"
+        data-dropdown-aside="{{ $isDropdownAside ? 'true' : 'false' }}"
+        {{ $attributes->class([
+            'sidebar', 
+            'home-aside', 
+            'home-aside--'.$menuBarLocation, 
+            'home-aside--dropdown' => $isDropdownAside,
+            'fixed inset-x-0 bottom-0 z-50 h-[75vh] bg-white dark:bg-gray-800 rounded-t-2xl shadow-xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out'
+        ]) }}
+        x-transition:enter="translate-y-full"
+        x-transition:enter-end="translate-y-0"
+        x-transition:leave="translate-y-0"
+        x-transition:leave-end="translate-y-full"
+        @click.outside="open = false"
+    >
+        {{-- Close Button --}}
+        <button class="absolute top-2 right-2 p-2" @click="open = false">
+            <x-fas-xmark class="size-6 text-gray-500 dark:text-gray-400" />
+        </button>
+
+        <div class="sidebar-header">
         <h2>Filters</h2>
         @if ($isDropdownAside)
             <p class="home-aside-header-copy">
@@ -137,3 +161,4 @@
         </div>
     </div>
 </aside>
+</div>

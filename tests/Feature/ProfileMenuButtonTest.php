@@ -220,6 +220,40 @@ class ProfileMenuButtonTest extends TestCase
             ->assertSee('aria-current="page"', false);
     }
 
+    public function test_view_profile_is_active_on_own_profile(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        // Test without slug (defaults to own profile)
+        $response = $this->actingAs($user)->get(route('profile-detail'));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('profile-detail').'"', false)
+            ->assertSee('class="account-menu-link active"', false);
+
+        // Test with own slug
+        $response = $this->actingAs($user)->get(route('profile-detail', ['slug' => $user->slug]));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('profile-detail').'"', false)
+            ->assertSee('class="account-menu-link active"', false);
+    }
+
+    public function test_view_profile_is_not_active_on_other_user_profile(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        $otherUser = User::factory()->create(['role' => 'user']);
+
+        $response = $this->actingAs($user)->get(route('profile-detail', ['slug' => $otherUser->slug]));
+
+        $response
+            ->assertOk()
+            ->assertSee('href="'.route('profile-detail').'"', false)
+            ->assertDontSee('class="account-menu-link active"', false);
+    }
+
     private function getAsAuthenticatedMobileUser(User $user, string $uri): TestResponse
     {
         $previousUserAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;

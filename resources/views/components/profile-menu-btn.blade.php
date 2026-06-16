@@ -4,7 +4,7 @@
     $isDashboardRoute = request()->routeIs('dashboard');
 
     $profileMenuItems = [
-        ['label' => 'View Profile', 'href' => route('profile-detail'), 'active' => request()->routeIs('profile-detail')],
+        ['label' => 'View Profile', 'href' => route('profile-detail'), 'active' => request()->routeIs('profile-detail') && (!request()->route('slug') || request()->route('slug') === $user?->slug)],
         ['label' => 'Saved Post', 'href' => route('saved-post'), 'active' => request()->routeIs('saved-post')],
     ];
 

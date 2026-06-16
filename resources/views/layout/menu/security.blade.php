@@ -16,7 +16,7 @@
             : 'left';
         $settings = $securityUser->settings;
         $twoFactorEnabled = (bool) old('two_factor_enabled', $securityUser->two_factor_enabled);
-        $postVisibilityEnabled = (bool) old('user_post_visible', $settings?->user_post_visible ?? false);
+        $postVisibilityEnabled = (bool) old('user_post_visible', $settings?->user_post_visible ?? true);
         $avatarUrl = $securityUser->getAvatarUrl();
         $initial = \Illuminate\Support\Str::of($securityUser->name)->trim()->substr(0, 1)->upper()->toString();
     @endphp

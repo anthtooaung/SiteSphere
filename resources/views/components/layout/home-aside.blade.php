@@ -10,16 +10,16 @@
     $isDropdownAside = in_array($menuBarLocation, ['top', 'bottom'], true);
 @endphp
 
-<div x-data="{ open: false }" @keydown.escape.window="open = false">
+<div x-data="{ open: false }" @keydown.escape.window="open = false" class="md:h-full">
     {{-- Trigger --}}
-    <button class="menu-icon" id="sidebarToggle" type="button" @click="open = true" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
+    <button class="menu-icon md:hidden" id="sidebarToggle" type="button" @click="open = true" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
         <x-fas-bars aria-hidden="true" />
     </button>
 
     {{-- Backdrop --}}
-    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-40" @click="open = false" x-transition.opacity></div>
+    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-40 md:hidden" @click="open = false" x-transition.opacity></div>
 
-    {{-- Bottom Sheet --}}
+    {{-- Bottom Sheet / Sidebar --}}
     <aside
         id="sidebar"
         x-show="open"
@@ -31,16 +31,18 @@
             'home-aside', 
             'home-aside--'.$menuBarLocation, 
             'home-aside--dropdown' => $isDropdownAside,
-            'fixed inset-x-0 bottom-0 z-50 h-[75vh] bg-white dark:bg-gray-800 rounded-t-2xl shadow-xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out'
+            'fixed inset-x-0 bottom-0 z-50 h-[75vh] bg-white dark:bg-gray-800 rounded-t-2xl shadow-xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out md:static md:!block md:h-full md:w-[280px] md:rounded-none md:shadow-none md:transform-none md:transition-none md:z-0'
         ]) }}
-        x-transition:enter="translate-y-full"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="translate-y-full"
         x-transition:enter-end="translate-y-0"
-        x-transition:leave="translate-y-0"
+        x-transition:leave="transition ease-in duration-300 transform"
+        x-transition:leave-start="translate-y-0"
         x-transition:leave-end="translate-y-full"
-        @click.outside="open = false"
+        @click.outside="if(window.innerWidth < 768) open = false"
     >
         {{-- Close Button --}}
-        <button class="absolute top-2 right-2 p-2" @click="open = false">
+        <button class="absolute top-2 right-2 p-2 md:hidden" @click="open = false">
             <x-fas-xmark class="size-6 text-gray-500 dark:text-gray-400" />
         </button>
 

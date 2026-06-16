@@ -130,10 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   // ══ GENERALIZED PIE BUILDER ══════════════════════════════════════════════
-  function buildOvPie(svgId, labelsId, innerR, minOuter, maxOuter, showLabels, showNames = true, centerStyle = "default") {
+  function buildOvPie(svgId, innerR, minOuter, maxOuter, showNames = true, centerStyle = "default") {
     const svgEl = document.getElementById(svgId);
     if (!svgEl || categories.length === 0) return [];
-    const labelsEl = labelsId ? document.getElementById(labelsId) : null;
     const NS = "http://www.w3.org/2000/svg";
     const CX = 200, CY = 200, GAP_DEG = 3.5;
     const logTotal = categories.reduce((s, c) => s + c.logVal, 0);
@@ -176,17 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       svgEl.appendChild(path);
       slicePaths.push(path);
-      if (showLabels && labelsEl) {
-        const labelR = innerR + (outerR - innerR) * 0.55;
-        const lxPct = ((CX + labelR * Math.cos(toRad(mid))) / 400) * 100;
-        const lyPct = ((CY + labelR * Math.sin(toRad(mid))) / 400) * 100;
-        const div = document.createElement("div");
-        div.className = "cat-seg-label";
-        div.style.left = lxPct + "%";
-        div.style.top = lyPct + "%";
-        div.innerHTML = `<span class="csl-icon"><i class="fa-solid ${cat.icon}"></i></span><span class="csl-pct">${cat.value >= 10000 ? (cat.value / 1000).toFixed(1) + "K" : cat.value.toLocaleString()}</span>${showNames ? `<span class="csl-name">${cat.name}</span>` : ""}`;
-        labelsEl.appendChild(div);
-      }
       angle += sweep;
     });
 
@@ -201,8 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
     );
 
-    if (showLabels) {
-      if (centerStyle === "total") {
+    if (centerStyle === "total") {
         const totalVal = categories.reduce((s, c) => s + c.value, 0);
         const totalFmt = totalVal >= 10000 ? (totalVal / 1000).toFixed(1) + "K" : totalVal.toLocaleString();
         [
@@ -222,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
           t.textContent = txt;
           svgEl.appendChild(t);
         });
-      } else {
+    } else {
         [
           [CY - 17, "PLATFORM", 8.5, "700", "#94a3b8"],
           [CY + 2, "OVERVIEW", 16, "900", "#0f172a"],
@@ -241,26 +228,58 @@ document.addEventListener('DOMContentLoaded', () => {
           t.textContent = txt;
           svgEl.appendChild(t);
         });
-      }
     }
     return slicePaths;
   }
 
   // Build pie for layout 9
-  const catSlicePaths9 = buildOvPie("cat-svg-9", "cat-labels-9", 95, 138, 182, true, false, "total");
+  const catSlicePaths9 = buildOvPie("cat-svg-9", 95, 138, 182, false, "total");
+
+  // ══ SPARKLINE BUILDER ════════════════════════════════════════════════════
+  function buildSparklines() {
+    const wraps = document.querySelectorAll('.ov9-spark-wrap');
+    wraps.forEach(wrap => {
+      const raw = wrap.dataset.trend;
+      if (!raw) return;
+      const trend = JSON.parse(raw);
+      const linePath = wrap.querySelector('.spark-line');
+      const fillPath = wrap.querySelector('.spark-fill');
+      if (!linePath || !fillPath) return;
+
+      const maxVal = Math.max(...trend, 5); // ensure at least some height
+      const width = 100;
+      const height = 48;
+      const step = width / (trend.length - 1);
+
+      let d = "";
+      trend.forEach((val, i) => {
+        const x = i * step;
+        const y = height - (val / maxVal) * (height * 0.8) - 4; // leave margin
+        d += (i === 0 ? "M" : " L") + x.toFixed(2) + "," + y.toFixed(2);
+      });
+
+      linePath.setAttribute('d', d);
+      fillPath.setAttribute('d', d + ` L${width},${height} L0,${height} Z`);
+    });
+  }
+  buildSparklines();
 
   // ── FILTER: Layout 9 ─────────────────────────────────────────────────────
   document.querySelectorAll(".ov9-kpi[data-ov9-idx]").forEach((card) => {
-    card.addEventListener("click", () => {
+    const handleKpiClick = () => {
       const idx = parseInt(card.dataset.ov9Idx);
       const isActive = card.classList.contains("kpi-active");
-      document.querySelectorAll(".ov9-kpi[data-ov9-idx]").forEach((c) => c.classList.remove("kpi-active", "kpi-dimmed"));
+      document.querySelectorAll(".ov9-kpi[data-ov9-idx]").forEach((c) => {
+          c.classList.remove("kpi-active", "kpi-dimmed");
+          c.setAttribute('aria-pressed', 'false');
+      });
       catSlicePaths9.forEach((p) => {
         p.style.opacity = "1";
         p.classList.remove("slice-dimmed");
       });
       if (!isActive) {
         card.classList.add("kpi-active");
+        card.setAttribute('aria-pressed', 'true');
         document.querySelectorAll(".ov9-kpi[data-ov9-idx]").forEach((c) => {
           if (c !== card) c.classList.add("kpi-dimmed");
         });
@@ -271,6 +290,14 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       }
+    };
+
+    card.addEventListener("click", handleKpiClick);
+    card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleKpiClick();
+        }
     });
   });
 

@@ -21,7 +21,7 @@
                 <li>
                     <x-category-btn />
                 </li>
-                @if(request()->routeIs('welcome'))
+                @if(request()->routeIs(['welcome', 'about-us']))
                     <li>
                         <x-about-btn />
                     </li>
@@ -72,7 +72,7 @@
         <!-- Categories Trigger -->
         <x-category-btn mobile-mode="trigger" />
 
-        @if(request()->routeIs('welcome'))
+        @if(request()->routeIs(['welcome', 'about-us']))
             <!-- About Button -->
             <x-about-btn />
         @endif

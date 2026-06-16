@@ -92,7 +92,7 @@ class RegistrationTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password!!!',
-        ]);
+        ])->assertOk();
 
         $response = $this->postJson('/register/resend-otp');
 
@@ -148,7 +148,7 @@ class RegistrationTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password!!!',
-        ]);
+        ])->assertOk();
 
         $verification = OtpVerifications::where('email', 'test@example.com')->firstOrFail();
 
@@ -174,7 +174,7 @@ class RegistrationTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password!!!',
-        ]);
+        ])->assertOk();
 
         $verification = OtpVerifications::where('email', 'test@example.com')->firstOrFail();
 
@@ -219,7 +219,7 @@ class RegistrationTest extends TestCase
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password!!!',
-        ]);
+        ])->assertOk();
 
         $response = $this->postJson('/register/finalize', [
             'user_dob' => null,

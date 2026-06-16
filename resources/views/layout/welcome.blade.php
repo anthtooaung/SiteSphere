@@ -144,38 +144,34 @@
                         @csrf
                         <h2 id="contactTitle" class="welcome-form-title">Get in touch</h2>
 
-                        <div class="welcome-form-row">
-                            <div class="welcome-form-group">
-                                <label for="firstName">First Name</label>
-                                <input type="text" id="firstName" name="first_name" value="{{ old('first_name') }}" autocomplete="given-name" required>
-                                @error('first_name')
-                                    <p class="welcome-form-error">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div class="welcome-form-group">
-                                <label for="lastName">Last Name</label>
-                                <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}" autocomplete="family-name" required>
-                                @error('last_name')
-                                    <p class="welcome-form-error">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
+                        @if(isset($errors) && $errors->has('first_name'))
+                            <p class="welcome-form-error">{{ $errors->first('first_name') }}</p>
+                        @endif
+                    </div>
+                    <div class="welcome-form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}" autocomplete="family-name" required>
+                        @if(isset($errors) && $errors->has('last_name'))
+                            <p class="welcome-form-error">{{ $errors->first('last_name') }}</p>
+                        @endif
+                    </div>
+                </div>
 
-                        <div class="welcome-form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="email" required>
-                            @error('email')
-                                <p class="welcome-form-error">{{ $message }}</p>
-                            @enderror
-                        </div>
+                <div class="welcome-form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="email" required>
+                    @if(isset($errors) && $errors->has('email'))
+                        <p class="welcome-form-error">{{ $errors->first('email') }}</p>
+                    @endif
+                </div>
 
-                        <div class="welcome-form-group">
-                            <label for="message">What do you have in mind</label>
-                            <textarea id="message" name="message" placeholder="Please enter query..." required>{{ old('message') }}</textarea>
-                            @error('message')
-                                <p class="welcome-form-error">{{ $message }}</p>
-                            @enderror
-                        </div>
+                <div class="welcome-form-group">
+                    <label for="message">What do you have in mind</label>
+                    <textarea id="message" name="message" placeholder="Please enter query..." required>{{ old('message') }}</textarea>
+                    @if(isset($errors) && $errors->has('message'))
+                        <p class="welcome-form-error">{{ $errors->first('message') }}</p>
+                    @endif
+                </div>
 
                         <button type="submit" class="welcome-submit-button">Submit</button>
                     </form>

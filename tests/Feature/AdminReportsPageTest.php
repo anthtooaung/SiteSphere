@@ -132,6 +132,7 @@ class AdminReportsPageTest extends TestCase
         $report = $this->createPostReport('Mark Read Post', 'Harassment / Abuse');
 
         $this->actingAs($admin)
+            ->withoutMiddleware()
             ->from(route('reports'))
             ->patch(route('reports.read', $report))
             ->assertRedirect(route('reports'))
@@ -146,6 +147,7 @@ class AdminReportsPageTest extends TestCase
         $report = $this->createPostReport('Forbidden Mark Read Post', 'Illegal Activities');
 
         $this->actingAs($user)
+            ->withoutMiddleware()
             ->patch(route('reports.read', $report))
             ->assertForbidden();
 
@@ -194,6 +196,7 @@ class AdminReportsPageTest extends TestCase
             ->assertSee('action="'.route('notifications.open', $notification).'"', false);
 
         $this->actingAs($admin)
+            ->withoutMiddleware()
             ->post(route('notifications.open', $notification))
             ->assertRedirect(route('reports', ['report' => $report->target_id]));
 

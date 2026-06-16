@@ -2,12 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Categories;
-use App\Models\Comments;
 use App\Models\Posts;
-use App\Models\Ratings;
 use App\Models\Reports;
-use App\Models\Tags;
 use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
@@ -52,6 +48,8 @@ class AdminDashboardTest extends TestCase
         $this->actingAs($admin)
             ->get(route('dashboard'))
             ->assertOk()
+            ->assertSee('var(--accent-color, #6c5ce7)', false) // Check for default accent color
+            ->assertDontSee('--accent-color: #14b8a6', false) // Ensure the old color is not present
             ->assertSeeText('Admin Dashboard')
             ->assertSeeText('Admin Overview')
             ->assertSeeText('Total Users')
@@ -67,12 +65,12 @@ class AdminDashboardTest extends TestCase
 
         // Create specific counts using the models that DashboardController actually counts
         User::factory()->count(10)->create(['role' => 'user']);
-        
+
         // Use UserPosts for "Total Reviews" as per DashboardController
         // Create 7 reviews for 7 DIFFERENT posts by the same user to avoid unique constraint
         UserPosts::factory()->count(7)->create([
             'user_id' => $user->id,
-            'post_id' => fn() => Posts::factory()->create()->id,
+            'post_id' => fn () => Posts::factory()->create()->id,
         ]);
 
         Reports::factory()->count(4)->create([
@@ -90,40 +88,26 @@ class AdminDashboardTest extends TestCase
             ->assertOk();
 
         // Check if counts are visible in the response
-        $response->assertSeeText((string)$expectedUserCount);
-        $response->assertSeeText((string)$expectedReviewCount);
-        $response->assertSeeText((string)$expectedReportCount);
+        $response->assertSeeText((string) $expectedUserCount);
+        $response->assertSeeText((string) $expectedReviewCount);
+        $response->assertSeeText((string) $expectedReportCount);
     }
 
-    public function test_top_posts_leaderboard_displays_correct_ranked_posts(): void
+    public function test_admin_dashboard_includes_trend_data(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
-
-        // Create posts with different ratings
-        $post1 = Posts::factory()->create(['title' => 'Top Post 1']);
-        $post2 = Posts::factory()->create(['title' => 'Top Post 2']);
-        $post3 = Posts::factory()->create(['title' => 'Top Post 3']);
-
-        // Post 1: Avg 5.0
-        Ratings::factory()->create(['post_id' => $post1->id, 'rating' => 5]);
-        
-        // Post 2: Avg 4.0
-        Ratings::factory()->create(['post_id' => $post2->id, 'rating' => 4]);
-
-        // Post 3: Avg 3.0
-        Ratings::factory()->create(['post_id' => $post3->id, 'rating' => 3]);
 
         $response = $this->actingAs($admin)
             ->get(route('dashboard'))
             ->assertOk();
 
-        // Check if posts are in the correct order in the view
-        $content = $response->getContent();
-        $pos1 = strpos($content, 'Top Post 1');
-        $pos2 = strpos($content, 'Top Post 2');
-        $pos3 = strpos($content, 'Top Post 3');
-
-        $this->assertTrue($pos1 < $pos2);
-        $this->assertTrue($pos2 < $pos3);
+        $response->assertViewHas('stats', function ($stats) {
+            return array_key_exists('userTrend', $stats) &&
+                   array_key_exists('reviewTrend', $stats) &&
+                   array_key_exists('reportTrend', $stats) &&
+                   count($stats['userTrend']) === 10 &&
+                   count($stats['reviewTrend']) === 10 &&
+                   count($stats['reportTrend']) === 10;
+        });
     }
 }

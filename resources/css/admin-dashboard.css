@@ -58,6 +58,12 @@
   grid-template-columns: 1fr 1.2fr;
 }
 
+@media (max-width: 1100px) {
+  .row-lower {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── CARD ── */
 .card {
   background: var(--ui-surface);
@@ -66,6 +72,7 @@
   padding: 16px;
   min-width: 0;
   box-shadow: var(--ui-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .card-head {
   display: flex;
@@ -85,6 +92,61 @@
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+/* ── MONTH PICKER ── */
+.overview-month-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+}
+.overview-month-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+.overview-month-btn:hover {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 4%, var(--ui-surface));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+.overview-month-btn i.omc {
+  font-size: 11px;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+.overview-month-btn.open i.omc {
+  transform: rotate(180deg);
+}
+.overview-month-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: var(--ui-shadow);
+  z-index: 100;
+  display: none;
+  width: 200px;
+}
+.overview-month-picker.open {
+  display: block;
 }
 
 /* ── INFOGRAPHIC SECTION ── */
@@ -117,6 +179,13 @@
   display: flex;
   gap: 20px;
 }
+
+@media (max-width: 1200px) {
+  .infographic-body {
+    flex-direction: column;
+  }
+}
+
 .ov9-row {
   display: flex;
   flex: 1;
@@ -125,13 +194,33 @@
   margin: 0;
   padding: 0;
 }
+
+@media (max-width: 1200px) {
+  .ov9-row {
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+}
 .ov9-pie-tile {
   flex: 0 0 35%;
   border: 1px solid var(--ui-border);
   border-radius: var(--ui-radius, 8px);
   background: var(--background-color);
   padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+@media (max-width: 1200px) {
+  .ov9-pie-tile {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
 .ov9-kpi-col {
   flex: 1;
   display: grid;
@@ -139,25 +228,75 @@
   gap: 12px;
   max-width: none;
 }
+
+@media (max-width: 768px) {
+  .ov9-kpi-col {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}
+
 .ov9-kpi {
   flex: 1;
+  display: flex;
   flex-direction: column;
-  padding: 12px;
+  padding: 16px;
   border: 1px solid var(--ui-border);
   border-radius: var(--ui-radius, 8px);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--ui-surface);
+  position: relative;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.ov9-kpi-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.ov9-kpi:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.ov9-kpi.kpi-active {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 4%, var(--ui-surface));
+}
+
+.ov9-kpi.kpi-dimmed {
+  opacity: 0.6;
+  filter: grayscale(0.5);
 }
 .ov9-kpi-left {
   border: none;
   padding: 0;
   min-width: 0;
-  margin-bottom: 8px;
+}
+.ov9-kpi-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ov9-kpi-bottom {
+  text-align: right;
 }
 .ov9-kpi-right {
-  padding: 0;
-  align-items: flex-start;
+  display: none; /* Old container */
+}
+.ov9-kpi-spark-row {
+  width: 100%;
 }
 .kpi-val {
-  font-size: 22px !important;
+  font-size: 24px !important;
+  font-weight: 900;
+  line-height: 1;
 }
 
 /* ── ACTIVITY / TIMELINE ── */
@@ -170,6 +309,15 @@
 }
 .act-legend-item {
   font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.act-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 .tl-item {
   padding-bottom: 12px;

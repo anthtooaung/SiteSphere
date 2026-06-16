@@ -576,6 +576,39 @@
                                                                     </button>
                                                                 </div>
 
+                                                                @if (Auth::id() === $userPost->user_id)
+                                                                    <a href="{{ route('user-posts.edit', $userPost->id) }}"
+                                                                        class="mt-1 border-t pt-1 flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
+                                                                        role="menuitem">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                                                        <span>Edit Description</span>
+                                                                    </a>
+
+                                                                    <form method="POST" action="{{ route('user-posts.destroy', $userPost->id) }}"
+                                                                        class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
+                                                                        x-on:submit.prevent="Swal.fire({
+                                                                            title: 'Are you sure?',
+                                                                            text: 'You want to delete your description?',
+                                                                            icon: 'warning',
+                                                                            showCancelButton: true,
+                                                                            confirmButtonColor: '#d33',
+                                                                            cancelButtonColor: '#6c757d',
+                                                                            confirmButtonText: 'Yes, delete it!'
+                                                                        }).then((result) => {
+                                                                            if (result.isConfirmed) {
+                                                                                $el.submit();
+                                                                            }
+                                                                        })">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit"
+                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
+                                                                            role="menuitem">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                                                            <span>Delete Description</span>
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
                                                                 @if (Auth::user()?->role === 'admin')
                                                                     <form method="POST" action="{{ route('audits.ban', $userPost->id) }}"
                                                                         class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"

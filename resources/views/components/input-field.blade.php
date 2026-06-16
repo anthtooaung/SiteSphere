@@ -15,7 +15,7 @@
         @endif
         <div class="input-wrap">
             {{ $slot }}
-            <input id="{{ $id }}" name="{{ $name }}" {{ $attributes->class(['is-invalid' => isset($errors) && $errors->getBag($bag)->has($name)]) }}>
+            <input id="{{ $id }}" name="{{ $name }}" {{ $attributes->class(['is-invalid' => (isset($errors) && $errors->getBag($bag)->has($name))]) }}>
             @if(isset($suffix))
                 {{ $suffix }}
             @endif
@@ -35,7 +35,7 @@
             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 {{ $slot }}
             </div>
-            <input id="{{ $id }}" name="{{ $name }}" {{ $attributes->merge(['class' => 'block w-full ps-9 pe-3 py-2.5 bg-neutral-200/40 border text-md rounded-xl focus:border-[var(--accent)] shadow-md placeholder:text-body'])->class(['is-invalid' => isset($errors) && $errors->getBag($bag)->has($name)]) }} placeholder="{{ $label }}">
+            <input id="{{ $id }}" name="{{ $name }}" {{ $attributes->merge(['class' => 'block w-full ps-9 pe-3 py-2.5 bg-neutral-200/40 border text-md rounded-xl focus:border-[var(--accent)] shadow-md placeholder:text-body'])->class(['is-invalid' => (isset($errors) && $errors->getBag($bag)->has($name))]) }} placeholder="{{ $label }}">
             @if(isset($suffix))
                 {{ $suffix }}
             @endif

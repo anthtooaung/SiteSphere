@@ -26,7 +26,8 @@
                             "logVal" => log10(max(1, $stats['totalReviews'])),
                             "color" => "#8b5cf6",
                             "icon" => "magnifying-glass",
-                            "trendHtml" => ""
+                            "trendHtml" => "",
+                            "trend" => $stats['reviewTrend']
                         ],
                         [
                             "name" => "Total Users",
@@ -34,7 +35,8 @@
                             "logVal" => log10(max(1, $stats['totalUsers'])),
                             "color" => "#6366f1",
                             "icon" => "users",
-                            "trendHtml" => ""
+                            "trendHtml" => "",
+                            "trend" => $stats['userTrend']
                         ],
                         [
                             "name" => "Open Reports",
@@ -42,7 +44,8 @@
                             "logVal" => log10(max(1, $stats['totalReports'])),
                             "color" => "#ef4444",
                             "icon" => "flag",
-                            "trendHtml" => ""
+                            "trendHtml" => "",
+                            "trend" => $stats['reportTrend']
                         ]
                     ];
                     
@@ -97,7 +100,7 @@
                           <div class="infographic-head-icon">
                             <i class="fa-solid fa-chart-pie"></i>
                           </div>
-                          <div class="infographic-head-title">Platform Metrics</div>
+                          <div class="infographic-head-title">Admin Overview</div>
                         </div>
                         <div class="overview-month-wrap">
                           <button class="overview-month-btn" id="overview-month-btn">
@@ -124,7 +127,6 @@
                             <div class="ov9-pie-body">
                               <div style="position: relative; width: 180px; height: 180px">
                                 <svg id="cat-svg-9" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="display: block; width: 180px; height: 180px"></svg>
-                                <div id="cat-labels-9" style="position: absolute; inset: 0; pointer-events: none"></div>
                               </div>
                             </div>
                             <div class="ov9-pie-legend">
@@ -134,8 +136,8 @@
                             </div>
                           </div>
                           <div class="ov9-kpi-col">
-                            <div class="ov9-kpi ov9-kpi--users" data-ov9-idx="1">
-                              <div class="ov9-kpi-left">
+                            <div class="ov9-kpi ov9-kpi--users" data-ov9-idx="1" role="button" tabindex="0" aria-label="Filter by Users">
+                              <div class="ov9-kpi-top-row">
                                 <div class="ov9-kpi-top">
                                   <span class="ov9-kpi-icon" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;"><i class="fa-solid fa-users"></i></span>
                                   <span class="kpi-lbl">Users</span>
@@ -144,17 +146,17 @@
                                   <div class="kpi-val">{{ number_format($stats['totalUsers']) }}</div>
                                 </div>
                               </div>
-                              <div class="ov9-kpi-right">
-                                <div class="ov9-spark-wrap">
+                              <div class="ov9-kpi-spark-row">
+                                <div class="ov9-spark-wrap" data-trend="@json($stats['userTrend'])" data-color="#6366f1">
                                   <svg class="ov9-spark" viewBox="0 0 100 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                                     <defs><linearGradient id="sg9u" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.18"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0"/></linearGradient></defs>
-                                    <path d="M0,32 C14,27 22,15 36,20 C48,25 56,10 68,15 C80,20 90,11 100,16 L100,48 L0,48 Z" fill="url(#sg9u)"/><path d="M0,32 C14,27 22,15 36,20 C48,25 56,10 68,15 C80,20 90,11 100,16" fill="none" stroke="#6366f1" stroke-width="1.8" stroke-linecap="round"/>
+                                    <path class="spark-fill" d="" fill="url(#sg9u)"/><path class="spark-line" d="" fill="none" stroke="#6366f1" stroke-width="1.8" stroke-linecap="round"/>
                                   </svg>
                                 </div>
                               </div>
                             </div>
-                            <div class="ov9-kpi ov9-kpi--audits" data-ov9-idx="0">
-                              <div class="ov9-kpi-left">
+                            <div class="ov9-kpi ov9-kpi--audits" data-ov9-idx="0" role="button" tabindex="0" aria-label="Filter by Reviews">
+                              <div class="ov9-kpi-top-row">
                                 <div class="ov9-kpi-top">
                                   <span class="ov9-kpi-icon" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;"><i class="fa-solid fa-magnifying-glass"></i></span>
                                   <span class="kpi-lbl">Reviews</span>
@@ -163,17 +165,17 @@
                                   <div class="kpi-val">{{ number_format($stats['totalReviews']) }}</div>
                                 </div>
                               </div>
-                              <div class="ov9-kpi-right">
-                                <div class="ov9-spark-wrap">
+                              <div class="ov9-kpi-spark-row">
+                                <div class="ov9-spark-wrap" data-trend="@json($stats['reviewTrend'])" data-color="#8b5cf6">
                                   <svg class="ov9-spark" viewBox="0 0 100 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                                     <defs><linearGradient id="sg9a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.18"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient></defs>
-                                    <path d="M0,18 C12,22 22,34 36,27 C48,20 56,32 68,23 C80,14 90,24 100,19 L100,48 L0,48 Z" fill="url(#sg9a)"/><path d="M0,18 C12,22 22,34 36,27 C48,20 56,32 68,23 C80,14 90,24 100,19" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round"/>
+                                    <path class="spark-fill" d="" fill="url(#sg9a)"/><path class="spark-line" d="" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round"/>
                                   </svg>
                                 </div>
                               </div>
                             </div>
-                            <div class="ov9-kpi ov9-kpi--reports" data-ov9-idx="2">
-                              <div class="ov9-kpi-left">
+                            <div class="ov9-kpi ov9-kpi--reports" data-ov9-idx="2" role="button" tabindex="0" aria-label="Filter by Reports">
+                              <div class="ov9-kpi-top-row">
                                 <div class="ov9-kpi-top">
                                   <span class="ov9-kpi-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fa-solid fa-flag"></i></span>
                                   <span class="kpi-lbl">Reports</span>
@@ -182,11 +184,11 @@
                                   <div class="kpi-val kpi-val--danger">{{ number_format($stats['totalReports']) }}</div>
                                 </div>
                               </div>
-                              <div class="ov9-kpi-right">
-                                <div class="ov9-spark-wrap">
+                              <div class="ov9-kpi-spark-row">
+                                <div class="ov9-spark-wrap" data-trend="@json($stats['reportTrend'])" data-color="#ef4444">
                                   <svg class="ov9-spark" viewBox="0 0 100 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                                     <defs><linearGradient id="sg9r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.18"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0"/></linearGradient></defs>
-                                    <path d="M0,22 C12,15 22,34 36,22 C48,10 56,26 68,17 C80,8 90,22 100,13 L100,48 L0,48 Z" fill="url(#sg9r)"/><path d="M0,22 C12,15 22,34 36,22 C48,10 56,26 68,17 C80,8 90,22 100,13" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
+                                    <path class="spark-fill" d="" fill="url(#sg9r)"/><path class="spark-line" d="" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
                                   </svg>
                                 </div>
                               </div>
@@ -213,10 +215,10 @@
                           <div class="timeline" id="activity-list"></div>
                         </div>
                         <div class="act-legend">
-                          <span class="act-legend-item"><i class="fa-solid fa-ban" style="color: #ef4444; font-size: 16px"></i> Ban / Delete</span>
-                          <span class="act-legend-item"><i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 16px"></i> Resolved / Approved</span>
-                          <span class="act-legend-item"><i class="fa-solid fa-bullhorn" style="color: #7c3aed; font-size: 16px"></i> Announcement / Bulk</span>
-                          <span class="act-legend-item"><i class="fa-solid fa-sliders" style="color: var(--accent-color); font-size: 16px"></i> Warning / Settings</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #ef4444"></span> Ban / Delete</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #10b981"></span> Resolved / Approved</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #7c3aed"></span> Announcement / Bulk</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: var(--accent-color)"></span> Warning / Settings</span>
                         </div>
                       </div>
                       <a href="{{ route('admin.activity-log') }}" class="see-more-link">See More</a>
@@ -238,7 +240,13 @@
             @else
                 <section class="dashboard-panel">
                     <p class="dashboard-kicker">Dashboard</p>
-                    <h1 id="dashboardTitle">Welcome back, {{ auth()->user()->name }}</h1>
+                    <h1 id="dashboardTitle">
+                        @auth
+                            Welcome back, {{ auth()->user()->name }}
+                        @else
+                            Welcome to SiteSphere
+                        @endauth
+                    </h1>
                     <p>
                         Your workspace is ready with your latest review activity.
                     </p>
@@ -246,23 +254,43 @@
 
                 <section class="dashboard-stat-grid" aria-label="Dashboard statistics">
                     <article class="dashboard-stat-card">
-                        <span>Total Reviews</span>
-                        <strong>{{ number_format($stats['totalReviews']) }}</strong>
+                        <div class="stat-icon-wrap" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span>Total Reviews</span>
+                            <strong>{{ number_format($stats['totalReviews']) }}</strong>
+                        </div>
                     </article>
 
                     <article class="dashboard-stat-card">
-                        <span>Saved Posts</span>
-                        <strong>{{ number_format($stats['savedPosts']) }}</strong>
+                        <div class="stat-icon-wrap" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;">
+                            <i class="fa-solid fa-bookmark"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span>Saved Posts</span>
+                            <strong>{{ number_format($stats['savedPosts']) }}</strong>
+                        </div>
                     </article>
 
                     <article class="dashboard-stat-card">
-                        <span>Ratings Given</span>
-                        <strong>{{ number_format($stats['ratingsGiven']) }}</strong>
+                        <div class="stat-icon-wrap" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span>Ratings Given</span>
+                            <strong>{{ number_format($stats['ratingsGiven']) }}</strong>
+                        </div>
                     </article>
 
                     <article class="dashboard-stat-card">
-                        <span>Reviewed Websites</span>
-                        <strong>{{ number_format($stats['reviewedWebsites']) }}</strong>
+                        <div class="stat-icon-wrap" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+                            <i class="fa-solid fa-globe"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span>Reviewed Websites</span>
+                            <strong>{{ number_format($stats['reviewedWebsites']) }}</strong>
+                        </div>
                     </article>
                 </section>
 

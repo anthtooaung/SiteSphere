@@ -1,6 +1,6 @@
 {
   "resources/css/about-us.css": {
-    "file": "assets/about-us-sDGYe4ze.css",
+    "file": "assets/about-us-CFGWbI_n.css",
     "name": "about-us",
     "names": [
       "about-us.css"
@@ -18,7 +18,7 @@
     "isEntry": true
   },
   "resources/css/admin-dashboard.css": {
-    "file": "assets/admin-dashboard-D2JKd8nx.css",
+    "file": "assets/admin-dashboard-SuU6YROO.css",
     "name": "admin-dashboard",
     "names": [
       "admin-dashboard.css"
@@ -27,7 +27,7 @@
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-CeMX8RW_.css",
+    "file": "assets/app-CMDSMMFo.css",
     "name": "app",
     "names": [
       "app.css"
@@ -81,7 +81,7 @@
     "isEntry": true
   },
   "resources/css/post-detail.css": {
-    "file": "assets/post-detail-CcQUrb8m.css",
+    "file": "assets/post-detail-DNSvAWZl.css",
     "name": "post-detail",
     "names": [
       "post-detail.css"
@@ -90,7 +90,7 @@
     "isEntry": true
   },
   "resources/css/profile-detail.css": {
-    "file": "assets/profile-detail-3Oec48f5.css",
+    "file": "assets/profile-detail-3n_2Av2K.css",
     "name": "profile-detail",
     "names": [
       "profile-detail.css"
@@ -135,7 +135,7 @@
     "isEntry": true
   },
   "resources/js/about-us.js": {
-    "file": "assets/about-us-DDULVndQ.js",
+    "file": "assets/about-us-CrEdCo00.js",
     "name": "about-us",
     "src": "resources/js/about-us.js",
     "isEntry": true
@@ -147,7 +147,7 @@
     "isEntry": true
   },
   "resources/js/admin-dashboard.js": {
-    "file": "assets/admin-dashboard-DP47DZ2U.js",
+    "file": "assets/admin-dashboard-D9PI5e3O.js",
     "name": "admin-dashboard",
     "src": "resources/js/admin-dashboard.js",
     "isEntry": true

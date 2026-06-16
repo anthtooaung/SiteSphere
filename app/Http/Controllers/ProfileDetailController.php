@@ -26,25 +26,39 @@ class ProfileDetailController extends Controller
             ->where('user_id', $user->id)
             ->when(! $isOwnProfile, fn ($query) => $query->where('user_hidden', false));
 
-        $uploadsCount = (clone $userPostsQuery)->count();
+        $reviewsCount = (clone $userPostsQuery)->count();
+        $uploadsCount = $reviewsCount; // Using reviews as uploads for now as per schema
         $ratingsCount = Ratings::query()
             ->where('user_id', $user->id)
             ->count();
-        $reviewsCount = $ratingsCount;
+
         $postIds = (clone $userPostsQuery)->pluck('post_id');
         $averageRating = Ratings::query()
             ->whereIn('post_id', $postIds)
             ->avg('rating') ?: 0;
+
         $recentReviews = (clone $userPostsQuery)
             ->with(['post.tags'])
             ->latest()
             ->take(4)
             ->get();
 
+        // All items for expanded lists
+        $allReviews = (clone $userPostsQuery)
+            ->with(['post.tags'])
+            ->latest()
+            ->get();
+
+        $allRatings = Ratings::query()
+            ->where('user_id', $user->id)
+            ->with(['post'])
+            ->latest()
+            ->get();
+
         /** @var Collection<int, int> $recentReviewRatings */
         $recentReviewRatings = Ratings::query()
             ->where('user_id', $user->id)
-            ->whereIn('post_id', $recentReviews->pluck('post_id'))
+            ->whereIn('post_id', $allReviews->pluck('post_id'))
             ->pluck('rating', 'post_id');
 
         return view('layout.profile-detail', [
@@ -55,6 +69,8 @@ class ProfileDetailController extends Controller
             'ratingsCount' => $ratingsCount,
             'averageRating' => $averageRating,
             'recentReviews' => $recentReviews,
+            'allReviews' => $allReviews,
+            'allRatings' => $allRatings,
             'recentReviewRatings' => $recentReviewRatings,
         ]);
     }

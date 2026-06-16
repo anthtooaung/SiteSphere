@@ -1,5 +1,5 @@
 const revealItems = document.querySelectorAll(
-    ".profile-card, .stat-card, .review-box"
+    ".profile-card, .stat-grid, .expansion-container"
 );
 
 const revealObserver = new IntersectionObserver((entries) => {

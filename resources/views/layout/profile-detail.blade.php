@@ -27,7 +27,7 @@
             <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
         @endif
 
-        <main class="dashboard-content profile-detail-content">
+        <main class="dashboard-content profile-detail-content" x-data="{ expandedSection: null }">
             <!-- Background Blur -->
             <div class="bg-blur blur1"></div>
             <div class="bg-blur blur2"></div>
@@ -94,7 +94,7 @@
                                     <x-fas-phone />
                                     <div>
                                         <span>Phone</span>
-                                        <h4>+95{{ $user->user_phone ?? 'Not specified' }}</h4>
+                                        <h4>{{ $user->user_phone ? '+95'.$user->user_phone : 'Not specified' }}</h4>
                                     </div>
                                 </div>
 
@@ -125,36 +125,42 @@
 
                 <!-- Stats Grid -->
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card" :class="expandedSection === 'reviews' ? 'active' : ''">
                         <span class="stat-icon blue">
                             <x-fas-comment-dots />
                         </span>
                         <div>
                             <h2>{{ $reviewsCount }}</h2>
                             <p>My Reviews</p>
-                            <a href="{{ route('home') }}" class="bottom-link">View all reviews &rarr;</a>
+                            <button @click="expandedSection = expandedSection === 'reviews' ? null : 'reviews'" class="bottom-link">
+                                <span x-text="expandedSection === 'reviews' ? 'Collapse ↑' : 'View all reviews &rarr;'"></span>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="stat-card" :class="expandedSection === 'ratings' ? 'active' : ''">
                         <span class="stat-icon gold">
                             <x-fas-star />
                         </span>
                         <div>
                             <h2>{{ $ratingsCount }}</h2>
                             <p>Rate Items</p>
-                            <a href="{{ route('home') }}" class="bottom-link">Give rating &rarr;</a>
+                            <button @click="expandedSection = expandedSection === 'ratings' ? null : 'ratings'" class="bottom-link">
+                                <span x-text="expandedSection === 'ratings' ? 'Collapse ↑' : 'View all ratings &rarr;'"></span>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="stat-card" :class="expandedSection === 'uploads' ? 'active' : ''">
                         <span class="stat-icon green">
                             <x-fas-upload />
                         </span>
                         <div>
                             <h2>{{ $uploadsCount }}</h2>
                             <p>My Uploads</p>
-                            <a href="{{ route('home') }}" class="bottom-link">View uploads &rarr;</a>
+                            <button @click="expandedSection = expandedSection === 'uploads' ? null : 'uploads'" class="bottom-link">
+                                <span x-text="expandedSection === 'uploads' ? 'Collapse ↑' : 'View all uploads &rarr;'"></span>
+                            </button>
                         </div>
                     </div>
 
@@ -165,50 +171,93 @@
                         <div>
                             <h2>{{ number_format($averageRating, 1) }}</h2>
                             <p>Rating Received</p>
-                            <a href="{{ route('home') }}" class="bottom-link">View all ratings &rarr;</a>
+                            <span class="bottom-link" style="cursor: default; opacity: 0.7;">Lifetime Average</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Reviews Box -->
-                <div class="review-box">
-                    <div class="review-top">
-                        <h2>Recent Reviews</h2>
+                <!-- Expansion Panels -->
+                <div class="expansion-container" x-show="expandedSection" x-collapse x-cloak>
+                    <!-- Reviews Panel -->
+                    <div x-show="expandedSection === 'reviews'" class="expansion-panel">
+                        <div class="panel-header">
+                            <h3>My Reviews</h3>
+                            <span class="count-pill">{{ $reviewsCount }} Items</span>
+                        </div>
+                        <div class="dense-list">
+                            @forelse($allReviews as $review)
+                                <div class="list-row">
+                                    <div class="list-left">
+                                        <div class="list-icon-bg"><x-fas-comment-dots /></div>
+                                        <div class="list-info">
+                                            <a href="{{ route('posts.show', $review->post->slug) }}" class="list-title">{{ $review->post->title }}</a>
+                                            <span class="list-subtitle">{{ Str::limit($review->description, 60) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="list-right">
+                                        <span class="list-meta">{{ $review->created_at->format('d M Y') }}</span>
+                                        <div class="list-rating">★ {{ number_format($recentReviewRatings->get($review->post_id) ?? 0, 1) }}</div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="empty-state">No reviews yet.</div>
+                            @endforelse
+                        </div>
                     </div>
 
-                    <div class="review-grid">
-                        @forelse($recentReviews as $userPost)
-                            <div class="review-card">
-                                <div class="review-card-top">
-                                    <a href="{{ route('posts.show', $userPost->post->slug) }}">
-                                        {{ $userPost->post->title }}
-                                    </a>
-                                    @php
-                                        $postRating = $recentReviewRatings->get($userPost->post_id);
-                                    @endphp
-                                    <span>★ {{ $postRating ? number_format($postRating, 1) : 'N/A' }}</span>
+                    <!-- Ratings Panel -->
+                    <div x-show="expandedSection === 'ratings'" class="expansion-panel">
+                        <div class="panel-header">
+                            <h3>Rate Items</h3>
+                            <span class="count-pill">{{ $ratingsCount }} Items</span>
+                        </div>
+                        <div class="dense-list">
+                            @forelse($allRatings as $rating)
+                                <div class="list-row">
+                                    <div class="list-left">
+                                        <div class="list-icon-bg gold-bg"><x-fas-star /></div>
+                                        <div class="list-info">
+                                            <a href="{{ route('posts.show', $rating->post->slug) }}" class="list-title">{{ $rating->post->title }}</a>
+                                            <span class="list-subtitle">Given Rating</span>
+                                        </div>
+                                    </div>
+                                    <div class="list-right">
+                                        <span class="list-meta">{{ $rating->created_at->format('d M Y') }}</span>
+                                        <div class="list-rating gold-text">★ {{ number_format($rating->rating, 1) }}</div>
+                                    </div>
                                 </div>
-                                <p>{{ Str::limit($userPost->description, 120) }}</p>
-                                <div class="review-meta">
-                                    @php
-                                        $dotClass = match(strtolower($userPost->post->tags->first()?->name ?? '')) {
-                                            'html' => 'html',
-                                            'blade' => 'blade',
-                                            default => 'java'
-                                        };
-                                    @endphp
-                                    <span class="language-dot {{ $dotClass }}"></span>
-                                    <span>{{ $userPost->post->tags->first()?->name ?? 'Web' }}</span>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="review-card-empty">
-                                <p>No posts reviewed yet.</p>
-                            </div>
-                        @endforelse
+                            @empty
+                                <div class="empty-state">No ratings given yet.</div>
+                            @endforelse
+                        </div>
                     </div>
 
-                    <a href="{{ route('home') }}" class="bottom-link">View all posts &rarr;</a>
+                    <!-- Uploads Panel -->
+                    <div x-show="expandedSection === 'uploads'" class="expansion-panel">
+                        <div class="panel-header">
+                            <h3>My Uploads</h3>
+                            <span class="count-pill">{{ $uploadsCount }} Items</span>
+                        </div>
+                        <div class="dense-list">
+                            @forelse($allReviews as $upload) {{-- Using reviews as uploads for now --}}
+                                <div class="list-row">
+                                    <div class="list-left">
+                                        <div class="list-icon-bg green-bg"><x-fas-upload /></div>
+                                        <div class="list-info">
+                                            <a href="{{ route('posts.show', $upload->post->slug) }}" class="list-title">{{ $upload->post->title }}</a>
+                                            <span class="list-subtitle">Contributed Resource</span>
+                                        </div>
+                                    </div>
+                                    <div class="list-right">
+                                        <span class="list-meta">{{ $upload->created_at->format('d M Y') }}</span>
+                                        <a href="{{ route('posts.show', $upload->post->slug) }}" class="view-btn">View</a>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="empty-state">No uploads yet.</div>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
 
             </div>

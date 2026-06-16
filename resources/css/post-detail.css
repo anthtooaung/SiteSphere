@@ -260,11 +260,7 @@
 }
 
 .post-detail-page .ss-verified-seal>svg {
-  padding: 3px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 5px 8px color-mix(in oklab, var(--accent) 36%, transparent);
+  padding: 0;
 }
 
 .post-detail-page .ss-verified-seal>span {
@@ -285,10 +281,7 @@
 }
 
 .post-detail-page .ss-verified-pill>svg {
-  background: var(--accent);
-  color: #fff;
-  border-radius: 999px;
-  padding: 2px;
+  padding: 0;
 }
 
 .post-detail-page .ss-verified-pill>span {

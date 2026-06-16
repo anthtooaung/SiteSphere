@@ -38,7 +38,7 @@
                 <div class="profile-card">
                     @if ($user->id === auth()->id())
                         <a href="{{ route('edit-profile') }}" class="edit-btn" style="text-decoration: none;">
-                            <x-far-pen-to-square />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                             Edit
                         </a>
                     @endif
@@ -58,7 +58,9 @@
                                 <div class="name-row">
                                     <h2>{{ $user->name }}</h2>
                                     @if($user->is_verified)
-                                        <x-fas-circle-check class="verified" title="Verified Account" />
+                                        <span class="verified" title="Verified Account">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+                                        </span>
                                     @endif
                                 </div>
 
@@ -68,11 +70,11 @@
 
                                 <div class="social-icons">
                                     <a href="mailto:{{ $user->email }}" aria-label="Email">
-                                        <x-far-envelope />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                                     </a>
                                     @if($user->user_phone)
                                         <a href="tel:{{ $user->user_phone }}" aria-label="Phone">
-                                            <x-fas-phone />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                                         </a>
                                     @endif
                                 </div>
@@ -83,7 +85,7 @@
                         <div class="right-section">
                             <div class="info-grid">
                                 <div class="info-item">
-                                    <x-far-envelope />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                                     <div>
                                         <span>Email</span>
                                         <h4>{{ $user->email }}</h4>
@@ -91,7 +93,7 @@
                                 </div>
 
                                 <div class="info-item">
-                                    <x-fas-phone />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                                     <div>
                                         <span>Phone</span>
                                         <h4>{{ $user->user_phone ? '+95'.$user->user_phone : 'Not specified' }}</h4>
@@ -99,7 +101,7 @@
                                 </div>
 
                                 <div class="info-item">
-                                    <x-far-calendar />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
                                     <div>
                                         <span>Date of Birth</span>
                                         <h4>{{ $user->user_dob ? \Carbon\Carbon::parse($user->user_dob)->format('d F Y') : 'Not specified' }}</h4>
@@ -107,7 +109,7 @@
                                 </div>
 
                                 <div class="info-item">
-                                    <x-far-clock />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                                     <div>
                                         <span>Joined</span>
                                         <h4>{{ $user->created_at ? $user->created_at->format('d F Y') : 'Not specified' }}</h4>
@@ -127,7 +129,7 @@
                 <div class="stats-grid">
                     <div class="stat-card" :class="expandedSection === 'reviews' ? 'active' : ''">
                         <span class="stat-icon blue">
-                            <x-fas-comment-dots />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
                         </span>
                         <div>
                             <h2>{{ $reviewsCount }}</h2>
@@ -140,7 +142,7 @@
 
                     <div class="stat-card" :class="expandedSection === 'ratings' ? 'active' : ''">
                         <span class="stat-icon gold">
-                            <x-fas-star />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </span>
                         <div>
                             <h2>{{ $ratingsCount }}</h2>
@@ -153,7 +155,7 @@
 
                     <div class="stat-card" :class="expandedSection === 'uploads' ? 'active' : ''">
                         <span class="stat-icon green">
-                            <x-fas-upload />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/></svg>
                         </span>
                         <div>
                             <h2>{{ $uploadsCount }}</h2>
@@ -166,7 +168,7 @@
 
                     <div class="stat-card">
                         <span class="stat-icon purple">
-                            <x-fas-ranking-star />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 21.416a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/></svg>
                         </span>
                         <div>
                             <h2>{{ number_format($averageRating, 1) }}</h2>
@@ -188,7 +190,9 @@
                             @forelse($allReviews as $review)
                                 <div class="list-row">
                                     <div class="list-left">
-                                        <div class="list-icon-bg"><x-fas-comment-dots /></div>
+                                        <div class="list-icon-bg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
+                                        </div>
                                         <div class="list-info">
                                             <a href="{{ route('posts.show', $review->post->slug) }}" class="list-title">{{ $review->post->title }}</a>
                                             <span class="list-subtitle">{{ Str::limit($review->description, 60) }}</span>
@@ -215,7 +219,9 @@
                             @forelse($allRatings as $rating)
                                 <div class="list-row">
                                     <div class="list-left">
-                                        <div class="list-icon-bg gold-bg"><x-fas-star /></div>
+                                        <div class="list-icon-bg gold-bg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                        </div>
                                         <div class="list-info">
                                             <a href="{{ route('posts.show', $rating->post->slug) }}" class="list-title">{{ $rating->post->title }}</a>
                                             <span class="list-subtitle">Given Rating</span>
@@ -242,7 +248,9 @@
                             @forelse($allReviews as $upload) {{-- Using reviews as uploads for now --}}
                                 <div class="list-row">
                                     <div class="list-left">
-                                        <div class="list-icon-bg green-bg"><x-fas-upload /></div>
+                                        <div class="list-icon-bg green-bg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/></svg>
+                                        </div>
                                         <div class="list-info">
                                             <a href="{{ route('posts.show', $upload->post->slug) }}" class="list-title">{{ $upload->post->title }}</a>
                                             <span class="list-subtitle">Contributed Resource</span>

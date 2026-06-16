@@ -306,33 +306,25 @@
 
 .stat-icon {
     flex: 0 0 auto;
-    width: 42px;
-    height: 42px;
-    border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 16px;
     box-shadow: none;
 }
 
 .purple {
-    background: #f3e8ff;
     color: #7c3aed;
 }
 
 .green {
-    background: #dcfce7;
     color: #16a34a;
 }
 
 .blue {
-    background: #dbeafe;
     color: #2563eb;
 }
 
 .gold {
-    background: #fef3c7;
     color: #d97706;
 }
 
@@ -449,19 +441,13 @@
 }
 
 .list-icon-bg {
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    background: #dbeafe;
-    color: #2563eb;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
 }
 
-.gold-bg { background: #fef3c7; color: #d97706; }
-.green-bg { background: #dcfce7; color: #16a34a; }
+.gold-bg { color: #d97706; }
+.green-bg { color: #16a34a; }
 
 .list-info {
     display: flex;

@@ -449,7 +449,7 @@
     text-align: center;
 }
 
-.aboutus-main .aboutus-carousel-container {
+.aboutus-main .carousel-container {
     position: relative;
     max-width: 1000px;
     margin: 0 auto;
@@ -459,7 +459,7 @@
     justify-content: center;
 }
 
-.aboutus-main .aboutus-carousel-track {
+.aboutus-main .carousel-track {
     position: relative;
     width: 100%;
     height: 100%;
@@ -470,7 +470,7 @@
     transform-style: preserve-3d;
 }
 
-.aboutus-main .aboutus-carousel-card {
+.aboutus-main .carousel-card {
     position: absolute;
     width: 380px;
     background-color: #ffffff;
@@ -478,36 +478,25 @@
     border-radius: 20px;
     padding: 35px;
     text-align: center;
-    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s, z-index 0.6s;
-    opacity: 1;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                opacity 0.6s,
+                z-index 0.6s;
+    opacity: 0;
     pointer-events: none;
-    box-shadow: 0 15px 35px  color-mix(in srgb, var(--text-color) 8%, transparent);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
     backface-visibility: hidden;
 }
 
-/* Removed is-loaded-specific transition */
-
-@media (max-width: 500px) {
-    .aboutus-main .aboutus-carousel-card {
-        width: 280px;
-        padding: 20px;
-    }
-
-    .aboutus-main .aboutus-carousel-container {
-        height: 560px;
-    }
-}
-
-.aboutus-main .aboutus-carousel-card.active {
+.aboutus-main .carousel-card.active {
     opacity: 1;
     z-index: 3;
     transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
     pointer-events: auto;
     border-color: rgba(108, 92, 231, 0.4);
-    box-shadow: 0 20px 40px  color-mix(in srgb, var(--text-color) 8%, transparent);
+    box-shadow: 0 20px 40px rgba(108, 92, 231, 0.1);
 }
 
-.aboutus-main .aboutus-carousel-card.prev {
+.aboutus-main .carousel-card.prev {
     opacity: 0.45;
     z-index: 2;
     transform: translate3d(-55%, 0, -150px) scale(0.85) rotateY(25deg);
@@ -515,7 +504,7 @@
     cursor: pointer;
 }
 
-.aboutus-main .aboutus-carousel-card.next {
+.aboutus-main .carousel-card.next {
     opacity: 0.45;
     z-index: 2;
     transform: translate3d(55%, 0, -150px) scale(0.85) rotateY(-25deg);
@@ -523,116 +512,25 @@
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
-    .aboutus-main .aboutus-carousel-card.prev {
-        transform: translate3d(-45%, 0, -120px) scale(0.8) rotateY(15deg);
-    }
-
-    .aboutus-main .aboutus-carousel-card.next {
-        transform: translate3d(45%, 0, -120px) scale(0.8) rotateY(-15deg);
-    }
+.aboutus-main .carousel-card.far-prev {
+    opacity: 0;
+    z-index: 1;
+    transform: translate3d(-100%, 0, -200px) scale(0.7);
 }
 
-.aboutus-main .aboutus-carousel-card.hidden {
+.aboutus-main .carousel-card.far-next {
+    opacity: 0;
+    z-index: 1;
+    transform: translate3d(100%, 0, -200px) scale(0.7);
+}
+
+.aboutus-main .carousel-card.hidden {
     opacity: 0;
     z-index: 1;
     transform: translate3d(0, 0, -200px) scale(0.7);
 }
 
-.aboutus-main .aboutus-member-avatar {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto 20px auto;
-    box-shadow: 0 8px 20px  color-mix(in srgb, var(--text-color) 8%, transparent);
-}
-
-.aboutus-main .aboutus-member-avatar .icon {
-    width: 2rem;
-    height: 2rem;
-}
-
-.aboutus-main .aboutus-carousel-card h3 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-    color: var(--text);
-}
-
-.aboutus-main .aboutus-role {
-    color: var(--primary);
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-    min-height: 2.7em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.aboutus-main .aboutus-bio {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    height: 110px;
-    overflow-y: auto;
-    padding-right: 5px;
-    text-align: left;
-}
-
-.aboutus-main .aboutus-bio::-webkit-scrollbar {
-    width: 4px;
-}
-
-.aboutus-main .aboutus-bio::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-}
-
-.aboutus-main .aboutus-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 18px;
-    justify-content: center;
-}
-
-.aboutus-main .aboutus-tags span {
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: var(--primary-soft);
-    color: var(--primary);
-    font-size: 0.72rem;
-    font-weight: 800;
-}
-
-.aboutus-main .aboutus-member-email {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    font-weight: 500;
-    word-break: break-word;
-}
-
-.aboutus-main .aboutus-member-email a {
-    color: var(--primary);
-    transition: color 0.2s;
-}
-
-.aboutus-main .aboutus-member-email a:hover {
-    color: var(--secondary);
-    text-decoration: underline;
-}
-
-.aboutus-main .aboutus-carousel-btn {
+.aboutus-main .carousel-btn {
     position: absolute;
     width: 45px;
     height: 45px;
@@ -646,50 +544,151 @@
     cursor: pointer;
     z-index: 15;
     transition: all 0.2s;
-    box-shadow: 0 4px 12px  color-mix(in srgb, var(--text-color) 8%, transparent);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.aboutus-main .aboutus-carousel-btn:hover {
+.aboutus-main .carousel-btn:hover {
     background-color: var(--primary);
     border-color: var(--primary);
     color: white;
     transform: scale(1.1);
 }
 
-.aboutus-main .aboutus-prev-btn {
-    left: -5px;
+.aboutus-main .prev-btn { left: -5px; }
+.aboutus-main .next-btn { right: -5px; }
+
+.aboutus-main .member-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2);
 }
 
-.aboutus-main .aboutus-next-btn {
-    right: -5px;
+.aboutus-main .member-avatar .icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.aboutus-main .carousel-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text);
+}
+
+.aboutus-main .role {
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    min-height: 2.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aboutus-main .bio {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    height: 110px;
+    overflow-y: auto;
+    padding-right: 5px;
+    text-align: left;
+}
+
+.aboutus-main .bio::-webkit-scrollbar {
+    width: 4px;
+}
+
+.aboutus-main .bio::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+}
+
+.aboutus-main .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+    justify-content: center;
+}
+
+.aboutus-main .tags span {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.aboutus-main .member-email {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.aboutus-main .member-email a {
+    color: var(--primary);
+    transition: color 0.2s;
+}
+
+.aboutus-main .member-email a:hover {
+    color: var(--secondary);
+    text-decoration: underline;
 }
 
 @media (max-width: 768px) {
-    .aboutus-main .aboutus-carousel-btn {
+    .aboutus-main .carousel-card.prev {
+        transform: translate3d(-45%, 0, -120px) scale(0.8) rotateY(15deg);
+    }
+    .aboutus-main .carousel-card.next {
+        transform: translate3d(45%, 0, -120px) scale(0.8) rotateY(-15deg);
+    }
+
+    .aboutus-main .carousel-btn {
         width: 40px;
         height: 40px;
         background-color: var(--primary);
         border-color: var(--primary);
         color: white;
     }
+    .aboutus-main .prev-btn { left: 5px; }
+    .aboutus-main .next-btn { right: 5px; }
+}
 
-    .aboutus-main .aboutus-prev-btn {
-        left: 5px;
+@media (max-width: 500px) {
+    .aboutus-main .carousel-card {
+        width: 280px;
+        padding: 20px;
     }
-
-    .aboutus-main .aboutus-next-btn {
-        right: 5px;
+    .aboutus-main .carousel-container {
+        height: 560px;
     }
 }
 
 /* --- SCROLL REVEAL --- */
-.aboutus-main .aboutus-scroll-reveal {
+.aboutus-main .aboutus-scroll-reveal,
+.aboutus-main .scroll-reveal {
     opacity: 0;
     transform: translateY(15px);
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.aboutus-main .aboutus-scroll-reveal.active {
+.aboutus-main .aboutus-scroll-reveal.active,
+.aboutus-main .scroll-reveal.active {
     opacity: 1;
     transform: translateY(0);
 }

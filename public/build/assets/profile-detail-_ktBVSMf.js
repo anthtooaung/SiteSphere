@@ -1,1 +1,0 @@
-var e=document.querySelectorAll(`.profile-card, .stat-card, .review-box`),t=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&(e.target.classList.add(`show`),t.unobserve(e.target))})},{threshold:.15});e.forEach((e,n)=>{e.classList.add(`scroll-reveal`),e.style.transitionDelay=`${n*80}ms`,t.observe(e)}),console.log(`Profile Dashboard Loaded`);

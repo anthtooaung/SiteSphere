@@ -6,7 +6,7 @@ function initAboutUsPage() {
     }
 
     // --- 1. SCROLL REVEAL LOGIC ---
-    const revealElements = aboutusMain.querySelectorAll('.aboutus-scroll-reveal');
+    const revealElements = aboutusMain.querySelectorAll('.aboutus-scroll-reveal, .scroll-reveal');
 
     if ('IntersectionObserver' in window) {
         const revealObserver = new IntersectionObserver((entries) => {
@@ -26,9 +26,9 @@ function initAboutUsPage() {
     }
 
     // --- 2. 3D CAROUSEL LOGIC ---
-    const cards = aboutusMain.querySelectorAll('.aboutus-carousel-card');
-    const prevBtn = aboutusMain.querySelector('.aboutus-prev-btn');
-    const nextBtn = aboutusMain.querySelector('.aboutus-next-btn');
+    const cards = aboutusMain.querySelectorAll('.carousel-card');
+    const prevBtn = aboutusMain.querySelector('.prev-btn');
+    const nextBtn = aboutusMain.querySelector('.next-btn');
     let currentIndex = 0;
 
     const updateCarousel = () => {
@@ -37,7 +37,7 @@ function initAboutUsPage() {
         }
 
         cards.forEach((card, index) => {
-            card.classList.remove('active', 'prev', 'next', 'hidden');
+            card.classList.remove('active', 'prev', 'next', 'far-prev', 'far-next', 'hidden');
 
             if (index === currentIndex) {
                 card.classList.add('active');
@@ -45,13 +45,15 @@ function initAboutUsPage() {
                 card.classList.add('prev');
             } else if (index === (currentIndex + 1) % cards.length) {
                 card.classList.add('next');
+            } else if (index === (currentIndex - 2 + cards.length) % cards.length) {
+                card.classList.add('far-prev');
+            } else if (index === (currentIndex + 2) % cards.length) {
+                card.classList.add('far-next');
             } else {
                 card.classList.add('hidden');
             }
         });
     };
-
-    updateCarousel();
 
     prevBtn.addEventListener('click', () => {
         currentIndex = (currentIndex - 1 + cards.length) % cards.length;
@@ -62,6 +64,20 @@ function initAboutUsPage() {
         currentIndex = (currentIndex + 1) % cards.length;
         updateCarousel();
     });
+
+    cards.forEach((card, index) => {
+        card.addEventListener('click', () => {
+            if (card.classList.contains('prev')) {
+                currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+                updateCarousel();
+            } else if (card.classList.contains('next')) {
+                currentIndex = (currentIndex + 1) % cards.length;
+                updateCarousel();
+            }
+        });
+    });
+
+    updateCarousel();
 
     // --- 3. SMOOTH SCROLL FOR ANCHOR LINKS ---
     aboutusMain.querySelectorAll('a[href^="#"]').forEach((anchor) => {

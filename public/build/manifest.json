@@ -1,6 +1,6 @@
 {
   "resources/css/about-us.css": {
-    "file": "assets/about-us-DEcIBZOO.css",
+    "file": "assets/about-us-sDGYe4ze.css",
     "name": "about-us",
     "names": [
       "about-us.css"
@@ -9,7 +9,7 @@
     "isEntry": true
   },
   "resources/css/admin-activity.css": {
-    "file": "assets/admin-activity-CHuBW3q9.css",
+    "file": "assets/admin-activity-DPr2-dtj.css",
     "name": "admin-activity",
     "names": [
       "admin-activity.css"
@@ -18,7 +18,7 @@
     "isEntry": true
   },
   "resources/css/admin-dashboard.css": {
-    "file": "assets/admin-dashboard-CxO8ugcy.css",
+    "file": "assets/admin-dashboard-D2JKd8nx.css",
     "name": "admin-dashboard",
     "names": [
       "admin-dashboard.css"
@@ -27,7 +27,7 @@
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-CGQztCnL.css",
+    "file": "assets/app-CeMX8RW_.css",
     "name": "app",
     "names": [
       "app.css"
@@ -90,7 +90,7 @@
     "isEntry": true
   },
   "resources/css/profile-detail.css": {
-    "file": "assets/profile-detail-DwupMGuY.css",
+    "file": "assets/profile-detail-3Oec48f5.css",
     "name": "profile-detail",
     "names": [
       "profile-detail.css"
@@ -135,13 +135,13 @@
     "isEntry": true
   },
   "resources/js/about-us.js": {
-    "file": "assets/about-us-19lCaPL-.js",
+    "file": "assets/about-us-DDULVndQ.js",
     "name": "about-us",
     "src": "resources/js/about-us.js",
     "isEntry": true
   },
   "resources/js/admin-activity.js": {
-    "file": "assets/admin-activity-isZe9mUZ.js",
+    "file": "assets/admin-activity-obR7_ecq.js",
     "name": "admin-activity",
     "src": "resources/js/admin-activity.js",
     "isEntry": true
@@ -177,7 +177,7 @@
     "isEntry": true
   },
   "resources/js/profile-detail.js": {
-    "file": "assets/profile-detail-_ktBVSMf.js",
+    "file": "assets/profile-detail-CrsnMyR_.js",
     "name": "profile-detail",
     "src": "resources/js/profile-detail.js",
     "isEntry": true

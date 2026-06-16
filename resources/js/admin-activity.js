@@ -97,19 +97,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const entries = dateMap[ds];
       const isToday = ds === todayStr;
       const isSel = ds === selectedDate;
+      const isFuture = ds > todayStr;
+      
       const dotColor = isToday ? "rgba(255,255,255,.75)" : (entries && entries[0].color);
       const dotHtml = entries ? `<span class="cal-dot" style="background:${dotColor}"></span>` : "";
       
-      const cls = ["cal-day", isToday && "today", isSel && "selected"].filter(Boolean).join(" ");
-      html += `<div class="${cls}" data-date="${ds}">${d}${dotHtml}</div>`;
+      const cls = [
+          "cal-day", 
+          isToday && "today", 
+          isSel && "selected", 
+          isFuture && "disabled",
+          entries && "has-logs"
+      ].filter(Boolean).join(" ");
+      
+      html += `<div class="${cls}" data-date="${ds}" ${isFuture ? 'title="Future dates unavailable"' : ''}>${d}${dotHtml}</div>`;
     }
     
     const grid = document.getElementById("cal-grid");
     if(grid) {
       grid.innerHTML = html;
-      grid.querySelectorAll('.cal-day:not(.empty)').forEach(el => {
+      grid.querySelectorAll('.cal-day:not(.empty):not(.disabled)').forEach(el => {
           el.addEventListener('click', (e) => {
-              // Get the closest .cal-day in case a child element was clicked
               const target = e.target.closest('.cal-day');
               if (target) {
                   selectDate(target.getAttribute('data-date'));

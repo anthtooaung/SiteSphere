@@ -81,68 +81,56 @@
                     @vite('resources/js/admin-dashboard.js')
                 @endpush
 
-                <div class="shell">
-                  <div class="page-header">
+                <div class="admin-shell">
+                  <header class="page-header">
                     <div class="page-header-label">
                       <i class="fa-solid fa-shield-halved"></i> Admin Panel
                     </div>
                     <h1>Admin Dashboard</h1>
-                  </div>
+                    <p>Overview of platform activity, user growth, and content moderation status.</p>
+                  </header>
 
-                  <div class="infographic-section mb">
+                  <section class="infographic-section">
                     <div class="infographic-card">
                       <div class="infographic-head">
                         <div class="infographic-head-left">
                           <div class="infographic-head-icon">
                             <i class="fa-solid fa-chart-pie"></i>
                           </div>
-                          <div>
-                            <div class="infographic-head-title">Admin Overview</div>
-                          </div>
+                          <div class="infographic-head-title">Platform Metrics</div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                          <div class="overview-month-wrap">
-                            <button class="overview-month-btn" id="overview-month-btn">
-                              <span id="overview-month-label">{{ now()->format('M Y') }}</span>
-                              <i class="fa-solid fa-chevron-down omc"></i>
-                            </button>
-                            <div class="overview-month-picker" id="overview-month-picker">
-                              <div class="cmp-year-row">
-                                <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-left"></i></button>
-                                <span class="cmp-year-label" id="overview-picker-year">{{ now()->year }}</span>
-                                <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-right"></i></button>
-                              </div>
-                              <div class="cmp-month-grid" id="overview-picker-month-grid"></div>
+                        <div class="overview-month-wrap">
+                          <button class="overview-month-btn" id="overview-month-btn">
+                            <span id="overview-month-label">{{ now()->format('M Y') }}</span>
+                            <i class="fa-solid fa-chevron-down omc"></i>
+                          </button>
+                          <div class="overview-month-picker" id="overview-month-picker">
+                            <div class="cmp-year-row">
+                              <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                              <span class="cmp-year-label" id="overview-picker-year">{{ now()->year }}</span>
+                              <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
+                            <div class="cmp-month-grid" id="overview-picker-month-grid"></div>
                           </div>
                         </div>
                       </div>
 
                       <div class="infographic-body">
-                        <div class="ov9-row" style="display: flex" id="ov-layout-9">
+                        <div class="ov9-row" id="ov-layout-9">
                           <div class="ov9-pie-tile">
                             <div class="ov9-pie-head">
-                              <span class="ov9-pie-head-title">User Activity Distribution</span>
+                              <span class="ov9-pie-head-title">Activity Distribution</span>
                             </div>
                             <div class="ov9-pie-body">
-                              <div style="position: relative; width: 260px; height: 260px">
-                                <svg id="cat-svg-9" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="display: block; width: 260px; height: 260px"></svg>
+                              <div style="position: relative; width: 180px; height: 180px">
+                                <svg id="cat-svg-9" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="display: block; width: 180px; height: 180px"></svg>
                                 <div id="cat-labels-9" style="position: absolute; inset: 0; pointer-events: none"></div>
                               </div>
                             </div>
                             <div class="ov9-pie-legend">
-                              <span class="ov9-leg-item">
-                                <span class="ov9-leg-dot" style="background: #8b5cf6"></span>
-                                <span class="ov9-leg-txt">Reviews</span>
-                              </span>
-                              <span class="ov9-leg-item">
-                                <span class="ov9-leg-dot" style="background: #6366f1"></span>
-                                <span class="ov9-leg-txt">Users</span>
-                              </span>
-                              <span class="ov9-leg-item">
-                                <span class="ov9-leg-dot" style="background: #ef4444"></span>
-                                <span class="ov9-leg-txt">Reports</span>
-                              </span>
+                              <span class="ov9-leg-item"><span class="ov9-leg-dot" style="background: #8b5cf6"></span><span class="ov9-leg-txt">Reviews</span></span>
+                              <span class="ov9-leg-item"><span class="ov9-leg-dot" style="background: #6366f1"></span><span class="ov9-leg-txt">Users</span></span>
+                              <span class="ov9-leg-item"><span class="ov9-leg-dot" style="background: #ef4444"></span><span class="ov9-leg-txt">Reports</span></span>
                             </div>
                           </div>
                           <div class="ov9-kpi-col">
@@ -150,10 +138,10 @@
                               <div class="ov9-kpi-left">
                                 <div class="ov9-kpi-top">
                                   <span class="ov9-kpi-icon" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;"><i class="fa-solid fa-users"></i></span>
-                                  <span class="kpi-lbl">Total Users</span>
+                                  <span class="kpi-lbl">Users</span>
                                 </div>
                                 <div class="ov9-kpi-bottom">
-                                  <div class="kpi-val" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalUsers']) }}</div>
+                                  <div class="kpi-val">{{ number_format($stats['totalUsers']) }}</div>
                                 </div>
                               </div>
                               <div class="ov9-kpi-right">
@@ -172,7 +160,7 @@
                                   <span class="kpi-lbl">Reviews</span>
                                 </div>
                                 <div class="ov9-kpi-bottom">
-                                  <div class="kpi-val" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalReviews']) }}</div>
+                                  <div class="kpi-val">{{ number_format($stats['totalReviews']) }}</div>
                                 </div>
                               </div>
                               <div class="ov9-kpi-right">
@@ -191,7 +179,7 @@
                                   <span class="kpi-lbl">Reports</span>
                                 </div>
                                 <div class="ov9-kpi-bottom">
-                                  <div class="kpi-val kpi-val--danger" style="font-size: 26px; line-height: 1; letter-spacing: -0.5px; margin: 0;">{{ number_format($stats['totalReports']) }}</div>
+                                  <div class="kpi-val kpi-val--danger">{{ number_format($stats['totalReports']) }}</div>
                                 </div>
                               </div>
                               <div class="ov9-kpi-right">
@@ -208,13 +196,13 @@
                       </div>
                       <div id="cat-popup" style="display: none; position: absolute; z-index: -1; pointer-events: none;"></div>
                     </div>
-                  </div>
+                  </section>
 
-                  <div class="row row-lower">
+                  <section class="row row-lower">
                     <div class="card">
                       <div class="card-head">
                         <div class="card-head-left">
-                          <div class="card-icon" style="background: #eff6ff; color: #3b82f6">
+                          <div class="card-icon" style="background: color-mix(in srgb, var(--accent-color) 8%, transparent); color: var(--accent-color)">
                             <i class="fa-solid fa-clock-rotate-left"></i>
                           </div>
                           <span class="card-title">Recent Activity</span>
@@ -228,7 +216,7 @@
                           <span class="act-legend-item"><i class="fa-solid fa-ban" style="color: #ef4444; font-size: 16px"></i> Ban / Delete</span>
                           <span class="act-legend-item"><i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 16px"></i> Resolved / Approved</span>
                           <span class="act-legend-item"><i class="fa-solid fa-bullhorn" style="color: #7c3aed; font-size: 16px"></i> Announcement / Bulk</span>
-                          <span class="act-legend-item"><i class="fa-solid fa-sliders" style="color: #3b82f6; font-size: 16px"></i> Warning / Settings</span>
+                          <span class="act-legend-item"><i class="fa-solid fa-sliders" style="color: var(--accent-color); font-size: 16px"></i> Warning / Settings</span>
                         </div>
                       </div>
                       <a href="{{ route('admin.activity-log') }}" class="see-more-link">See More</a>
@@ -245,7 +233,7 @@
                       </div>
                       <div id="top-posts"></div>
                     </div>
-                  </div>
+                  </section>
                 </div>
             @else
                 <section class="dashboard-panel">

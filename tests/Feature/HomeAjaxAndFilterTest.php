@@ -142,4 +142,27 @@ class HomeAjaxAndFilterTest extends TestCase
         $response->assertOk()
             ->assertSeeInOrder(['High Rated', 'Low Rated']);
     }
+
+    public function test_home_can_filter_by_search_term(): void
+    {
+        $user = User::factory()->create();
+
+        $post1 = Posts::factory()->create(['title' => 'Specific Keyword Post', 'url' => 'https://example.com']);
+        UserPosts::factory()->create(['post_id' => $post1->id, 'user_id' => $user->id]);
+
+        $post2 = Posts::factory()->create(['title' => 'Other Post', 'url' => 'https://other.com']);
+        UserPosts::factory()->create(['post_id' => $post2->id, 'user_id' => $user->id]);
+
+        // Search by title
+        $response = $this->get('/home?search=Keyword');
+        $response->assertOk()
+            ->assertSee('Specific Keyword Post')
+            ->assertDontSee('Other Post');
+
+        // Search by URL
+        $response = $this->get('/home?search=example');
+        $response->assertOk()
+            ->assertSee('Specific Keyword Post')
+            ->assertDontSee('Other Post');
+    }
 }

@@ -95,6 +95,7 @@
                                 <span class="filter-empty" x-show="filters.tags.length === 0">No tag selected</span>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </header>
@@ -149,7 +150,8 @@
                     category: window.homeInitialCategory ? [window.homeInitialCategory] : [],
                     tags: [],
                     rating: [],
-                    sort: 'best'
+                    sort: 'best',
+                    search: @json(request('search') ?? '')
                 },
                 search: {
                     category: '',
@@ -193,6 +195,15 @@
                         this.$refs.postsGrid.innerHTML = data.html;
                         this.hasMore = data.hasMorePages;
                         this.totalResults = data.total;
+
+                        // Update URL without reloading to reflect current filters
+                        window.history.pushState({}, '', url);
+
+                        // Also update the desktop search input if it exists
+                        const searchInput = document.getElementById('search');
+                        if (searchInput) {
+                            searchInput.value = this.filters.search;
+                        }
                     } catch (error) {
                         console.error('Error updating results:', error);
                     } finally {
@@ -242,6 +253,9 @@
                     if (this.filters.rating.length > 0) {
                         url.searchParams.set('rating', Math.min(...this.filters.rating));
                     }
+                    if (this.filters.search) {
+                        url.searchParams.set('search', this.filters.search);
+                    }
                     url.searchParams.set('sort', this.filters.sort);
                     return url;
                 },
@@ -263,13 +277,15 @@
                 hasActiveFilters() {
                     return this.filters.category.length > 0 || 
                            this.filters.tags.length > 0 || 
-                           this.filters.rating.length > 0;
+                           this.filters.rating.length > 0 ||
+                           this.filters.search !== '';
                 },
 
                 clearFilters() {
                     this.filters.category = [];
                     this.filters.tags = [];
                     this.filters.rating = [];
+                    this.filters.search = '';
                     this.filters.sort = 'best';
                     this.updateResults();
                 },

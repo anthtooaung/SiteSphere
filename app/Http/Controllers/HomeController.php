@@ -43,6 +43,18 @@ class HomeController extends Controller
             ->whereHas('userPosts');
 
         $posts = $postsQuery
+            // Apply search filter
+            ->when($request->query('search'), function ($query) use ($request) {
+                $search = trim((string) $request->query('search'));
+                if (empty($search)) {
+                    return $query;
+                }
+
+                return $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('url', 'like', "%{$search}%");
+                });
+            })
             // Apply category filter
             ->when($request->query('category'), function ($query) use ($request) {
                 $categories = is_string($request->query('category')) ? explode(',', $request->query('category')) : $request->query('category');

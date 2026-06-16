@@ -44,7 +44,7 @@
             @endpush
             
 
-            <div class="shell">
+            <div class="admin-shell">
               <nav class="breadcrumb" aria-label="Breadcrumb">
                 <a href="{{ route('dashboard') }}">
                   <i class="fa-solid fa-shield-halved"></i><span>Admin Dashboard</span>
@@ -53,33 +53,26 @@
                 <span class="breadcrumb-current">Activity Log</span>
               </nav>
 
-              <div class="page-header">
-                <div class="page-header-label">
-                  <i class="fa-solid fa-clock-rotate-left"></i> Activity Log
-                </div>
-                <h1>Admin Activity Log</h1>
-              </div>
-
-              <div class="expanded-card">
+              <section class="expanded-card">
                 <div class="expanded-head">
                   <div class="expanded-head-left">
-                    <div class="card-icon" style="background: #eff6ff; color: #3b82f6">
+                    <div class="card-icon" style="background: color-mix(in srgb, var(--accent-color) 12%, transparent); color: var(--accent-color)">
                       <i class="fa-solid fa-clock-rotate-left"></i>
                     </div>
-                    <span class="card-title">Admin Activity Log</span>
+                    <span class="card-title">Select Activity Date</span>
                   </div>
                 </div>
 
                 <div class="expanded-body">
                   <div class="cal-widget">
                     <div class="cal-header">
-                      <button class="cal-nav" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                      <button class="cal-nav" type="button" @click="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
                       <div class="cal-header-mid" style="position: relative">
                         <button class="cal-month-btn" id="cal-month-btn" type="button">
                           <span id="cal-month-label"></span>
                           <i class="fa-solid fa-chevron-down mc"></i>
                         </button>
-                        <span class="cal-term-label"></span>
+                        <span class="cal-term-label">Platform Activity</span>
                         <div class="cal-month-picker" id="cal-month-picker">
                           <div class="cmp-year-row">
                             <button class="cmp-ynav" type="button"><i class="fa-solid fa-chevron-left"></i></button>
@@ -89,7 +82,7 @@
                           <div class="cmp-month-grid" id="picker-month-grid"></div>
                         </div>
                       </div>
-                      <button class="cal-nav" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+                      <button class="cal-nav" type="button" @click="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
                     </div>
                     <div class="cal-grid" id="cal-grid"></div>
                   </div>
@@ -105,7 +98,15 @@
                     <div class="alc-body" id="alc-body"></div>
                   </div>
                 </div>
-              </div>
+              </section>
+
+              <header class="page-header">
+                <div class="page-header-label">
+                  <i class="fa-solid fa-clock-rotate-left"></i> Activity History
+                </div>
+                <h1>Admin Activity Log</h1>
+                <p>Track administrative actions, content updates, and platform events across time.</p>
+              </header>
             </div>
 
             <div id="log-modal">

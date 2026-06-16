@@ -165,22 +165,23 @@
     border-radius: 8px;
     background: color-mix(in srgb, var(--text-color, #0d1b2a) 3%, transparent);
     transition:
-        background 180ms ease,
-        border-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
+        width 300ms ease,
+        background 300ms ease,
+        border-color 300ms ease,
+        box-shadow 300ms ease,
+        transform 300ms ease;
 }
 
 .desktop-search-container:hover {
+    width: 420px;
     border-color: var(--accent-color, #6c5ce7);
     background: color-mix(in srgb, var(--background-color, #ffffff) 92%, transparent);
-    box-shadow: var(--ui-focus-ring, 0 0 0 3px color-mix(in srgb, var(--accent-color, #6c5ce7) 18%, transparent));
 }
 
 .desktop-search-container:focus-within {
+    width: 420px;
     border-color: var(--accent-color, #6c5ce7);
     background: var(--background-color, #ffffff);
-    box-shadow: var(--ui-focus-ring, 0 0 0 3px color-mix(in srgb, var(--accent-color, #6c5ce7) 18%, transparent));
 }
 
 

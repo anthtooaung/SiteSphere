@@ -51,29 +51,17 @@ function initAboutUsPage() {
         });
     };
 
-    prevBtn?.addEventListener('click', () => {
+    updateCarousel();
+
+    prevBtn.addEventListener('click', () => {
         currentIndex = (currentIndex - 1 + cards.length) % cards.length;
         updateCarousel();
     });
 
-    nextBtn?.addEventListener('click', () => {
+    nextBtn.addEventListener('click', () => {
         currentIndex = (currentIndex + 1) % cards.length;
         updateCarousel();
     });
-
-    cards.forEach((card) => {
-        card.addEventListener('click', () => {
-            if (card.classList.contains('prev')) {
-                currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-                updateCarousel();
-            } else if (card.classList.contains('next')) {
-                currentIndex = (currentIndex + 1) % cards.length;
-                updateCarousel();
-            }
-        });
-    });
-
-    updateCarousel();
 
     // --- 3. SMOOTH SCROLL FOR ANCHOR LINKS ---
     aboutusMain.querySelectorAll('a[href^="#"]').forEach((anchor) => {

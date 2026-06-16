@@ -2,11 +2,14 @@
 <nav class="desktop-nav flex items-center" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
     <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between">
 {{--        left path--}}
-        <div class="flex gap-3">
+        <div class="flex gap-3 items-center">
             <a href="{{ route('welcome') }}" class="site-brand flex items-center space-x-0 rtl:space-x-reverse">
                 <x-app-logo></x-app-logo>
                 <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">SiteSphere</span>
             </a>
+            <div class="hidden md:block ml-4">
+                <x-search-btn />
+            </div>
         </div>
 
 {{--        center path--}}

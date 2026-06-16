@@ -157,19 +157,29 @@ class AdminReportsController extends Controller
     private function summary(): array
     {
         $counts = Reports::query()
-            ->selectRaw('admin_read, count(*) as count')
-            ->groupBy('admin_read')
-            ->pluck('count', 'admin_read');
+            ->selectRaw('target_name, admin_read, count(*) as count')
+            ->groupBy('target_name', 'admin_read')
+            ->get();
 
-        $unread = (int) ($counts->get(0, 0) + $counts->get(false, 0));
-        $read = (int) ($counts->get(1, 0) + $counts->get(true, 0));
-        $total = $unread + $read;
-
-        return [
-            'total' => $total,
-            'unread' => $unread,
-            'read' => $read,
+        $summary = [
+            'posts' => ['total' => 0, 'unread' => 0, 'read' => 0],
+            'comments' => ['total' => 0, 'unread' => 0, 'read' => 0],
+            'users' => ['total' => 0, 'unread' => 0, 'read' => 0],
         ];
+
+        foreach ($counts as $row) {
+            $target = $row->target_name;
+            if (isset($summary[$target])) {
+                if ($row->admin_read) {
+                    $summary[$target]['read'] += $row->count;
+                } else {
+                    $summary[$target]['unread'] += $row->count;
+                }
+                $summary[$target]['total'] += $row->count;
+            }
+        }
+
+        return $summary;
     }
 
     private function authorizeAdmin(Request $request): User

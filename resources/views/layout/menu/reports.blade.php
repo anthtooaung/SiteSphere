@@ -33,6 +33,7 @@ $reportFilters = $reportFilters ?? [
                 isClearing: false,
                 isLoading: false,
                 status: '{{ $reportFilters['status'] }}',
+                reportSummary: @js($reportSummary),
                 async submitForm(e) {
                     this.isFiltering = true;
                     this.isLoading = true;
@@ -83,6 +84,9 @@ $reportFilters = $reportFilters ?? [
                             const nCount = doc.querySelector(`[data-count-${tab}]`);
                             if (tCount && nCount) tCount.innerHTML = nCount.innerHTML;
                         });
+
+                        const nData = doc.querySelector('#report-summary-data');
+                        if (nData) this.reportSummary = JSON.parse(nData.textContent);
                     } catch (error) {
                         console.error(error);
                     } finally {
@@ -102,6 +106,7 @@ $reportFilters = $reportFilters ?? [
                     }
                 }
             }">
+            <script id="report-summary-data" type="application/json">{!! json_encode($reportSummary) !!}</script>
             <header class="reports-header">
                 <div>
                     <p class="dashboard-kicker">Database Administration Core</p>
@@ -109,21 +114,6 @@ $reportFilters = $reportFilters ?? [
                     <p>Live post report queue mapped to the existing reports and notification tables.</p>
                 </div>
             </header>
-
-            <section class="reports-summary" aria-label="Report summary">
-                <article class="reports-summary-card">
-                    <span>Total Reports</span>
-                    <strong>{{ $reportSummary['total'] }}</strong>
-                </article>
-                <article class="reports-summary-card unread">
-                    <span>Unread</span>
-                    <strong>{{ $reportSummary['unread'] }}</strong>
-                </article>
-                <article class="reports-summary-card read">
-                    <span>Read</span>
-                    <strong>{{ $reportSummary['read'] }}</strong>
-                </article>
-            </section>
 
             <section class="reports-tabs-card">
                 <div class="reports-tabs" role="tablist" aria-label="Report type tabs">
@@ -149,6 +139,21 @@ $reportFilters = $reportFilters ?? [
                         USER
                     </button>
                 </div>
+            </section>
+
+            <section class="reports-summary" aria-label="Report summary">
+                <article class="reports-summary-card">
+                    <span>Total Reports</span>
+                    <strong x-text="reportSummary[activeTab]?.total ?? 0">{{ $reportSummary[$activeTab]['total'] ?? 0 }}</strong>
+                </article>
+                <article class="reports-summary-card unread">
+                    <span>Unread</span>
+                    <strong x-text="reportSummary[activeTab]?.unread ?? 0">{{ $reportSummary[$activeTab]['unread'] ?? 0 }}</strong>
+                </article>
+                <article class="reports-summary-card read">
+                    <span>Read</span>
+                    <strong x-text="reportSummary[activeTab]?.read ?? 0">{{ $reportSummary[$activeTab]['read'] ?? 0 }}</strong>
+                </article>
             </section>
 
             <div class="reports-actions-card">

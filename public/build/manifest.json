@@ -8,8 +8,26 @@
     "src": "resources/css/about-us.css",
     "isEntry": true
   },
+  "resources/css/admin-activity.css": {
+    "file": "assets/admin-activity-CHuBW3q9.css",
+    "name": "admin-activity",
+    "names": [
+      "admin-activity.css"
+    ],
+    "src": "resources/css/admin-activity.css",
+    "isEntry": true
+  },
+  "resources/css/admin-dashboard.css": {
+    "file": "assets/admin-dashboard-CxO8ugcy.css",
+    "name": "admin-dashboard",
+    "names": [
+      "admin-dashboard.css"
+    ],
+    "src": "resources/css/admin-dashboard.css",
+    "isEntry": true
+  },
   "resources/css/app.css": {
-    "file": "assets/app-gJdw8Qj-.css",
+    "file": "assets/app-CGQztCnL.css",
     "name": "app",
     "names": [
       "app.css"
@@ -90,7 +108,7 @@
     "isEntry": true
   },
   "resources/css/security.css": {
-    "file": "assets/security-BlrgRii_.css",
+    "file": "assets/security-zJhxx4Fk.css",
     "name": "security",
     "names": [
       "security.css"
@@ -122,14 +140,26 @@
     "src": "resources/js/about-us.js",
     "isEntry": true
   },
+  "resources/js/admin-activity.js": {
+    "file": "assets/admin-activity-isZe9mUZ.js",
+    "name": "admin-activity",
+    "src": "resources/js/admin-activity.js",
+    "isEntry": true
+  },
+  "resources/js/admin-dashboard.js": {
+    "file": "assets/admin-dashboard-DP47DZ2U.js",
+    "name": "admin-dashboard",
+    "src": "resources/js/admin-dashboard.js",
+    "isEntry": true
+  },
   "resources/js/app.js": {
-    "file": "assets/app-B5jh3k8v.js",
+    "file": "assets/app-BUQEwop3.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
   },
   "resources/js/auth.js": {
-    "file": "assets/auth-BoTqWs1n.js",
+    "file": "assets/auth-FYcINXuW.js",
     "name": "auth",
     "src": "resources/js/auth.js",
     "isEntry": true

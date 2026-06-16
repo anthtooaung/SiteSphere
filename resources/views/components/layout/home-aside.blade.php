@@ -58,8 +58,8 @@
         @endif
     </div>
 
-    <div class="sidebar-section home-aside-dropdown">
-        <div class="section-header" id="ratingHeader">
+    <div class="sidebar-section home-aside-dropdown" x-data="{ openSection: true }">
+        <div class="section-header" id="ratingHeader" @click="openSection = !openSection" :class="{ 'active': openSection }">
             <div class="section-left">
                 <x-fas-star class="section-icon" aria-hidden="true" />
                 <h3>Rating</h3>
@@ -67,7 +67,7 @@
             <x-fas-chevron-down class="arrow-icon" aria-hidden="true" />
         </div>
 
-        <div class="section-content" id="ratingContent">
+        <div class="section-content" id="ratingContent" x-show="openSection">
             <div class="rating-options">
                 <label class="rating-check"><input type="checkbox" value="all" :checked="filters.rating.length === 0" @change="clearFilters()"><span>All</span></label>
                 @foreach ([5, 4, 3, 2, 1] as $rating)
@@ -82,8 +82,8 @@
         </div>
     </div>
 
-    <div class="sidebar-section home-aside-dropdown">
-        <div class="section-header" id="categoryHeader">
+    <div class="sidebar-section home-aside-dropdown" x-data="{ openSection: true }">
+        <div class="section-header" id="categoryHeader" @click="openSection = !openSection" :class="{ 'active': openSection }">
             <div class="section-left">
                 <x-fas-layer-group class="section-icon" aria-hidden="true" />
                 <h3>Categories</h3>
@@ -91,7 +91,7 @@
             <x-fas-chevron-down class="arrow-icon" aria-hidden="true" />
         </div>
 
-        <div class="section-content" id="categoryContent">
+        <div class="section-content" id="categoryContent" x-show="openSection">
             <div class="category-search-box">
                 <x-fas-search class="search-icon" aria-hidden="true" />
                 <input type="text" id="categorySearch" placeholder="Search categories..." x-model="search.category">
@@ -125,8 +125,8 @@
         </div>
     </div>
 
-    <div class="sidebar-section home-aside-dropdown">
-        <div class="section-header" id="tagsHeader">
+    <div class="sidebar-section home-aside-dropdown" x-data="{ openSection: true }">
+        <div class="section-header" id="tagsHeader" @click="openSection = !openSection" :class="{ 'active': openSection }">
             <div class="section-left">
                 <x-fas-tags class="section-icon" aria-hidden="true" />
                 <h3>Tags</h3>
@@ -134,7 +134,7 @@
             <x-fas-chevron-down class="arrow-icon" aria-hidden="true" />
         </div>
 
-        <div class="section-content" id="tagsContent">
+        <div class="section-content" id="tagsContent" x-show="openSection">
             <div class="tag-tools">
                 <div class="tag-search-box">
                     <x-fas-search class="search-icon" aria-hidden="true" />

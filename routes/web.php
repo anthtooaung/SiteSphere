@@ -71,8 +71,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/menu/reports', [AdminReportsController::class, 'index'])->name('reports');
     Route::patch('/menu/reports/{report}/read', [AdminReportsController::class, 'markRead'])->name('reports.read');
     Route::patch('/menu/reports/{report}/unread', [AdminReportsController::class, 'markUnread'])->name('reports.unread');
-    Route::delete('/menu/reports/post/{id}', [AdminReportsController::class, 'deletePost'])->name('reports.delete.post');
-    Route::delete('/menu/reports/comment/{id}', [AdminReportsController::class, 'deleteComment'])->name('reports.delete.comment');
+    Route::get('/menu/reports/{report}/open', [AdminReportsController::class, 'open'])->name('reports.open');
+    Route::delete('/menu/reports/{report}', [AdminReportsController::class, 'destroy'])->name('reports.destroy');
 
     Route::get('/menu/appearance', [AppearanceController::class, 'index'])->name('appearance');
     Route::patch('/menu/appearance', [AppearanceController::class, 'update'])->name('appearance.update');

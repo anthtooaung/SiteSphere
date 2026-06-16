@@ -25,6 +25,7 @@ class AdminReportsPageTest extends TestCase
 
     public function test_guests_are_redirected_to_login(): void
     {
+
         $this->get(route('reports'))
             ->assertRedirect(route('login'));
     }
@@ -126,29 +127,26 @@ class AdminReportsPageTest extends TestCase
             ->assertDontSee($otherReport->post->title);
     }
 
-    public function test_admin_can_mark_report_as_read(): void
+    public function test_admin_can_mark_report_as_read_and_open(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $report = $this->createPostReport('Mark Read Post', 'Harassment / Abuse');
 
         $this->actingAs($admin)
-            ->withoutMiddleware()
-            ->from(route('reports'))
-            ->patch(route('reports.read', $report))
-            ->assertRedirect(route('reports'))
-            ->assertSessionHas('success', 'Report marked as read.');
+            ->get(route('reports.open', $report))
+            ->assertRedirect(route('posts.show', $report->post->slug));
 
         $this->assertTrue($report->fresh()->admin_read);
     }
 
-    public function test_non_admin_users_cannot_mark_reports_read(): void
+    public function test_non_admin_users_cannot_open_reports(): void
     {
+
         $user = User::factory()->create(['role' => 'user']);
         $report = $this->createPostReport('Forbidden Mark Read Post', 'Illegal Activities');
 
         $this->actingAs($user)
-            ->withoutMiddleware()
-            ->patch(route('reports.read', $report))
+            ->get(route('reports.open', $report))
             ->assertForbidden();
 
         $this->assertFalse($report->fresh()->admin_read);

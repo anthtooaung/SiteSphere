@@ -315,7 +315,7 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
                                         @if ($report->post?->slug)
-                                        <a href="{{ route('posts.show', $report->post->slug) }}" class="reports-icon-btn view-action" title="View Post" aria-label="View Post">
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" title="View Post" aria-label="View Post">
                                             <x-fas-eye aria-hidden="true" />
                                         </a>
                                         @else
@@ -324,15 +324,7 @@ $reportFilters = $reportFilters ?? [
                                         </button>
                                         @endif
 
-                                        @if ($isUnread)
-                                        <form method="POST" action="{{ route('reports.read', $report) }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="reports-icon-btn mark-read-action" title="Mark Read" aria-label="Mark Read">
-                                                <x-fas-check aria-hidden="true" />
-                                            </button>
-                                        </form>
-                                        @else
+                                        @if (! $isUnread)
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
@@ -342,10 +334,10 @@ $reportFilters = $reportFilters ?? [
                                         </form>
                                         @endif
 
-                                        <form method="POST" action="{{ route('reports.delete.post', $report->target_id) }}" @submit="confirmAction($event, 'Delete Post?', 'This action will soft-delete the post.', 'Delete Post')">
+                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="reports-icon-btn delete-action" title="Delete Post" aria-label="Delete Post">
+                                            <button type="submit" class="reports-icon-btn delete-action" title="Delete Report" aria-label="Delete Report">
                                                 <x-fas-trash aria-hidden="true" />
                                             </button>
                                         </form>
@@ -455,7 +447,7 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
                                         @if ($report->comment?->post?->slug)
-                                        <a href="{{ route('posts.show', $report->comment->post->slug) }}#comment-{{ $report->target_id }}" class="reports-icon-btn view-action" title="View Comment" aria-label="View Comment">
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" title="View Comment" aria-label="View Comment">
                                             <x-fas-eye aria-hidden="true" />
                                         </a>
                                         @else
@@ -464,15 +456,7 @@ $reportFilters = $reportFilters ?? [
                                         </button>
                                         @endif
 
-                                        @if ($isUnread)
-                                        <form method="POST" action="{{ route('reports.read', $report) }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="reports-icon-btn mark-read-action" title="Mark Read" aria-label="Mark Read">
-                                                <x-fas-check aria-hidden="true" />
-                                            </button>
-                                        </form>
-                                        @else
+                                        @if (! $isUnread)
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
@@ -482,10 +466,10 @@ $reportFilters = $reportFilters ?? [
                                         </form>
                                         @endif
 
-                                        <form method="POST" action="{{ route('reports.delete.comment', $report->target_id) }}" @submit="confirmAction($event, 'Delete Comment?', 'This action will soft-delete the comment.', 'Delete Comment')">
+                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="reports-icon-btn delete-action" title="Delete Comment" aria-label="Delete Comment">
+                                            <button type="submit" class="reports-icon-btn delete-action" title="Delete Report" aria-label="Delete Report">
                                                 <x-fas-trash aria-hidden="true" />
                                             </button>
                                         </form>
@@ -612,7 +596,7 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
                                         @if ($targetUser?->slug)
-                                        <a href="{{ route('profile-detail', $targetUser->slug) }}" class="reports-icon-btn view-action" title="View Profile" aria-label="View Profile">
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" title="View Profile" aria-label="View Profile">
                                             <x-fas-eye aria-hidden="true" />
                                         </a>
                                         @else
@@ -621,15 +605,7 @@ $reportFilters = $reportFilters ?? [
                                         </button>
                                         @endif
 
-                                        @if ($isUnread)
-                                        <form method="POST" action="{{ route('reports.read', $report) }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="reports-icon-btn mark-read-action" title="Mark Read" aria-label="Mark Read">
-                                                <x-fas-check aria-hidden="true" />
-                                            </button>
-                                        </form>
-                                        @else
+                                        @if (! $isUnread)
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
@@ -639,11 +615,11 @@ $reportFilters = $reportFilters ?? [
                                         </form>
                                         @endif
 
-                                        <form method="POST" action="{{ route('users.destroy', $report->target_id) }}" @submit="confirmAction($event, 'Suspend User Account?', 'Terminating session tokens and blacklisting authentication keys for user profile {{ e($targetUser?->name ?? 'Unknown') }} (ID: #{{ $report->target_id }}).', 'Suspend Account', 'error')">
+                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="reports-icon-btn suspend-action" title="Suspend Account" aria-label="Suspend Account">
-                                                <x-fas-ban aria-hidden="true" />
+                                            <button type="submit" class="reports-icon-btn delete-action" title="Delete Report" aria-label="Delete Report">
+                                                <x-fas-trash aria-hidden="true" />
                                             </button>
                                         </form>
                                     </div>

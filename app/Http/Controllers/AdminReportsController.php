@@ -90,13 +90,62 @@ class AdminReportsController extends Controller
 
     public function markRead(Request $request, Reports $report): RedirectResponse
     {
-        $this->authorizeAdmin($request);
+        $admin = $this->authorizeAdmin($request);
 
         abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
 
-        $report->forceFill(['admin_read' => true])->save();
+        if (!$report->admin_read) {
+            $report->forceFill(['admin_read' => true])->save();
+
+            AuditLogs::query()->create([
+                'user_id' => $admin->id,
+                'action' => 'read_report',
+                'target_type' => Reports::class,
+                'target_id' => $report->id,
+                'reason' => 'Report marked as read.',
+            ]);
+        }
 
         return back()->with('success', 'Report marked as read.');
+    }
+
+    public function open(Request $request, Reports $report): RedirectResponse
+    {
+        $admin = $this->authorizeAdmin($request);
+
+        abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
+
+        if (!$report->admin_read) {
+            $report->forceFill(['admin_read' => true])->save();
+
+            AuditLogs::query()->create([
+                'user_id' => $admin->id,
+                'action' => 'read_report',
+                'target_type' => Reports::class,
+                'target_id' => $report->id,
+                'reason' => 'Report opened and marked as read.',
+            ]);
+        }
+
+        if ($report->target_name === 'posts') {
+            $post = Posts::find($report->target_id);
+            if ($post) {
+                return redirect()->route('posts.show', $post->slug);
+            }
+        } elseif ($report->target_name === 'comments') {
+            $comment = Comments::with('post')->find($report->target_id);
+            if ($comment && $comment->post) {
+                return redirect()->route('posts.show', $comment->post->slug)
+                    ->withFragment("comment-{$comment->id}");
+            }
+        } elseif ($report->target_name === 'users') {
+            $targetUser = User::find($report->target_id);
+            if ($targetUser) {
+                return redirect()->route('profile-detail', $targetUser->slug);
+            }
+        }
+
+        return back()->with('error', 'Target content not found.');
     }
 
     private function applySearch(Builder $query, string $search): void
@@ -193,48 +242,40 @@ class AdminReportsController extends Controller
 
     public function markUnread(Request $request, Reports $report): RedirectResponse
     {
-        $this->authorizeAdmin($request);
+        $admin = $this->authorizeAdmin($request);
 
         abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
 
-        $report->forceFill(['admin_read' => false])->save();
+        if ($report->admin_read) {
+            $report->forceFill(['admin_read' => false])->save();
+
+            AuditLogs::query()->create([
+                'user_id' => $admin->id,
+                'action' => 'unread_report',
+                'target_type' => Reports::class,
+                'target_id' => $report->id,
+                'reason' => 'Report marked as unread.',
+            ]);
+        }
 
         return back()->with('success', 'Report marked as unread.');
     }
 
-    public function deletePost(Request $request, int $id): RedirectResponse
+    public function destroy(Request $request, Reports $report): RedirectResponse
     {
         $admin = $this->authorizeAdmin($request);
 
-        $post = Posts::findOrFail($id);
-        $post->delete();
+        $reportId = $report->id;
+        $report->delete();
 
         AuditLogs::query()->create([
             'user_id' => $admin->id,
-            'action' => 'delete_post',
-            'target_type' => Posts::class,
-            'target_id' => $post->id,
-            'reason' => 'Post soft deleted by an admin from the reports dashboard.',
+            'action' => 'delete_report',
+            'target_type' => Reports::class,
+            'target_id' => $reportId,
+            'reason' => 'Report record deleted by an admin.',
         ]);
 
-        return back()->with('success', 'Post has been soft deleted.');
-    }
-
-    public function deleteComment(Request $request, int $id): RedirectResponse
-    {
-        $admin = $this->authorizeAdmin($request);
-
-        $comment = Comments::findOrFail($id);
-        $comment->delete();
-
-        AuditLogs::query()->create([
-            'user_id' => $admin->id,
-            'action' => 'delete_comment',
-            'target_type' => Comments::class,
-            'target_id' => $comment->id,
-            'reason' => 'Comment soft deleted by an admin from the reports dashboard.',
-        ]);
-
-        return back()->with('success', 'Comment has been soft deleted.');
+        return back()->with('success', 'Report has been deleted.');
     }
 }

@@ -56,11 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function selectMonthYear(monthIdx) {
-    calYear = pickerYear;
-    calMonth = monthIdx;
-    renderCalendar();
-    document.getElementById("cal-month-picker")?.classList.remove("open");
-    document.getElementById("cal-month-btn")?.classList.remove("open");
+    window.location.href = `/menu/dashboard/activity-log?month=${monthIdx + 1}&year=${pickerYear}`;
   }
 
   document.addEventListener("click", (e) => {
@@ -78,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(monthLabel) monthLabel.textContent = `${months[calMonth]} ${calYear}`;
     
     const termLabel = document.querySelector(".cal-term-label");
-    if(termLabel) termLabel.textContent = `Academic Term Year: ${calYear}`;
+    if(termLabel) termLabel.textContent = `Platform Activity: ${months[calMonth]} ${calYear}`;
 
     const firstDow = new Date(calYear, calMonth, 1).getDay();
     const daysInMo = new Date(calYear, calMonth + 1, 0).getDate();
@@ -197,19 +193,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function calPrev() {
-    if (--calMonth < 0) {
-      calMonth = 11;
-      calYear--;
+    let m = calMonth;
+    let y = calYear;
+    if (--m < 0) {
+      m = 11;
+      y--;
     }
-    renderCalendar();
+    window.location.href = `/menu/dashboard/activity-log?month=${m + 1}&year=${y}`;
   }
   
   function calNext() {
-    if (++calMonth > 11) {
-      calMonth = 0;
-      calYear++;
+    let m = calMonth;
+    let y = calYear;
+    if (++m > 11) {
+      m = 0;
+      y++;
     }
-    renderCalendar();
+    window.location.href = `/menu/dashboard/activity-log?month=${m + 1}&year=${y}`;
   }
 
   function openLogModal(scope) {
@@ -251,21 +251,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Bind static elements
-  const btnPrev = document.querySelector('.cal-nav .fa-chevron-left')?.parentElement;
+  const btnPrev = document.getElementById('cal-prev');
   if(btnPrev) btnPrev.addEventListener('click', calPrev);
   
-  const btnNext = document.querySelector('.cal-nav .fa-chevron-right')?.parentElement;
+  const btnNext = document.getElementById('cal-next');
   if(btnNext) btnNext.addEventListener('click', calNext);
   
   const monthBtn2 = document.getElementById("cal-month-btn");
   if(monthBtn2) monthBtn2.addEventListener('click', toggleMonthPicker);
   
-  document.querySelectorAll('.cmp-ynav').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-          const isNext = btn.querySelector('.fa-chevron-right');
-          if(isNext) pickerNextYear(); else pickerPrevYear();
-      });
-  });
+  const pickerPrevYearBtn = document.getElementById('picker-prev-year');
+  if(pickerPrevYearBtn) pickerPrevYearBtn.addEventListener('click', pickerPrevYear);
+
+  const pickerNextYearBtn = document.getElementById('picker-next-year');
+  if(pickerNextYearBtn) pickerNextYearBtn.addEventListener('click', pickerNextYear);
 
   const modalCloseBtn = document.querySelector('.modal-close');
   if(modalCloseBtn) modalCloseBtn.addEventListener('click', (e) => {
@@ -282,7 +281,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize
   renderCalendar();
   renderDatePanel();
-  
-  const entryCount = document.getElementById("entry-count");
-  if(entryCount) entryCount.textContent = `${actsExpanded.length} entries`;
 });

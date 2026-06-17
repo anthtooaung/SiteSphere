@@ -72,7 +72,7 @@
 
 @auth
     <aside id="layoutMenu" data-menu-bar-location="{{ $menuBarLocation }}"
-        {{ $attributes->class(['layout-menu', 'layout-menu--' . $menuBarLocation, 'layout-menu--horizontal' => $isHorizontalMenu, 'layout-menu--topbar' => $isHorizontalMenu]) }}>
+        {{ $attributes->class(['layout-menu', 'hidden md:flex', 'layout-menu--' . $menuBarLocation, 'layout-menu--horizontal' => $isHorizontalMenu, 'layout-menu--topbar' => $isHorizontalMenu]) }}>
         @if ($isHorizontalMenu)
             <nav class="layout-menu-topbar-nav" aria-label="Account top menu">
                 <ul class="layout-menu-topbar-list">

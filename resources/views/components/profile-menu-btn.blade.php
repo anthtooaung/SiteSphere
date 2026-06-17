@@ -104,15 +104,13 @@
 @enddesktop
 
 @mobile
-<div class="mobile-account-menu-wrap">
+<div x-data="{ open: false }" @keydown.escape.window="open = false" class="mobile-account-menu-wrap">
     <button
         type="button"
         {{ $attributes->merge(['class' => 'mobile-nav-item']) }}
-        id="mobileAccountMenuButton"
-        data-dropdown-toggle="mobileAccountMenu"
-        data-dropdown-placement="top"
+        @click="open = true"
         aria-label="Account menu"
-        aria-expanded="false"
+        :aria-expanded="open.toString()"
     >
         @if($user->user_image)
             <img src="{{ $user->getAvatarUrl() }}" alt="{{ $user->name }}" class="size-6 rounded-full object-cover" />
@@ -122,57 +120,114 @@
         <span>Profile</span>
     </button>
 
-    <div id="mobileAccountMenu" class="account-menu-dropdown account-menu-dropdown--mobile hidden" aria-labelledby="mobileAccountMenuButton">
-        <ul class="account-menu-list">
-            @foreach($profileMenuItems as $menuItem)
-                @php($isActive = $menuItem['active'] ?? false)
-                <li>
-                    <a
-                        href="{{ $menuItem['href'] }}"
-                        @class(['account-menu-link', 'active' => $isActive])
-                        @if($isActive) aria-current="page" @endif
-                    >{{ $menuItem['label'] }}</a>
-                </li>
-            @endforeach
-        </ul>
+    {{-- Backdrop --}}
+    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-[60]" @click="open = false" x-transition.opacity></div>
 
-        @if($isAdmin)
-            <div class="account-menu-section">
-                <ul class="account-menu-list">
-                    @foreach($adminMenuItems as $menuItem)
-                        @php($isActive = $menuItem['active'] ?? false)
+    {{-- Bottom Sheet --}}
+    <div
+        id="mobileAccountMenu"
+        x-show="open"
+        x-cloak
+        class="fixed inset-x-0 bottom-0 z-[70] h-[75vh] bg-white dark:bg-gray-800 rounded-t-[2.5rem] shadow-2xl p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="translate-y-full"
+        x-transition:enter-end="translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="translate-y-0"
+        x-transition:leave-end="translate-y-full"
+    >
+        {{-- Drawer Handle --}}
+        <div class="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-6"></div>
+
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Account & Settings</h3>
+            <button @click="open = false" class="p-2 bg-gray-100 dark:bg-gray-700 rounded-full text-gray-500 dark:text-gray-400">
+                <x-fas-xmark class="size-4" />
+            </button>
+        </div>
+
+        {{-- User Summary --}}
+        <div class="flex items-center gap-4 mb-8 pb-4 border-b border-gray-100 dark:border-gray-700">
+            @if($user->user_image)
+                <img src="{{ $user->getAvatarUrl() }}" alt="{{ $user->name }}" class="size-12 rounded-full object-cover" />
+            @else
+                <div class="size-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                    <x-far-user class="size-6 text-gray-400" />
+                </div>
+            @endif
+            <div>
+                <div class="font-bold text-lg text-gray-900 dark:text-white">{{ $user->name }}</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                    Verified <x-fas-check-circle class="size-3 text-indigo-500" />
+                </div>
+            </div>
+        </div>
+
+        {{-- Content Grouping --}}
+        <div class="space-y-8 pb-8">
+            {{-- Profile Section --}}
+            <div>
+                <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">Profile</p>
+                <ul class="space-y-4">
+                    @foreach($profileMenuItems as $menuItem)
                         <li>
-                            <a
-                                href="{{ $menuItem['href'] }}"
-                                @class(['account-menu-link', 'active' => $isActive])
-                                @if($isActive) aria-current="page" @endif
-                            >{{ $menuItem['label'] }}</a>
+                            <a href="{{ $menuItem['href'] }}" class="flex items-center gap-3 text-gray-700 dark:text-gray-300 font-medium">
+                                <span class="w-5 text-center">
+                                    @if($menuItem['label'] === 'View Profile') 👤 @else 🔖 @endif
+                                </span>
+                                {{ $menuItem['label'] }}
+                            </a>
                         </li>
                     @endforeach
                 </ul>
             </div>
-        @endif
 
-        <div class="account-menu-section">
-            <p class="account-menu-heading">Setting</p>
-            <ul class="account-menu-list">
-                @foreach($settingMenuItems as $menuItem)
-                    <li>
-                        @php($isActive = $menuItem['active'] ?? false)
-                        <a
-                            href="{{ $menuItem['href'] }}"
-                            @class(['account-menu-link', 'active' => $isActive])
-                            @if($isActive) aria-current="page" @endif
-                        >{{ $menuItem['label'] }}</a>
-                    </li>
-                @endforeach
-            </ul>
+            {{-- Admin Section --}}
+            @if($isAdmin)
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">Admin</p>
+                    <ul class="space-y-4">
+                        @foreach($adminMenuItems as $menuItem)
+                            <li>
+                                <a href="{{ $menuItem['href'] }}" class="flex items-center gap-3 text-gray-700 dark:text-gray-300 font-medium">
+                                    <span class="w-5 text-center">
+                                        @if($menuItem['label'] === 'Dashboard') 📊 @elseif($menuItem['label'] === 'Users') 👥 @else 🚩 @endif
+                                    </span>
+                                    {{ $menuItem['label'] }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- Settings Section --}}
+            <div>
+                <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">Settings</p>
+                <ul class="space-y-4">
+                    @foreach($settingMenuItems as $menuItem)
+                        <li>
+                            <a href="{{ $menuItem['href'] }}" class="flex items-center gap-3 text-gray-700 dark:text-gray-300 font-medium">
+                                <span class="w-5 text-center">
+                                    @if($menuItem['label'] === 'Edit Profile') ✏️ @elseif($menuItem['label'] === 'Appearance') 🎨 @elseif($menuItem['label'] === 'Edit Tag') 🏷️ @else 🛡️ @endif
+                                </span>
+                                {{ $menuItem['label'] }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            {{-- Logout Section --}}
+            <div class="pt-4 border-t border-gray-100 dark:border-gray-700">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="flex items-center gap-3 text-red-500 font-semibold">
+                        <span class="w-5 text-center">🚪</span> Logout
+                    </button>
+                </form>
+            </div>
         </div>
-
-        <form method="POST" action="{{ route('logout') }}" class="account-menu-logout">
-            @csrf
-            <button type="submit" class="account-menu-link account-menu-action">Logout</button>
-        </form>
     </div>
 </div>
 @endmobile

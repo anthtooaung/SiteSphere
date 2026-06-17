@@ -92,8 +92,8 @@ class ProfileMenuButtonTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('data-dropdown-toggle="mobileAccountMenu"', false)
-            ->assertSee('data-dropdown-placement="top"', false)
+            ->assertSee('@click="open = true"', false)
+            ->assertSee(':aria-expanded="open.toString()"', false)
             ->assertSee('id="mobileAccountMenu"', false)
             ->assertDontSee('id="layoutMenu"', false)
             ->assertDontSee('data-layout-menu-trigger', false)

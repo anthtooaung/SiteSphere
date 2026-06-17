@@ -30,8 +30,7 @@
 <button
     id="mobileDropdownDividerButton"
     data-dropdown-toggle="mobileDropdownDivider"
-    data-dropdown-placement="top"
-    class="mobile-nav-item"
+    {{ $attributes->merge(['class' => 'mobile-nav-item', 'data-dropdown-placement' => 'top']) }}
     type="button"
 >
     <x-far-user class="icon" />

@@ -2348,6 +2348,9 @@ button.saved-post-control {
 }
 
 .mobile-header .auth-menu-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     min-height: 36px;
     max-width: 48vw;
     gap: 7px;

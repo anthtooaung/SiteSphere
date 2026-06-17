@@ -62,6 +62,14 @@
             <x-app-logo class="size-6"></x-app-logo>
             <span>SiteSphere</span>
         </a>
+
+        @if(request()->routeIs(['welcome', 'about-us']))
+            @auth
+                <x-profile-menu-btn class="auth-menu-button" />
+            @else
+                <x-login-out-menu-btn class="auth-menu-button" data-dropdown-placement="bottom-end" />
+            @endauth
+        @endif
     </header>
 
     <!-- Mobile Bottom Navigation Bar -->
@@ -73,23 +81,34 @@
         <x-category-btn mobile-mode="trigger" />
 
         @if(request()->routeIs(['welcome', 'about-us']))
-            <!-- About Button -->
-            <x-about-btn />
-        @endif
+            @auth
+                <!-- Upload Button -->
+                <x-create-post-btn />
 
-        @auth
-            <!-- Upload Button -->
-            <x-create-post-btn />
+                <!-- About Button -->
+                <x-about-btn />
 
-            <!-- Notification Button -->
-            <x-noti-btn />
-
-            <!-- Profile Button -->
-            <x-profile-menu-btn />
+                <!-- Notification Button -->
+                <x-noti-btn />
+            @else
+                <!-- About Button -->
+                <x-about-btn />
+            @endauth
         @else
-            <!-- Login Button -->
-            <x-login-out-menu-btn />
-        @endauth
+            @auth
+                <!-- Upload Button -->
+                <x-create-post-btn />
+
+                <!-- Notification Button -->
+                <x-noti-btn />
+
+                <!-- Profile Button -->
+                <x-profile-menu-btn />
+            @else
+                <!-- Login Button -->
+                <x-login-out-menu-btn />
+            @endauth
+        @endif
     </nav>
 
     <x-category-btn mobile-mode="overlay" />

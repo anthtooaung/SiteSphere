@@ -23,6 +23,11 @@
         box-shadow: var(--ui-shadow);
     }
 
+    .ui-tooltip {
+        background-color: color-mix(in srgb, var(--text-color, #0d1b2a) 88%, #000000 12%);
+        color: var(--background-color, #ffffff);
+    }
+
     .ui-control {
         min-height: 42px;
         border: 1px solid var(--ui-border);

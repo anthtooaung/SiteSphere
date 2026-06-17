@@ -10,26 +10,14 @@
     $isDropdownAside = in_array($menuBarLocation, ['top', 'bottom'], true);
 @endphp
 
-<div x-data="{ 
-    showTrigger: true, 
-    lastScrollY: window.scrollY,
-    open: false,
-    handleScroll() {
-        let currentScrollY = window.scrollY;
-        if (Math.abs(currentScrollY - this.lastScrollY) < 5) return;
-        this.showTrigger = currentScrollY < this.lastScrollY;
-        this.lastScrollY = currentScrollY;
-    }
-}" @scroll.window="handleScroll" class="md:h-full">
+<div x-data="{ open: false }" @keydown.escape.window="open = false" class="md:h-full">
     {{-- Trigger --}}
-    <button x-show="showTrigger" x-transition @click="open = true" 
-            class="fixed top-20 left-4 z-40 bg-accent text-white p-3 rounded-full shadow-lg md:hidden"
-            aria-label="Open filters">
-        <x-fas-filter class="size-5" />
+    <button class="menu-icon md:hidden" id="sidebarToggle" type="button" @click="open = true" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
+        <x-fas-bars aria-hidden="true" />
     </button>
 
     {{-- Backdrop --}}
-    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-[60] md:hidden" @click="open = false" x-transition.opacity></div>
+    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-40 md:hidden" @click="open = false" x-transition.opacity></div>
 
     {{-- Bottom Sheet / Sidebar --}}
     <aside
@@ -42,9 +30,15 @@
             'sidebar', 
             'home-aside', 
             'home-aside--'.$menuBarLocation, 
-            'fixed inset-y-0 left-0 z-[70] w-3/4 bg-white dark:bg-gray-800 shadow-2xl p-6 overflow-y-auto transform transition-transform duration-300 md:static md:block md:w-[280px] md:shadow-none'
+            'home-aside--dropdown' => $isDropdownAside,
+            'fixed inset-x-0 bottom-0 z-50 h-[75vh] bg-white dark:bg-gray-800 rounded-t-2xl shadow-xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out md:static md:!block md:h-full md:w-[280px] md:rounded-none md:shadow-none md:transform-none md:transition-none md:z-0'
         ]) }}
-        :class="open ? 'translate-x-0' : '-translate-x-full'"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="translate-y-full"
+        x-transition:enter-end="translate-y-0"
+        x-transition:leave="transition ease-in duration-300 transform"
+        x-transition:leave-start="translate-y-0"
+        x-transition:leave-end="translate-y-full"
         @click.outside="if(window.innerWidth < 768) open = false"
     >
         {{-- Close Button --}}

@@ -523,12 +523,6 @@
     box-shadow: 0 12px 28px  color-mix(in srgb, var(--text-color) 8%, transparent);
 }
 
-@media (max-width: 1024px) {
-    .account-menu-dropdown {
-        width: min(220px, calc(100vw - 48px));
-    }
-}
-
 .account-menu-list {
     display: grid;
     gap: 2px;
@@ -2287,6 +2281,10 @@ button.saved-post-control {
 
 .mobile-account-menu-wrap {
     display: contents;
+}
+
+.account-menu-dropdown--mobile {
+    width: min(220px, calc(100vw - 48px));
 }
 
 .verified-label {

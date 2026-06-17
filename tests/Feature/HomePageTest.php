@@ -203,7 +203,7 @@ class HomePageTest extends TestCase
         $mobileResponse
             ->assertOk()
             ->assertSeeInOrder([
-                '<nav class="mobile-bottom-nav',
+                '<nav class="mobile-bottom-nav"',
                 'data-mobile-menu-open',
                 '</nav>',
                 '<div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay">',

@@ -40,6 +40,7 @@
             'flex-row gap-2 px-3 py-2 font-bold text-sm' => $isLanding,
             'flex-col' => !$isLanding
         ]) }}
+        data-mobile-menu-open
         aria-label="Open categories"
     >
         <x-fas-layer-group class="icon"/>
@@ -48,17 +49,15 @@
 @endif
 
 @if (in_array($mobileMode, ['both', 'overlay'], true))
-    <div {{ $attributes->merge(['class' => 'mobile-menu-overlay category-mobile-overlay']) }} id="mobileCategoryOverlay">
+    <div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay">
         <button
             type="button"
             class="mobile-close-button category-mobile-close"
-            @click="$dispatch('close-category')"
+            data-mobile-menu-close
             aria-label="Close categories"
         >
             <x-fas-times class="size-8"/>
         </button>
-
-
 
         @forelse ($categories as $category)
             <a href="{{ route('home', ['category' => $category->slug]) }}" class="mobile-overlay-link">

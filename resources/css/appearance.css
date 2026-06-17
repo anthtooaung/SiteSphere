@@ -858,15 +858,17 @@
         width: 100%;
     }
 
+    .appearance-card,
+    .appearance-header {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 640px) {
     .appearance-choice-grid.two,
     .appearance-choice-grid.four,
     .appearance-theme-grid,
     .appearance-custom-panel {
         grid-template-columns: 1fr;
-    }
-
-    .appearance-card,
-    .appearance-header {
-        padding: 18px;
     }
 }

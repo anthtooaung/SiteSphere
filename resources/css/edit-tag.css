@@ -586,6 +586,13 @@
     }
 }
 
+@media (max-width: 640px) {
+    .edit-tag-grid,
+    .edit-tag-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Share Tag Button & Modal Styling */
 .thread-share-icon-btn {
     width: 34px;

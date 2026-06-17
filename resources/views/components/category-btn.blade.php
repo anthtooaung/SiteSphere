@@ -1,3 +1,7 @@
+@php
+    $isLanding = request()->routeIs(['welcome', 'about-us']);
+@endphp
+
 @desktop
 <button data-dropdown-toggle="mega-menu-icons-dropdown" class="desktop-link">
     <x-fas-layer-group class="icon"/>
@@ -31,7 +35,11 @@
 @if (in_array($mobileMode, ['both', 'trigger'], true))
     <button
         type="button"
-        {{ $attributes->merge(['class' => 'mobile-nav-item']) }}
+        {{ $attributes->class([
+            'mobile-nav-item',
+            'flex-row gap-2 px-3 py-2 font-bold text-sm' => $isLanding,
+            'flex-col' => !$isLanding
+        ]) }}
         data-mobile-menu-open
         aria-label="Open categories"
     >

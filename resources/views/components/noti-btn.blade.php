@@ -1,3 +1,7 @@
+@php
+    $isLanding = request()->routeIs(['welcome', 'about-us']);
+@endphp
+
 @desktop
 <button
     id="notificationDropdownButton"
@@ -47,7 +51,11 @@
 @mobile
 <a
     href="#"
-    {{ $attributes->merge(['class' => 'mobile-nav-item relative']) }}
+    {{ $attributes->class([
+        'mobile-nav-item relative',
+        'flex-row gap-2 px-3 py-2 font-bold text-sm' => $isLanding,
+        'flex-col' => !$isLanding
+    ]) }}
     aria-label="{{ $unreadCount > 0 ? $unreadCount.' unread notifications' : 'Notifications' }}"
     style="font-family: var(--font-family); color: var(--text-color);"
 >

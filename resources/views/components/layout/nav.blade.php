@@ -57,58 +57,30 @@
 
 @mobile
     <!-- Mobile Header -->
-    <header class="mobile-header" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
-        <a href="{{ route('welcome') }}" class="brand site-brand">
+    <header class="mobile-header flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
+        <a href="{{ route('welcome') }}" class="flex items-center gap-2">
             <x-app-logo class="size-6"></x-app-logo>
-            <span>SiteSphere</span>
+            <span class="font-bold text-lg dark:text-white">SiteSphere</span>
         </a>
 
-        @if(request()->routeIs(['welcome', 'about-us']))
-            @auth
-                <x-profile-menu-btn class="auth-menu-button" />
-            @else
-                <x-login-out-menu-btn class="auth-menu-button" data-dropdown-placement="bottom-end" />
-            @endauth
-        @endif
+        @auth
+            <x-profile-menu-btn trigger="top" />
+        @else
+            <x-login-out-menu-btn />
+        @endauth
     </header>
 
     <!-- Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav" aria-label="Primary mobile navigation">
-        <!-- Home Button -->
+    <nav class="mobile-bottom-nav fixed bottom-0 inset-x-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center py-2 z-50 md:hidden">
         <x-home-btn />
-
-        <!-- Categories Trigger -->
         <x-category-btn mobile-mode="trigger" />
-
-        @if(request()->routeIs(['welcome', 'about-us']))
-            @auth
-                <!-- Upload Button -->
-                <x-create-post-btn />
-
-                <!-- About Button -->
-                <x-about-btn />
-
-                <!-- Notification Button -->
-                <x-noti-btn />
-            @else
-                <!-- About Button -->
-                <x-about-btn />
-            @endauth
+        <x-create-post-btn />
+        <x-noti-btn />
+        @auth
+            <x-profile-menu-btn trigger="bottom" />
         @else
-            @auth
-                <!-- Upload Button -->
-                <x-create-post-btn />
-
-                <!-- Notification Button -->
-                <x-noti-btn />
-
-                <!-- Profile Button -->
-                <x-profile-menu-btn />
-            @else
-                <!-- Login Button -->
-                <x-login-out-menu-btn />
-            @endauth
-        @endif
+            <x-login-out-menu-btn />
+        @endauth
     </nav>
 
     <x-category-btn mobile-mode="overlay" />

@@ -1,0 +1,8 @@
+.admin-users-table-wrap {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.admin-users-table {
+    min-width: 600px;
+}

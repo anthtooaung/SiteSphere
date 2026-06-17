@@ -239,8 +239,7 @@ $reportFilters = $reportFilters ?? [
                     </form>
                 </div>
             </div>
-
-            <section class="reports-table-card" id="posts-view" role="tabpanel" aria-labelledby="posts-tab"
+<section class="reports-table-card" id="posts-view" role="tabpanel" aria-labelledby="posts-tab"
                 data-report-posts-panel x-show="activeTab === 'posts'">
                 <div class="reports-table-wrap">
                     <table class="reports-table">

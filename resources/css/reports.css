@@ -345,13 +345,15 @@
 }
 
 .reports-table-wrap {
-    overflow: hidden;
+    overflow-x: auto;
+    width: 100%;
 }
 
 .reports-table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
+    min-width: 600px;
 }
 
 .reports-table th,

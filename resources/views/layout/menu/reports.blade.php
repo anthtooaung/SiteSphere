@@ -447,31 +447,39 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
                                         @if ($report->comment?->post?->slug)
-                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" title="View Comment" aria-label="View Comment">
-                                            <x-fas-eye aria-hidden="true" />
-                                        </a>
+                                        <x-tooltip content="View Comment">
+                                            <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Comment">
+                                                <x-fas-eye aria-hidden="true" />
+                                            </a>
+                                        </x-tooltip>
                                         @else
-                                        <button type="button" class="reports-icon-btn view-action" disabled title="Comment unavailable" aria-label="Comment unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                            <x-fas-eye aria-hidden="true" />
-                                        </button>
+                                        <x-tooltip content="Comment unavailable">
+                                            <button type="button" class="reports-icon-btn view-action" disabled aria-label="Comment unavailable" style="opacity:0.4;cursor:not-allowed;">
+                                                <x-fas-eye aria-hidden="true" />
+                                            </button>
+                                        </x-tooltip>
                                         @endif
 
                                         @if (! $isUnread)
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="reports-icon-btn read-done-action" title="Mark Unread" aria-label="Mark Unread">
-                                                <x-fas-check-double aria-hidden="true" />
-                                            </button>
+                                            <x-tooltip content="Mark Unread">
+                                                <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
+                                                    <x-fas-check-double aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
                                         </form>
                                         @endif
 
                                         <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="reports-icon-btn delete-action" title="Delete Report" aria-label="Delete Report">
-                                                <x-fas-trash aria-hidden="true" />
-                                            </button>
+                                            <x-tooltip content="Delete Report">
+                                                <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
+                                                    <x-fas-trash aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
                                         </form>
                                     </div>
                                 </td>
@@ -596,31 +604,39 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
                                         @if ($targetUser?->slug)
-                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" title="View Profile" aria-label="View Profile">
-                                            <x-fas-eye aria-hidden="true" />
-                                        </a>
+                                        <x-tooltip content="View Profile">
+                                            <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Profile">
+                                                <x-fas-eye aria-hidden="true" />
+                                            </a>
+                                        </x-tooltip>
                                         @else
-                                        <button type="button" class="reports-icon-btn view-action" disabled title="User unavailable" aria-label="User unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                            <x-fas-eye aria-hidden="true" />
-                                        </button>
+                                        <x-tooltip content="User unavailable">
+                                            <button type="button" class="reports-icon-btn view-action" disabled aria-label="User unavailable" style="opacity:0.4;cursor:not-allowed;">
+                                                <x-fas-eye aria-hidden="true" />
+                                            </button>
+                                        </x-tooltip>
                                         @endif
 
                                         @if (! $isUnread)
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="reports-icon-btn read-done-action" title="Mark Unread" aria-label="Mark Unread">
-                                                <x-fas-check-double aria-hidden="true" />
-                                            </button>
+                                            <x-tooltip content="Mark Unread">
+                                                <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
+                                                    <x-fas-check-double aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
                                         </form>
                                         @endif
 
                                         <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="reports-icon-btn delete-action" title="Delete Report" aria-label="Delete Report">
-                                                <x-fas-trash aria-hidden="true" />
-                                            </button>
+                                            <x-tooltip content="Delete Report">
+                                                <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
+                                                    <x-fas-trash aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
                                         </form>
                                     </div>
                                 </td>

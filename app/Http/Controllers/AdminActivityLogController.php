@@ -43,7 +43,7 @@ class AdminActivityLogController extends Controller
         $this->authorizeAdmin($request);
 
         // Simple validation for YYYY-MM-DD
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
             abort(400, 'Invalid date format.');
         }
 

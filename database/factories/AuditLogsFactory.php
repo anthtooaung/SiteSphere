@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\AuditLogs;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,7 @@ class AuditLogsFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => \App\Models\User::factory(),
+            'user_id' => User::factory(),
             'action' => $this->faker->word(),
             'category' => $this->faker->randomElement(['moderation', 'success', 'announcement', 'system']),
             'target_type' => 'App\Models\Post',

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Bookmarks;
 use App\Models\Posts;
 use App\Models\User;
 use App\Models\UserPosts;
@@ -16,7 +17,7 @@ class HoverProfileVisibilityTest extends TestCase
     {
         $viewer = User::factory()->create();
         $visibleReviewer = User::factory()->create(['name' => 'Visible User']);
-        
+
         $post = Posts::factory()->create(['title' => 'Test Post']);
 
         UserPosts::query()->delete();
@@ -30,11 +31,11 @@ class HoverProfileVisibilityTest extends TestCase
         $response = $this->actingAs($viewer)->get('/home');
 
         $response->assertStatus(200);
-        
+
         // Check for the user ID in the profiles data
         // Just check for the pattern that includes the ID
         $response->assertSee('user_id', false);
-        $response->assertSee((string)$visibleReviewer->id, false);
+        $response->assertSee((string) $visibleReviewer->id, false);
         $response->assertSee('@visible_user', false);
     }
 
@@ -42,7 +43,7 @@ class HoverProfileVisibilityTest extends TestCase
     {
         $viewer = User::factory()->create();
         $hiddenReviewer = User::factory()->create(['name' => 'Hidden User']);
-        
+
         $post = Posts::factory()->create(['title' => 'Test Post']);
 
         UserPosts::query()->delete();
@@ -56,13 +57,13 @@ class HoverProfileVisibilityTest extends TestCase
         $response = $this->actingAs($viewer)->get('/home');
 
         $response->assertStatus(200);
-        
+
         // For the hidden user, we expect their ID NOT to be associated with user_id
         // We set user_id to null, so the string "user_id":ID should NOT be there.
         $content = $response->getContent();
-        $this->assertFalse(str_contains($content, '"user_id":' . $hiddenReviewer->id));
-        $this->assertFalse(str_contains($content, 'user_id&quot;:' . $hiddenReviewer->id));
-        
+        $this->assertFalse(str_contains($content, '"user_id":'.$hiddenReviewer->id));
+        $this->assertFalse(str_contains($content, 'user_id&quot;:'.$hiddenReviewer->id));
+
         $response->assertSee('Anonymous');
         $response->assertDontSee('@hidden_user');
     }
@@ -70,7 +71,7 @@ class HoverProfileVisibilityTest extends TestCase
     public function test_new_user_has_user_post_visible_true_by_default(): void
     {
         $user = User::factory()->create();
-        
+
         $this->assertTrue($user->settings->user_post_visible);
     }
 
@@ -78,7 +79,7 @@ class HoverProfileVisibilityTest extends TestCase
     {
         $viewer = User::factory()->create();
         $hiddenReviewer = User::factory()->create(['name' => 'Hidden User']);
-        
+
         $post = Posts::factory()->create(['title' => 'Saved Post']);
 
         UserPosts::query()->delete();
@@ -89,7 +90,7 @@ class HoverProfileVisibilityTest extends TestCase
             'user_hidden' => true,
         ]);
 
-        \App\Models\Bookmarks::factory()->create([
+        Bookmarks::factory()->create([
             'user_id' => $viewer->id,
             'post_id' => $post->id,
         ]);
@@ -97,12 +98,12 @@ class HoverProfileVisibilityTest extends TestCase
         $response = $this->actingAs($viewer)->get('/saved-posts');
 
         $response->assertStatus(200);
-        
+
         $content = $response->getContent();
-        
-        $this->assertFalse(str_contains($content, '"user_id":' . $hiddenReviewer->id));
-        $this->assertFalse(str_contains($content, 'user_id&quot;:' . $hiddenReviewer->id));
-        
+
+        $this->assertFalse(str_contains($content, '"user_id":'.$hiddenReviewer->id));
+        $this->assertFalse(str_contains($content, 'user_id&quot;:'.$hiddenReviewer->id));
+
         $response->assertSee('Anonymous');
     }
 }

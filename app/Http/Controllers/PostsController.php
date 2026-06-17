@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostsRequest;
-use App\Http\Requests\UpdatePostsRequest;
 use App\Models\AuditLogs;
 use App\Models\Categories;
 use App\Models\Comments;

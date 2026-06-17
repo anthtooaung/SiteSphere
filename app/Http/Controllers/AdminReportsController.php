@@ -94,7 +94,7 @@ class AdminReportsController extends Controller
 
         abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
 
-        if (!$report->admin_read) {
+        if (! $report->admin_read) {
             $report->forceFill(['admin_read' => true])->save();
 
             AuditLogs::query()->create([
@@ -115,7 +115,7 @@ class AdminReportsController extends Controller
 
         abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
 
-        if (!$report->admin_read) {
+        if (! $report->admin_read) {
             $report->forceFill(['admin_read' => true])->save();
 
             AuditLogs::query()->create([

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\AuditLogs;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
@@ -17,40 +19,40 @@ class AuditLogsExtensionTest extends TestCase
 
     public function test_audit_logs_model_returns_correct_icon_based_on_category(): void
     {
-        $log = new \App\Models\AuditLogs(['category' => 'moderation']);
+        $log = new AuditLogs(['category' => 'moderation']);
         $this->assertEquals('fa-hammer', $log->getIcon());
 
-        $log = new \App\Models\AuditLogs(['category' => 'success']);
+        $log = new AuditLogs(['category' => 'success']);
         $this->assertEquals('fa-check-circle', $log->getIcon());
 
-        $log = new \App\Models\AuditLogs(['category' => 'announcement']);
+        $log = new AuditLogs(['category' => 'announcement']);
         $this->assertEquals('fa-bullhorn', $log->getIcon());
 
-        $log = new \App\Models\AuditLogs(['category' => 'system']);
+        $log = new AuditLogs(['category' => 'system']);
         $this->assertEquals('fa-cog', $log->getIcon());
     }
 
     public function test_audit_logs_model_returns_correct_color_based_on_category(): void
     {
-        $log = new \App\Models\AuditLogs(['category' => 'moderation']);
+        $log = new AuditLogs(['category' => 'moderation']);
         $this->assertEquals('#ef4444', $log->getColor());
-        
-        $log = new \App\Models\AuditLogs(['category' => 'success']);
+
+        $log = new AuditLogs(['category' => 'success']);
         $this->assertEquals('#22c55e', $log->getColor());
 
-        $log = new \App\Models\AuditLogs(['category' => 'announcement']);
+        $log = new AuditLogs(['category' => 'announcement']);
         $this->assertEquals('#3b82f6', $log->getColor());
 
-        $log = new \App\Models\AuditLogs(['category' => 'system']);
+        $log = new AuditLogs(['category' => 'system']);
         $this->assertEquals('#6b7280', $log->getColor());
     }
 
     public function test_audit_logs_factory_populates_category(): void
     {
         // We need a user for the factory to work if user_id is required
-        \App\Models\User::factory()->create();
-        
-        $log = \App\Models\AuditLogs::factory()->create();
+        User::factory()->create();
+
+        $log = AuditLogs::factory()->create();
         $this->assertContains($log->category, ['moderation', 'success', 'announcement', 'system']);
     }
 }

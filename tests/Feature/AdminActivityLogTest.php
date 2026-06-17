@@ -83,7 +83,7 @@ class AdminActivityLogTest extends TestCase
         $this->actingAs($admin)
             ->get(route('admin.activity-date', ['date' => $date]))
             ->assertOk()
-            ->assertViewHas('logs', fn($logs) => $logs->count() === 3)
+            ->assertViewHas('logs', fn ($logs) => $logs->count() === 3)
             ->assertViewHas('totalCount', 5)
             ->assertViewHas('isFullList', false);
 
@@ -91,7 +91,7 @@ class AdminActivityLogTest extends TestCase
         $this->actingAs($admin)
             ->get(route('admin.activity-date', ['date' => $date, 'all' => 'true']))
             ->assertOk()
-            ->assertViewHas('logs', fn($logs) => $logs->count() === 5)
+            ->assertViewHas('logs', fn ($logs) => $logs->count() === 5)
             ->assertViewHas('totalCount', 5)
             ->assertViewHas('isFullList', true);
     }
@@ -107,7 +107,7 @@ class AdminActivityLogTest extends TestCase
             ->get(route('admin.activity-date', ['date' => $date]))
             ->assertOk()
             ->assertViewIs('partials.admin-activity-card')
-            ->assertViewHas('logs', fn($logs) => $logs->count() === 0)
+            ->assertViewHas('logs', fn ($logs) => $logs->count() === 0)
             ->assertViewHas('totalCount', 0)
             ->assertSeeText('No activity recorded for this day');
     }

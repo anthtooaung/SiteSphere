@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Bookmarks;
+use App\Models\Categories;
 use App\Models\Posts;
 use App\Models\Ratings;
+use App\Models\Tags;
 use App\Models\User;
 use App\Models\UserPosts;
 use Database\Seeders\FontsSeeder;
@@ -44,12 +46,12 @@ class DashboardMenuTest extends TestCase
     public function test_admin_dashboard_shows_platform_metrics(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
-        
+
         // Create some data to see in stats
         User::factory()->count(5)->create(['role' => 'user']);
-        
+
         $response = $this->actingAs($admin)->get(route('dashboard'));
-        
+
         $response->assertOk()
             ->assertSeeText('Total Users')
             ->assertSeeText('Total Reviews')
@@ -294,20 +296,20 @@ class DashboardMenuTest extends TestCase
     public function test_admin_dashboard_shows_top_posts_with_category(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
-        $category = \App\Models\Categories::factory()->create(['name' => 'Test Category']);
-        $tag = \App\Models\Tags::factory()->create();
+        $category = Categories::factory()->create(['name' => 'Test Category']);
+        $tag = Tags::factory()->create();
         $tag->categories()->attach($category);
-        
+
         $post = Posts::factory()->create(['title' => 'Top Rated Post']);
         $post->tags()->attach($tag);
-        
+
         Ratings::factory()->create([
             'post_id' => $post->id,
             'rating' => 5,
         ]);
 
         $response = $this->actingAs($admin)->get(route('dashboard'));
-        
+
         $response->assertOk()
             ->assertSeeText('Top Rated Post')
             ->assertSeeText('Test Category');

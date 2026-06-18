@@ -3,14 +3,6 @@
 @endphp
 
 @desktop
-@if($isLanding)
-    <a href="{{ route('posts.create') }}" class="desktop-link">
-        <div class="md:flex gap-2">
-            <x-fas-plus class="icon"/>
-            <span>Create</span>
-        </div>
-    </a>
-@else
     <a href="{{ route('posts.create') }}"
        {{ $attributes->merge(['class' => 'write-button transition-transform duration-300 hover:rotate-90']) }}
        data-tooltip-placement="bottom"
@@ -22,7 +14,6 @@
     <div id="create-post" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-md rounded-xl shadow-xs opacity-0 tooltip" style="font-family: var(--font-family); background-color: var(--text-color, #1f2937); color: var(--background-color, #ffffff);">
         Create Post
     </div>
-@endif
 @enddesktop
 
 @mobile

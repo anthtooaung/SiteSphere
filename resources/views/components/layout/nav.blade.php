@@ -1,20 +1,20 @@
 @desktop
-<nav class="desktop-nav flex items-center" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
-    <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between">
+<nav class="desktop-nav flex items-center px-4 md:px-6 lg:px-8" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
+    <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between gap-4">
 {{--        left path--}}
-        <div class="flex gap-3 items-center">
+        <div class="flex gap-4 items-center">
             <a href="{{ route('welcome') }}" class="site-brand flex items-center space-x-0 rtl:space-x-reverse">
                 <x-app-logo></x-app-logo>
                 <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">SiteSphere</span>
             </a>
-            <div class="hidden md:block ml-4">
+            <div class="hidden lg:block ml-2">
                 <x-search-btn />
             </div>
         </div>
 
 {{--        center path--}}
         <div class="items-center justify-between w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-            <ul class="flex p-4 md:p-0 mt-4 md:space-x-8 rtl:space-x-reverse md:mt-0 ">
+            <ul class="flex p-4 md:p-0 mt-4 md:gap-8 rtl:space-x-reverse md:mt-0 ">
                 <li>
                     <x-home-btn/>
                 </li>
@@ -30,8 +30,8 @@
         </div>
 
         {{--        right path--}}
-        <div class="flex md:order-2 space-x-3 md:space-x-3 rtl:space-x-reverse  ">
-            <ul class="flex items-center justify-center p-4 md:p-0 mt-4 md:space-x-4 rtl:space-x-reverse md:mt-0 ">
+        <div class="flex items-center md:order-2 md:gap-4 rtl:space-x-reverse">
+            <ul class="flex items-center justify-center p-4 md:p-0 mt-4 md:gap-4 rtl:space-x-reverse md:mt-0 ">
                @auth
                     <li>
                         <x-create-post-btn />
@@ -50,65 +50,35 @@
             </ul>
         </div>
     </div>
-
-
 </nav>
 @enddesktop
 
 @mobile
     <!-- Mobile Header -->
-    <header class="mobile-header" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
-        <a href="{{ route('welcome') }}" class="brand site-brand">
+    <header class="mobile-header flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
+        <a href="{{ route('welcome') }}" class="flex items-center gap-2">
             <x-app-logo class="size-6"></x-app-logo>
-            <span>SiteSphere</span>
+            <span class="font-bold text-lg dark:text-white">SiteSphere</span>
         </a>
 
-        @if(request()->routeIs(['welcome', 'about-us']))
-            @auth
-                <x-profile-menu-btn class="auth-menu-button" />
-            @else
-                <x-login-out-menu-btn class="auth-menu-button" data-dropdown-placement="bottom-end" />
-            @endauth
-        @endif
+        @auth
+            <x-profile-menu-btn trigger="top" />
+        @else
+            <x-login-out-menu-btn />
+        @endauth
     </header>
 
     <!-- Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav" aria-label="Primary mobile navigation">
-        <!-- Home Button -->
+    <nav class="mobile-bottom-nav fixed bottom-0 inset-x-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center py-2 z-50 md:hidden">
         <x-home-btn />
-
-        <!-- Categories Trigger -->
         <x-category-btn mobile-mode="trigger" />
-
-        @if(request()->routeIs(['welcome', 'about-us']))
-            @auth
-                <!-- Upload Button -->
-                <x-create-post-btn />
-
-                <!-- About Button -->
-                <x-about-btn />
-
-                <!-- Notification Button -->
-                <x-noti-btn />
-            @else
-                <!-- About Button -->
-                <x-about-btn />
-            @endauth
+        <x-create-post-btn />
+        <x-noti-btn />
+        @auth
+            <x-profile-menu-btn trigger="bottom" />
         @else
-            @auth
-                <!-- Upload Button -->
-                <x-create-post-btn />
-
-                <!-- Notification Button -->
-                <x-noti-btn />
-
-                <!-- Profile Button -->
-                <x-profile-menu-btn />
-            @else
-                <!-- Login Button -->
-                <x-login-out-menu-btn />
-            @endauth
-        @endif
+            <x-login-out-menu-btn />
+        @endauth
     </nav>
 
     <x-category-btn mobile-mode="overlay" />

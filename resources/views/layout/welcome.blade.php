@@ -27,17 +27,17 @@
 @section('theme-style')
     <style>
         :root {
-            --accent-color: #6c5ce7;
-            --background-color: #ffffff;
-            --text-color: #0d1b2a;
-            --font-family: Figtree, sans-serif;
+            --accent-color: {{ $themeColors['accent'] ?? '#6c5ce7' }};
+            --background-color: {{ $themeColors['background'] ?? '#ffffff' }};
+            --text-color: {{ $themeColors['text'] ?? '#0d1b2a' }};
+            --font-family: {!! $fontFamily ?? 'Figtree, sans-serif' !!};
         }
     </style>
 @overwrite
 
 @section('content')
     <x-layout.nav />
-    <div class="md:mt-20"></div>
+    <div class="md:mt-24"></div>
 
     <main class="welcome-main">
         {{-- Welcome Hero Section --}}
@@ -147,17 +147,15 @@
                         <div class="welcome-form-row">
                             <div class="welcome-form-group">
                                 <label for="firstName">First Name</label>
-                                <input type="text" id="firstName" name="first_name" value="{{ old('first_name') }}"
-                                    autocomplete="given-name" required>
-                                @if (isset($errors) && $errors->has('first_name'))
+                                <input type="text" id="firstName" name="first_name" value="{{ old('first_name') }}" autocomplete="given-name" required>
+                                @if(isset($errors) && $errors->has('first_name'))
                                     <p class="welcome-form-error">{{ $errors->first('first_name') }}</p>
                                 @endif
                             </div>
                             <div class="welcome-form-group">
                                 <label for="lastName">Last Name</label>
-                                <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}"
-                                    autocomplete="family-name" required>
-                                @if (isset($errors) && $errors->has('last_name'))
+                                <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}" autocomplete="family-name" required>
+                                @if(isset($errors) && $errors->has('last_name'))
                                     <p class="welcome-form-error">{{ $errors->first('last_name') }}</p>
                                 @endif
                             </div>
@@ -165,9 +163,8 @@
 
                         <div class="welcome-form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}"
-                                autocomplete="email" required>
-                            @if (isset($errors) && $errors->has('email'))
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="email" required>
+                            @if(isset($errors) && $errors->has('email'))
                                 <p class="welcome-form-error">{{ $errors->first('email') }}</p>
                             @endif
                         </div>
@@ -175,7 +172,7 @@
                         <div class="welcome-form-group">
                             <label for="message">What do you have in mind</label>
                             <textarea id="message" name="message" placeholder="Please enter query..." required>{{ old('message') }}</textarea>
-                            @if (isset($errors) && $errors->has('message'))
+                            @if(isset($errors) && $errors->has('message'))
                                 <p class="welcome-form-error">{{ $errors->first('message') }}</p>
                             @endif
                         </div>

@@ -2424,6 +2424,20 @@ button.saved-post-control {
     color: color-mix(in srgb, var(--text-color) 50%, transparent);
 }
 
+.mobile-header {
+    background: color-mix(in srgb, var(--background-color) 85%, transparent);
+    color: var(--text-color);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--text-color) 5%, transparent);
+}
+
+.mobile-header .site-brand,
+.mobile-header span {
+    color: var(--accent-color, #6c5ce7);
+}
+
 .mobile-bottom-nav {
     position: fixed;
     right: 32px;
@@ -2437,7 +2451,7 @@ button.saved-post-control {
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
     border-radius: 22px;
     background: color-mix(in srgb, var(--background-color) 80%, transparent);
-    box-shadow: 0 5px 8px  color-mix(in srgb, var(--text-color) 8%, transparent);
+    box-shadow: 0 5px 12px color-mix(in srgb, var(--text-color) 8%, transparent);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 }
@@ -2454,10 +2468,25 @@ button.saved-post-control {
     color: color-mix(in srgb, var(--text-color) 65%, transparent);
     cursor: pointer;
     font-size: 0.7rem;
+    font-weight: 700;
     text-decoration: none;
     transition:
         color 180ms ease,
         transform 120ms ease;
+}
+
+.mobile-nav-item::after {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    width: 20px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--accent-color, #6c5ce7);
+    content: "";
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    transition: transform 360ms cubic-bezier(0.68, -0.35, 0.265, 1.35);
 }
 
 .mobile-nav-item.is-pressed {
@@ -2469,8 +2498,18 @@ button.saved-post-control {
     color: var(--accent-color, #6c5ce7);
 }
 
+.mobile-nav-item.active::after,
+.mobile-nav-item:hover::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
 .mobile-nav-item .icon {
     font-size: 1.3rem;
+    transition: transform 220ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mobile-nav-item:hover .icon {
+    transform: translateY(-2px);
 }
 
 .mobile-add-button {

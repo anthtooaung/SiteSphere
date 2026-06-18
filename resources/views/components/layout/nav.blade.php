@@ -1,5 +1,8 @@
 @desktop
-<nav class="desktop-nav flex items-center px-4 md:px-6 lg:px-8" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
+@php
+    $isHorizontal = in_array($menuBarLocation ?? 'left', ['top', 'bottom'], true);
+@endphp
+<nav @class(['desktop-nav flex items-center px-4 md:px-6 lg:px-8', 'layout-menu-topbar' => $isHorizontal]) x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
     <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between gap-4">
 {{--        left path--}}
         <div class="flex gap-4 items-center">
@@ -55,10 +58,10 @@
 
 @mobile
     <!-- Mobile Header -->
-    <header class="mobile-header flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
+    <header class="mobile-header sticky top-0 z-50 flex items-center justify-between px-4 py-3">
         <a href="{{ route('welcome') }}" class="flex items-center gap-2">
             <x-app-logo class="size-6"></x-app-logo>
-            <span class="font-bold text-lg dark:text-white">SiteSphere</span>
+            <span class="font-bold text-lg">SiteSphere</span>
         </a>
 
         @auth
@@ -69,11 +72,11 @@
     </header>
 
     <!-- Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav fixed bottom-0 inset-x-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center py-2 z-50 md:hidden">
+    <nav class="mobile-bottom-nav z-50 md:hidden">
         <x-home-btn />
         <x-category-btn mobile-mode="trigger" />
         <x-create-post-btn />
-        <x-noti-btn />
+        <x-noti-btn mobile-mode="trigger" />
         @auth
             <x-profile-menu-btn trigger="bottom" />
         @else
@@ -82,23 +85,42 @@
     </nav>
 
     <x-category-btn mobile-mode="overlay" />
+    <x-noti-btn mobile-mode="overlay" />
 
     <!-- Mobile Navigation Interactions Script -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const mobileOverlay = document.getElementById("mobileCategoryOverlay");
-            const openBtn = document.querySelector("[data-mobile-menu-open]");
-            const closeBtn = document.querySelector("[data-mobile-menu-close]");
+            // Category Overlay Logic
+            const categoryOverlay = document.getElementById("mobileCategoryOverlay");
+            const openCategoryBtn = document.querySelector("[data-mobile-menu-open]");
+            const closeCategoryBtn = document.querySelector("[data-mobile-menu-close]");
 
-            if (openBtn && mobileOverlay) {
-                openBtn.addEventListener("click", () => {
-                    mobileOverlay.classList.add("is-open");
+            if (openCategoryBtn && categoryOverlay) {
+                openCategoryBtn.addEventListener("click", () => {
+                    categoryOverlay.classList.add("is-open");
                 });
             }
 
-            if (closeBtn && mobileOverlay) {
-                closeBtn.addEventListener("click", () => {
-                    mobileOverlay.classList.remove("is-open");
+            if (closeCategoryBtn && categoryOverlay) {
+                closeCategoryBtn.addEventListener("click", () => {
+                    categoryOverlay.classList.remove("is-open");
+                });
+            }
+
+            // Notification Overlay Logic
+            const notiOverlay = document.getElementById("mobileNotiOverlay");
+            const openNotiBtn = document.querySelector("[data-mobile-noti-open]");
+            const closeNotiBtn = document.querySelector("[data-mobile-noti-close]");
+
+            if (openNotiBtn && notiOverlay) {
+                openNotiBtn.addEventListener("click", () => {
+                    notiOverlay.classList.add("is-open");
+                });
+            }
+
+            if (closeNotiBtn && notiOverlay) {
+                closeNotiBtn.addEventListener("click", () => {
+                    notiOverlay.classList.remove("is-open");
                 });
             }
 
@@ -106,9 +128,6 @@
 
             mobileButtons.forEach((button) => {
                 button.addEventListener("click", () => {
-                    mobileButtons.forEach(btn => btn.classList.remove("active"));
-                    button.classList.add("active");
-
                     button.classList.add("is-pressed");
                     setTimeout(() => button.classList.remove("is-pressed"), 120);
                 });

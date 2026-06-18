@@ -203,9 +203,7 @@ class HomePageTest extends TestCase
         $mobileResponse
             ->assertOk()
             ->assertSeeInOrder([
-                '<nav class="mobile-bottom-nav"',
                 'data-mobile-menu-open',
-                '</nav>',
                 '<div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay">',
             ], false);
     }
@@ -439,7 +437,6 @@ class HomePageTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('id="sidebarToggle"', false)
             ->assertSee('id="sidebar"', false)
             ->assertSee('home-aside--left', false)
             ->assertSee('data-menu-bar-location="left"', false);

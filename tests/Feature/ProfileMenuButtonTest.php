@@ -92,9 +92,9 @@ class ProfileMenuButtonTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('@click="open = true"', false)
+            ->assertSee('mobile-account-menu-wrap', false)
             ->assertSee(':aria-expanded="open.toString()"', false)
-            ->assertSee('id="mobileAccountMenu"', false)
+            ->assertSee('id="mobileAccountMenuBottom"', false)
             ->assertDontSee('id="layoutMenu"', false)
             ->assertDontSee('data-layout-menu-trigger', false)
             ->assertSee('View Profile')

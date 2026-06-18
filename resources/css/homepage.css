@@ -3002,25 +3002,53 @@
         border-top: 1px solid color-mix(in srgb, var(--text-color, #182230) 10%, transparent);
     }
 
-    .home-page .home-aside--dropdown .layout-menu-topbar-nav {
-        display: flex;
-        justify-content: center;
-        padding: 8px 0;
+    .home-page .linear-filter-bar {
+        padding: 8px 16px;
     }
 
-    .home-page .home-aside--dropdown .layout-menu-topbar-dropdown {
-        width: min(340px, 90vw);
-        padding: 1.25rem;
-        max-height: 400px;
+    .home-page .home-aside--dropdown .sidebar-section {
+        margin: 0;
+        border: 0;
+        position: relative;
+    }
+    
+    .home-page .home-aside--dropdown .section-header {
+        min-height: 42px;
+        padding: 0 12px;
+        border: 1px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, var(--background-color, #ffffff));
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--background-color, #ffffff) 96%, #ffffff 4%);
+        cursor: pointer;
+        box-shadow: 0 5px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
+        color: var(--text-color, #182230);
+    }
+
+    .home-page .home-aside--dropdown .section-header.active {
+        border-color: var(--accent-color, #6c5ce7);
+        box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 14%, transparent);
+    }
+
+    .home-page .home-aside--dropdown .section-content {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(320px, 80vw);
+        max-height: 300px;
+        padding: 12px;
         overflow-y: auto;
+        z-index: 150;
+        border: 1px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 20%, var(--background-color, #ffffff));
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--background-color, #ffffff) 96%, #ffffff 4%);
+        box-shadow: 0 5px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
     }
 
-    .home-page .home-aside--top .layout-menu-topbar-dropdown {
-        top: calc(100% - 2px);
+    .home-page .home-aside--top .section-content {
+        top: calc(100% + 4px);
     }
 
-    .home-page .home-aside--bottom .layout-menu-topbar-dropdown {
-        bottom: calc(100% - 2px);
+    .home-page .home-aside--bottom .section-content {
+        bottom: calc(100% + 4px);
     }
 
     .home-page:has(.home-aside--top) .main-content,
@@ -3046,42 +3074,39 @@
         border-bottom: 0;
     }
 
-    .home-page .home-aside--dropdown .layout-menu-topbar-nav {
+    .home-page .linear-filter-bar {
         display: block;
         padding: 0;
     }
 
-    .home-page .home-aside--dropdown .layout-menu-topbar-list {
-        display: block;
+    .home-page .home-aside--dropdown .sidebar-section {
+        margin-bottom: 12px;
     }
 
-    .home-page .home-aside--dropdown .layout-menu-topbar-item {
-        width: 100%;
-        margin-bottom: 1rem;
+    .home-page .home-aside--dropdown .section-header {
+        padding: 0 12px;
+        border: 1px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, var(--background-color, #ffffff)) !important;
+        background: color-mix(in srgb, var(--background-color, #ffffff) 96%, #ffffff 4%) !important;
+        box-shadow: 0 5px 8px color-mix(in srgb, var(--text-color) 8%, transparent) !important;
     }
 
-    .home-page .home-aside--dropdown .layout-menu-topbar-dropdown {
+    .home-page .home-aside--dropdown .section-header.active {
+        border-color: var(--accent-color, #6c5ce7) !important;
+        box-shadow: 0 5px 8px color-mix(in srgb, var(--accent-color, #6c5ce7) 14%, transparent) !important;
+    }
+
+    .home-page .home-aside--top .section-content,
+    .home-page .home-aside--bottom .section-content {
         position: static;
         width: 100%;
         max-height: none;
-        padding: 0;
+        padding: 12px;
+        transform: none;
         border: 0;
+        border-radius: 0;
         box-shadow: none;
         background: transparent;
-        transform: none;
-        display: block !important; /* Ensure content is visible in mobile drawer */
-    }
-
-    .home-page .home-aside--dropdown .layout-menu-topbar-link {
-        pointer-events: none; /* Make triggers non-clickable headers in drawer */
-        padding-left: 0;
-        font-weight: 800;
-        color: var(--text-color);
-    }
-
-    .home-page .home-aside--dropdown .layout-menu-topbar-link .layout-menu-topbar-chevron,
-    .home-page .home-aside--dropdown .layout-menu-topbar-divider {
-        display: none;
+        display: block !important;
     }
 }
 

@@ -143,7 +143,7 @@ class="mobile-account-menu-wrap relative">
         id="{{ $dropdownId }}"
         x-show="open"
         x-cloak
-        class="account-menu-dropdown absolute z-[70] bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 py-2 w-56 bottom-full mb-2 right-0"
+        class="account-menu-dropdown absolute z-[70] bottom-full mb-2 right-0"
         x-transition:enter="transition ease-out duration-100"
         x-transition:enter-start="transform opacity-0 scale-95"
         x-transition:enter-end="transform opacity-100 scale-100"
@@ -151,20 +151,20 @@ class="mobile-account-menu-wrap relative">
         x-transition:leave-start="transform opacity-100 scale-100"
         x-transition:leave-end="transform opacity-0 scale-95"
     >
-        <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-            <p class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $user->name }}</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5">
-                Verified <x-fas-check-circle class="size-3 text-indigo-500" />
+        <div class="px-4 py-3 border-b" style="border-color: color-mix(in srgb, var(--text-color) 10%, transparent)">
+            <p class="text-sm font-bold truncate">{{ $user->name }}</p>
+            <p class="text-xs flex items-center gap-1 mt-0.5" style="color: color-mix(in srgb, var(--text-color) 60%, transparent)">
+                Verified <x-fas-check-circle class="size-3" style="color: var(--accent-color)" />
             </p>
         </div>
 
-        <ul class="account-menu-list py-1">
+        <ul class="account-menu-list">
             @foreach($profileMenuItems as $menuItem)
                 @php
                     $isActive = $menuItem['active'] ?? false;
                 @endphp
                 <li>
-                    <a href="{{ $menuItem['href'] }}" @class(['account-menu-link px-4 py-2 block text-sm', 'active' => $isActive])>
+                    <a href="{{ $menuItem['href'] }}" @class(['account-menu-link', 'active' => $isActive])>
                         {{ $menuItem['label'] }}
                     </a>
                 </li>
@@ -172,14 +172,14 @@ class="mobile-account-menu-wrap relative">
         </ul>
 
         @if($isAdmin)
-            <div class="account-menu-section border-t border-gray-100 dark:border-gray-700 py-1">
+            <div class="account-menu-section">
                 <ul class="account-menu-list">
                     @foreach($adminMenuItems as $menuItem)
                         @php
                             $isActive = $menuItem['active'] ?? false;
                         @endphp
                         <li>
-                            <a href="{{ $menuItem['href'] }}" @class(['account-menu-link px-4 py-2 block text-sm', 'active' => $isActive])>
+                            <a href="{{ $menuItem['href'] }}" @class(['account-menu-link', 'active' => $isActive])>
                                 {{ $menuItem['label'] }}
                             </a>
                         </li>
@@ -188,15 +188,15 @@ class="mobile-account-menu-wrap relative">
             </div>
         @endif
 
-        <div class="account-menu-section border-t border-gray-100 dark:border-gray-700 py-1">
-            <p class="account-menu-heading px-4 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Setting</p>
+        <div class="account-menu-section">
+            <p class="account-menu-heading">Setting</p>
             <ul class="account-menu-list">
                 @foreach($settingMenuItems as $menuItem)
                     @php
                         $isActive = $menuItem['active'] ?? false;
                     @endphp
                     <li>
-                        <a href="{{ $menuItem['href'] }}" @class(['account-menu-link px-4 py-2 block text-sm', 'active' => $isActive])>
+                        <a href="{{ $menuItem['href'] }}" @class(['account-menu-link', 'active' => $isActive])>
                             {{ $menuItem['label'] }}
                         </a>
                     </li>
@@ -204,9 +204,9 @@ class="mobile-account-menu-wrap relative">
             </ul>
         </div>
 
-        <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100 dark:border-gray-700 mt-1">
+        <form method="POST" action="{{ route('logout') }}" class="account-menu-logout">
             @csrf
-            <button type="submit" class="account-menu-link w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+            <button type="submit" class="account-menu-link account-menu-action" style="color: #ef4444">
                 Logout
             </button>
         </form>

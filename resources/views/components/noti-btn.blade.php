@@ -1,3 +1,5 @@
+@props(['mobileMode' => 'both'])
+
 @php
     $isLanding = request()->routeIs(['welcome', 'about-us']);
 @endphp
@@ -49,20 +51,69 @@
 @enddesktop
 
 @mobile
-<a
-    href="#"
-    {{ $attributes->class([
-        'mobile-nav-item relative',
-        'flex-row gap-2 px-3 py-2 font-bold text-sm' => $isLanding,
-        'flex-col' => !$isLanding
-    ]) }}
-    aria-label="{{ $unreadCount > 0 ? $unreadCount.' unread notifications' : 'Notifications' }}"
-    style="font-family: var(--font-family); color: var(--text-color);"
->
-    <x-far-bell class="icon" style="color: var(--text-color);"/>
-    @if ($unreadCount > 0)
-        <span class="mobile-badge">{{ $unreadCount }}</span>
-    @endif
-    <span>Alerts</span>
-</a>
+@if (in_array($mobileMode, ['both', 'trigger'], true))
+    <button
+        type="button"
+        {{ $attributes->class([
+            'mobile-nav-item relative',
+            'flex-row gap-2 px-3 py-2 font-bold text-sm' => $isLanding,
+            'flex-col' => !$isLanding
+        ]) }}
+        data-mobile-noti-open
+        aria-label="{{ $unreadCount > 0 ? $unreadCount.' unread notifications' : 'Notifications' }}"
+        style="font-family: var(--font-family); color: var(--text-color);"
+    >
+        <x-far-bell class="icon" style="color: var(--text-color);"/>
+        @if ($unreadCount > 0)
+            <span class="mobile-badge">{{ $unreadCount }}</span>
+        @endif
+        <span>Alerts</span>
+    </button>
+@endif
+
+@if (in_array($mobileMode, ['both', 'overlay'], true))
+    <div class="mobile-menu-overlay category-mobile-overlay" id="mobileNotiOverlay">
+        <button
+            type="button"
+            class="mobile-close-button category-mobile-close"
+            data-mobile-noti-close
+            aria-label="Close notifications"
+        >
+            <x-fas-times class="size-8"/>
+        </button>
+
+        @forelse ($unreadNotifications as $notification)
+            @if ($notification->target_type === 'posts')
+                <form method="POST" action="{{ route('notifications.open', $notification) }}" class="m-0 w-full">
+                    @csrf
+                    <button type="submit" class="mobile-overlay-link w-full text-left !justify-start">
+                        <x-far-bell class="icon size-8"/>
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-sm font-bold">{{ $notification->message }}</span>
+                            @if ($notification->created_at)
+                                <span class="text-[10px] opacity-60">{{ $notification->created_at->diffForHumans() }}</span>
+                            @endif
+                        </div>
+                    </button>
+                </form>
+            @else
+                <div class="mobile-overlay-link !justify-start">
+                    <x-far-bell class="icon size-8"/>
+                    <div class="flex flex-col gap-0.5">
+                        <span class="text-sm font-bold">{{ $notification->message }}</span>
+                        @if ($notification->created_at)
+                            <span class="text-[10px] opacity-60">{{ $notification->created_at->diffForHumans() }}</span>
+                        @endif
+                    </div>
+                </div>
+            @endif
+        @empty
+            <div class="p-12 text-center opacity-60 flex flex-col items-center justify-center gap-4 w-full h-full">
+                <x-far-bell-slash class="size-16" />
+                <p class="text-xl font-black">No unread notifications</p>
+                <p class="text-sm">You're all caught up!</p>
+            </div>
+        @endforelse
+    </div>
+@endif
 @endmobile

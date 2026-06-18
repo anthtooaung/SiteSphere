@@ -6,6 +6,7 @@ use App\Models\Ratings;
 use App\Models\User;
 use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -14,11 +15,16 @@ class ProfileDetailController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, ?string $name = null): View
+    public function __invoke(Request $request, ?string $slug = null): View|RedirectResponse
     {
-        $user = $name
-            ? User::query()->where('name', $name)->firstOrFail()
-            : $request->user();
+        if ($slug) {
+            $user = User::query()->where('slug', $slug)->firstOrFail();
+        } else {
+            $user = $request->user();
+            
+            // Redirect to slug-based URL to ensure consistent route style
+            return redirect()->route('profile-detail', ['slug' => $user->slug]);
+        }
 
         $isOwnProfile = $request->user()?->is($user) ?? false;
 

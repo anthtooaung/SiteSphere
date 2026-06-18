@@ -18,7 +18,7 @@ class CommentReactionsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'helpful' => $this->faker->boolean(),
         ];
     }
 }

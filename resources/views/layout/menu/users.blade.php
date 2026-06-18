@@ -290,7 +290,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                             @endphp
                             <tr @class(['is-restricted'=> $listedUser->trashed()])
                                 style="cursor: pointer;"
-                                onclick="if(!event.target.closest('.admin-users-action-btn') && !event.target.closest('a')) window.location='{{ route('profile-detail', $listedUser->name) }}'">
+                                onclick="if(!event.target.closest('.admin-users-action-btn') && !event.target.closest('a')) window.location='{{ route('profile-detail', $listedUser->slug) }}'">
                                 <td data-label="User">
                                     <span class="admin-users-profile-link" aria-label="View details coming soon">
                                         @if ($listedUser->user_image)

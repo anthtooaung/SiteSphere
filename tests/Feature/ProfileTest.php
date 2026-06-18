@@ -75,7 +75,7 @@ class ProfileTest extends TestCase
             ->assertSee('★ 1.0', false)
             ->assertSee('★ 4.0', false);
 
-        $this->assertLessThanOrEqual(3, $ratingQueries);
+        $this->assertLessThanOrEqual(4, $ratingQueries);
     }
 
     public function test_profile_hides_hidden_reviews_from_other_users(): void

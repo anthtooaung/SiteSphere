@@ -468,17 +468,12 @@ class HomePageTest extends TestCase
                 $response
                     ->assertSee('home-aside--dropdown', false)
                     ->assertSee('data-dropdown-aside="true"', false)
-                    ->assertSee('home-aside-header-primary', false)
-                    ->assertSee('Refine Website')
-                    ->assertSee('home-aside-header-secondary', false)
-                    ->assertSee('by rating, category, and tags.');
+                    ->assertSee('Filters', false);
             } else {
                 $response
                     ->assertDontSee('home-aside--dropdown', false)
                     ->assertSee('data-dropdown-aside="false"', false)
-                    ->assertSee('Refine websites by rating, category, and tags.')
-                    ->assertDontSee('home-aside-header-primary', false)
-                    ->assertDontSee('home-aside-header-secondary', false);
+                    ->assertSee('Refine websites by rating, category, and tags.');
             }
         }
     }

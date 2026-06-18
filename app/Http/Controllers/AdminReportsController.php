@@ -141,7 +141,7 @@ class AdminReportsController extends Controller
         } elseif ($report->target_name === 'users') {
             $targetUser = User::find($report->target_id);
             if ($targetUser) {
-                return redirect()->route('profile-detail', $targetUser->slug);
+                return redirect()->route('profile-detail', $targetUser->name);
             }
         }
 

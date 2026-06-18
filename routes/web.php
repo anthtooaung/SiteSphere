@@ -58,7 +58,7 @@ Route::post('/contact', [ContactMessageController::class, 'store'])
 Route::middleware('auth')->group(function (): void {
     Route::get('/menu/dashboard', DashboardController::class)->name('dashboard');
 
-    Route::get('/profile/{slug?}', ProfileDetailController::class)->name('profile-detail');
+    Route::get('/profile/{name?}', ProfileDetailController::class)->name('profile-detail');
 
     Route::get('/menu/edit-profile', [EditProfileController::class, 'edit'])->name('edit-profile');
     Route::patch('/menu/edit-profile', [EditProfileController::class, 'update'])->name('edit-profile.update');

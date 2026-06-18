@@ -246,7 +246,7 @@ class ProfileMenuButtonTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $otherUser = User::factory()->create(['role' => 'user']);
 
-        $response = $this->actingAs($user)->get(route('profile-detail', ['slug' => $otherUser->slug]));
+        $response = $this->actingAs($user)->get(route('profile-detail', ['name' => $otherUser->name]));
 
         $response
             ->assertOk()

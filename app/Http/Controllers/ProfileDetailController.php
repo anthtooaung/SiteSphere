@@ -14,10 +14,10 @@ class ProfileDetailController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, ?string $slug = null): View
+    public function __invoke(Request $request, ?string $name = null): View
     {
-        $user = $slug
-            ? User::query()->where('slug', $slug)->firstOrFail()
+        $user = $name
+            ? User::query()->where('name', $name)->firstOrFail()
             : $request->user();
 
         $isOwnProfile = $request->user()?->is($user) ?? false;

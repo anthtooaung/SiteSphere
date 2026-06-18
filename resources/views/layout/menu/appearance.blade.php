@@ -309,7 +309,7 @@
                     </div>
                 </section>
 
-                <section class="appearance-card" aria-labelledby="layoutTitle">
+                <section class="appearance-card !hidden md:!grid" aria-labelledby="layoutTitle">
                     <div class="appearance-section-heading">
                         <h2 id="layoutTitle">Sidebar Layout</h2>
                         <p>Control where the account menu appears on dashboard pages.</p>
@@ -331,9 +331,9 @@
                     </div>
                 </section>
 
-                <section class="appearance-card" aria-labelledby="alertsTitle">
+                <section class="appearance-card !hidden md:!grid" aria-labelledby="alertsTitle">
                     <div class="appearance-section-heading">
-                        <h2 id="alertsTitle">Alert Box</h2>
+                        <h2 id="alertsTitle">Toast Box</h2>
                         <p>Choose where success and warning messages appear.</p>
                     </div>
 

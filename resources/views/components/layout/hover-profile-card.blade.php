@@ -60,5 +60,5 @@
         </div>
     </div>
 
-    <a href="{{ route('profile-detail', ['slug' => $cardUser->slug]) }}" class="message-btn" id="messageBtn" style="text-decoration: none; display: inline-block;">View Profile</a>
+    <a href="{{ route('profile-detail', ['name' => $cardUser->name]) }}" class="message-btn" id="messageBtn" style="text-decoration: none; display: inline-block;">View Profile</a>
 </div>

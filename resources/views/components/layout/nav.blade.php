@@ -1,20 +1,20 @@
 @desktop
-<nav class="desktop-nav flex items-center" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
-    <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between">
+<nav class="desktop-nav flex items-center px-4 md:px-6 lg:px-8" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
+    <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between gap-4">
 {{--        left path--}}
-        <div class="flex gap-3 items-center">
+        <div class="flex gap-4 items-center">
             <a href="{{ route('welcome') }}" class="site-brand flex items-center space-x-0 rtl:space-x-reverse">
                 <x-app-logo></x-app-logo>
                 <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">SiteSphere</span>
             </a>
-            <div class="hidden md:block ml-4">
+            <div class="hidden lg:block ml-2">
                 <x-search-btn />
             </div>
         </div>
 
 {{--        center path--}}
         <div class="items-center justify-between w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-            <ul class="flex p-4 md:p-0 mt-4 md:space-x-8 rtl:space-x-reverse md:mt-0 ">
+            <ul class="flex p-4 md:p-0 mt-4 md:gap-8 rtl:space-x-reverse md:mt-0 ">
                 <li>
                     <x-home-btn/>
                 </li>
@@ -30,8 +30,8 @@
         </div>
 
         {{--        right path--}}
-        <div class="flex md:order-2 space-x-3 md:space-x-3 rtl:space-x-reverse  ">
-            <ul class="flex items-center justify-center p-4 md:p-0 mt-4 md:space-x-4 rtl:space-x-reverse md:mt-0 ">
+        <div class="flex items-center md:order-2 md:gap-4 rtl:space-x-reverse">
+            <ul class="flex items-center justify-center p-4 md:p-0 mt-4 md:gap-4 rtl:space-x-reverse md:mt-0 ">
                @auth
                     <li>
                         <x-create-post-btn />
@@ -50,8 +50,6 @@
             </ul>
         </div>
     </div>
-
-
 </nav>
 @enddesktop
 

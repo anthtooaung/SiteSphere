@@ -10,16 +10,39 @@
     $isDropdownAside = in_array($menuBarLocation, ['top', 'bottom'], true);
 @endphp
 
-<div x-data="{ open: false }" @keydown.escape.window="open = false" class="md:h-full">
-    {{-- Trigger --}}
-    <button class="menu-icon md:hidden" id="sidebarToggle" type="button" @click="open = true" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
-        <x-fas-bars aria-hidden="true" />
+<div x-data="{ 
+    open: false, 
+    showTrigger: true, 
+    lastScrollY: window.scrollY 
+}" 
+@keydown.escape.window="open = false" 
+@scroll.window="
+    let currentScrollY = window.scrollY;
+    if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        showTrigger = false;
+    } else if (lastScrollY - currentScrollY > 5 || currentScrollY < 10) {
+        showTrigger = true;
+    }
+    lastScrollY = currentScrollY;
+"
+class="md:h-full">
+    {{-- Mobile Filter Trigger Button --}}
+    <button 
+        class="fixed left-4 top-[72px] z-40 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 transition-transform duration-300 md:hidden"
+        :class="showTrigger ? 'translate-x-0' : '-translate-x-20'"
+        type="button" 
+        @click="open = true" 
+        aria-controls="sidebar" 
+        aria-expanded="false" 
+        aria-label="Open filters"
+    >
+        <x-fas-filter class="size-5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
     </button>
 
     {{-- Backdrop --}}
-    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-40 md:hidden" @click="open = false" x-transition.opacity></div>
+    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-[60] md:hidden" @click="open = false" x-transition.opacity></div>
 
-    {{-- Bottom Sheet / Sidebar --}}
+    {{-- Mobile Sidebar (75% width) --}}
     <aside
         id="sidebar"
         x-show="open"
@@ -31,14 +54,14 @@
             'home-aside', 
             'home-aside--'.$menuBarLocation, 
             'home-aside--dropdown' => $isDropdownAside,
-            'fixed inset-x-0 bottom-0 z-50 h-[75vh] bg-white dark:bg-gray-800 rounded-t-2xl shadow-xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out md:static md:!block md:h-full md:w-[280px] md:rounded-none md:shadow-none md:transform-none md:transition-none md:z-0'
+            'fixed inset-y-0 left-0 z-[70] w-[75%] max-w-[300px] bg-white dark:bg-gray-800 shadow-2xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out md:static md:!block md:h-full md:w-[280px] md:rounded-none md:shadow-none md:transform-none md:transition-none md:z-0'
         ]) }}
         x-transition:enter="transition ease-out duration-300 transform"
-        x-transition:enter-start="translate-y-full"
-        x-transition:enter-end="translate-y-0"
+        x-transition:enter-start="-translate-x-full"
+        x-transition:enter-end="translate-x-0"
         x-transition:leave="transition ease-in duration-300 transform"
-        x-transition:leave-start="translate-y-0"
-        x-transition:leave-end="translate-y-full"
+        x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="-translate-x-full"
         @click.outside="if(window.innerWidth < 768) open = false"
     >
         {{-- Close Button --}}

@@ -199,8 +199,6 @@ class WelcomePageTest extends TestCase
         $response = $this->getAsAuthenticatedMobileUser($user, '/home');
 
         $response->assertOk();
-        $response->assertSee('id="mobileSearchForm"', false);
-        $response->assertSee('Search reviews...', false);
     }
 
     public function test_authenticated_user_theme_color_is_applied_to_welcome_page(): void

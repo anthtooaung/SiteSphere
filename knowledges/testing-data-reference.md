@@ -6,7 +6,10 @@ This file tracks temporary test data created for manual UI exploration and verif
 ## Seeder Information
 - **Seeder File:** `database/seeders/TestingDataSeeder.php`
 - **Purpose:** Populate rich, fake data to manually verify UI interactions (clicking, navigation, forms).
-- **Data Included:** Users, Posts, Categories, Tags, Comments, Ratings, Reactions, and Reports.
+- **Data Included:** 
+    - 1 Primary Test User (`test@example.com`)
+    - 5 Additional Test Users
+    - Posts, Categories, Tags, Comments, Ratings, Reactions, and Reports.
 - **Constraints:**
   - **Excluded Tables:** `fonts`, `themes` (or color-related tables as requested).
 

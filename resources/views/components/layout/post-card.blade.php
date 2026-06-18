@@ -15,7 +15,7 @@
 <article
     {{ $attributes->merge(['class' => 'review-card w-full max-w-md overflow-hidden rounded-[8px] border [border-color:color-mix(in_srgb,var(--text-color,#182230)_10%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_4px_14px_rgba(15,23,42,0.06)]']) }}
     x-data="{
-        profiles: {{ \Illuminate\Support\Js::from($profiles) }},
+        profiles: {{ \Illuminate\Support\Js::from(collect($profiles)->sortBy(fn($p) => $p['username'] !== 'Test User')->values()->toArray()) }},
         activeProfile: 0,
         saved: @js((bool) $saved),
         actionsOpen: false,

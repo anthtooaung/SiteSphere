@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Posts;
 use App\Models\Comments;
-// Import other necessary models
 
 class TestingDataSeeder extends Seeder
 {
@@ -25,15 +24,18 @@ class TestingDataSeeder extends Seeder
             ]
         );
 
-        // 2. Create categories and tags
+        // 2. Create additional users
+        $additionalUsers = \App\Models\User::factory()->count(5)->create();
+
+        // 3. Create categories and tags
         $categories = \App\Models\Categories::factory()->count(3)->create();
         $tags = \App\Models\Tags::factory()->count(5)->create();
 
-        // 3. Create posts
+        // 4. Create posts
         $posts = \App\Models\Posts::factory()->count(10)->create();
 
-        $posts->each(function ($post) use ($user, $categories, $tags) {
-            // Associate post with user via UserPosts model
+        $posts->each(function ($post) use ($user, $additionalUsers, $categories, $tags) {
+            // Associate post with primary user via UserPosts model
             \App\Models\UserPosts::factory()->create([
                 'post_id' => $post->id,
                 'user_id' => $user->id,
@@ -42,29 +44,30 @@ class TestingDataSeeder extends Seeder
             // Assign random tags
             $post->tags()->attach($tags->random(2)->pluck('id')->toArray());
 
-            // 4. Create comments
+            // 5. Create comments (from primary and additional users)
+            $allUsers = $additionalUsers->push($user);
             $comments = \App\Models\Comments::factory()->count(3)->create([
                 'post_id' => $post->id,
-                'user_id' => \App\Models\User::factory()->create()->id,
+                'user_id' => $allUsers->random()->id,
             ]);
 
-            // 5. Create rating
+            // 6. Create rating
             \App\Models\Ratings::factory()->create([
                 'post_id' => $post->id,
-                'user_id' => \App\Models\User::factory()->create()->id,
+                'user_id' => $additionalUsers->random()->id,
             ]);
             
-            // 6. Create reactions to the comments created above
+            // 7. Create reactions to the comments created above
             foreach ($comments as $comment) {
                 \App\Models\CommentReactions::factory()->count(1)->create([
                     'comment_id' => $comment->id,
-                    'user_id' => \App\Models\User::factory()->create()->id,
+                    'user_id' => $additionalUsers->random()->id,
                 ]);
             }
 
-            // 7. Create a report for this post
+            // 8. Create a report for this post
             \App\Models\Reports::factory()->create([
-                'user_id' => \App\Models\User::factory()->create()->id,
+                'user_id' => $additionalUsers->random()->id,
                 'target_name' => 'posts',
                 'target_id' => $post->id,
             ]);

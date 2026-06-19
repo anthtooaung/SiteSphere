@@ -55,6 +55,55 @@ class FontsSeeder extends Seeder
                 'sort_order' => 60,
                 'is_default' => false,
             ],
+            [
+                'display_name' => 'Montserrat',
+                'google_family' => 'Montserrat',
+                'font_family' => '"Montserrat", sans-serif',
+                'sort_order' => 70,
+                'is_default' => false,
+            ],
+            [
+                'display_name' => 'Lato',
+                'google_family' => 'Lato',
+                'font_family' => '"Lato", sans-serif',
+                'sort_order' => 80,
+                'is_default' => false,
+            ],
+            [
+                'display_name' => 'Raleway',
+                'google_family' => 'Raleway',
+                'font_family' => '"Raleway", sans-serif',
+                'sort_order' => 90,
+                'is_default' => false,
+            ],
+            [
+                'display_name' => 'Oswald',
+                'google_family' => 'Oswald',
+                'font_family' => '"Oswald", sans-serif',
+                'sort_order' => 100,
+                'is_default' => false,
+            ],
+            [
+                'display_name' => 'Merriweather',
+                'google_family' => 'Merriweather',
+                'font_family' => '"Merriweather", serif',
+                'sort_order' => 110,
+                'is_default' => false,
+            ],
+            [
+                'display_name' => 'Playfair Display',
+                'google_family' => 'Playfair Display',
+                'font_family' => '"Playfair Display", serif',
+                'sort_order' => 120,
+                'is_default' => false,
+            ],
+            [
+                'display_name' => 'Lora',
+                'google_family' => 'Lora',
+                'font_family' => '"Lora", serif',
+                'sort_order' => 130,
+                'is_default' => false,
+            ],
         ];
     }
 

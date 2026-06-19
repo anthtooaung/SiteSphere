@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/comments/{comment}', [CommentsController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/{comment}/react', [CommentReactionsController::class, 'toggle'])->name('comments.react');
+    Route::post('/comments/{comment}/report', [ReportsController::class, 'storeForComment'])->name('comments.report');
 });
 
 Route::get('/posts/{posts:slug}', [PostsController::class, 'show'])->name('posts.show');

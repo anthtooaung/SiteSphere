@@ -32,15 +32,21 @@ class EditTagPageTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $this->createCategoryWithTag();
 
-        $this->actingAs($user)
+        $response = $this->actingAs($user)
             ->get(route('edit-tag'))
-            ->assertOk()
-            ->assertSee('Tag Styles')
+            ->assertOk();
+
+        $html = $response->getContent();
+        $this->assertTrue(
+            str_contains($html, 'build/assets/edit-tag-') || str_contains($html, 'resources/css/edit-tag.css'),
+            'Failed asserting that edit-tag.css is loaded'
+        );
+
+        $response->assertSee('Tag Styles')
             ->assertSee('Save Changes')
             ->assertSee('Reset to Defaults')
             ->assertDontSee('Admin Tag Styles')
             ->assertDontSee('Publish to users')
-            ->assertSee('resources/css/edit-tag.css', false)
             ->assertSee(":class=\"{ 'is-loading': isSubmitting }\"", false)
             ->assertSee(':disabled="isSubmitting"', false);
     }

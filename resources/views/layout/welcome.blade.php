@@ -27,9 +27,9 @@
 @section('theme-style')
     <style>
         :root {
-            --accent-color: {{ $themeColors['accent'] ?? '#6c5ce7' }};
-            --background-color: {{ $themeColors['background'] ?? '#ffffff' }};
-            --text-color: {{ $themeColors['text'] ?? '#0d1b2a' }};
+            --accent-color: #6c5ce7;
+            --background-color: #ffffff;
+            --text-color: #0d1b2a;
             --font-family: {!! $fontFamily ?? 'Figtree, sans-serif' !!};
         }
     </style>

@@ -39,12 +39,18 @@ class EditProfilePageTest extends TestCase
             'user_bio' => 'Attending Metro IT & Japanese Language Centre',
         ]);
 
-        $this->actingAs($user)
+        $response = $this->actingAs($user)
             ->get(route('edit-profile'))
-            ->assertOk()
-            ->assertSee('data-edit-profile-page', false)
+            ->assertOk();
+
+        $html = $response->getContent();
+        $this->assertTrue(
+            str_contains($html, 'build/assets/edit-profile-') || str_contains($html, 'resources/css/edit-profile.css'),
+            'Failed asserting that edit-profile.css is loaded'
+        );
+
+        $response->assertSee('data-edit-profile-page', false)
             ->assertSee('dashboard-page--left', false)
-            ->assertSee('resources/css/edit-profile.css', false)
             ->assertSee('Profile Settings')
             ->assertSee('id="profile-form"', false)
             ->assertSee('name="cropped_avatar"', false)

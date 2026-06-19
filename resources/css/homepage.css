@@ -2647,10 +2647,8 @@
     color: color-mix(in srgb, var(--text-color, #182230) 72%, transparent);
 }
 
-.remove-btn,
 .remove-btn:hover {
     color: color-mix(in srgb, var(--text-color, #182230) 72%, transparent);
-    background: white;
 }
 
 .sidebar {

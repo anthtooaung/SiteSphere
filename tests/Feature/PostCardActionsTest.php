@@ -273,7 +273,7 @@ class PostCardActionsTest extends TestCase
             ->from(route('home'))
             ->post(route('posts.ban', $post))
             ->assertRedirect(route('home'))
-            ->assertSessionHas('success', 'Post banned.');
+            ->assertSessionHas('success', 'Post banned and soft deleted.');
 
         $this->assertDatabaseHas((new UserPosts)->getTable(), [
             'post_id' => $post->id,
@@ -285,7 +285,7 @@ class PostCardActionsTest extends TestCase
             'action' => 'ban_post',
             'target_type' => Posts::class,
             'target_id' => $post->id,
-            'reason' => 'Post hidden from the home feed by an admin.',
+            'reason' => 'Post soft deleted and all descriptions hidden by an admin.',
         ]);
 
         $this->actingAs($admin)

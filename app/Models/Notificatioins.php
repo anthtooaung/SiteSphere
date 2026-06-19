@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\NotificatioinsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Notificatioins extends Model
 {
@@ -32,5 +33,16 @@ class Notificatioins extends Model
         return [
             'is_read' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $notification): void {
+            Cache::forget('notifications.unread.'.$notification->to_user_id);
+        });
+
+        static::deleted(function (self $notification): void {
+            Cache::forget('notifications.unread.'.$notification->to_user_id);
+        });
     }
 }

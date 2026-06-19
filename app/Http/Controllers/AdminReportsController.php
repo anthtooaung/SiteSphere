@@ -27,7 +27,7 @@ class AdminReportsController extends Controller
         $reports = Reports::query()
             ->where('target_name', 'posts')
             ->with([
-                'post:id,title,slug,url',
+                'post:id,title,slug,url,deleted_at',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applySearch($query, $filters['search']))
@@ -42,7 +42,7 @@ class AdminReportsController extends Controller
         $commentReports = Reports::query()
             ->where('target_name', 'comments')
             ->with([
-                'comment:id,content,post_id',
+                'comment:id,content,post_id,deleted_at',
                 'comment.post:id,slug',
                 'reporter:id,name,email,user_image',
             ])
@@ -133,7 +133,7 @@ class AdminReportsController extends Controller
                 return redirect()->route('posts.show', $post->slug);
             }
         } elseif ($report->target_name === 'comments') {
-            $comment = Comments::with('post')->find($report->target_id);
+            $comment = Comments::withTrashed()->with('post')->find($report->target_id);
             if ($comment && $comment->post) {
                 return redirect()->route('posts.show', $comment->post->slug)
                     ->withFragment("comment-{$comment->id}");

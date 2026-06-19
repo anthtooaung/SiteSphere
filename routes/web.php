@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/posts/{post}/bookmark', [BookmarksController::class, 'store'])->name('posts.bookmark');
     Route::post('/posts/{post}/report', [ReportsController::class, 'store'])->name('posts.report');
     Route::post('/posts/{post}/ban', [PostsController::class, 'ban'])->name('posts.ban');
+    Route::post('/posts/{post}/unban', [PostsController::class, 'unban'])->name('posts.unban');
     Route::post('/audits/{userPost}/ban', [PostsController::class, 'banAudit'])->name('audits.ban');
 
     Route::post('/posts/{posts:slug}/comments', [CommentsController::class, 'store'])->name('posts.comments.store');
@@ -47,6 +48,8 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/{comment}/react', [CommentReactionsController::class, 'toggle'])->name('comments.react');
     Route::post('/comments/{comment}/report', [ReportsController::class, 'storeForComment'])->name('comments.report');
+    Route::post('/comments/{comment}/ban', [CommentsController::class, 'ban'])->name('comments.ban');
+    Route::post('/comments/{comment}/unban', [CommentsController::class, 'unban'])->name('comments.unban');
 });
 
 Route::get('/posts/{posts:slug}', [PostsController::class, 'show'])->name('posts.show');

@@ -7,6 +7,7 @@ use App\Models\Notificatioins;
 use App\Models\Posts;
 use App\Models\Reports;
 use App\Models\User;
+use App\Models\UserPosts;
 use Carbon\Carbon;
 use Database\Seeders\FontsSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -194,7 +195,6 @@ class AdminReportsPageTest extends TestCase
             ->assertSee('action="'.route('notifications.open', $notification).'"', false);
 
         $this->actingAs($admin)
-            ->withoutMiddleware()
             ->post(route('notifications.open', $notification))
             ->assertRedirect(route('reports', ['report' => $report->target_id]));
 
@@ -206,6 +206,99 @@ class AdminReportsPageTest extends TestCase
             ->assertOk()
             ->assertSee('aria-label="Notifications"', false)
             ->assertDontSee('noti-badge', false);
+    }
+
+    public function test_admin_can_unban_and_restore_soft_deleted_post(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $post = Posts::factory()->create();
+        $userPost = UserPosts::query()->create([
+            'user_id' => $admin->id,
+            'post_id' => $post->id,
+            'description' => 'Test review description',
+            'user_hidden' => true,
+        ]);
+
+        $post->delete();
+        $this->assertTrue($post->fresh()->trashed());
+
+        $this->actingAs($admin)
+            ->post(route('posts.unban', $post->id))
+            ->assertRedirect();
+
+        $this->assertFalse($post->fresh()->trashed());
+        $this->assertFalse($userPost->fresh()->user_hidden);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $admin->id,
+            'action' => 'unban_post',
+            'target_type' => Posts::class,
+            'target_id' => $post->id,
+        ]);
+    }
+
+    public function test_admin_can_unban_and_restore_soft_deleted_comment(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $post = Posts::factory()->create();
+        $comment = Comments::factory()->create([
+            'post_id' => $post->id,
+            'content' => 'This is a test comment to be restored.',
+        ]);
+
+        $comment->delete();
+        $this->assertTrue($comment->fresh()->trashed());
+
+        $this->actingAs($admin)
+            ->post(route('comments.unban', $comment->id))
+            ->assertRedirect();
+
+        $this->assertFalse($comment->fresh()->trashed());
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $admin->id,
+            'action' => 'unban_comment',
+            'target_type' => Comments::class,
+            'target_id' => $comment->id,
+        ]);
+    }
+
+    public function test_non_admin_cannot_unban_post_or_comment(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        $post = Posts::factory()->create();
+        $post->delete();
+
+        $comment = Comments::factory()->create();
+        $comment->delete();
+
+        $this->actingAs($user)
+            ->post(route('posts.unban', $post->id))
+            ->assertForbidden();
+
+        $this->actingAs($user)
+            ->post(route('comments.unban', $comment->id))
+            ->assertForbidden();
+
+        $this->assertTrue($post->fresh()->trashed());
+        $this->assertTrue($comment->fresh()->trashed());
+    }
+
+    public function test_reports_page_displays_banned_badges_and_restore_forms(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $postReport = $this->createPostReport('Trashed post title', 'Spam');
+        $commentReport = $this->createCommentReport('Trashed comment content', 'Spam');
+
+        $postReport->post->delete();
+        $commentReport->comment->delete();
+
+        $this->actingAs($admin)
+            ->get(route('reports'))
+            ->assertOk()
+            ->assertSee('Banned')
+            ->assertSee(route('posts.unban', $postReport->post->id))
+            ->assertSee(route('comments.unban', $commentReport->comment->id));
     }
 
     private function createPostReport(

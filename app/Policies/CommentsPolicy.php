@@ -44,7 +44,7 @@ class CommentsPolicy
      */
     public function delete(User $user, Comments $comment): bool
     {
-        return $user->id === $comment->user_id;
+        return $user->id === $comment->user_id || $user->role === 'admin';
     }
 
     /**

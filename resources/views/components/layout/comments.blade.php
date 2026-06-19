@@ -87,6 +87,7 @@
             @endphp
             <article
                 class="aud-row"
+                id="comment-{{ $comment->id }}"
                 data-review-id="comment-{{ $comment->id }}"
                 x-data="{
                     actionsOpen: false,
@@ -182,11 +183,10 @@
                                         {{-- Delete --}}
                                         <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
                                             <form method="POST" action="{{ route('comments.destroy', $comment->id) }}"
-                                                x-on:submit.prevent="Swal.fire({
+                                                x-on:submit.prevent="window.sitesphereSwal.confirm({
                                                     title: 'Delete this comment?',
                                                     text: 'This action cannot be undone.',
                                                     icon: 'warning',
-                                                    showCancelButton: true,
                                                     confirmButtonColor: '#b91c1c',
                                                     cancelButtonColor: '#6c757d',
                                                     confirmButtonText: 'Yes, delete it!'
@@ -204,16 +204,55 @@
                                             </form>
                                         </div>
                                     @else
-                                        {{-- Report --}}
-                                        <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
-                                            <button type="button"
-                                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none"
-                                                role="menuitem"
-                                                x-on:click="openReportModal()">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
-                                                <span>Report</span>
-                                            </button>
-                                        </div>
+                                        @if(auth()->user()->role === 'admin')
+                                            {{-- Ban --}}
+                                            <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
+                                                <form method="POST" action="{{ route('comments.ban', $comment->id) }}"
+                                                    x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                                        title: 'Ban this comment?',
+                                                        text: 'Please specify the reason for banning this comment:',
+                                                        icon: 'warning',
+                                                        input: 'textarea',
+                                                        inputPlaceholder: 'Enter the ban reason here...',
+                                                        inputValidator: (value) => {
+                                                            if (!value) {
+                                                                return 'A ban reason is required!';
+                                                            }
+                                                        },
+                                                        confirmButtonColor: '#ef4444',
+                                                        cancelButtonColor: '#6c757d',
+                                                        confirmButtonText: 'Yes, ban it!'
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            const input = document.createElement('input');
+                                                            input.type = 'hidden';
+                                                            input.name = 'reason';
+                                                            input.value = result.value;
+                                                            $el.appendChild(input);
+                                                            $el.submit();
+                                                        }
+                                                    })">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
+                                                        role="menuitem">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                                        <span>Ban</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @else
+                                            {{-- Report --}}
+                                            <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
+                                                <button type="button"
+                                                    class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none"
+                                                    role="menuitem"
+                                                    x-on:click="openReportModal()">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                                                    <span>Report</span>
+                                                </button>
+                                            </div>
+                                        @endif
                                     @endif
                                 </div>
                             </div>

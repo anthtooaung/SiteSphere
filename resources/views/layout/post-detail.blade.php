@@ -102,11 +102,10 @@
                                             @if (Auth::user()?->role === 'admin')
                                                 <form method="POST" action="{{ route('posts.ban', $post->id) }}"
                                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
-                                                    x-on:submit.prevent="Swal.fire({
+                                                    x-on:submit.prevent="window.sitesphereSwal.confirm({
                                                         title: 'Are you sure?',
                                                         text: 'You want to ban and soft delete this post? This action will also hide all audit descriptions.',
                                                         icon: 'warning',
-                                                        showCancelButton: true,
                                                         confirmButtonColor: '#b91c1c',
                                                         cancelButtonColor: '#6c757d',
                                                         confirmButtonText: 'Yes, ban it!'
@@ -586,11 +585,10 @@
 
                                                                     <form method="POST" action="{{ route('user-posts.destroy', $userPost->id) }}"
                                                                         class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
-                                                                        x-on:submit.prevent="Swal.fire({
+                                                                        x-on:submit.prevent="window.sitesphereSwal.confirm({
                                                                             title: 'Are you sure?',
                                                                             text: 'You want to delete your description?',
                                                                             icon: 'warning',
-                                                                            showCancelButton: true,
                                                                             confirmButtonColor: '#d33',
                                                                             cancelButtonColor: '#6c757d',
                                                                             confirmButtonText: 'Yes, delete it!'
@@ -612,11 +610,10 @@
                                                                 @if (Auth::user()?->role === 'admin')
                                                                     <form method="POST" action="{{ route('audits.ban', $userPost->id) }}"
                                                                         class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
-                                                                        x-on:submit.prevent="Swal.fire({
+                                                                        x-on:submit.prevent="window.sitesphereSwal.confirm({
                                                                             title: 'Are you sure?',
                                                                             text: 'You want to hide this audit description?',
                                                                             icon: 'warning',
-                                                                            showCancelButton: true,
                                                                             confirmButtonColor: '#b91c1c',
                                                                             cancelButtonColor: '#6c757d',
                                                                             confirmButtonText: 'Yes, hide it!'

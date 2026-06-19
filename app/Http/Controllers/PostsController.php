@@ -111,6 +111,33 @@ class PostsController extends Controller
             ->with('success', 'Post banned and soft deleted.');
     }
 
+    public function unban(Request $request, int $id): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+
+        $post = Posts::onlyTrashed()->findOrFail($id);
+
+        DB::transaction(function () use ($post, $user): void {
+            UserPosts::query()
+                ->where('post_id', $post->id)
+                ->update(['user_hidden' => false]);
+
+            $post->restore();
+
+            AuditLogs::query()->create([
+                'user_id' => $user->id,
+                'action' => 'unban_post',
+                'target_type' => Posts::class,
+                'target_id' => $post->id,
+                'reason' => 'Post unbanned and all descriptions restored by an admin.',
+            ]);
+        });
+
+        return back()->with('success', 'Post unbanned and restored.');
+    }
+
     public function banAudit(Request $request, UserPosts $userPost): RedirectResponse
     {
         $user = $request->user();

@@ -471,6 +471,14 @@ class HomePageTest extends TestCase
                     ->assertDontSee('home-aside--dropdown', false)
                     ->assertSee('data-dropdown-aside="false"', false)
                     ->assertSee('Refine websites by rating, category, and tags.');
+
+                if ($location === 'right') {
+                    $response->assertSee('right-0', false);
+                    $response->assertDontSee('left-0', false);
+                } else {
+                    $response->assertSee('left-0', false);
+                    $response->assertDontSee('right-0', false);
+                }
             }
         }
     }

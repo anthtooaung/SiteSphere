@@ -58,7 +58,7 @@
 
 @mobile
     <!-- Mobile Header -->
-    <header class="mobile-header sticky top-0 z-50 flex items-center justify-between px-4 py-3">
+    <header class="mobile-header sticky top-0 z-50 flex items-center justify-between px-4 py-3" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
         <a href="{{ route('welcome') }}" class="flex items-center gap-2">
             <x-app-logo class="size-6"></x-app-logo>
             <span class="font-bold text-lg">SiteSphere</span>

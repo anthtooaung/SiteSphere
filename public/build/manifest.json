@@ -1,6 +1,6 @@
 {
   "resources/css/about-us.css": {
-    "file": "assets/about-us-CFGWbI_n.css",
+    "file": "assets/about-us-BTC9iWL3.css",
     "name": "about-us",
     "names": [
       "about-us.css"
@@ -18,7 +18,7 @@
     "isEntry": true
   },
   "resources/css/admin-dashboard.css": {
-    "file": "assets/admin-dashboard-SuU6YROO.css",
+    "file": "assets/admin-dashboard-Bols_rvH.css",
     "name": "admin-dashboard",
     "names": [
       "admin-dashboard.css"
@@ -27,7 +27,7 @@
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app--7DpO3Il.css",
+    "file": "assets/app-ptEq62eD.css",
     "name": "app",
     "names": [
       "app.css"
@@ -72,7 +72,7 @@
     "isEntry": true
   },
   "resources/css/homepage.css": {
-    "file": "assets/homepage-DbjGNQpu.css",
+    "file": "assets/homepage-DgO3GkRT.css",
     "name": "homepage",
     "names": [
       "homepage.css"
@@ -81,7 +81,7 @@
     "isEntry": true
   },
   "resources/css/post-detail.css": {
-    "file": "assets/post-detail-DNSvAWZl.css",
+    "file": "assets/post-detail-D85X68Ju.css",
     "name": "post-detail",
     "names": [
       "post-detail.css"
@@ -99,7 +99,7 @@
     "isEntry": true
   },
   "resources/css/reports.css": {
-    "file": "assets/reports-DGA2zhbJ.css",
+    "file": "assets/reports-Df-ELRAR.css",
     "name": "reports",
     "names": [
       "reports.css"
@@ -126,13 +126,20 @@
     "isEntry": true
   },
   "resources/css/welcome.css": {
-    "file": "assets/welcome-DmtUtFaq.css",
+    "file": "assets/welcome-CnCFobhS.css",
     "name": "welcome",
     "names": [
       "welcome.css"
     ],
     "src": "resources/css/welcome.css",
-    "isEntry": true
+    "isEntry": true,
+    "assets": [
+      "assets/welcome-hero-dyX56wcx.jpeg"
+    ]
+  },
+  "resources/images/welcome-hero.jpeg": {
+    "file": "assets/welcome-hero-dyX56wcx.jpeg",
+    "src": "resources/images/welcome-hero.jpeg"
   },
   "resources/js/about-us.js": {
     "file": "assets/about-us-CrEdCo00.js",
@@ -141,13 +148,13 @@
     "isEntry": true
   },
   "resources/js/admin-activity.js": {
-    "file": "assets/admin-activity-CtXV8iN7.js",
+    "file": "assets/admin-activity-D6c6Idha.js",
     "name": "admin-activity",
     "src": "resources/js/admin-activity.js",
     "isEntry": true
   },
   "resources/js/admin-dashboard.js": {
-    "file": "assets/admin-dashboard-D9PI5e3O.js",
+    "file": "assets/admin-dashboard-lX_hguih.js",
     "name": "admin-dashboard",
     "src": "resources/js/admin-dashboard.js",
     "isEntry": true

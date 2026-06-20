@@ -396,3 +396,72 @@ This document maps every button click action and its corresponding database inte
 - **Issue:** `test_opening_report_notification_marks_notification_read_but_not_report_read` in `AdminReportsPageTest.php` fails with 403.
 - **Context:** Likely related to unrequested changes in `NotificationOpenController` and middleware interactions in Laravel 13.
 - **Task:** Fix authorization logic or test setup to resolve the 403 error.
+
+---
+
+# Design Audit Tasks (2026-06-20)
+
+## Completed
+
+### C1. about-us.blade.php - UI tokens aligned
+- **Status:** COMPLETED
+- **Changes:** Replaced parallel `--border`, `--shadow`, `--radius-lg`, `--radius-md` with shared `--ui-*` tokens from `app.css`. Fixed top spacing (`md:mt-20` → `md:mt-24`). Replaced `<x-fas-s>` icon with `<x-app-logo />` component.
+
+### C2. Remove Font Awesome CDN - dashboard.blade.php & activity-log.blade.php
+- **Status:** COMPLETED
+- **Changes:**
+    - Removed `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />` from both files.
+    - Replaced all `<i class="fa-solid ...">` icons with colored dots (`<span class="act-legend-dot">`) in both blade templates.
+    - Replaced Font Awesome chevrons with Unicode characters (`&#9664;`, `&#9654;`, `&#9662;`).
+    - Updated `admin-dashboard.js`: timeline items, category labels, star ratings, comment icons all use colored dots now.
+    - Updated `admin-activity.js`: activity entries, modal rows, see-more button all use colored dots now.
+    - Removed unused `icon` field from PHP data arrays in both controllers.
+    - Redesigned `act-body` section: legend moved to top row with background/border, timeline wrapped in bordered scrollable container.
+
+### Pagination theme fix
+- **Status:** COMPLETED
+- **Changes:** Fixed CSS selector mismatch in `homepage.css` — changed `#pagination-container` (ID) to `.pagination-container` (class) so theme-aware pagination styles actually apply.
+
+### Comment restriction (1 user = 1 comment)
+- **Status:** COMPLETED
+- **Changes:**
+    - Added `userHasCommented` flag in `PostsController.php`.
+    - Passed flag to `comments.blade.php` component.
+    - Wrapped comment composer in `@unless($userHasCommented)` — form hidden when user already commented.
+
+## Remaining
+
+### M1. Remove redundant inline styles
+- **Pages:** `home.blade.php`, `upload-post.blade.php`
+- **Issue:** Inline `style="font-family: var(--font-family); ..."` already set on `<body>`.
+
+### M2. Move inline pagination styles to CSS
+- **Page:** `home.blade.php`
+- **Issue:** `style="margin-bottom: 20px;"` on pagination containers.
+
+### M3. Deduplicate pagination DOM
+- **Page:** `home.blade.php`
+- **Issue:** Mobile and desktop pagination rendered as separate DOM blocks.
+
+### M4. Replace inline SVGs with Blade components
+- **Page:** `post-detail.blade.php`
+- **Issue:** Dozens of raw inline `<svg>` where `<x-fas-*>` components exist.
+
+### M5. Extract report modal into Blade component
+- **Page:** `post-detail.blade.php`
+- **Issue:** Report modal duplicated across masthead and each audit panel.
+
+### M6. Replace hardcoded danger color
+- **Page:** `post-detail.blade.php`
+- **Issue:** `#b91c1c` hardcoded for ban/delete buttons.
+
+### M7. Replace hardcoded hex colors in dashboard
+- **Page:** `dashboard.blade.php`
+- **Issue:** Inline styles use `#8b5cf6`, `#6366f1`, `#ef4444`, etc.
+
+### M8. Replace hardcoded colors in JS
+- **Page:** `reports.blade.php`
+- **Issue:** Inline HTML in JS uses hardcoded hex colors.
+
+### L1-L10. Low priority items
+- See full audit report for details.

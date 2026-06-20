@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.getElementById("alc-body");
     if(body) {
         if (!entries.length) {
-          body.innerHTML = `<div class="alc-empty"><i class="fa-regular fa-calendar-xmark"></i><p>No admin actions on this day.</p></div>`;
+          body.innerHTML = `<div class="alc-empty"><p>No admin actions on this day.</p></div>`;
           return;
         }
         
@@ -174,15 +174,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasMore = entries.length > 3;
         const rows = visible.map((a, i) => `
           <div class="alc-entry">
-            <div class="alc-icon" style="background:${a.color}18"><i class="fa-solid fa-${a.icon}" style="color:${a.color}"></i></div>
+            <div class="alc-icon" style="background:${a.color}18"><span class="act-legend-dot" style="background:${a.color}; width:10px; height:10px;"></span></div>
             <div class="alc-info">
               <div class="alc-txt">${a.txt}</div>
-              <div class="alc-time"><i class="fa-regular fa-clock"></i> ${a.time}</div>
+              <div class="alc-time">${a.time}</div>
             </div>
           </div>${i < visible.length - 1 ? '<div class="alc-divider"></div>' : ""}`
         ).join("");
         
-        const seeMore = hasMore ? `<div class="alc-see-more" data-action="see-more"><i class="fa-solid fa-arrow-up-right-from-square"></i> See all ${entries.length} actions</div>` : "";
+        const seeMore = hasMore ? `<div class="alc-see-more" data-action="see-more">See all ${entries.length} actions &#8599;</div>` : "";
         body.innerHTML = rows + seeMore;
         
         const seeMoreBtn = body.querySelector('[data-action="see-more"]');
@@ -229,12 +229,12 @@ document.addEventListener('DOMContentLoaded', () => {
         mBody.innerHTML = entries.length
           ? entries.map(a => `
             <div class="modal-row">
-              <div class="modal-icon" style="background:${a.color}18"><i class="fa-solid fa-${a.icon}" style="color:${a.color}"></i></div>
-              <div class="modal-info"><div class="tl-txt">${a.txt}</div><div class="tl-time"><i class="fa-regular fa-clock"></i> ${a.time}</div></div>
+              <div class="modal-icon" style="background:${a.color}18"><span class="act-legend-dot" style="background:${a.color}; width:10px; height:10px;"></span></div>
+              <div class="modal-info"><div class="tl-txt">${a.txt}</div><div class="tl-time">${a.time}</div></div>
               <span class="modal-date-chip">${a.date}</span>
             </div>`
           ).join("")
-          : '<div class="exp-empty" style="padding:40px 0"><i class="fa-regular fa-calendar-xmark"></i><p>No actions found.</p></div>';
+          : '<div class="exp-empty" style="padding:40px 0"><p>No actions found.</p></div>';
     }
     const modal = document.getElementById("log-modal");
     if(modal) {

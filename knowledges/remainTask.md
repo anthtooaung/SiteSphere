@@ -432,8 +432,9 @@ This document maps every button click action and its corresponding database inte
 ## Remaining
 
 ### M1. Remove redundant inline styles
+- **Status:** COMPLETED
 - **Pages:** `home.blade.php`, `upload-post.blade.php`
-- **Issue:** Inline `style="font-family: var(--font-family); ..."` already set on `<body>`.
+- **Changes:** Removed inline `style="font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color);"` from both files — already set on `<body>` in `index.blade.php`.
 
 ### M2. Move inline pagination styles to CSS
 - **Page:** `home.blade.php`

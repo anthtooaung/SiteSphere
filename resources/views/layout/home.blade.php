@@ -11,9 +11,8 @@
 @section('content')
     <x-layout.nav />
 
-    <div class="home-page page-layout" 
-         x-data="homeController()" 
-         style="font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color);">
+    <div class="home-page page-layout"
+         x-data="homeController()">
         
         <x-layout.home-aside :categories="$categories" :menu-bar-location="$menuBarLocation" />
 

@@ -106,12 +106,7 @@
                 </div>
             </header>
 
-            <div class="pagination-container pagination-top md:hidden" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
-                {!! $posts->withQueryString()->links() !!}
-            </div>
-
-            <!-- Desktop Pagination Top -->
-            <div class="pagination-container pagination-top hidden md:block" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
+            <div class="pagination-container pagination-top" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
                 {!! $posts->withQueryString()->links() !!}
             </div>
 
@@ -132,12 +127,7 @@
                 <button type="button" class="clear-filters-btn" id="emptyStateClearBtn" @click="clearFilters()">Clear All Filters</button>
             </section>
 
-            <div class="pagination-container pagination-bottom md:hidden" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
-                {!! $posts->withQueryString()->links() !!}
-            </div>
-
-            <!-- Desktop Pagination Bottom -->
-            <div class="pagination-container pagination-bottom hidden md:block" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
+            <div class="pagination-container pagination-bottom" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
                 {!! $posts->withQueryString()->links() !!}
             </div>
         </main>

@@ -442,8 +442,9 @@ This document maps every button click action and its corresponding database inte
 - **Changes:** Added `.pagination-top` and `.pagination-bottom` classes to `homepage.css`. Replaced inline `style="margin-bottom: 20px;"` and `style="margin-top: 40px; padding-bottom: 40px;"` with these classes.
 
 ### M3. Deduplicate pagination DOM
+- **Status:** COMPLETED
 - **Page:** `home.blade.php`
-- **Issue:** Mobile and desktop pagination rendered as separate DOM blocks.
+- **Changes:** Merged mobile/desktop pagination from 4 containers to 2 (top + bottom). Removed `md:hidden` / `hidden md:block` classes — pagination is now responsive in a single container.
 
 ### M4. Replace inline SVGs with Blade components
 - **Page:** `post-detail.blade.php`

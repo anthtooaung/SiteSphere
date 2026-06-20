@@ -447,8 +447,21 @@ This document maps every button click action and its corresponding database inte
 - **Changes:** Merged mobile/desktop pagination from 4 containers to 2 (top + bottom). Removed `md:hidden` / `hidden md:block` classes — pagination is now responsive in a single container.
 
 ### M4. Replace inline SVGs with Blade components
+- **Status:** COMPLETED
 - **Page:** `post-detail.blade.php`
-- **Issue:** Dozens of raw inline `<svg>` where `<x-fas-*>` components exist.
+- **Changes:** Replaced 29 inline Lucide SVGs with Font Awesome Blade components:
+  - `lucide-more-horizontal` → `<x-fas-ellipsis>`
+  - `lucide-bookmark-check` / `lucide-bookmark` → `<x-fas-bookmark>` / `<x-far-bookmark>`
+  - `lucide-flag` → `<x-fas-flag>`
+  - `lucide-ban` → `<x-fas-ban>`
+  - `lucide-x` → `<x-fas-xmark>`
+  - `lucide-send` → `<x-fas-paper-plane>`
+  - `lucide-pencil` → `<x-fas-pen>`
+  - `lucide-trash-2` → `<x-fas-trash>`
+  - Report reason icons: `lucide-alert-triangle` → `<x-fas-triangle-exclamation>`, `lucide-shield-alert` → `<x-fas-shield-halved>`, `lucide-copyright` → `<x-fas-copyright>`, `lucide-eye-off` → `<x-fas-eye-slash>`, `lucide-frown` → `<x-fas-face-frown>`, `lucide-zap` → `<x-fas-bolt>`, `lucide-swords` → `<x-fas-hand-fist>`, `lucide-heart-crack` → `<x-fas-heart-crack>`, `lucide-gavel` → `<x-fas-gavel>`
+  - Link icons: `lucide-link` → `<x-fas-link>`, `lucide-external-link` → `<x-fas-arrow-up-right-from-square>`
+  - Carousel arrows: chevron-left/right → `<x-fas-chevron-left>` / `<x-fas-chevron-right>`
+  - Remaining 4 SVGs are star rating visualizations (custom SVGs for rating display) — kept as-is.
 
 ### M5. Extract report modal into Blade component
 - **Page:** `post-detail.blade.php`

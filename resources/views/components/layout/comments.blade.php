@@ -3,6 +3,7 @@
     'comments',
     'commentUserRatings' => collect(),
     'userRating' => 0,
+    'userHasCommented' => false,
 ])
 
 <section class="aud-reviews" aria-label="User Reports">
@@ -15,58 +16,60 @@
 
     <!-- Review composer -->
     @auth
-        <form class="aud-composer" id="reviewForm" method="POST" action="{{ route('posts.comments.store', $post->slug) }}">
-            @csrf
-            <input type="hidden" name="rating" id="ratingInput" value="{{ $userRating }}">
+        @unless($userHasCommented)
+            <form class="aud-composer" id="reviewForm" method="POST" action="{{ route('posts.comments.store', $post->slug) }}">
+                @csrf
+                <input type="hidden" name="rating" id="ratingInput" value="{{ $userRating }}">
 
-            <div class="aud-composer-top">
-                @if(auth()->user()->getAvatarUrl())
-                    <img src="{{ auth()->user()->getAvatarUrl() }}" alt="{{ auth()->user()->name }} profile" class="ss-avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
-                    <span class="aud-composer-label">{{auth()->user()->name}}</span>
-                @else
-                    <span
-                        class="ss-avatar is-initial"
-                        aria-hidden="true"
-                        style="width: 32px; height: 32px; border-radius: 50%; --ph-hue: {{ (auth()->id() * 47) % 360 }};"
-                    >
-                        <span class="ss-avatar-initials" style="font-size: 10.9px">
-                            {{ collect(explode(' ', auth()->user()->name))->map(fn($n) => Str::substr($n, 0, 1))->join('') }}
+                <div class="aud-composer-top">
+                    @if(auth()->user()->getAvatarUrl())
+                        <img src="{{ auth()->user()->getAvatarUrl() }}" alt="{{ auth()->user()->name }} profile" class="ss-avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                        <span class="aud-composer-label">{{auth()->user()->name}}</span>
+                    @else
+                        <span
+                            class="ss-avatar is-initial"
+                            aria-hidden="true"
+                            style="width: 32px; height: 32px; border-radius: 50%; --ph-hue: {{ (auth()->id() * 47) % 360 }};"
+                        >
+                            <span class="ss-avatar-initials" style="font-size: 10.9px">
+                                {{ collect(explode(' ', auth()->user()->name))->map(fn($n) => Str::substr($n, 0, 1))->join('') }}
+                            </span>
                         </span>
-                    </span>
-                @endif
+                    @endif
 
 
-                <!-- Star rating picker -->
-                <div
-                    class="ss-rating-picker"
-                    id="ratingPicker"
-                    role="radiogroup"
-                    aria-label="Your rating"
-                    style="margin-left: auto"
-                ></div>
-            </div>
+                    <!-- Star rating picker -->
+                    <div
+                        class="ss-rating-picker"
+                        id="ratingPicker"
+                        role="radiogroup"
+                        aria-label="Your rating"
+                        style="margin-left: auto"
+                    ></div>
+                </div>
 
-            <textarea
-                class="aud-composer-input"
-                id="reviewTextarea"
-                name="content"
-                placeholder="Describe what you experienced — attempts, charges, timing…"
-                rows="3"
-            ></textarea>
+                <textarea
+                    class="aud-composer-input"
+                    id="reviewTextarea"
+                    name="content"
+                    placeholder="Describe what you experienced — attempts, charges, timing…"
+                    rows="3"
+                ></textarea>
 
-            <div class="aud-composer-foot">
-                <span class="aud-composer-hint ss-mono"></span>
-                <button
-                    type="submit"
-                    class="aud-submit"
-                    id="reviewSubmit"
-                    style="background-color: var(--accent-color); color: var(--background-color);"
-                    disabled
-                >
-                    Submit
-                </button>
-            </div>
-        </form>
+                <div class="aud-composer-foot">
+                    <span class="aud-composer-hint ss-mono"></span>
+                    <button
+                        type="submit"
+                        class="aud-submit"
+                        id="reviewSubmit"
+                        style="background-color: var(--accent-color); color: var(--background-color);"
+                        disabled
+                    >
+                        Submit
+                    </button>
+                </div>
+            </form>
+        @endunless
     @else
         <div class="aud-composer" style="text-align: center; padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper);">
             <p class="aud-sub" style="margin: 0 auto 12px;">You must be logged in to contribute your experience.</p>

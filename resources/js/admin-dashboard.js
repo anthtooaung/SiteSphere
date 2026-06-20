@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       div.className = "cat-seg-label";
       div.style.left = lxPct + "%";
       div.style.top = lyPct + "%";
-      div.innerHTML = `<span class="csl-icon"><i class="fa-solid ${cat.icon}"></i></span><span class="csl-pct">${cat.value >= 10000 ? (cat.value / 1000).toFixed(1) + "K" : cat.value.toLocaleString()}</span><span class="csl-name">${cat.name}</span>`;
+      div.innerHTML = `<span class="csl-icon"><span class="act-legend-dot" style="background:${cat.color}; width:10px; height:10px;"></span></span><span class="csl-pct">${cat.value >= 10000 ? (cat.value / 1000).toFixed(1) + "K" : cat.value.toLocaleString()}</span><span class="csl-name">${cat.name}</span>`;
       labelsEl.appendChild(div);
       angle += sweep;
     });
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activityList.innerHTML = `<div class="tl-item"><div class="tl-txt" style="color:var(--muted)">No recent activity found.</div></div>`;
     } else {
         activityList.innerHTML = acts.map(a =>
-          `<div class="tl-item"><i class="fa-solid fa-${a.icon} tl-dot" style="color:${a.color}"></i><div class="tl-txt">${a.txt}</div><div class="tl-time"><i class="fa-regular fa-clock"></i> ${a.time}</div></div>`
+          `<div class="tl-item"><span class="act-legend-dot" style="background:${a.color}; width:10px; height:10px;"></span><div class="tl-txt">${a.txt}</div><div class="tl-time">${a.time}</div></div>`
         ).join("");
     }
   }
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function starIcons(r) {
     let s = "";
     for (let i = 1; i <= 5; i++)
-      s += `<i class="fa-${i <= r ? "solid" : "regular"} fa-star" style="color:${i <= r ? "#f59e0b" : "#cbd5e1"};font-size:13px"></i>`;
+      s += `<span style="display:inline-block; width:13px; height:13px; border-radius:50%; background:${i <= r ? "#f59e0b" : "#e2e8f0"};"></span>`;
     return s;
   }
   const topPostsEl = document.getElementById("top-posts");
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         const numClass = ["gold", "silver", "bronze", "", ""];
         topPostsEl.innerHTML = posts.map((p, i) =>
-          `<div class="rank-item"><div class="rank-num ${numClass[i] || ''}">${i + 1}</div><div style="flex:1;min-width:0"><div class="rank-title">${p.title}</div><div class="rank-sub">${starIcons(p.rating)}<span style="color:#cbd5e1">·</span><i class="fa-regular fa-comment" style="font-size:13px;color:#94a3b8"></i><span style="font-size:13px;color:#94a3b8">${p.comments}</span></div></div></div>`
+          `<div class="rank-item"><div class="rank-num ${numClass[i] || ''}">${i + 1}</div><div style="flex:1;min-width:0"><div class="rank-title">${p.title}</div><div class="rank-sub">${starIcons(p.rating)}<span style="color:#cbd5e1">·</span><span style="font-size:13px;color:#94a3b8">${p.comments} comments</span></div></div></div>`
         ).join("");
     }
   }
@@ -368,13 +368,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Bind prev/next year buttons
-  document.querySelectorAll('.cmp-ynav').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-          const isNext = btn.querySelector('.fa-chevron-right');
-          if(isNext) ovPickerYear++; else ovPickerYear--;
-          renderOverviewPicker();
-      });
-  });
+  const ynavBtns = document.querySelectorAll('.cmp-ynav');
+  if (ynavBtns.length >= 2) {
+      ynavBtns[0].addEventListener('click', () => { ovPickerYear--; renderOverviewPicker(); });
+      ynavBtns[1].addEventListener('click', () => { ovPickerYear++; renderOverviewPicker(); });
+  }
 
   function selectOverviewMonth(idx) {
     ovYear = ovPickerYear;

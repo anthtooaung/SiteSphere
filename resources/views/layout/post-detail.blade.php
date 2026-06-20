@@ -841,6 +841,7 @@
                         :comments="$comments"
                         :comment-user-ratings="$commentUserRatings"
                         :user-rating="$userRating"
+                        :user-has-commented="$userHasCommented"
                     />
 
                     <!-- =================================================================

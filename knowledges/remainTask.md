@@ -437,8 +437,9 @@ This document maps every button click action and its corresponding database inte
 - **Changes:** Removed inline `style="font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color);"` from both files — already set on `<body>` in `index.blade.php`.
 
 ### M2. Move inline pagination styles to CSS
+- **Status:** COMPLETED
 - **Page:** `home.blade.php`
-- **Issue:** `style="margin-bottom: 20px;"` on pagination containers.
+- **Changes:** Added `.pagination-top` and `.pagination-bottom` classes to `homepage.css`. Replaced inline `style="margin-bottom: 20px;"` and `style="margin-top: 40px; padding-bottom: 40px;"` with these classes.
 
 ### M3. Deduplicate pagination DOM
 - **Page:** `home.blade.php`

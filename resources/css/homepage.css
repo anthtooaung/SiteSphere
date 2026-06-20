@@ -3137,6 +3137,15 @@
 
 [x-cloak] { display: none !important; }
 
+/* Pagination Layout */
+.pagination-top {
+    margin-bottom: 20px;
+}
+.pagination-bottom {
+    margin-top: 40px;
+    padding-bottom: 40px;
+}
+
 /* Custom Pagination Styles */
 .pagination-container nav {
     font-family: var(--font-family);

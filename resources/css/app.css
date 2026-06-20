@@ -15,6 +15,7 @@
         --ui-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
         --ui-shadow-hover: 0 10px 24px rgba(15, 23, 42, 0.10);
         --ui-focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent-color, #6c5ce7) 18%, transparent);
+        --ui-danger: #b91c1c;
     }
 
     .ui-card {

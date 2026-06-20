@@ -106,7 +106,7 @@
                                                         title: 'Are you sure?',
                                                         text: 'You want to ban and soft delete this post? This action will also hide all audit descriptions.',
                                                         icon: 'warning',
-                                                        confirmButtonColor: '#b91c1c',
+                                                        confirmButtonColor: 'var(--ui-danger)',
                                                         cancelButtonColor: '#6c757d',
                                                         confirmButtonText: 'Yes, ban it!'
                                                     }).then((result) => {
@@ -116,7 +116,7 @@
                                                     })">
                                                     @csrf
                                                     <button type="submit"
-                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
+                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
                                                         role="menuitem">
                                                         <x-fas-ban class="size-3" aria-hidden="true" />
                                                         <span>Ban Post</span>
@@ -396,7 +396,7 @@
                                                                             title: 'Are you sure?',
                                                                             text: 'You want to delete your description?',
                                                                             icon: 'warning',
-                                                                            confirmButtonColor: '#d33',
+                                                                            confirmButtonColor: 'var(--ui-danger)',
                                                                             cancelButtonColor: '#6c757d',
                                                                             confirmButtonText: 'Yes, delete it!'
                                                                         }).then((result) => {
@@ -407,7 +407,7 @@
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <button type="submit"
-                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
+                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
                                                                             role="menuitem">
                                                                             <x-fas-trash class="size-3" aria-hidden="true" />
                                                                             <span>Delete Description</span>
@@ -421,7 +421,7 @@
                                                                             title: 'Are you sure?',
                                                                             text: 'You want to hide this audit description?',
                                                                             icon: 'warning',
-                                                                            confirmButtonColor: '#b91c1c',
+                                                                            confirmButtonColor: 'var(--ui-danger)',
                                                                             cancelButtonColor: '#6c757d',
                                                                             confirmButtonText: 'Yes, hide it!'
                                                                         }).then((result) => {
@@ -431,7 +431,7 @@
                                                                         })">
                                                                         @csrf
                                                                         <button type="submit"
-                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
+                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
                                                                             role="menuitem">
                                                                             <x-fas-ban class="size-3" aria-hidden="true" />
                                                                             <span>Ban Audit</span>

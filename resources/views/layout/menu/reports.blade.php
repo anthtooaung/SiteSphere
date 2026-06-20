@@ -724,16 +724,16 @@ $reportFilters = $reportFilters ?? [
             title = `Post Metadata: #${id}`;
             content = `
                 <div style="text-align: left; font-size: 0.875rem; font-family: sans-serif; line-height: 1.5;">
-                    <div style="background-color: #f8fafc; padding: 16px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                        <h4 style="font-weight: bold; color: #0f172a; margin-bottom: 4px;">Title: ${initials}</h4>
-                        <p style="color: #475569; margin: 0; line-height: 1.6;">${detailsText}</p>
+                    <div style="background-color: var(--ui-surface); padding: 16px; border-radius: 6px; border: 1px solid var(--ui-border);">
+                        <h4 style="font-weight: bold; color: var(--text-color); margin-bottom: 4px;">Title: ${initials}</h4>
+                        <p style="color: color-mix(in srgb, var(--text-color) 70%, transparent); margin: 0; line-height: 1.6;">${detailsText}</p>
                     </div>
                 </div>`;
         } else if (type === 'comment') {
             title = `Comment Audit: #${id}`;
             content = `
                 <div style="text-align: left; font-size: 0.875rem; font-family: sans-serif; line-height: 1.5;">
-                    <div style="border-left: 4px solid #cbd5e1; padding-left: 16px; padding-top: 8px; padding-bottom: 8px; font-style: italic; color: #334155;">
+                    <div style="border-left: 4px solid var(--ui-border-strong); padding-left: 16px; padding-top: 8px; padding-bottom: 8px; font-style: italic; color: color-mix(in srgb, var(--text-color) 80%, transparent);">
                         "${detailsText}"
                     </div>
                 </div>`;
@@ -742,10 +742,10 @@ $reportFilters = $reportFilters ?? [
             content = `
                 <div style="text-align: left; font-size: 0.875rem; font-family: sans-serif; line-height: 1.5;">
                     <div style="display: flex; align-items: center; gap: 16px;">
-                        <div style="height: 64px; width: 64px; background-color: #e2e8f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: bold; color: #334155;">${initials}</div>
+                        <div style="height: 64px; width: 64px; background-color: var(--ui-border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: bold; color: color-mix(in srgb, var(--text-color) 80%, transparent);">${initials}</div>
                         <div>
                             <h4 style="font-size: 1.125rem; font-weight: bold; margin: 0;">${detailsText}</h4>
-                            <p style="color: #64748b; margin: 4px 0 0;">Member since: ${dateStr}</p>
+                            <p style="color: color-mix(in srgb, var(--text-color) 55%, transparent); margin: 4px 0 0;">Member since: ${dateStr}</p>
                         </div>
                     </div>
                 </div>`;

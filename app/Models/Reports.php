@@ -33,12 +33,12 @@ class Reports extends Model
 
     public function post(): BelongsTo
     {
-        return $this->belongsTo(Posts::class, 'target_id');
+        return $this->belongsTo(Posts::class, 'target_id')->withTrashed();
     }
 
     public function comment(): BelongsTo
     {
-        return $this->belongsTo(Comments::class, 'target_id');
+        return $this->belongsTo(Comments::class, 'target_id')->withTrashed();
     }
 
     public function targetUser(): BelongsTo

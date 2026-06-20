@@ -569,6 +569,26 @@
     color: #dc2626;
 }
 
+.reports-icon-btn.restore-action {
+    color: #10b981;
+}
+
+.reports-banned-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: color-mix(in srgb, #ef4444 15%, transparent);
+    color: #ef4444;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+}
+
 .reports-user-identity {
     display: flex;
     align-items: center;

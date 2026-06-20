@@ -5,9 +5,6 @@ About Us
 
 @push('styles')
 @vite('resources/css/about-us.css')
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
     /* Hide scrollbar for Chrome, Safari and Opera */
     html::-webkit-scrollbar,
@@ -36,7 +33,7 @@ About Us
         --accent-color: #6c5ce7;
         --background-color: #ffffff;
         --text-color: #0d1b2a;
-        --font-family: Figtree, sans-serif;
+        --font-family: {!! $fontFamily ?? 'Figtree, sans-serif' !!};
     }
 </style>
 @overwrite

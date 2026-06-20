@@ -60,6 +60,7 @@ class AppServiceProvider extends ServiceProvider
                 $user = Auth::user();
                 $toastPosition = 'top-end';
                 $fontFamily = null;
+                $googleFamily = null;
                 $menuBarLocation = 'left';
                 $isDarkMode = false;
 
@@ -68,9 +69,14 @@ class AppServiceProvider extends ServiceProvider
 
                 if ($user) {
                     $settings = $user->settings()->with(['theme', 'customTheme'])->first();
-                    $fontFamily = $user->currentFonts()
+                    $font = $user->currentFonts()
                         ->latest('user_current_fonts.created_at')
-                        ->value('font_family');
+                        ->first(['fonts.font_family', 'fonts.google_family']);
+
+                    if ($font) {
+                        $fontFamily = $font->font_family;
+                        $googleFamily = $font->google_family;
+                    }
 
                     if ($fontFamily) {
                         $fontFamily = Str::of((string) preg_replace('/[^A-Za-z0-9\s,\-_"\'()]/', '', $fontFamily))
@@ -89,11 +95,16 @@ class AppServiceProvider extends ServiceProvider
                     $isDarkMode = (bool) ($settings?->dark_mode ?? false);
                 } else {
                     try {
-                        $fontFamily = DB::table('fonts')
+                        $font = DB::table('fonts')
                             ->where('is_default', true)
-                            ->value('font_family');
+                            ->first(['font_family', 'google_family']);
+                        if ($font) {
+                            $fontFamily = $font->font_family;
+                            $googleFamily = $font->google_family;
+                        }
                     } catch (\Throwable $e) {
                         $fontFamily = null;
+                        $googleFamily = null;
                     }
                 }
 
@@ -104,6 +115,7 @@ class AppServiceProvider extends ServiceProvider
                     'themeColors' => $colors,
                     'toastPosition' => $toastPosition,
                     'fontFamily' => $fontFamily,
+                    'googleFamily' => $googleFamily,
                     'menuBarLocation' => $menuBarLocation,
                     'isDarkMode' => $isDarkMode,
                 ];

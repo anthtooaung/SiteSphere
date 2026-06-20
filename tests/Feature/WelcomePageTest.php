@@ -224,6 +224,7 @@ class WelcomePageTest extends TestCase
         $response = $this->actingAs($user)->get('/');
 
         $response->assertOk();
-        $response->assertSee('--accent-color: #14b8a6', false);
+        $response->assertSee('--accent-color: #6c5ce7', false);
+        $response->assertDontSee('--accent-color: #14b8a6', false);
     }
 }

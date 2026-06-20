@@ -35,12 +35,18 @@ class SecurityPageTest extends TestCase
             'user_post_visible' => true,
         ]);
 
-        $this->actingAs($user)
+        $response = $this->actingAs($user)
             ->get(route('security'))
-            ->assertOk()
-            ->assertSee('data-security-page', false)
+            ->assertOk();
+
+        $html = $response->getContent();
+        $this->assertTrue(
+            str_contains($html, 'build/assets/security-') || str_contains($html, 'resources/css/security.css'),
+            'Failed asserting that security.css is loaded'
+        );
+
+        $response->assertSee('data-security-page', false)
             ->assertSee('dashboard-page--left', false)
-            ->assertSee('resources/css/security.css', false)
             ->assertSee('Two-Factor Authentication')
             ->assertSee('name="two_factor_enabled"', false)
             ->assertSee('data-security-two-factor', false)
@@ -108,13 +114,13 @@ class SecurityPageTest extends TestCase
                 'two_factor_enabled' => '0',
                 'user_post_visible' => '0',
                 'current_password' => 'password',
-                'password' => 'new-password',
-                'password_confirmation' => 'new-password',
+                'password' => 'SecretPassword123!',
+                'password_confirmation' => 'SecretPassword123!',
             ])
             ->assertRedirect(route('security'))
             ->assertSessionHasNoErrors();
 
-        $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
+        $this->assertTrue(Hash::check('SecretPassword123!', $user->refresh()->password));
     }
 
     public function test_current_password_must_be_correct_to_change_password(): void
@@ -126,8 +132,8 @@ class SecurityPageTest extends TestCase
                 'two_factor_enabled' => '0',
                 'user_post_visible' => '0',
                 'current_password' => 'wrong-password',
-                'password' => 'new-password',
-                'password_confirmation' => 'new-password',
+                'password' => 'SecretPassword123!',
+                'password_confirmation' => 'SecretPassword123!',
             ])
             ->assertSessionHasErrors('current_password');
 
@@ -143,7 +149,7 @@ class SecurityPageTest extends TestCase
                 'two_factor_enabled' => '0',
                 'user_post_visible' => '0',
                 'current_password' => 'password',
-                'password' => 'new-password',
+                'password' => 'SecretPassword123!',
                 'password_confirmation' => 'different-password',
             ])
             ->assertSessionHasErrors('password');

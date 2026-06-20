@@ -17,6 +17,6 @@ class TooltipComponentTest extends TestCase
             ->assertSee('Tooltip Content')
             ->assertSee('Button')
             ->assertSee('role="tooltip"', false)
-            ->assertSee('x-data="{ show: false }"', false);
+            ->assertSee('x-data="{ show: false, tooltipId:', false);
     }
 }

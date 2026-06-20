@@ -38,6 +38,7 @@
                     'id' => (int) $font->id,
                     'name' => $font->display_name ?? $font->font_family,
                     'family' => $font->font_family,
+                    'google_family' => $font->google_family,
                 ],
             )
             ->values();
@@ -75,6 +76,31 @@
                     themes: @js($presetThemeOptions),
                     fonts: @js($fontOptions),
                     isSubmitting: false,
+                    init() {
+                        this.$watch('selectedFontId', value => {
+                            const font = this.fonts.find(f => f.id === Number(value));
+                            if (font) {
+                                this.loadGoogleFont(font.google_family);
+                                this.applyRootTheme();
+                            }
+                        });
+                        const initialFont = this.fonts.find(f => f.id === Number(this.selectedFontId));
+                        if (initialFont) {
+                            this.loadGoogleFont(initialFont.google_family);
+                        }
+                    },
+                    loadGoogleFont(googleFamily) {
+                        if (!googleFamily) return;
+                        const fontParam = googleFamily.replace(/ /g, '+') + ':wght@400;500;600;700';
+                        const url = `https://fonts.googleapis.com/css2?family=${fontParam}&display=swap`;
+                        if (document.querySelector(`link[href*='${fontParam}']`)) {
+                            return;
+                        }
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = url;
+                        document.head.appendChild(link);
+                    },
                     selectedTheme() {
                         return this.themes.find((theme) => theme.id === Number(this.selectedThemeId)) || this.themes[0];
                     },
@@ -309,7 +335,7 @@
                     </div>
                 </section>
 
-                <section class="appearance-card" aria-labelledby="layoutTitle">
+                <section class="appearance-card !hidden md:!grid" aria-labelledby="layoutTitle">
                     <div class="appearance-section-heading">
                         <h2 id="layoutTitle">Sidebar Layout</h2>
                         <p>Control where the account menu appears on dashboard pages.</p>
@@ -331,9 +357,9 @@
                     </div>
                 </section>
 
-                <section class="appearance-card" aria-labelledby="alertsTitle">
+                <section class="appearance-card !hidden md:!grid" aria-labelledby="alertsTitle">
                     <div class="appearance-section-heading">
-                        <h2 id="alertsTitle">Alert Box</h2>
+                        <h2 id="alertsTitle">Toast Box</h2>
                         <p>Choose where success and warning messages appear.</p>
                     </div>
 

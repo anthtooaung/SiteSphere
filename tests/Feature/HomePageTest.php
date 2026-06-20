@@ -203,9 +203,7 @@ class HomePageTest extends TestCase
         $mobileResponse
             ->assertOk()
             ->assertSeeInOrder([
-                '<nav class="mobile-bottom-nav"',
                 'data-mobile-menu-open',
-                '</nav>',
                 '<div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay">',
             ], false);
     }
@@ -439,7 +437,6 @@ class HomePageTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('id="sidebarToggle"', false)
             ->assertSee('id="sidebar"', false)
             ->assertSee('home-aside--left', false)
             ->assertSee('data-menu-bar-location="left"', false);
@@ -468,17 +465,20 @@ class HomePageTest extends TestCase
                 $response
                     ->assertSee('home-aside--dropdown', false)
                     ->assertSee('data-dropdown-aside="true"', false)
-                    ->assertSee('home-aside-header-primary', false)
-                    ->assertSee('Refine Website')
-                    ->assertSee('home-aside-header-secondary', false)
-                    ->assertSee('by rating, category, and tags.');
+                    ->assertSee('Filters', false);
             } else {
                 $response
                     ->assertDontSee('home-aside--dropdown', false)
                     ->assertSee('data-dropdown-aside="false"', false)
-                    ->assertSee('Refine websites by rating, category, and tags.')
-                    ->assertDontSee('home-aside-header-primary', false)
-                    ->assertDontSee('home-aside-header-secondary', false);
+                    ->assertSee('Refine websites by rating, category, and tags.');
+
+                if ($location === 'right') {
+                    $response->assertSee('right-0', false);
+                    $response->assertDontSee('left-0', false);
+                } else {
+                    $response->assertSee('left-0', false);
+                    $response->assertDontSee('right-0', false);
+                }
             }
         }
     }

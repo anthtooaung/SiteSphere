@@ -134,7 +134,7 @@ class PostDetailTest extends TestCase
             'user_id' => $anonymousUser->id,
             'post_id' => $post->id,
             'description' => 'Secret contribution text',
-            'user_hidden' => false,
+            'user_hidden' => true,
         ]);
 
         $response = $this
@@ -232,5 +232,224 @@ class PostDetailTest extends TestCase
             ->assertSee('User Comments');
 
         $this->assertLessThanOrEqual(12, $queryCount);
+    }
+
+    public function test_user_can_edit_own_comment(): void
+    {
+        $user = User::factory()->create();
+        $post = Posts::factory()->create();
+        $comment = Comments::create([
+            'user_id' => $user->id,
+            'post_id' => $post->id,
+            'content' => 'Old comment content.',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('comments.update', $comment->id), [
+                'content' => 'Updated comment content.',
+            ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+            'content' => 'Updated comment content.',
+        ]);
+    }
+
+    public function test_user_cannot_edit_other_user_comment(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $post = Posts::factory()->create();
+        $comment = Comments::create([
+            'user_id' => $otherUser->id,
+            'post_id' => $post->id,
+            'content' => 'Original content.',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('comments.update', $comment->id), [
+                'content' => 'Unauthorized update attempt.',
+            ]);
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+            'content' => 'Original content.',
+        ]);
+    }
+
+    public function test_user_can_delete_own_comment(): void
+    {
+        $user = User::factory()->create();
+        $post = Posts::factory()->create();
+        $comment = Comments::create([
+            'user_id' => $user->id,
+            'post_id' => $post->id,
+            'content' => 'To be deleted.',
+        ]);
+        Ratings::create([
+            'user_id' => $user->id,
+            'post_id' => $post->id,
+            'rating' => 4,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete(route('comments.destroy', $comment->id));
+
+        $response->assertRedirect();
+        $this->assertDatabaseMissing('comments', [
+            'id' => $comment->id,
+        ]);
+        $this->assertDatabaseMissing('ratings', [
+            'user_id' => $user->id,
+            'post_id' => $post->id,
+        ]);
+    }
+
+    public function test_user_cannot_delete_other_user_comment(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $post = Posts::factory()->create();
+        $comment = Comments::create([
+            'user_id' => $otherUser->id,
+            'post_id' => $post->id,
+            'content' => 'Safe comment.',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete(route('comments.destroy', $comment->id));
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+        ]);
+    }
+
+    public function test_admin_can_delete_any_comment(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $otherUser = User::factory()->create();
+        $post = Posts::factory()->create();
+        $comment = Comments::create([
+            'user_id' => $otherUser->id,
+            'post_id' => $post->id,
+            'content' => 'Admin delete target.',
+        ]);
+        Ratings::create([
+            'user_id' => $otherUser->id,
+            'post_id' => $post->id,
+            'rating' => 4,
+        ]);
+
+        $response = $this
+            ->actingAs($admin)
+            ->delete(route('comments.destroy', $comment->id));
+
+        $response->assertRedirect();
+        $this->assertDatabaseMissing('comments', [
+            'id' => $comment->id,
+        ]);
+        $this->assertDatabaseMissing('ratings', [
+            'user_id' => $otherUser->id,
+            'post_id' => $post->id,
+        ]);
+    }
+
+    public function test_admin_can_ban_comment_which_soft_deletes_and_audit_logs(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $otherUser = User::factory()->create();
+        $post = Posts::factory()->create();
+        $comment = Comments::create([
+            'user_id' => $otherUser->id,
+            'post_id' => $post->id,
+            'content' => 'To be banned.',
+        ]);
+
+        $response = $this
+            ->actingAs($admin)
+            ->post(route('comments.ban', $comment->id), [
+                'reason' => 'Inappropriate language.',
+            ]);
+
+        $response->assertRedirect();
+        $this->assertSoftDeleted('comments', [
+            'id' => $comment->id,
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $admin->id,
+            'action' => 'ban_comment',
+            'category' => 'moderation',
+            'target_type' => Comments::class,
+            'target_id' => $comment->id,
+            'reason' => 'Inappropriate language.',
+        ]);
+
+        $this->assertDatabaseHas('notificatioins', [
+            'to_user_id' => $comment->user_id,
+            'from_user_id' => $admin->id,
+            'target_type' => 'comments',
+            'target_id' => $comment->id,
+            'message' => 'Your comment was banned by an admin. Reason: Inappropriate language.',
+        ]);
+    }
+
+    public function test_non_admin_cannot_ban_comment(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $post = Posts::factory()->create();
+        $comment = Comments::create([
+            'user_id' => $otherUser->id,
+            'post_id' => $post->id,
+            'content' => 'Cannot be banned by user.',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->post(route('comments.ban', $comment->id));
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+        ]);
+        $this->assertDatabaseMissing('audit_logs', [
+            'action' => 'ban_comment',
+            'target_id' => $comment->id,
+        ]);
+    }
+
+    public function test_user_can_report_comment(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $post = Posts::factory()->create();
+        $comment = Comments::create([
+            'user_id' => $otherUser->id,
+            'post_id' => $post->id,
+            'content' => 'Reportable content.',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->post(route('comments.report', $comment->id), [
+                'reason' => 'Spam / Misleading',
+                'details' => 'This looks like advertisement.',
+            ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('reports', [
+            'user_id' => $user->id,
+            'target_name' => 'comments',
+            'target_id' => $comment->id,
+            'reason' => "Spam / Misleading\n\nDetails: This looks like advertisement.",
+        ]);
     }
 }

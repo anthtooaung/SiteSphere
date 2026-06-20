@@ -1467,3 +1467,53 @@
 }
 
 /* Background Blur - Removed */
+/* Comment action buttons (Edit, Delete, Report) */
+.ss-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--text-muted);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.ss-action-btn:hover {
+  background: var(--bg-2, rgba(0,0,0,.05));
+  color: var(--ink, var(--text));
+}
+
+.ss-action-btn--edit:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.ss-action-btn--delete:hover {
+  border-color: #c43150;
+  color: #c43150;
+  background: #fff0f3;
+}
+
+.ss-action-btn--report:hover {
+  border-color: #e07b00;
+  color: #e07b00;
+  background: color-mix(in srgb, var(--background-color) 90%, #e07b00 10%);
+}
+
+.ss-action-btn--cancel {
+  color: var(--text-muted);
+}
+
+.aud-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}

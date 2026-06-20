@@ -286,6 +286,9 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Post">
                                     <span class="reports-post-title">
                                         {{ $report->post?->title ?? 'Deleted or unavailable post' }}
+                                        @if ($report->post?->trashed())
+                                            <span class="reports-banned-badge">Banned</span>
+                                        @endif
                                     </span>
                                     <span class="reports-post-meta">
                                         target_id: {{ $report->target_id }}
@@ -313,7 +316,7 @@ $reportFilters = $reportFilters ?? [
                                 </td>
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
-                                        @if ($report->post?->slug)
+                                        @if ($report->post?->slug && !$report->post?->trashed())
                                         <x-tooltip content="View Post">
                                             <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Post">
                                                 <x-fas-eye aria-hidden="true" />
@@ -334,6 +337,17 @@ $reportFilters = $reportFilters ?? [
                                             <x-tooltip content="Mark Unread">
                                                 <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
                                                     <x-fas-check-double aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
+                                        @endif
+
+                                        @if ($report->post?->trashed())
+                                        <form method="POST" action="{{ route('posts.unban', $report->post->id) }}" @submit="confirmAction($event, 'Restore Post?', 'This action will restore the post and make it visible again.', 'Restore Post', 'info')">
+                                            @csrf
+                                            <x-tooltip content="Restore Post">
+                                                <button type="submit" class="reports-icon-btn restore-action" aria-label="Restore Post">
+                                                    <x-fas-undo aria-hidden="true" />
                                                 </button>
                                             </x-tooltip>
                                         </form>
@@ -429,6 +443,9 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Comment Snippet">
                                     <span class="reports-post-title">
                                         "{{ Str::limit($report->comment?->content ?? 'Deleted or unavailable comment', 60) }}"
+                                        @if ($report->comment?->trashed())
+                                            <span class="reports-banned-badge">Banned</span>
+                                        @endif
                                     </span>
                                     <span class="reports-post-meta">
                                         target_id: {{ $report->target_id }}
@@ -453,7 +470,7 @@ $reportFilters = $reportFilters ?? [
                                 </td>
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
-                                        @if ($report->comment?->post?->slug)
+                                        @if ($report->comment?->post?->slug && !$report->comment?->trashed())
                                         <x-tooltip content="View Comment">
                                             <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Comment">
                                                 <x-fas-eye aria-hidden="true" />
@@ -474,6 +491,17 @@ $reportFilters = $reportFilters ?? [
                                             <x-tooltip content="Mark Unread">
                                                 <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
                                                     <x-fas-check-double aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
+                                        @endif
+
+                                        @if ($report->comment?->trashed())
+                                        <form method="POST" action="{{ route('comments.unban', $report->comment->id) }}" @submit="confirmAction($event, 'Restore Comment?', 'This action will restore the comment and make it visible again.', 'Restore Comment', 'info')">
+                                            @csrf
+                                            <x-tooltip content="Restore Comment">
+                                                <button type="submit" class="reports-icon-btn restore-action" aria-label="Restore Comment">
+                                                    <x-fas-undo aria-hidden="true" />
                                                 </button>
                                             </x-tooltip>
                                         </form>

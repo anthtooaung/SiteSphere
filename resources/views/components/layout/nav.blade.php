@@ -2,7 +2,7 @@
 @php
     $isHorizontal = in_array($menuBarLocation ?? 'left', ['top', 'bottom'], true);
 @endphp
-<nav @class(['desktop-nav flex items-center px-4 md:px-6 lg:px-8', 'layout-menu-topbar' => $isHorizontal]) x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
+<nav @class(['desktop-nav hidden md:flex items-center px-4 md:px-6 lg:px-8', 'layout-menu-topbar' => $isHorizontal]) x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
     <div class="max-w-screen-xl w-full mx-auto flex flex-wrap items-center justify-between gap-4">
 {{--        left path--}}
         <div class="flex gap-4 items-center">
@@ -39,7 +39,7 @@
                     <li>
                         <x-create-post-btn />
                     </li>
-                    <li>
+                    <li class="hidden md:block">
                         <x-noti-btn />
                     </li>
                     <li>
@@ -75,7 +75,9 @@
     <nav class="mobile-bottom-nav z-50 md:hidden">
         <x-home-btn />
         <x-category-btn mobile-mode="trigger" />
-        <x-create-post-btn />
+        @auth
+            <x-create-post-btn />
+        @endauth
         <x-noti-btn mobile-mode="trigger" />
         @auth
             <x-profile-menu-btn trigger="bottom" />
@@ -85,7 +87,7 @@
     </nav>
 
     <x-category-btn mobile-mode="overlay" />
-    <x-noti-btn mobile-mode="overlay" />
+    {{-- <x-noti-btn mobile-mode="overlay" /> --}}
 
     <!-- Mobile Navigation Interactions Script -->
     <script>
@@ -98,6 +100,8 @@
             if (openCategoryBtn && categoryOverlay) {
                 openCategoryBtn.addEventListener("click", () => {
                     categoryOverlay.classList.add("is-open");
+                    if (notiOverlay) notiOverlay.classList.remove("is-open");
+                    window.dispatchEvent(new CustomEvent('profile-menu-close'));
                 });
             }
 
@@ -115,6 +119,8 @@
             if (openNotiBtn && notiOverlay) {
                 openNotiBtn.addEventListener("click", () => {
                     notiOverlay.classList.add("is-open");
+                    if (categoryOverlay) categoryOverlay.classList.remove("is-open");
+                    window.dispatchEvent(new CustomEvent('profile-menu-close'));
                 });
             }
 

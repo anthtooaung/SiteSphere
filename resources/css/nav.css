@@ -2440,13 +2440,13 @@ button.saved-post-control {
 
 .mobile-bottom-nav {
     position: fixed;
-    right: 32px;
-    bottom: 12px;
-    left: 32px;
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
     z-index: 1000;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
     height: 62px;
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
     border-radius: 22px;
@@ -2456,9 +2456,17 @@ button.saved-post-control {
     -webkit-backdrop-filter: blur(25px);
 }
 
+@media (max-width: 767px) {
+    body {
+        padding-bottom: 90px !important;
+    }
+}
+
 .mobile-nav-item {
     position: relative;
     display: flex;
+    flex: 1;
+    justify-content: center;
     min-width: 48px;
     align-items: center;
     flex-direction: column;
@@ -2514,6 +2522,7 @@ button.saved-post-control {
 
 .mobile-add-button {
     display: grid;
+    flex-shrink: 0;
     width: 50px;
     height: 50px;
     place-items: center;

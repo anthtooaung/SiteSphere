@@ -21,7 +21,7 @@ class ProfileDetailController extends Controller
             $user = User::query()->where('slug', $slug)->firstOrFail();
         } else {
             $user = $request->user();
-            
+
             // Redirect to slug-based URL to ensure consistent route style
             return redirect()->route('profile-detail', ['slug' => $user->slug]);
         }

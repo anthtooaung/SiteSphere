@@ -60,7 +60,10 @@
                                         <span class="remove-btn" @click="toggleFilter('rating', rating)">×</span>
                                     </div>
                                 </template>
-                                <span class="filter-empty" x-show="filters.rating.length === 0">No rating selected</span>
+                                <div class="selected-box" x-show="filters.rating.length === 0">
+                                    <x-fas-star class="selected-icon" aria-hidden="true" />
+                                    <span class="selected-label">All</span>
+                                </div>
                             </div>
                         </div>
 
@@ -76,7 +79,9 @@
                                         <span class="remove-btn" @click="toggleFilter('category', category)">×</span>
                                     </div>
                                 </template>
-                                <span class="filter-empty" x-show="filters.category.length === 0">No category selected</span>
+                                <div class="selected-box" x-show="filters.category.length === 0">
+                                    <span class="selected-label">All</span>
+                                </div>
                             </div>
                         </div>
 
@@ -92,7 +97,9 @@
                                         <span class="remove-btn" @click="toggleFilter('tags', tag)">×</span>
                                     </div>
                                 </template>
-                                <span class="filter-empty" x-show="filters.tags.length === 0">No tag selected</span>
+                                <div class="selected-box" x-show="filters.tags.length === 0">
+                                    <span class="selected-label">All</span>
+                                </div>
                             </div>
                         </div>
 
@@ -117,18 +124,8 @@
                 <button type="button" class="clear-filters-btn" id="emptyStateClearBtn" @click="clearFilters()">Clear All Filters</button>
             </section>
 
-            <div class="pagination-wrapper" style="display: flex; justify-content: center; margin-top: 40px; padding-bottom: 40px;" x-show="hasMore" x-cloak>
-                <button 
-                    type="button" 
-                    class="load-more-btn" 
-                    @click="loadMore()" 
-                    :disabled="isLoading"
-                >
-                    <template x-if="isLoading">
-                        <div class="spinner"></div>
-                    </template>
-                    <span x-text="isLoading ? 'Loading...' : 'Load More Websites'"></span>
-                </button>
+            <div id="pagination-container" style="margin-top: 40px; padding-bottom: 40px;" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
+                {!! $posts->withQueryString()->links() !!}
             </div>
         </main>
     </div>
@@ -180,21 +177,26 @@
                     return tags.slice(0, 10);
                 },
 
-                async updateResults() {
-                    this.page = 1;
+                async updateResults(resetPage = true) {
+                    if (resetPage) this.page = 1;
                     this.isLoading = true;
-                    this.hasMore = true;
                     
                     try {
                         const url = this.getFilterUrl();
+                        url.searchParams.set('page', this.page);
+                        
                         const response = await fetch(url.toString(), {
                             headers: { 'X-Requested-With': 'XMLHttpRequest' }
                         });
                         const data = await response.json();
                         
                         this.$refs.postsGrid.innerHTML = data.html;
-                        this.hasMore = data.hasMorePages;
                         this.totalResults = data.total;
+                        
+                        const paginationContainer = document.getElementById('pagination-container');
+                        if (paginationContainer && data.pagination !== undefined) {
+                            paginationContainer.innerHTML = data.pagination;
+                        }
 
                         // Update URL without reloading to reflect current filters
                         window.history.pushState({}, '', url);
@@ -211,34 +213,20 @@
                     }
                 },
 
-                async loadMore() {
-                    if (this.isLoading || !this.hasMore) return;
-                    this.isLoading = true;
-                    this.page++;
-
-                    try {
-                        const url = this.getFilterUrl();
-                        url.searchParams.set('page', this.page);
-
-                        const response = await fetch(url.toString(), {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        });
-                        const data = await response.json();
-
-                        if (data.html) {
-                            this.$refs.postsGrid.insertAdjacentHTML('beforeend', data.html);
-                            this.hasMore = data.hasMorePages;
-                            this.totalResults = data.total;
-                        } else {
-                            this.hasMore = false;
+                handlePaginationClick(event) {
+                    const link = event.target.closest('a');
+                    if (!link) return;
+                    
+                    const url = new URL(link.href);
+                    const pageStr = url.searchParams.get('page');
+                    if (pageStr) {
+                        this.page = parseInt(pageStr, 10);
+                        this.updateResults(false);
+                        
+                        // Scroll up to the top of the grid
+                        if (this.$refs.postsGrid) {
+                            this.$refs.postsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }
-                    } catch (error) {
-                        console.error('Error loading more posts:', error);
-                        this.page--;
-                    } finally {
-                        this.isLoading = false;
                     }
                 },
 
@@ -295,20 +283,7 @@
                 },
 
                 init() {
-                    const mainContent = document.querySelector('.main-content');
-                    if (mainContent) {
-                        let isThrottled = false;
-                        mainContent.addEventListener('scroll', () => {
-                            if (isThrottled) return;
-                            isThrottled = true;
-                            setTimeout(() => {
-                                if (mainContent.scrollTop + mainContent.clientHeight >= mainContent.scrollHeight - 500) {
-                                    this.loadMore();
-                                }
-                                isThrottled = false;
-                            }, 200);
-                        });
-                    }
+                    // Initialization logic if any
                 }
             }
         }

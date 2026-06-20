@@ -28,7 +28,8 @@
 class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full' }} home-aside-wrapper home-aside-wrapper--{{ $menuBarLocation }}">
     {{-- Mobile Filter Trigger Button --}}
     <button 
-        class="fixed {{ $menuBarLocation === 'right' ? 'right-4' : 'left-4' }} top-[72px] z-40 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 transition-transform duration-300 md:hidden"
+        class="fixed {{ $menuBarLocation === 'right' ? 'right-4' : 'left-4' }} top-[72px] z-40 p-2 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 transition-transform duration-300 md:hidden"
+        style="background-color: var(--background-color);"
         :class="showTrigger ? 'translate-x-0' : '{{ $menuBarLocation === 'right' ? 'translate-x-20' : '-translate-x-20' }}'"
         type="button" 
         @click="open = true" 
@@ -57,7 +58,7 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
             'layout-menu--topbar' => $isDropdownAside,
             'layout-menu--horizontal' => $isDropdownAside,
             'layout-menu--'.$menuBarLocation => $isDropdownAside,
-            'fixed inset-y-0 z-[70] w-[75%] max-w-[300px] bg-white dark:bg-gray-800 shadow-2xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out md:static md:!block md:z-0 md:shadow-none md:transform-none md:transition-none md:rounded-none',
+            'fixed inset-y-0 z-[70] w-[75%] max-w-[300px] shadow-2xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out md:static md:!block md:z-0 md:shadow-none md:transform-none md:transition-none md:rounded-none',
             'right-0' => $menuBarLocation === 'right',
             'left-0' => $menuBarLocation !== 'right',
             'md:h-full md:w-[280px]' => ! $isDropdownAside,
@@ -72,6 +73,7 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="{{ $menuBarLocation === 'right' ? 'translate-x-full' : '-translate-x-full' }}"
         @click.outside="if(window.innerWidth < 768) open = false"
+        style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);"
     >
         {{-- Close Button --}}
         <button class="absolute top-2 right-2 p-2 md:hidden" @click="open = false">
@@ -160,6 +162,10 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
                             </div>
 
                             <div class="tags-container" id="tagsContainer">
+                                <label class="tag-check" data-filter-component="tag">
+                                    <input type="checkbox" value="All" :checked="filters.tags.length === 0" @change="clearFilters()">
+                                    <span>All</span>
+                                </label>
                                 <template x-for="tag in visibleTags" :key="tag">
                                     <label class="tag-check" data-filter-component="tag">
                                         <input type="checkbox" 
@@ -272,6 +278,10 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
                     </div>
 
                     <div class="tags-container" id="tagsContainer">
+                        <label class="tag-check" data-filter-component="tag">
+                            <input type="checkbox" value="All" :checked="filters.tags.length === 0" @change="clearFilters()">
+                            <span>All</span>
+                        </label>
                         <template x-for="tag in visibleTags" :key="tag">
                             <label class="tag-check" data-filter-component="tag">
                                 <input type="checkbox" 

@@ -1,6 +1,3 @@
-@php
-    $isLanding = request()->routeIs(['welcome', 'about-us']);
-@endphp
 
 @desktop
     <a href="{{ route('posts.create') }}"
@@ -17,17 +14,7 @@
 @enddesktop
 
 @mobile
-@if($isLanding)
-    <a href="{{ route('posts.create') }}" 
-       {{ $attributes->class([
-           'mobile-nav-item flex-row gap-2 px-3 py-2 font-bold text-sm'
-       ]) }}>
-        <x-fas-plus class="icon"/>
-        <span>Create</span>
-    </a>
-@else
-    <a href="{{ route('posts.create') }}" {{ $attributes->merge(['class' => 'mobile-add-button transition-transform duration-300 hover:rotate-90']) }} aria-label="Write review" style="background-color: var(--accent-color); font-family: var(--font-family);">
+    <a href="{{ route('posts.create') }}" {{ $attributes->merge(['class' => 'mobile-add-button flex items-center justify-center transition-transform duration-300 hover:rotate-90']) }} aria-label="Write review" style="background-color: var(--accent-color); font-family: var(--font-family);">
         <x-fas-plus class="icon" style="font-size: 1.2rem; color: #ffffff;"/>
     </a>
-@endif
 @endmobile

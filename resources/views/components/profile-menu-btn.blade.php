@@ -155,6 +155,7 @@ class="mobile-account-menu-wrap relative">
         x-show="open"
         x-cloak
         class="account-menu-dropdown absolute z-[70] bottom-full mb-2 right-0"
+        style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);"
         x-transition:enter="transition ease-out duration-100"
         x-transition:enter-start="transform opacity-0 scale-95"
         x-transition:enter-end="transform opacity-100 scale-100"

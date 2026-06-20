@@ -42,10 +42,10 @@
                                 Quality</span>
                             <div class="grid gap-3 sm:grid-cols-2">
                                 @foreach ([
-                                    ['label' => 'Spam / Misleading', 'icon' => 'x-fas-triangle-exclamation'],
-                                    ['label' => 'Fake / False Info', 'icon' => 'x-fas-shield-halved'],
-                                    ['label' => 'Intellectual Property', 'icon' => 'x-fas-copyright'],
-                                    ['label' => 'Nudity / Obscenity', 'icon' => 'x-fas-eye-slash'],
+                                    ['label' => 'Spam / Misleading', 'icon' => 'fas-triangle-exclamation'],
+                                    ['label' => 'Fake / False Info', 'icon' => 'fas-shield-halved'],
+                                    ['label' => 'Intellectual Property', 'icon' => 'fas-copyright'],
+                                    ['label' => 'Nudity / Obscenity', 'icon' => 'fas-eye-slash'],
                                 ] as $option)
                                     <label
                                         class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
@@ -70,10 +70,10 @@
                                 & Conduct</span>
                             <div class="grid gap-3 sm:grid-cols-2">
                                 @foreach ([
-                                    ['label' => 'Hate Speech', 'icon' => 'x-fas-face-frown'],
-                                    ['label' => 'Harassment / Abuse', 'icon' => 'x-fas-bolt'],
-                                    ['label' => 'Violence / Threats', 'icon' => 'x-fas-hand-fist'],
-                                    ['label' => 'Self-Harm Risk', 'icon' => 'x-fas-heart-crack'],
+                                    ['label' => 'Hate Speech', 'icon' => 'fas-face-frown'],
+                                    ['label' => 'Harassment / Abuse', 'icon' => 'fas-bolt'],
+                                    ['label' => 'Violence / Threats', 'icon' => 'fas-hand-fist'],
+                                    ['label' => 'Self-Harm Risk', 'icon' => 'fas-heart-crack'],
                                 ] as $option)
                                     <label
                                         class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
@@ -98,8 +98,8 @@
                                 & Integrity</span>
                             <div class="grid gap-3 sm:grid-cols-2">
                                 @foreach ([
-                                    ['label' => 'Illegal Activities', 'icon' => 'x-fas-gavel'],
-                                    ['label' => 'Scams / Fraud', 'icon' => 'x-fas-ban'],
+                                    ['label' => 'Illegal Activities', 'icon' => 'fas-gavel'],
+                                    ['label' => 'Scams / Fraud', 'icon' => 'fas-ban'],
                                 ] as $option)
                                     <label
                                         class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"

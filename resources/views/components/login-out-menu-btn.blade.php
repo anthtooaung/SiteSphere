@@ -32,21 +32,22 @@
     data-dropdown-toggle="mobileDropdownDivider"
     {{ $attributes->merge(['class' => 'mobile-nav-item', 'data-dropdown-placement' => 'top']) }}
     type="button"
+    style="font-family: var(--font-family); color: var(--text-color);"
 >
     <x-far-user class="icon" />
     <span>Login</span>
 </button>
 
-<div id="mobileDropdownDivider" class="auth-menu-dropdown hidden z-50">
+<div id="mobileDropdownDivider" class="auth-menu-dropdown hidden z-50" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
     <ul class="auth-menu-list" aria-labelledby="mobileDropdownDividerButton">
         <li>
-            <a href="{{ route('login') }}" class="auth-menu-link block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+            <a href="{{ route('login') }}" class="auth-menu-link">
                 Login
             </a>
         </li>
     </ul>
     <div class="auth-menu-list">
-        <a href="{{ route('register') }}" class="auth-menu-link block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+        <a href="{{ route('register') }}" class="auth-menu-link">
             Register
         </a>
     </div>

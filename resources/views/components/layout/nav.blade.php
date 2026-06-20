@@ -72,7 +72,7 @@
     </header>
 
     <!-- Mobile Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav z-50 md:hidden">
+    <nav class="mobile-bottom-nav z-50 md:hidden" style="background-color: var(--background-color);">
         <x-home-btn />
         <x-category-btn mobile-mode="trigger" />
         @auth

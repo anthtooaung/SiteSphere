@@ -2457,8 +2457,11 @@ button.saved-post-control {
 }
 
 @media (max-width: 767px) {
-    body {
-        padding-bottom: 90px !important;
+    footer {
+        padding-bottom: max(64px, 100px) !important;
+    }
+    body:not(:has(footer)) {
+        padding-bottom: 100px !important;
     }
 }
 

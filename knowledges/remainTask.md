@@ -464,20 +464,24 @@ This document maps every button click action and its corresponding database inte
   - Remaining 4 SVGs are star rating visualizations (custom SVGs for rating display) — kept as-is.
 
 ### M5. Extract report modal into Blade component
+- **Status:** COMPLETED
 - **Page:** `post-detail.blade.php`
-- **Issue:** Report modal duplicated across masthead and each audit panel.
+- **Changes:** Extracted ~170 lines of duplicated report modal markup into `<x-layout.report-modal>` component. Uses `x-dynamic-component` for icon rendering and accepts `postId`/`modalId` props for unique element IDs.
 
 ### M6. Replace hardcoded danger color
+- **Status:** COMPLETED
 - **Page:** `post-detail.blade.php`
-- **Issue:** `#b91c1c` hardcoded for ban/delete buttons.
+- **Changes:** Added `--ui-danger: #b91c1c` to `:root` in `app.css`. Replaced all `#b91c1c` and `#d33` references (ban/delete buttons + SweetAlert confirm dialogs) with `var(--ui-danger)`.
 
 ### M7. Replace hardcoded hex colors in dashboard
+- **Status:** COMPLETED
 - **Page:** `dashboard.blade.php`
-- **Issue:** Inline styles use `#8b5cf6`, `#6366f1`, `#ef4444`, etc.
+- **Changes:** Added semantic chart color variables (`--chart-reviews`, `--chart-users`, `--chart-reports`, `--chart-resolved`, `--chart-top`, `--chart-ratings`, `--chart-announcement`) to `:root` in `app.css`. Replaced all hardcoded hex colors in blade template with `var()` references. PHP data array kept as hex for JS SVG rendering.
 
 ### M8. Replace hardcoded colors in JS
+- **Status:** COMPLETED
 - **Page:** `reports.blade.php`
-- **Issue:** Inline HTML in JS uses hardcoded hex colors.
+- **Changes:** Replaced all inline hex colors in `viewDetails()` SweetAlert modals with CSS variables (`--ui-surface`, `--ui-border`, `--ui-border-strong`, `--text-color`) and `color-mix()` variants for muted text opacity levels.
 
 ### L1-L10. Low priority items
 - See full audit report for details.

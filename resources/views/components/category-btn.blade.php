@@ -49,7 +49,7 @@
 @endif
 
 @if (in_array($mobileMode, ['both', 'overlay'], true))
-    <div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay">
+    <div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
         <button
             type="button"
             class="mobile-close-button category-mobile-close"

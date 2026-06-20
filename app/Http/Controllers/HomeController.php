@@ -156,6 +156,7 @@ class HomeController extends Controller
                 'hasMorePages' => $posts->hasMorePages(),
                 'total' => $posts->total(),
                 'currentPage' => $posts->currentPage(),
+                'lastPage' => $posts->lastPage(),
             ]);
         }
 

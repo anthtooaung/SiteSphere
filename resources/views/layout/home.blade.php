@@ -107,6 +107,15 @@
                 </div>
             </header>
 
+            <div class="pagination-container md:hidden" style="margin-bottom: 20px;" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
+                {!! $posts->withQueryString()->links() !!}
+            </div>
+
+            <!-- Desktop Pagination Top -->
+            <div class="pagination-container hidden md:block" style="margin-bottom: 20px;" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
+                {!! $posts->withQueryString()->links() !!}
+            </div>
+
             <section class="reviews-grid" id="reviewsGrid" x-ref="postsGrid">
                 @include('partials.home-posts', ['posts' => $posts])
             </section>
@@ -124,7 +133,12 @@
                 <button type="button" class="clear-filters-btn" id="emptyStateClearBtn" @click="clearFilters()">Clear All Filters</button>
             </section>
 
-            <div id="pagination-container" style="margin-top: 40px; padding-bottom: 40px;" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
+            <div class="pagination-container md:hidden" style="margin-top: 40px; padding-bottom: 40px;" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
+                {!! $posts->withQueryString()->links() !!}
+            </div>
+
+            <!-- Desktop Pagination Bottom -->
+            <div class="pagination-container hidden md:block" style="margin-top: 40px; padding-bottom: 40px;" @click.prevent="handlePaginationClick($event)" x-show="totalResults > 0" x-cloak>
                 {!! $posts->withQueryString()->links() !!}
             </div>
         </main>
@@ -141,7 +155,8 @@
             return {
                 totalResults: {{ $posts->total() }},
                 hasMore: {{ $posts->hasMorePages() ? 'true' : 'false' }},
-                page: 1,
+                lastPage: {{ $posts->lastPage() }},
+                page: {{ $posts->currentPage() }},
                 isLoading: false,
                 filters: {
                     category: window.homeInitialCategory ? [window.homeInitialCategory] : [],
@@ -192,10 +207,16 @@
                         
                         this.$refs.postsGrid.innerHTML = data.html;
                         this.totalResults = data.total;
+                        this.lastPage = data.lastPage;
+                        if (data.currentPage) {
+                            this.page = data.currentPage;
+                        }
                         
-                        const paginationContainer = document.getElementById('pagination-container');
-                        if (paginationContainer && data.pagination !== undefined) {
-                            paginationContainer.innerHTML = data.pagination;
+                        const paginationContainers = document.querySelectorAll('.pagination-container');
+                        if (paginationContainers.length > 0 && data.pagination !== undefined) {
+                            paginationContainers.forEach(container => {
+                                container.innerHTML = data.pagination;
+                            });
                         }
 
                         // Update URL without reloading to reflect current filters
@@ -219,14 +240,13 @@
                     
                     const url = new URL(link.href);
                     const pageStr = url.searchParams.get('page');
-                    if (pageStr) {
-                        this.page = parseInt(pageStr, 10);
-                        this.updateResults(false);
-                        
-                        // Scroll up to the top of the grid
-                        if (this.$refs.postsGrid) {
-                            this.$refs.postsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
+                    
+                    this.page = pageStr ? parseInt(pageStr, 10) : 1;
+                    this.updateResults(false);
+                    
+                    // Scroll up to the top of the grid
+                    if (this.$refs.postsGrid) {
+                        this.$refs.postsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 },
 

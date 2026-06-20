@@ -1897,12 +1897,13 @@
     /* GRID */
     .reviews-grid {
         grid-template-columns: 1fr;
-
+        justify-items: center;
     }
 
     /* CARD */
     .review-card {
         width: 100%;
+        max-width: 450px;
         min-height: 220px;
         height: auto;
         padding: 16px;
@@ -1923,26 +1924,6 @@
         grid-template-columns: 1fr;
     }
 
-    .category-check,
-    .rating-check,
-    .tag-check,
-    .category-check:hover,
-    .rating-check:hover,
-    .tag-check:hover,
-    .category-check:active,
-    .rating-check:active,
-    .tag-check:active,
-    .category-check:focus-within,
-    .rating-check:focus-within,
-    .tag-check:focus-within,
-    .category-check:has(input:checked),
-    .rating-check:has(input:checked),
-    .tag-check:has(input:checked) {
-        background: white;
-        color: var(--accent-color, #6c5ce7);
-        transform: none;
-        box-shadow: none;
-    }
 
     #tagsHeader .section-left {
         flex: 1;
@@ -2487,10 +2468,13 @@
 
     .reviews-grid {
         grid-template-columns: 1fr;
+        justify-items: center;
         gap: 14px;
     }
 
     .review-card {
+        width: 100%;
+        max-width: 450px;
         min-height: 210px;
         height: auto;
         padding: 15px;

@@ -3,6 +3,7 @@
 @import url('hover-profile.css');
 @import url('activity-log.css');
 @import url('admin-users.css');
+@import url('banned-banner.css');
 
 @layer components {
     :root {

@@ -155,6 +155,7 @@ class PostsController extends Controller
             AuditLogs::query()->create([
                 'user_id' => $user->id,
                 'action' => 'force_delete_post',
+                'category' => 'moderation',
                 'target_type' => Posts::class,
                 'target_id' => $post->id,
                 'reason' => 'Post permanently deleted by admin.',
@@ -281,15 +282,20 @@ class PostsController extends Controller
             }
         }
 
-        // Fetch user comments (User Reports)
-        $comments = $posts->comments()
+        // Fetch user comments (User Reports) — admins can see banned comments
+        $isAdmin = auth()->user()?->role === 'admin';
+        $commentsQuery = $posts->comments()
             ->with([
                 'user.settings',
                 'commentReactions',
             ])
-            ->withCount(['commentReactions as helpful_count' => fn ($query) => $query->where('helpful', true)])
-            ->latest()
-            ->get();
+            ->withCount(['commentReactions as helpful_count' => fn ($query) => $query->where('helpful', true)]);
+
+        if ($isAdmin) {
+            $commentsQuery->withTrashed();
+        }
+
+        $comments = $commentsQuery->latest()->get();
 
         // Ratings keyed by user_id for this post (used in the comments section)
         $commentUserRatings = Ratings::query()

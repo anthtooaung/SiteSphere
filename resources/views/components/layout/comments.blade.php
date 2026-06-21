@@ -128,6 +128,11 @@
                     <div class="aud-row-head">
                         <span class="aud-row-head-left">
                             <span class="aud-row-name" data-hover-profile="{{ $comment->user_id }}">{{ $comment->user->name }}</span>
+                            @if($comment->trashed())
+                                <span class="comment-banned-badge">
+                                    <i class="fa-solid fa-ban"></i> Banned
+                                </span>
+                            @endif
                             @if($cRating > 0)
                                 <span
                                     class="ss-stars"

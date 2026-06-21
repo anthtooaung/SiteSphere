@@ -168,11 +168,12 @@ class AdminUsersController extends Controller
         abort_if($admin->is($targetUser), 403);
     }
 
-    private function audit(User $admin, string $action, User $targetUser, string $reason): void
+    private function audit(User $admin, string $action, User $targetUser, string $reason, string $category = 'moderation'): void
     {
         AuditLogs::query()->create([
             'user_id' => $admin->id,
             'action' => $action,
+            'category' => $category,
             'target_type' => User::class,
             'target_id' => $targetUser->id,
             'reason' => $reason,

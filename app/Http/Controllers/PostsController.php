@@ -138,6 +138,36 @@ class PostsController extends Controller
         return back()->with('success', 'Post unbanned and restored.');
     }
 
+    public function forceDelete(Request $request, Posts $post): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+        abort_unless($post->trashed(), 404);
+
+        DB::transaction(function () use ($post, $user): void {
+            // Delete related records
+            $post->comments()->forceDelete();
+            $post->ratings()->delete();
+            $post->bookmarks()->delete();
+            UserPosts::where('post_id', $post->id)->forceDelete();
+
+            AuditLogs::query()->create([
+                'user_id' => $user->id,
+                'action' => 'force_delete_post',
+                'target_type' => Posts::class,
+                'target_id' => $post->id,
+                'reason' => 'Post permanently deleted by admin.',
+            ]);
+
+            $post->forceDelete();
+        });
+
+        return redirect()
+            ->route('dashboard')
+            ->with('success', 'Post permanently deleted.');
+    }
+
     public function banAudit(Request $request, UserPosts $userPost): RedirectResponse
     {
         $user = $request->user();
@@ -179,6 +209,40 @@ class PostsController extends Controller
      */
     public function show(Posts $posts): View
     {
+        // Handle banned (soft-deleted) posts — admins only
+        if ($posts->trashed()) {
+            abort_unless(auth()->user()?->role === 'admin', 404);
+
+            $banLog = AuditLogs::query()
+                ->with('user')
+                ->where('target_type', Posts::class)
+                ->where('target_id', $posts->id)
+                ->where('action', 'ban_post')
+                ->latest()
+                ->first();
+
+            $posts->load(['tags.categories', 'userPosts' => fn ($q) => $q->with('user.settings')->latest()]);
+            $posts->loadCount(['ratings', 'comments', 'userPosts as audits_count']);
+            $posts->loadAvg('ratings as average_rating', 'rating');
+
+            return view('layout.post-detail', [
+                'post' => $posts,
+                'isBanned' => true,
+                'banLog' => $banLog,
+                'averageRating' => round((float) ($posts->average_rating ?? 0), 1),
+                'ratingsCount' => (int) $posts->ratings_count,
+                'auditsCount' => (int) $posts->audits_count,
+                'commentsCount' => (int) $posts->comments_count,
+                'ratingDistribution' => [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0],
+                'comments' => collect(),
+                'commentUserRatings' => collect(),
+                'relatedPosts' => collect(),
+                'userRating' => 0,
+                'userHasCommented' => false,
+                'saved' => false,
+            ]);
+        }
+
         $posts->load([
             'tags.categories',
             'userPosts' => fn ($query) => $query
@@ -268,6 +332,8 @@ class PostsController extends Controller
 
         return view('layout.post-detail', [
             'post' => $posts,
+            'isBanned' => false,
+            'banLog' => null,
             'averageRating' => $averageRating,
             'ratingsCount' => $ratingsCount,
             'auditsCount' => $auditsCount,

@@ -157,4 +157,27 @@ class CommentsController extends Controller
 
         return back()->with('success', 'Comment restored successfully.');
     }
+
+    public function forceDelete(Request $request, Comments $comment): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+        abort_unless($comment->trashed(), 404);
+
+        $comment->commentReactions()->delete();
+
+        AuditLogs::query()->create([
+            'user_id' => $user->id,
+            'action' => 'force_delete_comment',
+            'category' => 'moderation',
+            'target_type' => Comments::class,
+            'target_id' => $comment->id,
+            'reason' => 'Comment permanently deleted by admin.',
+        ]);
+
+        $comment->forceDelete();
+
+        return back()->with('success', 'Comment permanently deleted.');
+    }
 }

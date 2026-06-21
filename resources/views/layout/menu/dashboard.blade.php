@@ -51,12 +51,18 @@
                     
                     $jsActs = $recentActivity->map(function($log) {
                         $colorStr = $log->getColor();
-                        $iconStr = $log->getIcon();
-                        $iconStr = str_replace('fa-', '', $iconStr);
+                        $iconStr = str_replace('fa-', '', $log->getIcon());
+                        $userName = $log->user?->name ?? 'System';
                         return [
                             "color" => $colorStr,
                             "icon" => $iconStr,
+                            "category" => $log->category,
+                            "user" => $userName,
                             "txt" => $log->action,
+                            "target" => $log->target_type ? class_basename($log->target_type) : null,
+                            "targetId" => $log->target_id,
+                            "targetType" => $log->target_type,
+                            "reason" => $log->reason,
                             "time" => $log->created_at->diffForHumans()
                         ];
                     })->toArray();
@@ -64,6 +70,7 @@
                     $jsPosts = $topPosts->map(function($post) {
                         return [
                             "title" => $post->title,
+                            "slug" => $post->slug,
                             "rating" => round($post->ratings_avg_rating ?? 0),
                             "comments" => $post->comments_count
                         ];
@@ -77,7 +84,10 @@
                         window.AdminDashboardData = {
                             stats: @json($jsStats),
                             recentActivity: @json($jsActs),
-                            topPosts: @json($jsPosts)
+                            topPosts: @json($jsPosts),
+                            postSlugs: @json($postSlugs ?? []),
+                            userSlugs: @json($userSlugs ?? []),
+                            commentPostSlugs: @json($commentPostSlugs ?? [])
                         };
                     </script>
                     @vite('resources/js/admin-dashboard.js')
@@ -211,10 +221,10 @@
                       </div>
                       <div class="act-body">
                         <div class="act-legend-row">
-                          <span class="act-legend-item"><span class="act-legend-dot" style="background: var(--chart-reports)"></span> Ban / Delete</span>
-                          <span class="act-legend-item"><span class="act-legend-dot" style="background: var(--chart-resolved)"></span> Resolved / Approved</span>
-                          <span class="act-legend-item"><span class="act-legend-dot" style="background: var(--chart-announcement)"></span> Announcement / Bulk</span>
-                          <span class="act-legend-item"><span class="act-legend-dot" style="background: var(--accent-color)"></span> Warning / Settings</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #ef4444"></span> Moderation</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #10b981"></span> Resolved</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #7c3aed"></span> Announcement</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #f59e0b"></span> System</span>
                         </div>
                         <div class="act-timeline-wrap">
                           <div class="timeline" id="activity-list"></div>

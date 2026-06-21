@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditLogs;
 use App\Models\Bookmarks;
+use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\Ratings;
 use App\Models\Reports;
@@ -49,9 +50,41 @@ class DashboardController extends Controller
             $reportTrend = $getTrend(Reports::class);
 
             $recentAuditLogs = AuditLogs::query()
+                ->with('user')
                 ->latest()
-                ->take(4)
+                ->take(7)
                 ->get();
+
+            // Build slug mappings for audit log target linking
+            $postIds = $recentAuditLogs
+                ->where('target_type', Posts::class)
+                ->pluck('target_id')
+                ->unique();
+
+            $userIds = $recentAuditLogs
+                ->where('target_type', User::class)
+                ->pluck('target_id')
+                ->unique();
+
+            $commentIds = $recentAuditLogs
+                ->where('target_type', Comments::class)
+                ->pluck('target_id')
+                ->unique();
+
+            $postSlugs = Posts::withTrashed()
+                ->whereIn('id', $postIds)
+                ->pluck('slug', 'id');
+
+            $userSlugs = User::withTrashed()
+                ->whereIn('id', $userIds)
+                ->pluck('slug', 'id');
+
+            $commentPostSlugs = Comments::withTrashed()
+                ->whereIn('id', $commentIds)
+                ->with(['post' => fn ($q) => $q->select('id', 'slug')])
+                ->get()
+                ->mapWithKeys(fn ($c) => [$c->id => $c->post->slug ?? null])
+                ->filter();
 
             $topPosts = Posts::query()
                 ->with(['tags.categories'])
@@ -73,6 +106,9 @@ class DashboardController extends Controller
                 ],
                 'recentActivity' => $recentAuditLogs,
                 'topPosts' => $topPosts,
+                'postSlugs' => $postSlugs,
+                'userSlugs' => $userSlugs,
+                'commentPostSlugs' => $commentPostSlugs,
             ]);
         }
 

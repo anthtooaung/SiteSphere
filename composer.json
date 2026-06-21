@@ -16,6 +16,7 @@
         "laravel/socialite": "^5.27",
         "laravel/tinker": "^3.0",
         "owenvoke/blade-fontawesome": "^3.2",
+        "resend/resend-laravel": "^1.4",
         "sweetalert2/laravel": "^1.4"
     },
     "require-dev": {

@@ -17,6 +17,55 @@
 
     <x-layout.nav />
 
+    @if ($isBanned)
+        <div class="banned-banner">
+            <div class="banned-banner-inner">
+                <div class="banned-banner-icon">
+                    <i class="fa-solid fa-ban"></i>
+                </div>
+                <div class="banned-banner-content">
+                    <div class="banned-banner-title">This user has been banned</div>
+                    <div class="banned-banner-meta">
+                        @if ($banLog && $banLog->user)
+                            Banned by <strong>{{ $banLog->user->name }}</strong>
+                            on <strong>{{ $banLog->created_at->format('M d, Y \a\t h:i A') }}</strong>
+                        @endif
+                    </div>
+                    @if ($banLog && $banLog->reason)
+                        <div class="banned-banner-reason">Reason: {{ $banLog->reason }}</div>
+                    @endif
+                </div>
+                <div class="banned-banner-actions">
+                    <form method="POST" action="{{ route('users.restore', $user->id) }}" style="display:inline;">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="banned-btn banned-btn-revert">
+                            <i class="fa-solid fa-rotate-left"></i> Revert
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('users.force-delete', $user->id) }}" style="display:inline;"
+                        x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
+                            title: 'Delete Permanently?',
+                            text: 'This action cannot be undone. The user and all their data will be permanently removed.',
+                            icon: 'warning',
+                            confirmButtonColor: 'var(--ui-danger)',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Yes, delete forever!'
+                        }).then((result) => { if (result.isConfirmed) $el.submit(); })">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="banned-btn banned-btn-delete">
+                            <i class="fa-solid fa-trash"></i> Delete Permanently
+                        </button>
+                    </form>
+                    <a href="{{ route('home') }}" class="banned-btn banned-btn-home">
+                        <i class="fa-solid fa-house"></i> Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div @class([
         'dashboard-page',
         'dashboard-page--'.$dashboardMenuLocation,

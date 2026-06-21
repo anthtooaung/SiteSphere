@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLogs;
 use App\Models\Ratings;
 use App\Models\User;
 use App\Models\UserPosts;
@@ -18,12 +19,41 @@ class ProfileDetailController extends Controller
     public function __invoke(Request $request, ?string $slug = null): View|RedirectResponse
     {
         if ($slug) {
-            $user = User::query()->where('slug', $slug)->firstOrFail();
+            $user = User::withTrashed()->where('slug', $slug)->firstOrFail();
         } else {
             $user = $request->user();
 
             // Redirect to slug-based URL to ensure consistent route style
             return redirect()->route('profile-detail', ['slug' => $user->slug]);
+        }
+
+        // Handle banned (soft-deleted) users — admins only
+        if ($user->trashed()) {
+            abort_unless($request->user()?->role === 'admin', 404);
+
+            $banLog = AuditLogs::query()
+                ->with('user')
+                ->where('target_type', User::class)
+                ->where('target_id', $user->id)
+                ->whereIn('action', ['delete_user', 'ban_user'])
+                ->latest()
+                ->first();
+
+            return view('layout.profile-detail', [
+                'user' => $user,
+                'isBanned' => true,
+                'banLog' => $banLog,
+                'isOwnProfile' => false,
+                'reviewsCount' => 0,
+                'uploadsCount' => 0,
+                'ratingsCount' => 0,
+                'averageRating' => 0,
+                'recentReviews' => collect(),
+                'allReviews' => collect(),
+                'allUploads' => collect(),
+                'allRatings' => collect(),
+                'recentReviewRatings' => collect(),
+            ]);
         }
 
         $isOwnProfile = $request->user()?->is($user) ?? false;
@@ -33,10 +63,10 @@ class ProfileDetailController extends Controller
             ->when(! $isOwnProfile, fn ($query) => $query->where('user_hidden', false));
 
         $uploadsCount = (clone $userPostsQuery)->count();
-        
+
         $commentsQuery = \App\Models\Comments::query()
             ->where('user_id', $user->id);
-            
+
         $reviewsCount = (clone $commentsQuery)->count();
 
         $ratingsCount = Ratings::query()
@@ -59,7 +89,7 @@ class ProfileDetailController extends Controller
             ->with(['post.tags'])
             ->latest()
             ->get();
-            
+
         $allUploads = (clone $userPostsQuery)
             ->with(['post.tags'])
             ->latest()
@@ -79,6 +109,8 @@ class ProfileDetailController extends Controller
 
         return view('layout.profile-detail', [
             'user' => $user,
+            'isBanned' => false,
+            'banLog' => null,
             'isOwnProfile' => $isOwnProfile,
             'reviewsCount' => $reviewsCount,
             'uploadsCount' => $uploadsCount,

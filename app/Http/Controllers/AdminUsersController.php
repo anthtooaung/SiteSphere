@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\UserAccountDeletedMail;
 use App\Models\AuditLogs;
 use App\Models\User;
+use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -81,6 +82,27 @@ class AdminUsersController extends Controller
         $this->audit($admin, 'restore_user', $user, 'User account was restored by an admin.');
 
         return back()->with('success', "{$user->name}'s account was restored.");
+    }
+
+    public function forceDelete(Request $request, User $user): RedirectResponse
+    {
+        $admin = $this->authorizeAdmin($request);
+        $this->abortIfSelfAction($admin, $user);
+
+        abort_unless($user->trashed(), 404);
+
+        DB::transaction(function () use ($admin, $user): void {
+            // Delete user's uploaded content
+            UserPosts::where('user_id', $user->id)->forceDelete();
+
+            $this->audit($admin, 'force_delete_user', $user, 'User permanently deleted by admin.');
+
+            $user->forceDelete();
+        });
+
+        return redirect()
+            ->route('users')
+            ->with('success', "{$user->name} permanently deleted.");
     }
 
     /**

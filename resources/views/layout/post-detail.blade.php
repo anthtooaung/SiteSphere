@@ -319,6 +319,7 @@
                                             x-data="{
                                                 actionsOpen: false,
                                                 reportOpen: false,
+                                                editOpen: false,
                                                 reportReason: '',
                                                 reportDetails: '',
                                                 saved: @js((bool) $saved),
@@ -328,6 +329,13 @@
                                                 },
                                                 closeReportModal() {
                                                     this.reportOpen = false;
+                                                },
+                                                openEditModal() {
+                                                    this.actionsOpen = false;
+                                                    this.editOpen = true;
+                                                },
+                                                closeEditModal() {
+                                                    this.editOpen = false;
                                                 },
                                                 reportDetailsCount() {
                                                     return this.reportDetails.length;
@@ -383,14 +391,15 @@
                                                                 </div>
 
                                                                 @if (Auth::id() === $userPost->user_id)
-                                                                    <a href="{{ route('user-posts.edit', $userPost->id) }}"
+                                                                    <button type="button"
                                                                         class="mt-1 border-t pt-1 flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
-                                                                        role="menuitem">
+                                                                        role="menuitem"
+                                                                        x-on:click="openEditModal()">
                                                                         <x-fas-pen class="size-3" aria-hidden="true" />
                                                                         <span>Edit Description</span>
-                                                                    </a>
+                                                                    </button>
 
-                                                                    <form method="POST" action="{{ route('user-posts.destroy', $userPost->id) }}"
+                                                                    <form method="POST" action="{{ route('posts.description.destroy', $post->id) }}"
                                                                         class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
                                                                         x-on:submit.prevent="window.sitesphereSwal.confirm({
                                                                             title: 'Are you sure?',
@@ -454,6 +463,56 @@
                                             </header>
 
                                             <x-layout.report-modal :post-id="$post->id" :modal-id="'audit-' . $userPost->id" />
+
+                                            @if (Auth::id() === $userPost->user_id)
+                                                <template x-teleport="body">
+                                                    <div x-cloak x-show="editOpen" x-transition.opacity.duration.200ms
+                                                        class="fixed inset-0 z-[100000] flex items-center justify-center bg-black/45 p-4 backdrop-blur-md"
+                                                        role="presentation" x-on:click.self="closeEditModal()"
+                                                        x-on:keydown.escape.window="closeEditModal()">
+                                                        <form method="POST" action="{{ route('posts.description.update', $post->id) }}"
+                                                            class="flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl border [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_8%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_30px_60px_-15px_color-mix(in_srgb,var(--text-color,#0d1b2a)_28%,transparent)]"
+                                                            x-on:click.stop>
+                                                            @csrf
+                                                            @method('PATCH')
+
+                                                            <div class="flex items-start justify-between gap-4 px-7 pb-2 pt-7">
+                                                                <div class="min-w-0">
+                                                                    <h3 class="text-[22px] font-bold leading-tight tracking-normal [color:var(--text-color,#0d1b2a)]">
+                                                                        Edit Description
+                                                                    </h3>
+                                                                </div>
+                                                                <button type="button"
+                                                                    class="flex size-9 shrink-0 items-center justify-center rounded-full transition [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--text-color,#0d1b2a)] focus:outline-none focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_32%,transparent)]"
+                                                                    aria-label="Close edit dialog" x-on:click="closeEditModal()">
+                                                                    <x-fas-xmark class="size-4" aria-hidden="true" />
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="flex-1 space-y-6 overflow-y-auto px-7 py-4">
+                                                                <div class="space-y-2">
+                                                                    <textarea name="description" required rows="6" maxlength="5000"
+                                                                        class="w-full resize-none rounded-xl border px-3.5 py-3 text-sm leading-6 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_14%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] placeholder:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)] focus:outline-none focus:ring-4 focus:[border-color:var(--accent-color,#6c5ce7)] focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,transparent)]"
+                                                                        placeholder="Update your description">{{ $userPost->description }}</textarea>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="flex justify-end gap-3 border-t px-7 py-5 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--text-color,#0d1b2a)_8%)]">
+                                                                <button type="button"
+                                                                    class="inline-flex min-h-11 items-center justify-center rounded-xl border px-5 text-sm font-bold transition [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_14%,transparent)] [background:var(--background-color,#ffffff)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_68%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_88%,var(--text-color,#0d1b2a)_12%)]"
+                                                                    x-on:click="closeEditModal()">
+                                                                    Cancel
+                                                                </button>
+                                                                <button type="submit"
+                                                                    class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold text-white transition [background:var(--accent-color,#6c5ce7)] [box-shadow:0_4px_12px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,transparent)]">
+                                                                    <x-fas-save class="size-3" aria-hidden="true" />
+                                                                    <span>Save Changes</span>
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </template>
+                                            @endif
 
                                             <div class="ss-expandable aud-depo-body" data-clamp="5">
                                                 <p class="ss-expandable-text" style="--clamp-lines: 5">

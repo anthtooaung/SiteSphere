@@ -32,8 +32,13 @@ class ProfileDetailController extends Controller
             ->where('user_id', $user->id)
             ->when(! $isOwnProfile, fn ($query) => $query->where('user_hidden', false));
 
-        $reviewsCount = (clone $userPostsQuery)->count();
-        $uploadsCount = $reviewsCount; // Using reviews as uploads for now as per schema
+        $uploadsCount = (clone $userPostsQuery)->count();
+        
+        $commentsQuery = \App\Models\Comments::query()
+            ->where('user_id', $user->id);
+            
+        $reviewsCount = (clone $commentsQuery)->count();
+
         $ratingsCount = Ratings::query()
             ->where('user_id', $user->id)
             ->count();
@@ -43,14 +48,19 @@ class ProfileDetailController extends Controller
             ->whereIn('post_id', $postIds)
             ->avg('rating') ?: 0;
 
-        $recentReviews = (clone $userPostsQuery)
+        $recentReviews = (clone $commentsQuery)
             ->with(['post.tags'])
             ->latest()
             ->take(4)
             ->get();
 
         // All items for expanded lists
-        $allReviews = (clone $userPostsQuery)
+        $allReviews = (clone $commentsQuery)
+            ->with(['post.tags'])
+            ->latest()
+            ->get();
+            
+        $allUploads = (clone $userPostsQuery)
             ->with(['post.tags'])
             ->latest()
             ->get();
@@ -76,6 +86,7 @@ class ProfileDetailController extends Controller
             'averageRating' => $averageRating,
             'recentReviews' => $recentReviews,
             'allReviews' => $allReviews,
+            'allUploads' => $allUploads,
             'allRatings' => $allRatings,
             'recentReviewRatings' => $recentReviewRatings,
         ]);

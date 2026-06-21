@@ -140,16 +140,14 @@
                         </div>
                     </div>
 
-                    <div class="stat-card" :class="expandedSection === 'ratings' ? 'active' : ''">
+                    <div class="stat-card">
                         <span class="stat-icon gold">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </span>
                         <div>
                             <h2>{{ $ratingsCount }}</h2>
                             <p>Rate Items</p>
-                            <button @click="expandedSection = expandedSection === 'ratings' ? null : 'ratings'" class="bottom-link">
-                                <span x-text="expandedSection === 'ratings' ? 'Collapse ↑' : 'View all ratings &rarr;'"></span>
-                            </button>
+                            <span class="bottom-link" style="cursor: default; opacity: 0.7;">Total Rated</span>
                         </div>
                     </div>
 
@@ -194,8 +192,8 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
                                         </div>
                                         <div class="list-info">
-                                            <a href="{{ route('posts.show', $review->post->slug) }}" class="list-title">{{ $review->post->title }}</a>
-                                            <span class="list-subtitle">{{ Str::limit($review->description, 60) }}</span>
+                                            <a href="{{ route('posts.show', $review->post->slug) }}#comment-{{ $review->id }}" class="list-title">{{ $review->post->title }}</a>
+                                            <span class="list-subtitle">{{ Str::limit($review->content, 60) }}</span>
                                         </div>
                                     </div>
                                     <div class="list-right">
@@ -209,34 +207,7 @@
                         </div>
                     </div>
 
-                    <!-- Ratings Panel -->
-                    <div x-show="expandedSection === 'ratings'" class="expansion-panel">
-                        <div class="panel-header">
-                            <h3>Rate Items</h3>
-                            <span class="count-pill">{{ $ratingsCount }} Items</span>
-                        </div>
-                        <div class="dense-list">
-                            @forelse($allRatings as $rating)
-                                <div class="list-row">
-                                    <div class="list-left">
-                                        <div class="list-icon-bg gold-bg">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                        </div>
-                                        <div class="list-info">
-                                            <a href="{{ route('posts.show', $rating->post->slug) }}" class="list-title">{{ $rating->post->title }}</a>
-                                            <span class="list-subtitle">Given Rating</span>
-                                        </div>
-                                    </div>
-                                    <div class="list-right">
-                                        <span class="list-meta">{{ $rating->created_at->format('d M Y') }}</span>
-                                        <div class="list-rating gold-text">★ {{ number_format($rating->rating, 1) }}</div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="empty-state">No ratings given yet.</div>
-                            @endforelse
-                        </div>
-                    </div>
+
 
                     <!-- Uploads Panel -->
                     <div x-show="expandedSection === 'uploads'" class="expansion-panel">
@@ -245,22 +216,22 @@
                             <span class="count-pill">{{ $uploadsCount }} Items</span>
                         </div>
                         <div class="dense-list">
-                            @forelse($allReviews as $upload) {{-- Using reviews as uploads for now --}}
-                                <div class="list-row">
-                                    <div class="list-left">
-                                        <div class="list-icon-bg green-bg">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/></svg>
-                                        </div>
-                                        <div class="list-info">
-                                            <a href="{{ route('posts.show', $upload->post->slug) }}" class="list-title">{{ $upload->post->title }}</a>
-                                            <span class="list-subtitle">Contributed Resource</span>
-                                        </div>
-                                    </div>
-                                    <div class="list-right">
-                                        <span class="list-meta">{{ $upload->created_at->format('d M Y') }}</span>
-                                        <a href="{{ route('posts.show', $upload->post->slug) }}" class="view-btn">View</a>
-                                    </div>
-                                </div>
+                            @forelse($allUploads as $upload)
+                                                <div class="list-row">
+                                                    <div class="list-left">
+                                                        <div class="list-icon-bg green-bg">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/></svg>
+                                                        </div>
+                                                        <div class="list-info">
+                                                            <a href="{{ route('posts.show', $upload->post->slug) }}#panel-user-{{ $user->id }}" class="list-title">{{ $upload->post->title }}</a>
+                                                            <span class="list-subtitle">Contributed Resource</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="list-right">
+                                                        <span class="list-meta">{{ $upload->created_at->format('d M Y') }}</span>
+                                                        <a href="{{ route('posts.show', $upload->post->slug) }}#panel-user-{{ $user->id }}" class="view-btn">View</a>
+                                                    </div>
+                                                </div>
                             @empty
                                 <div class="empty-state">No uploads yet.</div>
                             @endforelse

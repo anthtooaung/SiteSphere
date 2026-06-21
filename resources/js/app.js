@@ -2,6 +2,9 @@
 import './hover-profile';
 
 import Alpine from 'alpinejs';
+import collapse from '@alpinejs/collapse';
+Alpine.plugin(collapse);
+
 import 'flowbite';
 
 window.Alpine = Alpine;

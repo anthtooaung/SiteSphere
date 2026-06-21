@@ -302,14 +302,74 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ══ ACTIVITY FEED ═══════════════════════════════════════════════════════
+  const postSlugs = data.postSlugs || {};
+  const userSlugs = data.userSlugs || {};
+  const commentPostSlugs = data.commentPostSlugs || {};
+
+  function getTargetUrl(a) {
+    if (a.targetType === 'App\\Models\\Post') {
+      const slug = postSlugs[a.targetId];
+      return slug ? `/posts/${slug}` : null;
+    }
+    if (a.targetType === 'App\\Models\\User') {
+      const slug = userSlugs[a.targetId];
+      return slug ? `/profile/${slug}` : null;
+    }
+    if (a.targetType === 'App\\Models\\Comment') {
+      const postSlug = commentPostSlugs[a.targetId];
+      return postSlug ? `/posts/${postSlug}#comment-${a.targetId}` : null;
+    }
+    return null;
+  }
+
   const activityList = document.getElementById("activity-list");
   if(activityList) {
     if(acts.length === 0) {
-        activityList.innerHTML = `<div class="tl-item"><div class="tl-txt" style="color:var(--muted)">No recent activity found.</div></div>`;
+        activityList.innerHTML = `<div class="tl-item"><div class="tl-content"><div class="tl-txt" style="color:var(--muted)">No recent activity found.</div></div></div>`;
     } else {
-        activityList.innerHTML = acts.map(a =>
-          `<div class="tl-item"><span class="act-legend-dot" style="background:${a.color}; width:10px; height:10px;"></span><div class="tl-txt">${a.txt}</div><div class="tl-time">${a.time}</div></div>`
-        ).join("");
+        const categoryLabels = {
+          moderation: 'Moderation',
+          success: 'Resolved',
+          announcement: 'Announcement',
+          system: 'System'
+        };
+        const defaultCategoryLabel = 'Activity';
+        activityList.innerHTML = acts.map(a => {
+          const catLabel = categoryLabels[a.category] || defaultCategoryLabel;
+          const targetUrl = getTargetUrl(a);
+          const targetInfo = a.target
+            ? targetUrl
+              ? `<a href="${targetUrl}" class="tl-target">${a.target} #${a.targetId}</a>`
+              : `<span class="tl-target">${a.target} #${a.targetId}</span>`
+            : '';
+          return `<div class="tl-item">
+            <div class="tl-stone-col">
+              <div class="tl-stone" style="background:${a.color};"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-meta">
+                <span class="tl-badge" style="background:${a.color};">${catLabel}</span>
+                <span class="tl-user">${a.user}</span>
+              </div>
+              <div class="tl-txt">${a.txt} ${targetInfo}</div>
+              ${a.reason ? `<div class="tl-reason">${a.reason}</div>` : ''}
+              <div class="tl-time">${a.time}</div>
+            </div>
+          </div>`;
+        }).join("");
+
+        // Add "See more" button if there are 7 or more items
+        if (acts.length >= 7) {
+          const seeMoreHtml = `
+            <div class="tl-see-more">
+              <a href="/menu/dashboard/activity-log" class="tl-see-more-btn">
+                See more activity <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          `;
+          activityList.insertAdjacentHTML('beforeend', seeMoreHtml);
+        }
     }
   }
 
@@ -317,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function starIcons(r) {
     let s = "";
     for (let i = 1; i <= 5; i++)
-      s += `<span style="display:inline-block; width:13px; height:13px; border-radius:50%; background:${i <= r ? "#f59e0b" : "#e2e8f0"};"></span>`;
+      s += `<span style="display:inline-block; width:11px; height:11px; border-radius:50%; background:${i <= r ? "#f59e0b" : "#e2e8f0"};"></span>`;
     return s;
   }
   const topPostsEl = document.getElementById("top-posts");
@@ -327,7 +387,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         const numClass = ["gold", "silver", "bronze", "", ""];
         topPostsEl.innerHTML = posts.map((p, i) =>
-          `<div class="rank-item"><div class="rank-num ${numClass[i] || ''}">${i + 1}</div><div style="flex:1;min-width:0"><div class="rank-title">${p.title}</div><div class="rank-sub">${starIcons(p.rating)}<span style="color:#cbd5e1">·</span><span style="font-size:13px;color:#94a3b8">${p.comments} comments</span></div></div></div>`
+          `<a class="rank-item" href="/posts/${p.slug}">
+            <div class="rank-num ${numClass[i] || ''}">${i + 1}</div>
+            <div style="flex:1;min-width:0">
+              <div class="rank-title">${p.title}</div>
+              <div class="rank-sub">${starIcons(p.rating)}<span style="color:#cbd5e1">·</span><span style="font-size:12px;color:#94a3b8">${p.comments} comments</span></div>
+            </div>
+          </a>`
         ).join("");
     }
   }

@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const commentPostSlugs = data.commentPostSlugs || {};
 
   function getTargetUrl(a) {
-    if (a.targetType === 'App\\Models\\Post') {
+    if (a.targetType === 'App\\Models\\Posts') {
       const slug = postSlugs[a.targetId];
       return slug ? `/posts/${slug}` : null;
     }
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const slug = userSlugs[a.targetId];
       return slug ? `/profile/${slug}` : null;
     }
-    if (a.targetType === 'App\\Models\\Comment') {
+    if (a.targetType === 'App\\Models\\Comments') {
       const postSlug = commentPostSlugs[a.targetId];
       return postSlug ? `/posts/${postSlug}#comment-${a.targetId}` : null;
     }

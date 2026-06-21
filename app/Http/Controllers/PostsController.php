@@ -175,17 +175,65 @@ class PostsController extends Controller
 
         abort_unless($user?->role === 'admin', 403);
 
-        $userPost->update(['user_hidden' => true]);
+        $validated = $request->validate([
+            'reason' => 'required|string|max:500',
+        ]);
+
+        $userPost->delete(); // Soft delete
 
         AuditLogs::query()->create([
             'user_id' => $user->id,
             'action' => 'ban_audit',
+            'category' => 'moderation',
             'target_type' => UserPosts::class,
             'target_id' => $userPost->id,
-            'reason' => 'Audit description hidden by an admin.',
+            'reason' => $validated['reason'],
         ]);
 
-        return back()->with('success', 'Audit description hidden.');
+        return back()->with('success', 'Description banned.');
+    }
+
+    public function unbanAudit(Request $request, int $id): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+
+        $userPost = UserPosts::onlyTrashed()->findOrFail($id);
+
+        $userPost->restore();
+
+        AuditLogs::query()->create([
+            'user_id' => $user->id,
+            'action' => 'unban_audit',
+            'category' => 'moderation',
+            'target_type' => UserPosts::class,
+            'target_id' => $userPost->id,
+            'reason' => 'Description restored by an admin.',
+        ]);
+
+        return back()->with('success', 'Description restored.');
+    }
+
+    public function forceDeleteAudit(Request $request, UserPosts $userPost): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+        abort_unless($userPost->trashed(), 404);
+
+        AuditLogs::query()->create([
+            'user_id' => $user->id,
+            'action' => 'force_delete_audit',
+            'category' => 'moderation',
+            'target_type' => UserPosts::class,
+            'target_id' => $userPost->id,
+            'reason' => 'Description permanently deleted by admin.',
+        ]);
+
+        $userPost->forceDelete();
+
+        return back()->with('success', 'Description permanently deleted.');
     }
 
     private function uniqueSlug(string $title, ?Posts $ignorePost = null): string
@@ -244,10 +292,13 @@ class PostsController extends Controller
             ]);
         }
 
+        $isAdmin = auth()->user()?->role === 'admin';
+
         $posts->load([
             'tags.categories',
             'userPosts' => fn ($query) => $query
                 ->with('user.settings')
+                ->when($isAdmin, fn ($q) => $q->withTrashed())
                 ->latest(),
         ]);
         $posts->loadCount([

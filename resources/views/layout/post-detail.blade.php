@@ -360,9 +360,10 @@
                                             $avatarUrl = $isProfileVisible ? $userPost->user->getAvatarUrl() : '';
                                         @endphp
                                         <article
-                                            class="aud-depo-panel"
+                                            class="aud-depo-panel @if($userPost->trashed()) banned-border banned-tooltip @endif"
                                             id="panel-user-{{ $isProfileVisible ? $userPost->user->id : 'anonymous-' . $loop->index }}"
                                             data-panel="user-{{ $isProfileVisible ? $userPost->user->id : 'anonymous-' . $loop->index }}"
+                                            @if($userPost->trashed()) data-ban-reason="{{ $userPost->getBanReason() ?? 'No reason provided' }}" @endif
                                             @if(!$loop->first) hidden @endif
                                             x-data="{
                                                 actionsOpen: false,
@@ -472,28 +473,75 @@
                                                                     </form>
                                                                 @endif
                                                                 @if (Auth::user()?->role === 'admin')
-                                                                    <form method="POST" action="{{ route('audits.ban', $userPost->id) }}"
-                                                                        class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
-                                                                        x-on:submit.prevent="window.sitesphereSwal.confirm({
-                                                                            title: 'Are you sure?',
-                                                                            text: 'You want to hide this audit description?',
-                                                                            icon: 'warning',
-                                                                            confirmButtonColor: 'var(--ui-danger)',
-                                                                            cancelButtonColor: '#6c757d',
-                                                                            confirmButtonText: 'Yes, hide it!'
-                                                                        }).then((result) => {
-                                                                            if (result.isConfirmed) {
-                                                                                $el.submit();
-                                                                            }
-                                                                        })">
-                                                                        @csrf
-                                                                        <button type="submit"
-                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
-                                                                            role="menuitem">
-                                                                            <x-fas-ban class="size-3" aria-hidden="true" />
-                                                                            <span>Ban Audit</span>
-                                                                        </button>
-                                                                    </form>
+                                                                    @if($userPost->trashed())
+                                                                        {{-- Revert (Unban) --}}
+                                                                        <form method="POST" action="{{ route('audits.unban', $userPost->id) }}"
+                                                                            class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
+                                                                            @csrf
+                                                                            <button type="submit"
+                                                                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#10b981] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#10b981_12%,transparent)] focus:outline-none"
+                                                                                role="menuitem">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-left"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                                                                <span>Revert</span>
+                                                                            </button>
+                                                                        </form>
+                                                                        {{-- Delete Permanently --}}
+                                                                        <form method="POST" action="{{ route('audits.force-delete', $userPost->id) }}"
+                                                                            class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
+                                                                            x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                                                                title: 'Delete Permanently?',
+                                                                                text: 'This action cannot be undone. The description will be permanently removed.',
+                                                                                icon: 'warning',
+                                                                                confirmButtonColor: '#ef4444',
+                                                                                cancelButtonColor: '#6c757d',
+                                                                                confirmButtonText: 'Yes, delete forever!'
+                                                                            }).then((result) => { if (result.isConfirmed) $el.submit(); })">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit"
+                                                                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
+                                                                                role="menuitem">
+                                                                                <x-fas-trash class="size-3" aria-hidden="true" />
+                                                                                <span>Delete Permanently</span>
+                                                                            </button>
+                                                                        </form>
+                                                                    @else
+                                                                        {{-- Ban --}}
+                                                                        <form method="POST" action="{{ route('audits.ban', $userPost->id) }}"
+                                                                            class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
+                                                                            x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                                                                title: 'Ban this description?',
+                                                                                text: 'Please specify the reason for banning this description:',
+                                                                                icon: 'warning',
+                                                                                input: 'textarea',
+                                                                                inputPlaceholder: 'Enter the ban reason here...',
+                                                                                inputValidator: (value) => {
+                                                                                    if (!value) {
+                                                                                        return 'A ban reason is required!';
+                                                                                    }
+                                                                                },
+                                                                                confirmButtonColor: '#ef4444',
+                                                                                cancelButtonColor: '#6c757d',
+                                                                                confirmButtonText: 'Yes, ban it!'
+                                                                            }).then((result) => {
+                                                                                if (result.isConfirmed) {
+                                                                                    const input = document.createElement('input');
+                                                                                    input.type = 'hidden';
+                                                                                    input.name = 'reason';
+                                                                                    input.value = result.value;
+                                                                                    $el.appendChild(input);
+                                                                                    $el.submit();
+                                                                                }
+                                                                            })">
+                                                                            @csrf
+                                                                            <button type="submit"
+                                                                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
+                                                                                role="menuitem">
+                                                                                <x-fas-ban class="size-3" aria-hidden="true" />
+                                                                                <span>Ban</span>
+                                                                            </button>
+                                                                        </form>
+                                                                    @endif
                                                                 @endif
                                                             @endif
                                                         @endauth

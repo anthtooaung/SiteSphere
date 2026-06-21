@@ -107,3 +107,55 @@
 .comment-banned-badge i {
   font-size: 9px;
 }
+
+/* ── BANNED BORDER (Comments & Descriptions) ── */
+.banned-border {
+  border: 2px solid #ef4444 !important;
+  background: #fef2f2 !important;
+  position: relative;
+}
+
+/* ── BANNED TOOLTIP ── */
+.banned-tooltip {
+  position: relative;
+  cursor: help;
+}
+.banned-tooltip::after {
+  content: attr(data-ban-reason);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.banned-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1f2937;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.banned-tooltip:hover::after,
+.banned-tooltip:hover::before {
+  opacity: 1;
+}

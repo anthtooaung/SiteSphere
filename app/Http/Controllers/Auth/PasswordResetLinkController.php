@@ -6,14 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Mail\PasswordResetOtpMail;
 use App\Models\OtpVerifications;
 use App\Models\User;
+use App\Traits\ChecksMailConfiguration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Throwable;
 
 class PasswordResetLinkController extends Controller
 {
+    use ChecksMailConfiguration;
+
     /**
      * Display the password reset OTP request view.
      */
@@ -47,7 +52,15 @@ class PasswordResetLinkController extends Controller
             'expire_at' => now()->addMinutes(5),
         ]);
 
-        Mail::to($user->email)->send(new PasswordResetOtpMail($otpCode));
+        Log::info("Password reset OTP for {$user->email}: {$otpCode}");
+
+        if ($this->isMailConfigured()) {
+            try {
+                Mail::to($user->email)->send(new PasswordResetOtpMail($otpCode));
+            } catch (Throwable $exception) {
+                report($exception);
+            }
+        }
 
         $request->session()->put([
             'password_reset_user_id' => $user->id,

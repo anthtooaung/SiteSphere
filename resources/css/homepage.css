@@ -1897,12 +1897,13 @@
     /* GRID */
     .reviews-grid {
         grid-template-columns: 1fr;
-
+        justify-items: center;
     }
 
     /* CARD */
     .review-card {
         width: 100%;
+        max-width: 450px;
         min-height: 220px;
         height: auto;
         padding: 16px;
@@ -1923,26 +1924,6 @@
         grid-template-columns: 1fr;
     }
 
-    .category-check,
-    .rating-check,
-    .tag-check,
-    .category-check:hover,
-    .rating-check:hover,
-    .tag-check:hover,
-    .category-check:active,
-    .rating-check:active,
-    .tag-check:active,
-    .category-check:focus-within,
-    .rating-check:focus-within,
-    .tag-check:focus-within,
-    .category-check:has(input:checked),
-    .rating-check:has(input:checked),
-    .tag-check:has(input:checked) {
-        background: white;
-        color: var(--accent-color, #6c5ce7);
-        transform: none;
-        box-shadow: none;
-    }
 
     #tagsHeader .section-left {
         flex: 1;
@@ -2487,10 +2468,13 @@
 
     .reviews-grid {
         grid-template-columns: 1fr;
+        justify-items: center;
         gap: 14px;
     }
 
     .review-card {
+        width: 100%;
+        max-width: 450px;
         min-height: 210px;
         height: auto;
         padding: 15px;
@@ -2654,6 +2638,7 @@
 .sidebar {
     width: 290px;
 }
+
 
 .sidebar.collapsed {
     width: 290px;
@@ -3151,3 +3136,48 @@
 }
 
 [x-cloak] { display: none !important; }
+
+/* Pagination Layout */
+.pagination-top {
+    margin-bottom: 20px;
+}
+.pagination-bottom {
+    margin-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* Custom Pagination Styles */
+.pagination-container nav {
+    font-family: var(--font-family);
+}
+
+.pagination-container p {
+    color: var(--text-color) !important;
+}
+
+.pagination-container span.bg-white,
+.pagination-container a.bg-white,
+.pagination-container span.dark\:bg-gray-800,
+.pagination-container a.dark\:bg-gray-800,
+.pagination-container span.dark\:bg-gray-700 {
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+    border-color: color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+}
+
+.pagination-container span[aria-current="page"] span {
+    background-color: var(--accent-color) !important;
+    color: #fff !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-color) 35%, transparent);
+}
+
+.pagination-container a:hover {
+    background-color: color-mix(in srgb, var(--accent-color) 12%, transparent) !important;
+    color: var(--accent-color) !important;
+    border-color: color-mix(in srgb, var(--accent-color) 50%, transparent) !important;
+}
+
+.pagination-container svg {
+    color: currentColor;
+}

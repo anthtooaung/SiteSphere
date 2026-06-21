@@ -40,7 +40,7 @@ About Us
 
 @section('content')
 <x-layout.nav />
-<div class="md:mt-20"></div>
+<div class="md:mt-24"></div>
 
 <main class="aboutus-main">
     {{-- Hero Section --}}
@@ -51,10 +51,10 @@ About Us
                     <x-fas-shield-halved class="icon" aria-hidden="true" style="width:0.72rem;height:0.72rem;" />
                     About SiteSphere
                 </span>
-                <h1>Browse the web safely, <span>without the noise.</span></h1>
+                <h1>Discover the best tools, <span>without the hassle.</span></h1>
 
                 <div class="aboutus-hero-body-content">
-                    <p class="aboutus-hero-copy">SiteSphere is an uncompromised website review platform built for modern internet users and creators. We eliminate digital exhaustion by exposing dangerous scams, filtering out useless clutter, and tracking genuine, high-utility websites within a single transparent tracking ecosystem.</p>
+                    <p class="aboutus-hero-copy">SiteSphere is a community-driven platform built for developers and creators to discover, share, and rate the best websites, tools, and libraries. Instead of searching through countless docs and videos, find trusted recommendations from real users — all in one place.</p>
                 </div>
 
                 <div class="aboutus-hero-actions">
@@ -73,7 +73,7 @@ About Us
             <aside class="aboutus-hero-panel aboutus-scroll-reveal" aria-label="SiteSphere platform features">
                 <div class="aboutus-panel-header-wrap">
                     <div class="aboutus-panel-logo">
-                        <x-fas-s class="icon" aria-hidden="true" style="width:1.6rem;height:1.6rem;" />
+                        <x-app-logo class="size-6" />
                     </div>
                     <h4>Platform Standards</h4>
                 </div>
@@ -81,22 +81,22 @@ About Us
                     <div class="aboutus-panel-item">
                         <x-fas-filter class="icon" aria-hidden="true" />
                         <div>
-                            <strong>Proactive Clutter Filtering</strong>
-                            <span>Isolate high-performing, useful web products instantly while dodging completely dead-end websites.</span>
+                            <strong>Smart Category Filtering</strong>
+                            <span>Browse resources by categories and tags to quickly find the exact tools that fit your needs.</span>
                         </div>
                     </div>
                     <div class="aboutus-panel-item">
                         <x-fas-triangle-exclamation class="icon" aria-hidden="true" />
                         <div>
-                            <strong>Anti-Scam Surveillance</strong>
-                            <span>Every tracked web domain undergoes direct monitoring for deceptive billing traps or phishing attempts.</span>
+                            <strong>Community Reporting</strong>
+                            <span>Report inappropriate or misleading content to keep the platform clean and trustworthy for everyone.</span>
                         </div>
                     </div>
                     <div class="aboutus-panel-item">
                         <x-fas-users class="icon" aria-hidden="true" />
                         <div>
-                            <strong>Uncompromised Community Trust</strong>
-                            <span>Leverage crowd-sourced ratings and real-time reports away from paid marketing bias.</span>
+                            <strong>Real User Ratings</strong>
+                            <span>Every recommendation is backed by genuine ratings and reviews from the developer community.</span>
                         </div>
                     </div>
                 </div>
@@ -109,8 +109,8 @@ About Us
         <div class="aboutus-container">
             <div class="aboutus-section-head aboutus-scroll-reveal">
                 <span class="aboutus-eyebrow">Core Metrics</span>
-                <h2>Engineered for reliable web navigation</h2>
-                <p>Our operational framework focuses on rendering website discovery rapid, accurate, and completely secure. We maximize browsing efficiency by targeting the exact malicious scams and low-quality digital clutter that waste your time.</p>
+                <h2>Built for smarter web discovery</h2>
+                <p>Our platform is designed to make finding useful development resources fast, easy, and community-driven. No more wasting hours searching — get trusted recommendations from real users in seconds.</p>
             </div>
 
             <div class="aboutus-metrics-grid">
@@ -119,7 +119,7 @@ About Us
                         <x-fas-magnifying-glass class="icon" aria-hidden="true" />
                     </div>
                     <h3>Discover</h3>
-                    <p>Locate pinpoint accurate user experiences, high-utility tools, and obscure web applications verified to solve your day-to-day requirements quickly.</p>
+                    <p>Find the best websites, tools, and libraries recommended by real developers — all organized by categories and tags for easy browsing.</p>
                 </article>
 
                 <article class="aboutus-metric-card aboutus-scroll-reveal">
@@ -127,7 +127,7 @@ About Us
                         <x-far-star class="icon" aria-hidden="true" />
                     </div>
                     <h3>Review</h3>
-                    <p>Access transparent, unmanipulated evaluations from verified platform users regarding operational safety before engaging with third-party sites.</p>
+                    <p>Rate and comment on resources you've tried. Share your honest experience to help other developers make informed decisions.</p>
                 </article>
 
                 <article class="aboutus-metric-card aboutus-scroll-reveal">
@@ -135,15 +135,15 @@ About Us
                         <x-fas-sliders class="icon" aria-hidden="true" />
                     </div>
                     <h3>Customize</h3>
-                    <p>Tailor your preferred layout views, adjust security warning parameters, and personalize your tracking feed to align perfectly with your exact digital ecosystem fields.</p>
+                    <p>Personalize your experience with custom tags, themes, and fonts. Save posts for later and tailor your feed to match your interests.</p>
                 </article>
 
                 <article class="aboutus-metric-card aboutus-scroll-reveal">
                     <div class="aboutus-metric-icon">
-                        <x-fas-globe class="icon" aria-hidden="true" />
+                        <x-fas-flag class="icon" aria-hidden="true" />
                     </div>
-                    <h3>Expose Junk</h3>
-                    <p>Analyze structural responsiveness, broken layout designs, and ad-heavy platforms to prevent navigating to low-quality web spaces entirely.</p>
+                    <h3>Report</h3>
+                    <p>Flag inappropriate or misleading content to help maintain a trustworthy community. Admins review reports to keep the platform reliable for everyone.</p>
                 </article>
             </div>
         </div>
@@ -160,10 +160,10 @@ About Us
                         <x-fas-feather-pointed class="icon" aria-hidden="true" style="width:0.72rem;height:0.72rem;" />
                         Our Story & Mission
                     </span>
-                    <h2>Built to clean up the digital landscape.</h2>
-                    <p>SiteSphere was born out of growing frustration with the modern web. While the internet holds millions of active platforms, finding an honest, functional web service has become an exhausting task. Users and development teams are constantly forced to filter through deceptive phishing traps, lookalike domains, and ad-heavy clickbait built purely to capture ad revenue. Sponsored listings and manipulated corporate ratings hide the truth, making discovery stressful.</p>
+                    <h2>Built to simplify resource discovery.</h2>
+                    <p>SiteSphere was born out of a simple frustration — finding the right tools and resources as a developer takes too long. You end up browsing through dozens of documentation pages, watching tutorial videos, and testing multiple websites before landing on something that actually works. Good recommendations are scattered across the internet, buried under outdated blog posts and sponsored content.</p>
                     <br>
-                    <p>To solve this bottleneck, we engineered a transparent tracking catalog that filters the noise at its source. We developed an independent database that applies rigorous evaluation criteria across every tier of the web. By mapping the dark corners of the scum web and grading code integrity, we make sure that everyday users and creators spend their time on tools and platforms that <span class="aboutus-highlight">actually work reliably.</span></p>
+                    <p>To solve this, we built a single platform where the developer community can share, rate, and discuss the best resources they've found. Every recommendation comes from real users with real experience. By organizing everything into categories and tags with honest community ratings, we make sure you spend less time searching and more time <span class="aboutus-highlight">building with the right tools.</span></p>
                 </article>
 
                 {{-- Right Feature Stack --}}
@@ -172,15 +172,15 @@ About Us
                     <div class="aboutus-story-point aboutus-scroll-reveal">
                         <div class="aboutus-story-point-header">
                             <div class="aboutus-story-icon-badge">
-                                <x-fas-skull-crossbones class="icon" aria-hidden="true" />
+                                <x-fas-layer-group class="icon" aria-hidden="true" />
                             </div>
-                            <h3>Exposing Scum Web</h3>
+                            <h3>Organized by Category</h3>
                         </div>
                         <div class="aboutus-story-point-content">
-                            <p>We maintain an active threat repository that processes user inputs and layout behavior to isolate hidden billing traps, forced micro-transactions, and phishing forms before damage occurs.</p>
+                            <p>Every resource is organized into clear categories and tags, so you can browse by what you need — whether it's frontend frameworks, backend tools, design libraries, or deployment platforms.</p>
                             <ul class="aboutus-story-sub-details">
-                                <li>Real-time database updates for dynamic domain blacklists.</li>
-                                <li>Automated script checks to flag structural spoofing indicators.</li>
+                                <li>Filter resources by category and custom tags.</li>
+                                <li>Admin-managed categories for consistent organization.</li>
                             </ul>
                         </div>
                     </div>
@@ -190,13 +190,13 @@ About Us
                             <div class="aboutus-story-icon-badge">
                                 <x-far-star-half-stroke class="icon" aria-hidden="true" />
                             </div>
-                            <h3>Transparent Star Ratings</h3>
+                            <h3>Honest Community Ratings</h3>
                         </div>
                         <div class="aboutus-story-point-content">
-                            <p>Our multi-tier framework scoring engine dissects platforms completely. We separate true high-utility hubs from bloated, broken landing pages that only serve search engines rather than users.</p>
+                            <p>Every resource gets rated by real users who have actually tried it. No paid placements, no sponsored rankings — just genuine feedback from the developer community to help you pick the right tool.</p>
                             <ul class="aboutus-story-sub-details">
-                                <li>Granular metrics covering responsiveness and layout shifts.</li>
-                                <li>Verified user evaluation streams free from corporate placement.</li>
+                                <li>Star ratings and comments from verified users.</li>
+                                <li>Report system to flag misleading or outdated content.</li>
                             </ul>
                         </div>
                     </div>
@@ -204,15 +204,15 @@ About Us
                     <div class="aboutus-story-point aboutus-scroll-reveal">
                         <div class="aboutus-story-point-header">
                             <div class="aboutus-story-icon-badge">
-                                <x-fas-compass class="icon" aria-hidden="true" />
+                                <x-fas-bookmark class="icon" aria-hidden="true" />
                             </div>
-                            <h3>Reliable Web Discovery</h3>
+                            <h3>Save & Revisit</h3>
                         </div>
                         <div class="aboutus-story-point-content">
-                            <p>We firmly reject paid advertisements or algorithmic manipulation. Every ranking matrix factor stems purely from standard system logs, loading speed, clean script runtimes, and community value tokens.</p>
+                            <p>Bookmark the resources you find useful and build your own collection. With personalized tags and a saved posts library, you'll never lose track of a great tool again.</p>
                             <ul class="aboutus-story-sub-details">
-                                <li>Organic tracking indexing focused on genuine utility output.</li>
-                                <li>Advanced customization filters to adjust personal layout spaces.</li>
+                                <li>Save posts to your personal library for quick access.</li>
+                                <li>Customize tags and themes to match your workflow.</li>
                             </ul>
                         </div>
                     </div>

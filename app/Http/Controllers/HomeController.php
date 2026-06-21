@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
-    private const SERVER_POST_LIMIT = 24;
+    private const SERVER_POST_LIMIT = 9;
 
     public function __invoke(Request $request): View|JsonResponse
     {
@@ -152,9 +152,11 @@ class HomeController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('partials.home-posts', ['posts' => $posts])->render(),
+                'pagination' => $posts->withQueryString()->links()->render(),
                 'hasMorePages' => $posts->hasMorePages(),
                 'total' => $posts->total(),
                 'currentPage' => $posts->currentPage(),
+                'lastPage' => $posts->lastPage(),
             ]);
         }
 

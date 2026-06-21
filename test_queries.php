@@ -1,12 +1,16 @@
 <?php
+
 require __DIR__.'/vendor/autoload.php';
 $app = require_once __DIR__.'/bootstrap/app.php';
-$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+$app->make(Kernel::class)->bootstrap();
 
-use App\Models\User;
+use App\Http\Controllers\ProfileDetailController;
 use App\Models\Posts;
-use App\Models\UserPosts;
 use App\Models\Ratings;
+use App\Models\User;
+use App\Models\UserPosts;
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 $user = User::factory()->create();
@@ -37,11 +41,11 @@ DB::listen(function ($query) use (&$ratingQueries) {
 });
 
 // simulate the request
-$request = Illuminate\Http\Request::create('/profile', 'GET');
+$request = Request::create('/profile', 'GET');
 $request->setUserResolver(function () use ($user) {
     return $user;
 });
-$controller = new App\Http\Controllers\ProfileDetailController();
+$controller = new ProfileDetailController;
 $controller->__invoke($request);
 
 print_r($ratingQueries);

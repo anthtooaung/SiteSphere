@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Mail\LoginTwoFactorOtpMail;
 use App\Models\OtpVerifications;
 use App\Models\User;
+use App\Traits\ChecksMailConfiguration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use SweetAlert2\Laravel\Swal;
@@ -19,6 +19,8 @@ use Throwable;
 
 class LoginTwoFactorChallengeController extends Controller
 {
+    use ChecksMailConfiguration;
+
     private const DEFAULT_TOAST_POSITION = 'top-end';
 
     private const TOAST_POSITIONS = [
@@ -138,9 +140,7 @@ class LoginTwoFactorChallengeController extends Controller
 
         Log::info("Resent login 2FA OTP verification code for {$user->email}: {$otpCode}");
 
-        $mailPassword = (string) config('mail.mailers.smtp.password');
-
-        if ($mailPassword === '' || Str::contains($mailPassword, 'replace-with-gmail-app-password')) {
+        if (! $this->isMailConfigured()) {
             return;
         }
 

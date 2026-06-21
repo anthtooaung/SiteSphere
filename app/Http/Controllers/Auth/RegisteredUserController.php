@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\OtpVerificationMail;
 use App\Models\OtpVerifications;
 use App\Models\User;
+use App\Traits\ChecksMailConfiguration;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -13,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use SweetAlert2\Laravel\Swal;
@@ -21,6 +21,8 @@ use Throwable;
 
 class RegisteredUserController extends Controller
 {
+    use ChecksMailConfiguration;
+
     private const PENDING_REGISTRATION_KEY = 'registration.pending';
 
     private const REGISTRATION_OTP_VERIFIED_KEY = 'registration.otp_verified';
@@ -82,18 +84,17 @@ class RegisteredUserController extends Controller
 
         Log::info("OTP verification code for {$validated['email']}: {$otpCode}");
 
-        $otpDeliveryFailed = false;
-        $deliveryMessage = null;
-        $mailPassword = (string) config('mail.mailers.smtp.password');
-
-        if ($mailPassword === '' || Str::contains($mailPassword, 'replace-with-gmail-app-password')) {
+        if (! $this->isMailConfigured()) {
             return response()->json([
                 'success' => true,
                 'email' => $validated['email'],
                 'otp_delivery_failed' => true,
-                'message' => 'OTP created, but email is not configured. Set a real Gmail App Password in MAIL_PASSWORD and try Resend OTP.',
+                'message' => 'OTP created, but email is not configured.',
             ]);
         }
+
+        $otpDeliveryFailed = false;
+        $deliveryMessage = null;
 
         try {
             Mail::to($validated['email'])->send(new OtpVerificationMail($otpCode));
@@ -146,17 +147,16 @@ class RegisteredUserController extends Controller
 
         Log::info("Resent OTP verification code for {$pendingRegistration['email']}: {$otpCode}");
 
-        $otpDeliveryFailed = false;
-        $deliveryMessage = null;
-        $mailPassword = (string) config('mail.mailers.smtp.password');
-
-        if ($mailPassword === '' || Str::contains($mailPassword, 'replace-with-gmail-app-password')) {
+        if (! $this->isMailConfigured()) {
             return response()->json([
                 'success' => true,
                 'otp_delivery_failed' => true,
-                'message' => 'A new OTP was created, but email is not configured. Set a real Gmail App Password in MAIL_PASSWORD and try again.',
+                'message' => 'A new OTP was created, but email is not configured.',
             ]);
         }
+
+        $otpDeliveryFailed = false;
+        $deliveryMessage = null;
 
         try {
             Mail::to($pendingRegistration['email'])->send(new OtpVerificationMail($otpCode));

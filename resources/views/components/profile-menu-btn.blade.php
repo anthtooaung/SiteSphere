@@ -115,14 +115,15 @@
     isBottom: '{{ $trigger }}' === 'bottom',
     isTop: '{{ $trigger }}' === 'top'
 }" 
-@click.outside="open = false" 
+@click.outside="if (!$event.target.closest('.mobile-top-profile-btn')) open = false" 
 @keydown.escape.window="open = false" 
 @profile-menu-toggle.window="if(isBottom) open = !open"
+@profile-menu-close.window="open = false"
 class="mobile-account-menu-wrap relative">
     <button
         type="button"
         {{ $attributes->merge(['class' => $trigger === 'top' ? 'mobile-top-profile-btn' : 'mobile-nav-item']) }}
-        @click="isTop ? $dispatch('profile-menu-toggle') : open = !open"
+        @click="isTop ? $dispatch('profile-menu-toggle') : open = !open; if (isTop || open) document.querySelectorAll('.mobile-menu-overlay').forEach(el => el.classList.remove('is-open'));"
         id="{{ $buttonId }}"
         aria-label="Account menu"
         :aria-expanded="open.toString()"
@@ -139,11 +140,22 @@ class="mobile-account-menu-wrap relative">
 
     {{-- Dropdown Menu (Desktop Style) - Only rendered for bottom trigger as per logic --}}
     @if($trigger === 'bottom')
+    {{-- Invisible backdrop for mobile touch devices (iOS Safari click.outside workaround) --}}
+    <template x-teleport="body">
+        <div 
+            x-show="open" 
+            @click="open = false"
+            class="fixed inset-0 z-[60]"
+            x-cloak
+        ></div>
+    </template>
+
     <div
         id="{{ $dropdownId }}"
         x-show="open"
         x-cloak
         class="account-menu-dropdown absolute z-[70] bottom-full mb-2 right-0"
+        style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);"
         x-transition:enter="transition ease-out duration-100"
         x-transition:enter-start="transform opacity-0 scale-95"
         x-transition:enter-end="transform opacity-100 scale-100"

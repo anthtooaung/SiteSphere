@@ -36,7 +36,7 @@
                             </p>
                         </div>
 
-                        <x-input-field id="reset-password" name="password" label="New password" plain="true" type="password" placeholder="New password" autocomplete="new-password" required autofocus>
+                        <x-input-field id="reset-password" name="password" label="New password" plain="true" type="password" placeholder="New password" autocomplete="new-password" minlength="8" required pattern="(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}" title="Password must be at least 8 characters long and contain at least one letter, one number, and one special character." autofocus>
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path d="M7 10V8a5 5 0 0 1 10 0v2" />
                                 <path d="M6.5 10h11A1.5 1.5 0 0 1 19 11.5v7A1.5 1.5 0 0 1 17.5 20h-11A1.5 1.5 0 0 1 5 18.5v-7A1.5 1.5 0 0 1 6.5 10z" />

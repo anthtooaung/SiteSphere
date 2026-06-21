@@ -37,7 +37,6 @@
 
 @section('content')
     <x-layout.nav />
-    <div class="md:mt-24"></div>
 
     <main class="welcome-main">
         {{-- Welcome Hero Section --}}

@@ -1,3 +1,40 @@
+/* Transparent Nav styling for Welcome Page */
+.desktop-nav:not(.scrolled),
+.mobile-header:not(.scrolled) {
+    --nav-text-color: #ffffff;
+    border-bottom-color: color-mix(in srgb, #ffffff 10%, transparent) !important;
+}
+
+.desktop-nav:not(.scrolled) .site-brand span,
+.desktop-nav:not(.scrolled) .desktop-link,
+.desktop-nav:not(.scrolled) .auth-menu-button,
+.desktop-nav:not(.scrolled) .account-button,
+.desktop-nav:not(.scrolled) .noti-button,
+.desktop-nav:not(.scrolled) .noti-button .icon,
+.mobile-header:not(.scrolled) span,
+.mobile-header:not(.scrolled) a {
+    color: var(--nav-text-color) !important;
+}
+
+.desktop-nav:not(.scrolled) .site-brand svg,
+.mobile-header:not(.scrolled) svg {
+    color: var(--nav-text-color) !important;
+}
+
+.desktop-nav:not(.scrolled) .desktop-search-container {
+    border-color: color-mix(in srgb, #ffffff 30%, transparent) !important;
+    background: color-mix(in srgb, #ffffff 10%, transparent) !important;
+    color: #ffffff !important;
+}
+
+.desktop-nav:not(.scrolled) .desktop-search-container input {
+    color: #ffffff !important;
+}
+
+.desktop-nav:not(.scrolled) .desktop-search-container input::placeholder {
+    color: color-mix(in srgb, #ffffff 70%, transparent) !important;
+}
+
 .welcome-main {
     --welcome-muted: color-mix(in srgb, var(--text-color) 68%, transparent);
     --welcome-surface: color-mix(in srgb, var(--background-color) 92%, white);
@@ -35,7 +72,7 @@
     --text-color: #0d1b2a;
     position: relative;
     display: flex;
-    min-height: calc(100vh - 80px);
+    min-height: 100vh;
     align-items: center;
     justify-content: center;
     padding: 4rem 8% 7rem;
@@ -43,7 +80,7 @@
     text-align: center;
     background:
         linear-gradient(color-mix(in srgb, var(--text-color) 78%, transparent), color-mix(in srgb, var(--text-color) 88%, transparent)),
-        url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1400&auto=format&fit=crop");
+        url("../images/welcome-hero.jpeg");
     background-position: center;
     background-size: cover;
 }
@@ -575,8 +612,8 @@
 
 @media (max-width: 640px) {
     .welcome-hero {
-        min-height: calc(100vh - 56px);
-        min-height: calc(100svh - 56px);
+        min-height: 100vh;
+        min-height: 100svh;
         padding: 3.5rem 1.25rem 6rem;
     }
 

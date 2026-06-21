@@ -63,7 +63,7 @@
                                     class="flex size-9 shrink-0 items-center justify-center rounded-full border [border-color:var(--line)] [background:var(--paper)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] transition-all hover:[border-color:var(--accent-line)] hover:[background:var(--accent-wash)] hover:[color:var(--accent-ink)]"
                                     aria-label="More options" aria-haspopup="menu" x-on:click.stop="actionsOpen = ! actionsOpen"
                                     x-on:keydown.escape.window="actionsOpen = false" x-bind:aria-expanded="actionsOpen.toString()">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-more-horizontal"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                                    <x-fas-ellipsis class="size-4" aria-hidden="true" />
                                 </button>
 
                                 <div x-cloak x-show="actionsOpen" x-transition:enter="transition ease-out duration-200 origin-top-right"
@@ -81,8 +81,8 @@
                                                 <button type="submit"
                                                     class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
                                                     role="menuitem">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x-show="saved" class="lucide lucide-bookmark-check [color:var(--accent-color,#6c5ce7)]"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x-show="! saved" class="lucide lucide-bookmark"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                                                    <x-fas-bookmark class="size-3" aria-hidden="true" x-show="saved" style="color: var(--accent-color, #6c5ce7);" />
+                                                    <x-far-bookmark class="size-3" aria-hidden="true" x-show="!saved" />
                                                     <span
                                                         x-text="saved ? 'Unsave Post' : 'Save Post'">{{ $saved ? 'Unsave Post' : 'Save Post' }}</span>
                                                 </button>
@@ -94,7 +94,7 @@
                                                     class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
                                                     role="menuitem"
                                                     x-on:click="openReportModal()">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                                                    <x-fas-flag class="size-3" aria-hidden="true" />
                                                     <span>Report</span>
                                                 </button>
                                             </div>
@@ -106,7 +106,7 @@
                                                         title: 'Are you sure?',
                                                         text: 'You want to ban and soft delete this post? This action will also hide all audit descriptions.',
                                                         icon: 'warning',
-                                                        confirmButtonColor: '#b91c1c',
+                                                        confirmButtonColor: 'var(--ui-danger)',
                                                         cancelButtonColor: '#6c757d',
                                                         confirmButtonText: 'Yes, ban it!'
                                                     }).then((result) => {
@@ -116,9 +116,9 @@
                                                     })">
                                                     @csrf
                                                     <button type="submit"
-                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
+                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
                                                         role="menuitem">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                                        <x-fas-ban class="size-3" aria-hidden="true" />
                                                         <span>Ban Post</span>
                                                     </button>
                                                 </form>
@@ -130,188 +130,20 @@
                                         <a href="{{ route('login') }}"
                                             class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
                                             role="menuitem">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                                            <x-far-bookmark class="size-3" aria-hidden="true" />
                                             <span>Save Post</span>
                                         </a>
                                         <a href="{{ route('login') }}"
                                             class="mt-1 flex min-h-9 w-full items-center gap-2 rounded-lg border-t px-2.5 py-1.5 pt-2 text-left transition-all duration-[180ms] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
                                             role="menuitem">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                                            <x-fas-flag class="size-3" aria-hidden="true" />
                                             <span>Report</span>
                                         </a>
                                     @endguest
                                 </div>
                             </div>
 
-                            @auth
-                                @if ($post->id)
-                                    <template x-teleport="body">
-                                        <div x-cloak x-show="reportOpen" x-transition.opacity.duration.200ms
-                                            class="fixed inset-0 z-[100000] flex items-center justify-center bg-black/45 p-4 backdrop-blur-md"
-                                            role="presentation" x-on:click.self="closeReportModal()"
-                                            x-on:keydown.escape.window="closeReportModal()">
-                                            <form method="POST" action="{{ route('posts.report', $post->id) }}"
-                                                class="flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl border [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_8%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_30px_60px_-15px_color-mix(in_srgb,var(--text-color,#0d1b2a)_28%,transparent)]"
-                                                aria-labelledby="report-modal-title-{{ $post->id }}"
-                                                x-on:click.stop>
-                                                @csrf
-
-                                                <div class="flex items-start justify-between gap-4 px-7 pb-2 pt-7">
-                                                    <div class="min-w-0">
-                                                        <h3 id="report-modal-title-{{ $post->id }}"
-                                                            class="text-[22px] font-bold leading-tight tracking-normal [color:var(--text-color,#0d1b2a)]">
-                                                            Report Content
-                                                        </h3>
-                                                        <p
-                                                            class="mt-2 text-sm leading-6 [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_64%,transparent)]">
-                                                            Select the reason that best matches the issue with this post.
-                                                        </p>
-                                                    </div>
-                                                    <button type="button"
-                                                        class="flex size-9 shrink-0 items-center justify-center rounded-full transition [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--text-color,#0d1b2a)] focus:outline-none focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_32%,transparent)]"
-                                                        aria-label="Close report dialog" x-on:click="closeReportModal()">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                                                    </button>
-                                                </div>
-
-                                                <div class="flex-1 space-y-6 overflow-y-auto px-7 py-4">
-                                                    <div class="space-y-3">
-                                                        <span
-                                                            class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Content
-                                                            Quality</span>
-                                                        <div class="grid gap-3 sm:grid-cols-2">
-                                                            @foreach ([
-                                                                ['label' => 'Spam / Misleading', 'icon' => 'alert-triangle'],
-                                                                ['label' => 'Fake / False Info', 'icon' => 'shield-alert'],
-                                                                ['label' => 'Intellectual Property', 'icon' => 'copyright'],
-                                                                ['label' => 'Nudity / Obscenity', 'icon' => 'eye-off'],
-                                                            ] as $option)
-                                                                <label
-                                                                    class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
-                                                                    x-bind:class="reportReason === @js($option['label']) ? '[border-color:var(--accent-color,#6c5ce7)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] [box-shadow:0_0_0_1px_var(--accent-color,#6c5ce7)]' : ''">
-                                                                    <span
-                                                                        class="flex min-w-0 items-center gap-3 text-sm font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]"
-                                                                        x-bind:class="reportReason === @js($option['label']) ? '[color:var(--accent-color,#6c5ce7)]' : ''">
-                                                                        @if ($option['icon'] === 'alert-triangle')
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3ZM12 9v4"/><path d="M12 17h.01"/></svg>
-                                                                        @elseif ($option['icon'] === 'shield-alert')
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-alert"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-                                                                        @elseif ($option['icon'] === 'copyright')
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copyright"><circle cx="12" cy="12" r="10"/><path d="M14.83 14.83a4 4 0 1 1 0-5.66"/></svg>
-                                                                        @else
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88 3 3"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><circle cx="12" cy="12" r="3"/><path d="m21 21-6.88-6.88"/></svg>
-                                                                        @endif
-                                                                        <span>{{ $option['label'] }}</span>
-                                                                    </span>
-                                                                    <input type="radio" name="reason" value="{{ $option['label'] }}"
-                                                                        class="size-4 shrink-0 accent-[var(--accent-color,#6c5ce7)]"
-                                                                        x-model="reportReason">
-                                                                </label>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="space-y-3">
-                                                        <span
-                                                            class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Safety
-                                                            & Conduct</span>
-                                                        <div class="grid gap-3 sm:grid-cols-2">
-                                                            @foreach ([
-                                                                ['label' => 'Hate Speech', 'icon' => 'frown'],
-                                                                ['label' => 'Harassment / Abuse', 'icon' => 'zap'],
-                                                                ['label' => 'Violence / Threats', 'icon' => 'swords'],
-                                                                ['label' => 'Self-Harm Risk', 'icon' => 'heart-crack'],
-                                                            ] as $option)
-                                                                <label
-                                                                    class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
-                                                                    x-bind:class="reportReason === @js($option['label']) ? '[border-color:var(--accent-color,#6c5ce7)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] [box-shadow:0_0_0_1px_var(--accent-color,#6c5ce7)]' : ''">
-                                                                    <span
-                                                                        class="flex min-w-0 items-center gap-3 text-sm font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]"
-                                                                        x-bind:class="reportReason === @js($option['label']) ? '[color:var(--accent-color,#6c5ce7)]' : ''">
-                                                                        @if ($option['icon'] === 'frown')
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-frown"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
-                                                                        @elseif ($option['icon'] === 'zap')
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                                                                        @elseif ($option['icon'] === 'swords')
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-swords"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg>
-                                                                        @else
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-crack"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="m12 13-1-1 2-2-3-3 2-2"/></svg>
-                                                                        @endif
-                                                                        <span>{{ $option['label'] }}</span>
-                                                                    </span>
-                                                                    <input type="radio" name="reason" value="{{ $option['label'] }}"
-                                                                        class="size-4 shrink-0 accent-[var(--accent-color,#6c5ce7)]"
-                                                                        x-model="reportReason">
-                                                                </label>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="space-y-3">
-                                                        <span
-                                                            class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Legal
-                                                            & Integrity</span>
-                                                        <div class="grid gap-3 sm:grid-cols-2">
-                                                            @foreach ([
-                                                                ['label' => 'Illegal Activities', 'icon' => 'gavel'],
-                                                                ['label' => 'Scams / Fraud', 'icon' => 'ban'],
-                                                            ] as $option)
-                                                                <label
-                                                                    class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
-                                                                    x-bind:class="reportReason === @js($option['label']) ? '[border-color:var(--accent-color,#6c5ce7)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] [box-shadow:0_0_0_1px_var(--accent-color,#6c5ce7)]' : ''">
-                                                                    <span
-                                                                        class="flex min-w-0 items-center gap-3 text-sm font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]"
-                                                                        x-bind:class="reportReason === @js($option['label']) ? '[color:var(--accent-color,#6c5ce7)]' : ''">
-                                                                        @if ($option['icon'] === 'gavel')
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gavel"><path d="m14.5 12.5-8 8a2.11 2.11 0 1 1-3-3l8-8"/><path d="m16 16 2 2"/><path d="m19 13 2 2"/><path d="m5 5 2 2"/><path d="m2 2 3 3"/><path d="m21 2-3 3"/><path d="M18 8 8 18"/><path d="m11 3 8 8"/></svg>
-                                                                        @else
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
-                                                                        @endif
-                                                                        <span>{{ $option['label'] }}</span>
-                                                                    </span>
-                                                                    <input type="radio" name="reason" value="{{ $option['label'] }}"
-                                                                        class="size-4 shrink-0 accent-[var(--accent-color,#6c5ce7)]"
-                                                                        x-model="reportReason">
-                                                                </label>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="space-y-2">
-                                                        <div class="flex items-center justify-between gap-3">
-                                                            <label for="report-details-{{ $post->id }}"
-                                                                class="text-sm font-semibold [color:var(--text-color,#0d1b2a)]">Provide
-                                                                Additional Details (Optional)</label>
-                                                            <span class="text-xs font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_45%,transparent)]"
-                                                                x-bind:class="reportDetailsCount() >= 560 ? '[color:var(--accent-color,#6c5ce7)]' : ''"
-                                                                x-text="`${reportDetailsCount()} / 600`">0 / 600</span>
-                                                        </div>
-                                                        <textarea id="report-details-{{ $post->id }}" name="details" maxlength="600" rows="4"
-                                                            x-model="reportDetails"
-                                                            class="w-full resize-none rounded-xl border px-3.5 py-3 text-sm leading-6 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_14%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] placeholder:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)] focus:outline-none focus:ring-4 focus:[border-color:var(--accent-color,#6c5ce7)] focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,transparent)]"
-                                                            placeholder="Describe context or reasons to help us review this report faster."></textarea>
-                                                    </div>
-                                                </div>
-
-                                                <div
-                                                    class="flex justify-end gap-3 border-t px-7 py-5 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--text-color,#0d1b2a)_8%)]">
-                                                    <button type="button"
-                                                        class="inline-flex min-h-11 items-center justify-center rounded-xl border px-5 text-sm font-bold transition [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_14%,transparent)] [background:var(--background-color,#ffffff)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_68%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_88%,var(--text-color,#0d1b2a)_12%)]"
-                                                        x-on:click="closeReportModal()">
-                                                        Cancel
-                                                    </button>
-                                                    <button type="submit"
-                                                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold text-white transition [background:var(--accent-color,#6c5ce7)] [box-shadow:0_4px_12px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,transparent)] disabled:cursor-not-allowed disabled:opacity-55"
-                                                        x-bind:disabled="! reportReason" disabled>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                                                        <span>Submit Report</span>
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </template>
-                                @endif
-                            @endauth
+                            <x-layout.report-modal :post-id="$post->id" />
                         </div>
 
                         <!-- Domain pill -->
@@ -323,36 +155,11 @@
                                 rel="noreferrer"
                             >
                                 <span class="aud-domain-chain" aria-hidden="true">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        width="15"
-                                        height="15"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2.2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                                    </svg>
+                                    <x-fas-link class="size-3.5" />
                                 </span>
                                 <span class="aud-domain-text">{{ $host }}</span>
                                 <span class="aud-domain-ext" aria-hidden="true">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        width="13"
-                                        height="13"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2.2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                        <polyline points="15 3 21 3 21 9" />
-                                        <line x1="10" y1="14" x2="21" y2="3" />
-                                    </svg>
+                                    <x-fas-arrow-up-right-from-square class="size-3" />
                                 </span>
                             </a>
                         </div>
@@ -512,6 +319,7 @@
                                             x-data="{
                                                 actionsOpen: false,
                                                 reportOpen: false,
+                                                editOpen: false,
                                                 reportReason: '',
                                                 reportDetails: '',
                                                 saved: @js((bool) $saved),
@@ -521,6 +329,13 @@
                                                 },
                                                 closeReportModal() {
                                                     this.reportOpen = false;
+                                                },
+                                                openEditModal() {
+                                                    this.actionsOpen = false;
+                                                    this.editOpen = true;
+                                                },
+                                                closeEditModal() {
+                                                    this.editOpen = false;
                                                 },
                                                 reportDetailsCount() {
                                                     return this.reportDetails.length;
@@ -551,7 +366,7 @@
                                                         class="flex size-9 shrink-0 items-center justify-center rounded-full border [border-color:var(--line)] [background:var(--paper)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] transition-all hover:[border-color:var(--accent-line)] hover:[background:var(--accent-wash)] hover:[color:var(--accent-ink)]"
                                                         aria-label="More options" aria-haspopup="menu" x-on:click.stop="actionsOpen = ! actionsOpen"
                                                         x-on:keydown.escape.window="actionsOpen = false" x-bind:aria-expanded="actionsOpen.toString()">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-more-horizontal"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                                                        <x-fas-ellipsis class="size-4" aria-hidden="true" />
                                                     </button>
 
                                                     <div x-cloak x-show="actionsOpen" x-transition:enter="transition ease-out duration-200 origin-top-right"
@@ -570,26 +385,27 @@
                                                                         class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
                                                                         role="menuitem"
                                                                         x-on:click="openReportModal()">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                                                                        <x-fas-flag class="size-3" aria-hidden="true" />
                                                                         <span>Report</span>
                                                                     </button>
                                                                 </div>
 
                                                                 @if (Auth::id() === $userPost->user_id)
-                                                                    <a href="{{ route('user-posts.edit', $userPost->id) }}"
+                                                                    <button type="button"
                                                                         class="mt-1 border-t pt-1 flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
-                                                                        role="menuitem">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                                                        role="menuitem"
+                                                                        x-on:click="openEditModal()">
+                                                                        <x-fas-pen class="size-3" aria-hidden="true" />
                                                                         <span>Edit Description</span>
-                                                                    </a>
+                                                                    </button>
 
-                                                                    <form method="POST" action="{{ route('user-posts.destroy', $userPost->id) }}"
+                                                                    <form method="POST" action="{{ route('posts.description.destroy', $post->id) }}"
                                                                         class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
                                                                         x-on:submit.prevent="window.sitesphereSwal.confirm({
                                                                             title: 'Are you sure?',
                                                                             text: 'You want to delete your description?',
                                                                             icon: 'warning',
-                                                                            confirmButtonColor: '#d33',
+                                                                            confirmButtonColor: 'var(--ui-danger)',
                                                                             cancelButtonColor: '#6c757d',
                                                                             confirmButtonText: 'Yes, delete it!'
                                                                         }).then((result) => {
@@ -600,9 +416,9 @@
                                                                         @csrf
                                                                         @method('DELETE')
                                                                         <button type="submit"
-                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
+                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
                                                                             role="menuitem">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                                                            <x-fas-trash class="size-3" aria-hidden="true" />
                                                                             <span>Delete Description</span>
                                                                         </button>
                                                                     </form>
@@ -614,7 +430,7 @@
                                                                             title: 'Are you sure?',
                                                                             text: 'You want to hide this audit description?',
                                                                             icon: 'warning',
-                                                                            confirmButtonColor: '#b91c1c',
+                                                                            confirmButtonColor: 'var(--ui-danger)',
                                                                             cancelButtonColor: '#6c757d',
                                                                             confirmButtonText: 'Yes, hide it!'
                                                                         }).then((result) => {
@@ -624,9 +440,9 @@
                                                                         })">
                                                                         @csrf
                                                                         <button type="submit"
-                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
+                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
                                                                             role="menuitem">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                                                            <x-fas-ban class="size-3" aria-hidden="true" />
                                                                             <span>Ban Audit</span>
                                                                         </button>
                                                                     </form>
@@ -638,7 +454,7 @@
                                                             <a href="{{ route('login') }}"
                                                                 class="mt-1 flex min-h-9 w-full items-center gap-2 rounded-lg border-t px-2.5 py-1.5 pt-2 text-left transition-all duration-[180ms] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
                                                                 role="menuitem">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                                                                <x-fas-flag class="size-3" aria-hidden="true" />
                                                                 <span>Report</span>
                                                             </a>
                                                         @endguest
@@ -646,175 +462,57 @@
                                                 </div>
                                             </header>
 
-                                            @auth
-                                                @if ($post->id)
-                                                    <template x-teleport="body">
-                                                        <div x-cloak x-show="reportOpen" x-transition.opacity.duration.200ms
-                                                            class="fixed inset-0 z-[100000] flex items-center justify-center bg-black/45 p-4 backdrop-blur-md"
-                                                            role="presentation" x-on:click.self="closeReportModal()"
-                                                            x-on:keydown.escape.window="closeReportModal()">
-                                                            <form method="POST" action="{{ route('posts.report', $post->id) }}"
-                                                                class="flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl border [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_8%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_30px_60px_-15px_color-mix(in_srgb,var(--text-color,#0d1b2a)_28%,transparent)]"
-                                                                aria-labelledby="report-modal-title-{{ $post->id }}-audit-{{ $userPost->id }}"
-                                                                x-on:click.stop>
-                                                                @csrf
+                                            <x-layout.report-modal :post-id="$post->id" :modal-id="'audit-' . $userPost->id" />
 
-                                                                <div class="flex items-start justify-between gap-4 px-7 pb-2 pt-7">
-                                                                    <div class="min-w-0">
-                                                                        <h3 id="report-modal-title-{{ $post->id }}-audit-{{ $userPost->id }}"
-                                                                            class="text-[22px] font-bold leading-tight tracking-normal [color:var(--text-color,#0d1b2a)]">
-                                                                            Report Content
-                                                                        </h3>
-                                                                        <p
-                                                                            class="mt-2 text-sm leading-6 [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_64%,transparent)]">
-                                                                            Select the reason that best matches the issue with this post.
-                                                                        </p>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="flex size-9 shrink-0 items-center justify-center rounded-full transition [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--text-color,#0d1b2a)] focus:outline-none focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_32%,transparent)]"
-                                                                        aria-label="Close report dialog" x-on:click="closeReportModal()">
-                                                                        <x-fas-xmark class="size-4" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                    </button>
+                                            @if (Auth::id() === $userPost->user_id)
+                                                <template x-teleport="body">
+                                                    <div x-cloak x-show="editOpen" x-transition.opacity.duration.200ms
+                                                        class="fixed inset-0 z-[100000] flex items-center justify-center bg-black/45 p-4 backdrop-blur-md"
+                                                        role="presentation" x-on:click.self="closeEditModal()"
+                                                        x-on:keydown.escape.window="closeEditModal()">
+                                                        <form method="POST" action="{{ route('posts.description.update', $post->id) }}"
+                                                            class="flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl border [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_8%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_30px_60px_-15px_color-mix(in_srgb,var(--text-color,#0d1b2a)_28%,transparent)]"
+                                                            x-on:click.stop>
+                                                            @csrf
+                                                            @method('PATCH')
+
+                                                            <div class="flex items-start justify-between gap-4 px-7 pb-2 pt-7">
+                                                                <div class="min-w-0">
+                                                                    <h3 class="text-[22px] font-bold leading-tight tracking-normal [color:var(--text-color,#0d1b2a)]">
+                                                                        Edit Description
+                                                                    </h3>
                                                                 </div>
+                                                                <button type="button"
+                                                                    class="flex size-9 shrink-0 items-center justify-center rounded-full transition [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--text-color,#0d1b2a)] focus:outline-none focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_32%,transparent)]"
+                                                                    aria-label="Close edit dialog" x-on:click="closeEditModal()">
+                                                                    <x-fas-xmark class="size-4" aria-hidden="true" />
+                                                                </button>
+                                                            </div>
 
-                                                                <div class="flex-1 space-y-6 overflow-y-auto px-7 py-4">
-                                                                    <div class="space-y-3">
-                                                                        <span
-                                                                            class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Content
-                                                                            Quality</span>
-                                                                        <div class="grid gap-3 sm:grid-cols-2">
-                                                                            @foreach ([
-                                                                                ['label' => 'Spam / Misleading', 'icon' => 'triangle-exclamation'],
-                                                                                ['label' => 'Fake / False Info', 'icon' => 'shield-halved'],
-                                                                                ['label' => 'Intellectual Property', 'icon' => 'copyright'],
-                                                                                ['label' => 'Nudity / Obscenity', 'icon' => 'eye-slash'],
-                                                                            ] as $option)
-                                                                                <label
-                                                                                    class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
-                                                                                    x-bind:class="reportReason === @js($option['label']) ? '[border-color:var(--accent-color,#6c5ce7)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] [box-shadow:0_0_0_1px_var(--accent-color,#6c5ce7)]' : ''">
-                                                                                    <span
-                                                                                        class="flex min-w-0 items-center gap-3 text-sm font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]"
-                                                                                        x-bind:class="reportReason === @js($option['label']) ? '[color:var(--accent-color,#6c5ce7)]' : ''">
-                                                                                        @if ($option['icon'] === 'triangle-exclamation')
-                                                                                            <x-fas-triangle-exclamation class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @elseif ($option['icon'] === 'shield-halved')
-                                                                                            <x-fas-shield-halved class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @elseif ($option['icon'] === 'copyright')
-                                                                                            <x-fas-copyright class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @else
-                                                                                            <x-fas-eye-slash class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @endif
-                                                                                        <span>{{ $option['label'] }}</span>
-                                                                                    </span>
-                                                                                    <input type="radio" name="reason" value="{{ $option['label'] }}"
-                                                                                        class="size-4 shrink-0 accent-[var(--accent-color,#6c5ce7)]"
-                                                                                        x-model="reportReason">
-                                                                                </label>
-                                                                            @endforeach
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="space-y-3">
-                                                                        <span
-                                                                            class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Safety
-                                                                            & Conduct</span>
-                                                                        <div class="grid gap-3 sm:grid-cols-2">
-                                                                            @foreach ([
-                                                                                ['label' => 'Hate Speech', 'icon' => 'face-frown'],
-                                                                                ['label' => 'Harassment / Abuse', 'icon' => 'bolt'],
-                                                                                ['label' => 'Violence / Threats', 'icon' => 'hand-fist'],
-                                                                                ['label' => 'Self-Harm Risk', 'icon' => 'heart-crack'],
-                                                                            ] as $option)
-                                                                                <label
-                                                                                    class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
-                                                                                    x-bind:class="reportReason === @js($option['label']) ? '[border-color:var(--accent-color,#6c5ce7)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] [box-shadow:0_0_0_1px_var(--accent-color,#6c5ce7)]' : ''">
-                                                                                    <span
-                                                                                        class="flex min-w-0 items-center gap-3 text-sm font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]"
-                                                                                        x-bind:class="reportReason === @js($option['label']) ? '[color:var(--accent-color,#6c5ce7)]' : ''">
-                                                                                        @if ($option['icon'] === 'face-frown')
-                                                                                            <x-fas-face-frown class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @elseif ($option['icon'] === 'bolt')
-                                                                                            <x-fas-bolt class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @elseif ($option['icon'] === 'hand-fist')
-                                                                                            <x-fas-hand-fist class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @else
-                                                                                            <x-fas-heart-crack class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @endif
-                                                                                        <span>{{ $option['label'] }}</span>
-                                                                                    </span>
-                                                                                    <input type="radio" name="reason" value="{{ $option['label'] }}"
-                                                                                        class="size-4 shrink-0 accent-[var(--accent-color,#6c5ce7)]"
-                                                                                        x-model="reportReason">
-                                                                                </label>
-                                                                            @endforeach
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="space-y-3">
-                                                                        <span
-                                                                            class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Legal
-                                                                            & Integrity</span>
-                                                                        <div class="grid gap-3 sm:grid-cols-2">
-                                                                            @foreach ([
-                                                                                ['label' => 'Illegal Activities', 'icon' => 'gavel'],
-                                                                                ['label' => 'Scams / Fraud', 'icon' => 'ban'],
-                                                                            ] as $option)
-                                                                                <label
-                                                                                    class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
-                                                                                    x-bind:class="reportReason === @js($option['label']) ? '[border-color:var(--accent-color,#6c5ce7)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] [box-shadow:0_0_0_1px_var(--accent-color,#6c5ce7)]' : ''">
-                                                                                    <span
-                                                                                        class="flex min-w-0 items-center gap-3 text-sm font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]"
-                                                                                        x-bind:class="reportReason === @js($option['label']) ? '[color:var(--accent-color,#6c5ce7)]' : ''">
-                                                                                        @if ($option['icon'] === 'gavel')
-                                                                                            <x-fas-gavel class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @else
-                                                                                            <x-fas-ban class="size-4 shrink-0" aria-hidden="true" style="width: 16px; height: 16px;" />
-                                                                                        @endif
-                                                                                        <span>{{ $option['label'] }}</span>
-                                                                                    </span>
-                                                                                    <input type="radio" name="reason" value="{{ $option['label'] }}"
-                                                                                        class="size-4 shrink-0 accent-[var(--accent-color,#6c5ce7)]"
-                                                                                        x-model="reportReason">
-                                                                                </label>
-                                                                            @endforeach
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="space-y-2">
-                                                                        <div class="flex items-center justify-between gap-3">
-                                                                            <label for="report-details-{{ $post->id }}-audit-{{ $userPost->id }}"
-                                                                                class="text-sm font-semibold [color:var(--text-color,#0d1b2a)]">Provide
-                                                                                Additional Details (Optional)</label>
-                                                                            <span class="text-xs font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_45%,transparent)]"
-                                                                                x-bind:class="reportDetailsCount() >= 560 ? '[color:var(--accent-color,#6c5ce7)]' : ''"
-                                                                                x-text="`${reportDetailsCount()} / 600`">0 / 600</span>
-                                                                        </div>
-                                                                        <textarea id="report-details-{{ $post->id }}-audit-{{ $userPost->id }}" name="details" maxlength="600" rows="4"
-                                                                            x-model="reportDetails"
-                                                                            class="w-full resize-none rounded-xl border px-3.5 py-3 text-sm leading-6 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_14%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] placeholder:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)] focus:outline-none focus:ring-4 focus:[border-color:var(--accent-color,#6c5ce7)] focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,transparent)]"
-                                                                            placeholder="Describe context or reasons to help us review this report faster."></textarea>
-                                                                    </div>
+                                                            <div class="flex-1 space-y-6 overflow-y-auto px-7 py-4">
+                                                                <div class="space-y-2">
+                                                                    <textarea name="description" required rows="6" maxlength="5000"
+                                                                        class="w-full resize-none rounded-xl border px-3.5 py-3 text-sm leading-6 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_14%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] placeholder:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)] focus:outline-none focus:ring-4 focus:[border-color:var(--accent-color,#6c5ce7)] focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,transparent)]"
+                                                                        placeholder="Update your description">{{ $userPost->description }}</textarea>
                                                                 </div>
+                                                            </div>
 
-                                                                <div
-                                                                    class="flex justify-end gap-3 border-t px-7 py-5 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--text-color,#0d1b2a)_8%)]">
-                                                                    <button type="button"
-                                                                        class="inline-flex min-h-11 items-center justify-center rounded-xl border px-5 text-sm font-bold transition [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_14%,transparent)] [background:var(--background-color,#ffffff)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_68%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_88%,var(--text-color,#0d1b2a)_12%)]"
-                                                                        x-on:click="closeReportModal()">
-                                                                        Cancel
-                                                                    </button>
-                                                                    <button type="submit"
-                                                                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold text-white transition [background:var(--accent-color,#6c5ce7)] [box-shadow:0_4px_12px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,transparent)] disabled:cursor-not-allowed disabled:opacity-55"
-                                                                        x-bind:disabled="! reportReason" disabled>
-                                                                        <x-fas-paper-plane class="size-3" aria-hidden="true" style="width: 12px; height: 12px;" />
-                                                                        <span>Submit Report</span>
-                                                                    </button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </template>
-                                                @endif
-                                            @endauth
+                                                            <div class="flex justify-end gap-3 border-t px-7 py-5 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--text-color,#0d1b2a)_8%)]">
+                                                                <button type="button"
+                                                                    class="inline-flex min-h-11 items-center justify-center rounded-xl border px-5 text-sm font-bold transition [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_14%,transparent)] [background:var(--background-color,#ffffff)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_68%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_88%,var(--text-color,#0d1b2a)_12%)]"
+                                                                    x-on:click="closeEditModal()">
+                                                                    Cancel
+                                                                </button>
+                                                                <button type="submit"
+                                                                    class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold text-white transition [background:var(--accent-color,#6c5ce7)] [box-shadow:0_4px_12px_color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,transparent)]">
+                                                                    <x-fas-save class="size-3" aria-hidden="true" />
+                                                                    <span>Save Changes</span>
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </template>
+                                            @endif
 
                                             <div class="ss-expandable aud-depo-body" data-clamp="5">
                                                 <p class="ss-expandable-text" style="--clamp-lines: 5">
@@ -841,6 +539,7 @@
                         :comments="$comments"
                         :comment-user-ratings="$commentUserRatings"
                         :user-rating="$userRating"
+                        :user-has-commented="$userHasCommented"
                     />
 
                     <!-- =================================================================
@@ -859,19 +558,7 @@
                                             aria-label="Scroll left"
                                             disabled
                                         >
-                                            <svg
-                                                viewBox="0 0 24 24"
-                                                width="16"
-                                                height="16"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2.5"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                aria-hidden="true"
-                                            >
-                                                <polyline points="15 18 9 12 15 6" />
-                                            </svg>
+                                            <x-fas-chevron-left class="size-4" aria-hidden="true" />
                                         </button>
                                         <button
                                             type="button"
@@ -879,19 +566,7 @@
                                             id="relNext"
                                             aria-label="Scroll right"
                                         >
-                                            <svg
-                                                viewBox="0 0 24 24"
-                                                width="16"
-                                                height="16"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2.5"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                aria-hidden="true"
-                                            >
-                                                <polyline points="9 18 15 12 9 6" />
-                                            </svg>
+                                            <x-fas-chevron-right class="size-4" aria-hidden="true" />
                                         </button>
                                     </div>
                                 </div>

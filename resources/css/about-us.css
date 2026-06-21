@@ -12,10 +12,10 @@
     --secondary: #a29bfe;
     --text: #0f172a;
     --text-muted: #334155;
-    --border: rgba(148, 163, 184, 0.25);
-    --shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-    --radius-lg: 20px;
-    --radius-md: 16px;
+    --border: var(--ui-border);
+    --shadow: var(--ui-shadow);
+    --radius-lg: var(--ui-radius);
+    --radius-md: var(--ui-radius);
     --max-width: 1200px;
 
     min-height: 100vh;

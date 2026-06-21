@@ -11,7 +11,7 @@
 @section('content')
     <x-layout.nav />
 
-    <div style="font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color);">
+    <div>
         <x-layout.upload-post :categories="$categories" />
     </div>
 @endsection

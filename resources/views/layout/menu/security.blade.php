@@ -159,7 +159,7 @@
                                     <label for="new-password">New Password</label>
                                     <div class="password-input-wrapper">
                                         <input :type="password ? 'text' : 'password'" id="new-password" name="password"
-                                            placeholder="Enter new password" autocomplete="new-password"
+                                            placeholder="Enter new password" autocomplete="new-password" required minlength="8" pattern="(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}" title="Password must be at least 8 characters long and contain at least one letter, one number, and one special character."
                                             @class(['is-invalid' => $errors->has('password')])>
                                         <button class="visibility-btn" type="button" aria-label="Toggle new password visibility"
                                             :aria-pressed="password.toString()" @click="password = ! password">

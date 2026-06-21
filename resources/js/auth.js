@@ -728,8 +728,8 @@ const init = () => {
 
     if (hasClientErrors) return;
 
-    if (specialCharacterCount < 3) {
-      showError("password", "Your password needs at least 3 symbols like !, @, #, or $.", registerForm);
+    if (specialCharacterCount < 1) {
+      showError("password", "Your password needs at least one special character (e.g., !, @, #).", registerForm);
       return;
     }
 

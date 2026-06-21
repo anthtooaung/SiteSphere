@@ -37,14 +37,16 @@ class AuditLogs extends Model
 
     /**
      * Get the hex color for the audit log category.
+     * Must match CSS variables in app.css: --chart-reports, --chart-resolved, --chart-announcement.
      */
     public function getColor(): string
     {
         return match ($this->category) {
-            'moderation' => '#ef4444', // Red-500
-            'success' => '#22c55e',    // Green-500
-            'announcement' => '#3b82f6', // Blue-500
-            default => '#6b7280',      // Gray-500
+            'moderation' => '#ef4444',    // --chart-reports — bans, deletes, warnings
+            'success' => '#10b981',       // --chart-resolved — resolved, approved
+            'announcement' => '#7c3aed',  // --chart-announcement — announcements, bulk
+            'system' => '#f59e0b',        // Amber — settings, system changes
+            default => '#6b7280',         // Gray
         };
     }
 }

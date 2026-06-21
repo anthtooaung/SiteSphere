@@ -174,10 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasMore = entries.length > 3;
         const rows = visible.map((a, i) => `
           <div class="alc-entry">
-            <div class="alc-icon" style="background:${a.color}18"><span class="act-legend-dot" style="background:${a.color}; width:10px; height:10px;"></span></div>
+            <div class="alc-icon" style="background:${a.color}18; color:${a.color};"><i class="fa-solid fa-${a.icon}"></i></div>
             <div class="alc-info">
               <div class="alc-txt">${a.txt}</div>
-              <div class="alc-time">${a.time}</div>
+              <div class="alc-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> <i class="fa-regular fa-clock"></i> ${a.timeAbsolute || a.time}</div>
             </div>
           </div>${i < visible.length - 1 ? '<div class="alc-divider"></div>' : ""}`
         ).join("");
@@ -229,8 +229,8 @@ document.addEventListener('DOMContentLoaded', () => {
         mBody.innerHTML = entries.length
           ? entries.map(a => `
             <div class="modal-row">
-              <div class="modal-icon" style="background:${a.color}18"><span class="act-legend-dot" style="background:${a.color}; width:10px; height:10px;"></span></div>
-              <div class="modal-info"><div class="tl-txt">${a.txt}</div><div class="tl-time">${a.time}</div></div>
+              <div class="modal-icon" style="background:${a.color}18; color:${a.color};"><i class="fa-solid fa-${a.icon}"></i></div>
+              <div class="modal-info"><div class="tl-txt">${a.txt}</div><div class="tl-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> ${a.timeAbsolute || a.time}</div></div>
               <span class="modal-date-chip">${a.date}</span>
             </div>`
           ).join("")

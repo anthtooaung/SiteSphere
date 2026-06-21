@@ -24,7 +24,9 @@ class AdminActivityLogController extends Controller
         $endDate = $startDate->copy()->endOfMonth();
 
         $auditLogs = AuditLogs::query()
+            ->with('user')
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->latest()
             ->get()
             ->groupBy(fn ($log) => $log->created_at->format('Y-m-d'));
 

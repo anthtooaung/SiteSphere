@@ -14,8 +14,15 @@
                 $actsExpanded[] = [
                     'date' => $date,
                     'color' => $log->getColor(),
+                    'icon' => str_replace('fa-', '', $log->getIcon()),
+                    'category' => $log->category,
+                    'user' => $log->user?->name ?? 'System',
                     'txt' => $log->action,
+                    'target' => $log->target_type ? class_basename($log->target_type) : null,
+                    'targetId' => $log->target_id,
+                    'reason' => $log->reason,
                     'time' => $log->created_at->diffForHumans(),
+                    'timeAbsolute' => $log->created_at->format('H:i'),
                 ];
             }
         }

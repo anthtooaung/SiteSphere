@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 — Not Found</title>
+    <title>500 — Server Error</title>
     @vite('resources/css/app.css')
     <style>
         .error-page {
@@ -22,7 +22,7 @@
         .error-code {
             font-size: 72px;
             font-weight: 900;
-            color: var(--accent-color, #6c5ce7);
+            color: var(--accent-color, #e74c3c);
             line-height: 1;
             margin-bottom: 8px;
         }
@@ -62,9 +62,9 @@
 <body>
     <div class="error-page">
         <div class="error-card">
-            <div class="error-code">404</div>
-            <div class="error-title">Page Not Found</div>
-            <p class="error-desc">The page you're looking for doesn't exist or has been removed.</p>
+            <div class="error-code">500</div>
+            <div class="error-title">Server Error</div>
+            <p class="error-desc">Oops, something went wrong on our servers.</p>
             <a href="{{ route('welcome') }}" class="error-btn">
                 <i class="fa-solid fa-house"></i> Go to Home
             </a>

@@ -7,6 +7,14 @@ echo "Configuring Apache to listen on port ${PORT}..."
 sed -ri "s/^Listen [0-9]+/Listen ${PORT}/" /etc/apache2/ports.conf
 sed -ri "s/<VirtualHost \\*:[0-9]+>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
 
+echo "Fixing Apache MPM modules..."
+# Remove any MPM modules except prefork
+rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.*
+# Ensure only prefork is loaded
+if [ ! -f /etc/apache2/mods-enabled/mpm_prefork.load ]; then
+    ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/
+fi
+
 echo "Running Laravel cache commands..."
 php artisan config:cache
 php artisan route:cache

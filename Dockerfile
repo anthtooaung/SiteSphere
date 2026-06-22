@@ -11,6 +11,8 @@ RUN npm run build
 
 FROM php:8.4-apache
 
+# Force rebuild - 2026-06-22
+
 WORKDIR /var/www/html
 
 RUN apt-get update \
@@ -32,8 +34,9 @@ RUN apt-get update \
         pcntl \
         pdo_mysql \
         zip \
-    && a2dismod mpm_event mpm_worker 2>/dev/null || true \
-    && a2enmod mpm_prefork rewrite \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/ \
+    && a2enmod rewrite \
     && sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf /etc/apache2/apache2.conf \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

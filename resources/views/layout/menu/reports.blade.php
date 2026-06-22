@@ -271,7 +271,8 @@ $reportFilters = $reportFilters ?? [
                             <tr @class([ 'reports-row' , 'unread-state'=> $isUnread,
                                 'read-state' => ! $isUnread,
                                 'is-highlighted' => $isHighlighted,
-                                ]) data-report-row data-report-id="{{ $report->id }}">
+                                ]) data-report-row data-report-id="{{ $report->id }}"
+                                onclick="if (!event.target.closest('a, button, form')) window.location.href='{{ route('reports.open', $report) }}';" style="cursor: pointer;">
                                 <td data-label="No">
                                     <span class="reports-row-number">
                                         @if ($isUnread)
@@ -316,7 +317,7 @@ $reportFilters = $reportFilters ?? [
                                 </td>
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
-                                        @if ($report->post?->slug && !$report->post?->trashed())
+                                        @if ($report->post?->slug)
                                         <x-tooltip content="View Post">
                                             <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Post">
                                                 <x-fas-eye aria-hidden="true" />
@@ -428,7 +429,8 @@ $reportFilters = $reportFilters ?? [
                             @php
                             $isUnread = ! $report->admin_read;
                             @endphp
-                            <tr @class([ 'reports-row' , 'unread-state'=> $isUnread, 'read-state' => ! $isUnread ]) data-report-row data-report-id="{{ $report->id }}">
+                            <tr @class([ 'reports-row' , 'unread-state'=> $isUnread, 'read-state' => ! $isUnread ]) data-report-row data-report-id="{{ $report->id }}"
+                                onclick="if (!event.target.closest('a, button, form')) window.location.href='{{ route('reports.open', $report) }}';" style="cursor: pointer;">
                                 <td data-label="No">
                                     <span class="reports-row-number">
                                         @if ($isUnread)
@@ -470,7 +472,7 @@ $reportFilters = $reportFilters ?? [
                                 </td>
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
-                                        @if ($report->comment?->post?->slug && !$report->comment?->trashed())
+                                        @if ($report->comment?->post?->slug)
                                         <x-tooltip content="View Comment">
                                             <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Comment">
                                                 <x-fas-eye aria-hidden="true" />
@@ -584,7 +586,8 @@ $reportFilters = $reportFilters ?? [
                             $targetUser = $report->targetUser;
                             $initials = $targetUser ? \Illuminate\Support\Str::of($targetUser->name)->explode(' ')->map(fn ($part) => \Illuminate\Support\Str::substr($part, 0, 1))->join('') ?: '?' : '??';
                             @endphp
-                            <tr @class([ 'reports-row' , 'unread-state'=> $isUnread, 'read-state' => ! $isUnread ]) data-report-row data-report-id="{{ $report->id }}">
+                            <tr @class([ 'reports-row' , 'unread-state'=> $isUnread, 'read-state' => ! $isUnread ]) data-report-row data-report-id="{{ $report->id }}"
+                                onclick="if (!event.target.closest('a, button, form')) window.location.href='{{ route('reports.open', $report) }}';" style="cursor: pointer;">
                                 <td data-label="No">
                                     <span class="reports-row-number">
                                         @if ($isUnread)

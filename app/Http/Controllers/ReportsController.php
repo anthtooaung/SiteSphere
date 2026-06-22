@@ -29,6 +29,24 @@ class ReportsController extends Controller
      */
     public function store(StoreReportsRequest $request, Posts $post): RedirectResponse
     {
+        $user = $request->user();
+
+        // Prevent reporting own content
+        if ($post->userPosts()->where('user_id', $user->id)->exists()) {
+            return back()->with('error', 'You cannot report your own post.');
+        }
+
+        // Duplicate detection
+        $existing = Reports::query()
+            ->where('user_id', $user->id)
+            ->where('target_name', 'posts')
+            ->where('target_id', $post->id)
+            ->exists();
+
+        if ($existing) {
+            return back()->with('error', 'You have already reported this post.');
+        }
+
         $validated = $request->validated();
         $reason = $this->reportReason(
             reason: $validated['reason'],
@@ -36,11 +54,11 @@ class ReportsController extends Controller
         );
 
         Reports::query()->create([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'target_name' => 'posts',
             'target_id' => $post->id,
             'reason' => $reason,
-            'admin_read' => false,
+            'status' => Reports::STATUS_NEW,
         ]);
 
         $this->notifyAdminsAboutReport($request, $post);
@@ -54,6 +72,24 @@ class ReportsController extends Controller
      */
     public function storeForComment(Request $request, Comments $comment): RedirectResponse
     {
+        $user = $request->user();
+
+        // Prevent reporting own content
+        if ($comment->user_id === $user->id) {
+            return back()->with('error', 'You cannot report your own comment.');
+        }
+
+        // Duplicate detection
+        $existing = Reports::query()
+            ->where('user_id', $user->id)
+            ->where('target_name', 'comments')
+            ->where('target_id', $comment->id)
+            ->exists();
+
+        if ($existing) {
+            return back()->with('error', 'You have already reported this comment.');
+        }
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'max:500'],
             'details' => ['nullable', 'string', 'max:600'],
@@ -65,11 +101,11 @@ class ReportsController extends Controller
         );
 
         Reports::query()->create([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'target_name' => 'comments',
             'target_id' => $comment->id,
             'reason' => $reason,
-            'admin_read' => false,
+            'status' => Reports::STATUS_NEW,
         ]);
 
         $this->notifyAdminsAboutCommentReport($request, $comment);

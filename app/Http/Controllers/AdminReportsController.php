@@ -31,9 +31,9 @@ class AdminReportsController extends Controller
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applySearch($query, $filters['search']))
-            ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('admin_read', false))
-            ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('admin_read', true))
-            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderBy('admin_read', 'asc'))
+            ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('status', Reports::STATUS_NEW))
+            ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('status', '!=', Reports::STATUS_NEW))
+            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderByRaw("CASE WHEN status = 'new' THEN 0 ELSE 1 END"))
             ->when($filters['reported_date'] !== '', fn (Builder $query) => $query->whereDate('created_at', $filters['reported_date']))
             ->latest()
             ->paginate(12, ['*'], 'posts_page')
@@ -47,9 +47,9 @@ class AdminReportsController extends Controller
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyCommentSearch($query, $filters['search']))
-            ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('admin_read', false))
-            ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('admin_read', true))
-            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderBy('admin_read', 'asc'))
+            ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('status', Reports::STATUS_NEW))
+            ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('status', '!=', Reports::STATUS_NEW))
+            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderByRaw("CASE WHEN status = 'new' THEN 0 ELSE 1 END"))
             ->when($filters['reported_date'] !== '', fn (Builder $query) => $query->whereDate('created_at', $filters['reported_date']))
             ->latest()
             ->paginate(12, ['*'], 'comments_page')
@@ -62,9 +62,9 @@ class AdminReportsController extends Controller
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyUserSearch($query, $filters['search']))
-            ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('admin_read', false))
-            ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('admin_read', true))
-            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderBy('admin_read', 'asc'))
+            ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('status', Reports::STATUS_NEW))
+            ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('status', '!=', Reports::STATUS_NEW))
+            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderByRaw("CASE WHEN status = 'new' THEN 0 ELSE 1 END"))
             ->when($filters['reported_date'] !== '', fn (Builder $query) => $query->whereDate('created_at', $filters['reported_date']))
             ->latest()
             ->paginate(12, ['*'], 'users_page')
@@ -94,8 +94,8 @@ class AdminReportsController extends Controller
 
         abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
 
-        if (! $report->admin_read) {
-            $report->forceFill(['admin_read' => true])->save();
+        if ($report->isNew()) {
+            $report->transitionTo(Reports::STATUS_PENDING, 'Report opened by admin.');
 
             AuditLogs::query()->create([
                 'user_id' => $admin->id,
@@ -115,8 +115,8 @@ class AdminReportsController extends Controller
 
         abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
 
-        if (! $report->admin_read) {
-            $report->forceFill(['admin_read' => true])->save();
+        if ($report->isNew()) {
+            $report->transitionTo(Reports::STATUS_PENDING, 'Report opened by admin.');
 
             AuditLogs::query()->create([
                 'user_id' => $admin->id,
@@ -146,6 +146,37 @@ class AdminReportsController extends Controller
         }
 
         return back()->with('error', 'Target content not found.');
+    }
+
+    public function updateStatus(Request $request, Reports $report): RedirectResponse
+    {
+        $admin = $this->authorizeAdmin($request);
+
+        $validated = $request->validate([
+            'status' => 'required|string|in:'.implode(',', [
+                Reports::STATUS_PENDING,
+                Reports::STATUS_INVESTIGATING,
+                Reports::STATUS_RESOLVED_ACTION,
+                Reports::STATUS_RESOLVED_NO_ACTION,
+                Reports::STATUS_DISMISSED,
+                Reports::STATUS_CLOSED,
+            ]),
+            'reason' => 'nullable|string|max:500',
+        ]);
+
+        if (! $report->transitionTo($validated['status'], $validated['reason'] ?? null)) {
+            return back()->with('error', 'Invalid status transition.');
+        }
+
+        AuditLogs::query()->create([
+            'user_id' => $admin->id,
+            'action' => 'update_report_status',
+            'target_type' => Reports::class,
+            'target_id' => $report->id,
+            'reason' => "Report status changed to {$validated['status']}.",
+        ]);
+
+        return back()->with('success', 'Report status updated.');
     }
 
     private function applySearch(Builder $query, string $search): void
@@ -206,8 +237,8 @@ class AdminReportsController extends Controller
     private function summary(): array
     {
         $counts = Reports::query()
-            ->selectRaw('target_name, admin_read, count(*) as count')
-            ->groupBy('target_name', 'admin_read')
+            ->selectRaw('target_name, status, count(*) as count')
+            ->groupBy('target_name', 'status')
             ->get();
 
         $summary = [
@@ -219,10 +250,10 @@ class AdminReportsController extends Controller
         foreach ($counts as $row) {
             $target = $row->target_name;
             if (isset($summary[$target])) {
-                if ($row->admin_read) {
-                    $summary[$target]['read'] += $row->count;
-                } else {
+                if ($row->status === Reports::STATUS_NEW) {
                     $summary[$target]['unread'] += $row->count;
+                } else {
+                    $summary[$target]['read'] += $row->count;
                 }
                 $summary[$target]['total'] += $row->count;
             }
@@ -246,8 +277,8 @@ class AdminReportsController extends Controller
 
         abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
 
-        if ($report->admin_read) {
-            $report->forceFill(['admin_read' => false])->save();
+        if (! $report->isNew()) {
+            $report->transitionTo(Reports::STATUS_NEW, 'Report marked as unread by admin.');
 
             AuditLogs::query()->create([
                 'user_id' => $admin->id,

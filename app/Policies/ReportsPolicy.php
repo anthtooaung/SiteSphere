@@ -12,7 +12,7 @@ class ReportsPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -20,7 +20,7 @@ class ReportsPolicy
      */
     public function view(User $user, Reports $reports): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -28,7 +28,7 @@ class ReportsPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true; // Any authenticated user can create reports
     }
 
     /**
@@ -36,7 +36,7 @@ class ReportsPolicy
      */
     public function update(User $user, Reports $reports): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -44,7 +44,7 @@ class ReportsPolicy
      */
     public function delete(User $user, Reports $reports): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -52,7 +52,7 @@ class ReportsPolicy
      */
     public function restore(User $user, Reports $reports): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -60,6 +60,6 @@ class ReportsPolicy
      */
     public function forceDelete(User $user, Reports $reports): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 }

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Mail\UserAccountDeletedMail;
 use App\Models\AuditLogs;
+use App\Models\Comments;
+use App\Models\Ratings;
+use App\Models\Reports;
 use App\Models\User;
 use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
@@ -61,6 +64,16 @@ class AdminUsersController extends Controller
         DB::transaction(function () use ($admin, $user): void {
             $user->delete();
 
+            // Auto-resolve reports targeting this user
+            Reports::query()
+                ->where('target_name', 'users')
+                ->where('target_id', $user->id)
+                ->where('status', '!=', Reports::STATUS_CLOSED)
+                ->update([
+                    'status' => Reports::STATUS_RESOLVED_ACTION,
+                    'resolved_at' => now(),
+                ]);
+
             $this->audit($admin, 'delete_user', $user, 'User account was restricted by an admin.');
         });
 
@@ -92,8 +105,17 @@ class AdminUsersController extends Controller
         abort_unless($user->trashed(), 404);
 
         DB::transaction(function () use ($admin, $user): void {
-            // Delete user's uploaded content
+            // Cascade delete all user content to prevent orphans
+            $user->comments()->forceDelete();
+            Ratings::where('user_id', $user->id)->forceDelete();
+            $user->bookmarks()->delete();
             UserPosts::where('user_id', $user->id)->forceDelete();
+
+            // Clean up reports related to this user
+            Reports::query()
+                ->where('target_name', 'users')
+                ->where('target_id', $user->id)
+                ->delete();
 
             $this->audit($admin, 'force_delete_user', $user, 'User permanently deleted by admin.');
 

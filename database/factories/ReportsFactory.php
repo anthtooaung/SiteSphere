@@ -31,7 +31,11 @@ class ReportsFactory extends Factory
                 'comments' => Comments::factory(),
             },
             'reason' => $this->faker->paragraph(),
-            'admin_read' => $this->faker->boolean(),
+            'status' => $this->faker->randomElement([
+                Reports::STATUS_NEW,
+                Reports::STATUS_PENDING,
+                Reports::STATUS_RESOLVED_NO_ACTION,
+            ]),
         ];
     }
 }

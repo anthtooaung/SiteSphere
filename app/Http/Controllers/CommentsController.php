@@ -7,6 +7,7 @@ use App\Models\Comments;
 use App\Models\Notificatioins;
 use App\Models\Posts;
 use App\Models\Ratings;
+use App\Models\Reports;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -105,12 +106,23 @@ class CommentsController extends Controller
         ]);
 
         DB::transaction(function () use ($comment, $user, $validated): void {
+            // Soft-delete the rating instead of hard-delete (preserves data for unban)
             Ratings::query()
                 ->where('user_id', $comment->user_id)
                 ->where('post_id', $comment->post_id)
                 ->delete();
 
             $comment->delete();
+
+            // Auto-resolve related reports
+            Reports::query()
+                ->where('target_name', 'comments')
+                ->where('target_id', $comment->id)
+                ->where('status', '!=', Reports::STATUS_CLOSED)
+                ->update([
+                    'status' => Reports::STATUS_RESOLVED_ACTION,
+                    'resolved_at' => now(),
+                ]);
 
             AuditLogs::query()->create([
                 'user_id' => $user->id,
@@ -145,6 +157,12 @@ class CommentsController extends Controller
         DB::transaction(function () use ($comment, $user): void {
             $comment->restore();
 
+            // Restore soft-deleted rating
+            Ratings::withTrashed()
+                ->where('user_id', $comment->user_id)
+                ->where('post_id', $comment->post_id)
+                ->restore();
+
             AuditLogs::query()->create([
                 'user_id' => $user->id,
                 'action' => 'unban_comment',
@@ -166,6 +184,12 @@ class CommentsController extends Controller
         abort_unless($comment->trashed(), 404);
 
         $comment->commentReactions()->delete();
+
+        // Clean up related reports
+        Reports::query()
+            ->where('target_name', 'comments')
+            ->where('target_id', $comment->id)
+            ->delete();
 
         AuditLogs::query()->create([
             'user_id' => $user->id,

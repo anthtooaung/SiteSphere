@@ -137,7 +137,7 @@ class AdminReportsPageTest extends TestCase
             ->get(route('reports.open', $report))
             ->assertRedirect(route('posts.show', $report->post->slug));
 
-        $this->assertTrue($report->fresh()->admin_read);
+        $this->assertNotEquals('new', $report->fresh()->status);
     }
 
     public function test_non_admin_users_cannot_open_reports(): void
@@ -150,7 +150,7 @@ class AdminReportsPageTest extends TestCase
             ->get(route('reports.open', $report))
             ->assertForbidden();
 
-        $this->assertFalse($report->fresh()->admin_read);
+        $this->assertEquals('new', $report->fresh()->status);
     }
 
     public function test_comment_and_user_tabs_are_enabled_and_functional(): void
@@ -199,7 +199,7 @@ class AdminReportsPageTest extends TestCase
             ->assertRedirect(route('reports', ['report' => $report->target_id]));
 
         $this->assertTrue($notification->fresh()->is_read);
-        $this->assertFalse($report->fresh()->admin_read);
+        $this->assertEquals('new', $report->fresh()->status);
 
         $this->actingAs($admin)
             ->get(route('home'))
@@ -316,7 +316,8 @@ class AdminReportsPageTest extends TestCase
             'target_name' => 'posts',
             'target_id' => $post->id,
             'reason' => $reason,
-            'admin_read' => $read,
+            'status' => $read ? Reports::STATUS_RESOLVED_NO_ACTION : Reports::STATUS_NEW,
+            'resolved_at' => $read ? now() : null,
             'created_at' => $createdAt ?? now(),
             'updated_at' => $createdAt ?? now(),
         ])->load(['post', 'reporter']);
@@ -341,7 +342,8 @@ class AdminReportsPageTest extends TestCase
             'target_name' => 'comments',
             'target_id' => $comment->id,
             'reason' => $reason,
-            'admin_read' => $read,
+            'status' => $read ? Reports::STATUS_RESOLVED_NO_ACTION : Reports::STATUS_NEW,
+            'resolved_at' => $read ? now() : null,
             'created_at' => $createdAt ?? now(),
             'updated_at' => $createdAt ?? now(),
         ])->load(['comment', 'reporter']);
@@ -362,7 +364,8 @@ class AdminReportsPageTest extends TestCase
             'target_name' => 'users',
             'target_id' => $targetUser->id,
             'reason' => $reason,
-            'admin_read' => $read,
+            'status' => $read ? Reports::STATUS_RESOLVED_NO_ACTION : Reports::STATUS_NEW,
+            'resolved_at' => $read ? now() : null,
             'created_at' => $createdAt ?? now(),
             'updated_at' => $createdAt ?? now(),
         ])->load(['targetUser', 'reporter']);

@@ -377,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function starIcons(r) {
     let s = "";
     for (let i = 1; i <= 5; i++)
-      s += `<span style="display:inline-block; width:11px; height:11px; border-radius:50%; background:${i <= r ? "#f59e0b" : "#e2e8f0"};"></span>`;
+      s += `<i class="${i <= r ? 'fa-solid' : 'fa-regular'} fa-star" style="font-size:11px; color:${i <= r ? "#f59e0b" : "#cbd5e1"}; margin-right:2px;"></i>`;
     return s;
   }
   const topPostsEl = document.getElementById("top-posts");

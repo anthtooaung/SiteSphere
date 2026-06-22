@@ -1,7 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
   const data = window.AdminActivityData || {};
   const actsExpanded = data.actsExpanded || [];
-  
+  const postSlugs = data.postSlugs || {};
+  const userSlugs = data.userSlugs || {};
+  const commentPostSlugs = data.commentPostSlugs || {};
+
+  function getTargetUrl(a) {
+    if (a.targetType === 'App\\Models\\Posts') {
+      const slug = postSlugs[a.targetId];
+      return slug ? `/posts/${slug}` : null;
+    }
+    if (a.targetType === 'App\\Models\\User') {
+      const slug = userSlugs[a.targetId];
+      return slug ? `/profile/${slug}` : null;
+    }
+    if (a.targetType === 'App\\Models\\Comments') {
+      const postSlug = commentPostSlugs[a.targetId];
+      return postSlug ? `/posts/${postSlug}#comment-${a.targetId}` : null;
+    }
+    return null;
+  }
+
   let calYear = data.selectedYear || new Date().getFullYear();
   let calMonth = data.selectedMonth ? data.selectedMonth - 1 : new Date().getMonth();
   let selectedDate = data.selectedDate || new Date().toISOString().split('T')[0];
@@ -172,15 +191,19 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const visible = entries.slice(0, 3);
         const hasMore = entries.length > 3;
-        const rows = visible.map((a, i) => `
-          <div class="alc-entry">
-            <div class="alc-icon" style="background:${a.color}18; color:${a.color};"><i class="fa-solid fa-${a.icon}"></i></div>
+        const rows = visible.map((a, i) => {
+          const targetUrl = getTargetUrl(a);
+          const entryTag = targetUrl ? 'a' : 'div';
+          const hrefAttr = targetUrl ? ` href="${targetUrl}"` : '';
+          const clickableClass = targetUrl ? ' alc-entry--clickable' : '';
+          return `<${entryTag} class="alc-entry${clickableClass}"${hrefAttr}>
+            <div class="alc-icon" style="background:${a.color};"><i class="fa-solid fa-${a.icon}" style="color:#fff; font-size:13px;"></i></div>
             <div class="alc-info">
               <div class="alc-txt">${a.txt}</div>
               <div class="alc-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> <i class="fa-regular fa-clock"></i> ${a.timeAbsolute || a.time}</div>
             </div>
-          </div>${i < visible.length - 1 ? '<div class="alc-divider"></div>' : ""}`
-        ).join("");
+          </${entryTag}>${i < visible.length - 1 ? '<div class="alc-divider"></div>' : ""}`;
+        }).join("");
         
         const seeMore = hasMore ? `<div class="alc-see-more" data-action="see-more">See all ${entries.length} actions &#8599;</div>` : "";
         body.innerHTML = rows + seeMore;
@@ -227,13 +250,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const mBody = document.getElementById("modal-body");
     if(mBody) {
         mBody.innerHTML = entries.length
-          ? entries.map(a => `
-            <div class="modal-row">
-              <div class="modal-icon" style="background:${a.color}18; color:${a.color};"><i class="fa-solid fa-${a.icon}"></i></div>
+          ? entries.map(a => {
+            const targetUrl = getTargetUrl(a);
+            const rowTag = targetUrl ? 'a' : 'div';
+            const hrefAttr = targetUrl ? ` href="${targetUrl}"` : '';
+            const clickableClass = targetUrl ? ' modal-row--clickable' : '';
+            return `<${rowTag} class="modal-row${clickableClass}"${hrefAttr}>
+              <div class="modal-icon" style="background:${a.color}; color:#fff;"><i class="fa-solid fa-${a.icon}" style="font-size:13px;"></i></div>
               <div class="modal-info"><div class="tl-txt">${a.txt}</div><div class="tl-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> ${a.timeAbsolute || a.time}</div></div>
               <span class="modal-date-chip">${a.date}</span>
-            </div>`
-          ).join("")
+            </${rowTag}>`;
+          }).join("")
           : '<div class="exp-empty" style="padding:40px 0"><p>No actions found.</p></div>';
     }
     const modal = document.getElementById("log-modal");

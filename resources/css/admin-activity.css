@@ -455,14 +455,22 @@
   border-radius: 6px;
   transition: background 0.15s;
   cursor: default;
+  text-decoration: none;
+  color: inherit;
 }
 .alc-entry:hover {
   background: color-mix(in srgb, var(--accent-color) 4%, var(--background-color));
 }
+.alc-entry--clickable {
+  cursor: pointer;
+}
+.alc-entry--clickable:hover {
+  background: color-mix(in srgb, var(--accent-color) 8%, var(--background-color));
+}
 .alc-icon {
   width: 36px;
   height: 36px;
-  border-radius: 6px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -644,14 +652,26 @@
   gap: 12px;
   padding: 12px 0;
   border-bottom: 1px solid var(--ui-border);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+  border-radius: 6px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 .modal-row:last-child {
   border-bottom: none;
 }
+.modal-row--clickable {
+  cursor: pointer;
+}
+.modal-row--clickable:hover {
+  background: color-mix(in srgb, var(--accent-color) 6%, var(--background-color));
+}
 .modal-icon {
   width: 34px;
   height: 34px;
-  border-radius: 6px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -705,6 +725,11 @@
   .admin-shell {
     padding: 0;
   }
+  .breadcrumb {
+    margin-bottom: 12px;
+    font-size: 12px;
+    padding: 0 4px;
+  }
   .page-header {
     padding: 18px;
     border-radius: var(--ui-radius, 8px);
@@ -715,5 +740,21 @@
   }
   .page-header p {
     font-size: 12px;
+  }
+  .expanded-card {
+    padding: 18px 14px;
+  }
+  .modal-card {
+    max-height: 90vh;
+  }
+  .modal-head {
+    padding: 16px;
+  }
+  .modal-body {
+    padding: 16px;
+  }
+  .modal-row {
+    padding-left: 4px;
+    padding-right: 4px;
   }
 }

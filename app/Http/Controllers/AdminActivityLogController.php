@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLogs;
+use App\Models\Comments;
+use App\Models\Posts;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -27,13 +29,48 @@ class AdminActivityLogController extends Controller
             ->with('user')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->latest()
+            ->get();
+
+        // Build slug mappings for audit log target linking
+        $postIds = $auditLogs
+            ->where('target_type', Posts::class)
+            ->pluck('target_id')
+            ->unique();
+
+        $userIds = $auditLogs
+            ->where('target_type', User::class)
+            ->pluck('target_id')
+            ->unique();
+
+        $commentIds = $auditLogs
+            ->where('target_type', Comments::class)
+            ->pluck('target_id')
+            ->unique();
+
+        $postSlugs = Posts::withTrashed()
+            ->whereIn('id', $postIds)
+            ->pluck('slug', 'id');
+
+        $userSlugs = User::withTrashed()
+            ->whereIn('id', $userIds)
+            ->pluck('slug', 'id');
+
+        $commentPostSlugs = Comments::withTrashed()
+            ->whereIn('id', $commentIds)
+            ->with(['post' => fn ($q) => $q->select('id', 'slug')])
             ->get()
-            ->groupBy(fn ($log) => $log->created_at->format('Y-m-d'));
+            ->mapWithKeys(fn ($c) => [$c->id => $c->post->slug ?? null])
+            ->filter();
+
+        $groupedLogs = $auditLogs->groupBy(fn ($log) => $log->created_at->format('Y-m-d'));
 
         return view('layout.menu.activity-log', [
-            'auditLogs' => $auditLogs,
+            'auditLogs' => $groupedLogs,
             'selectedMonth' => $month,
             'selectedYear' => $year,
+            'postSlugs' => $postSlugs,
+            'userSlugs' => $userSlugs,
+            'commentPostSlugs' => $commentPostSlugs,
         ]);
     }
 

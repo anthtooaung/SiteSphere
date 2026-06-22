@@ -20,6 +20,7 @@
                     'txt' => $log->action,
                     'target' => $log->target_type ? class_basename($log->target_type) : null,
                     'targetId' => $log->target_id,
+                    'targetType' => $log->target_type,
                     'reason' => $log->reason,
                     'time' => $log->created_at->diffForHumans(),
                     'timeAbsolute' => $log->created_at->format('H:i'),
@@ -44,7 +45,10 @@
                         actsExpanded: @json($actsExpanded),
                         selectedYear: {{ $selectedYear }},
                         selectedMonth: {{ $selectedMonth }},
-                        selectedDate: '{{ now()->format("Y-m-d") }}'
+                        selectedDate: '{{ now()->format("Y-m-d") }}',
+                        postSlugs: @json($postSlugs ?? []),
+                        userSlugs: @json($userSlugs ?? []),
+                        commentPostSlugs: @json($commentPostSlugs ?? [])
                     };
                 </script>
                 @vite('resources/js/admin-activity.js')
@@ -58,6 +62,14 @@
                 <span class="breadcrumb-sep">&#9654;</span>
                 <span class="breadcrumb-current">Activity Log</span>
               </nav>
+
+              <header class="page-header">
+                <div class="page-header-label">
+                  <span class="act-legend-dot" style="background: var(--accent-color);"></span> Activity History
+                </div>
+                <h1>Admin Activity Log</h1>
+                <p>Track administrative actions, content updates, and platform events across time.</p>
+              </header>
 
               <section class="expanded-card">
                 <div class="expanded-head">
@@ -105,14 +117,6 @@
                   </div>
                 </div>
               </section>
-
-              <header class="page-header">
-                <div class="page-header-label">
-                  <span class="act-legend-dot" style="background: var(--accent-color);"></span> Activity History
-                </div>
-                <h1>Admin Activity Log</h1>
-                <p>Track administrative actions, content updates, and platform events across time.</p>
-              </header>
             </div>
 
             <div id="log-modal">

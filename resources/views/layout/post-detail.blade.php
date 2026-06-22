@@ -136,16 +136,18 @@
                                                 </button>
                                             </form>
 
-                                            <div
-                                                class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
-                                                <button type="button"
-                                                    class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
-                                                    role="menuitem"
-                                                    x-on:click="openReportModal()">
-                                                    <x-fas-flag class="size-3" aria-hidden="true" />
-                                                    <span>Report</span>
-                                                </button>
-                                            </div>
+                                            @if (Auth::user()?->role !== 'admin')
+                                                <div
+                                                    class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
+                                                    <button type="button"
+                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
+                                                        role="menuitem"
+                                                        x-on:click="openReportModal()">
+                                                        <x-fas-flag class="size-3" aria-hidden="true" />
+                                                        <span>Report</span>
+                                                    </button>
+                                                </div>
+                                            @endif
 
                                             @if (Auth::user()?->role === 'admin')
                                                 <form method="POST" action="{{ route('posts.ban', $post->id) }}"
@@ -428,16 +430,18 @@
                                                         role="menu">
                                                         @auth
                                                             @if ($post->id)
-                                                                <div
-                                                                    class=" ">
-                                                                    <button type="button"
-                                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
-                                                                        role="menuitem"
-                                                                        x-on:click="openReportModal()">
-                                                                        <x-fas-flag class="size-3" aria-hidden="true" />
-                                                                        <span>Report</span>
-                                                                    </button>
-                                                                </div>
+                                                                @if (Auth::user()?->role !== 'admin')
+                                                                    <div
+                                                                        class=" ">
+                                                                        <button type="button"
+                                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
+                                                                            role="menuitem"
+                                                                            x-on:click="openReportModal()">
+                                                                            <x-fas-flag class="size-3" aria-hidden="true" />
+                                                                            <span>Report</span>
+                                                                        </button>
+                                                                    </div>
+                                                                @endif
 
                                                                 @if (Auth::id() === $userPost->user_id)
                                                                     <button type="button"

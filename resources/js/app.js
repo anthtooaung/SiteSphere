@@ -95,4 +95,6 @@ Alpine.start();
  * allow your team to quickly build robust real-time web applications.
  */
 
-import './echo';
+if (import.meta.env.VITE_PUSHER_APP_KEY) {
+    import('./echo');
+}

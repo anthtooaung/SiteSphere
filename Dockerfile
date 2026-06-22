@@ -2,6 +2,9 @@ FROM node:24-bookworm AS assets
 
 WORKDIR /app
 
+ARG VITE_PUSHER_APP_KEY
+ARG VITE_PUSHER_APP_CLUSTER
+
 COPY package.json package-lock.json ./
 RUN npm ci
 

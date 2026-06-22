@@ -18,7 +18,7 @@
     "isEntry": true
   },
   "resources/css/admin-dashboard.css": {
-    "file": "assets/admin-dashboard-Bols_rvH.css",
+    "file": "assets/admin-dashboard-CbRa4IkS.css",
     "name": "admin-dashboard",
     "names": [
       "admin-dashboard.css"
@@ -27,7 +27,7 @@
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-DC0_7dKm.css",
+    "file": "assets/app-DuK7Cp4p.css",
     "name": "app",
     "names": [
       "app.css"
@@ -148,25 +148,25 @@
     "isEntry": true
   },
   "resources/js/admin-activity.js": {
-    "file": "assets/admin-activity-D6c6Idha.js",
+    "file": "assets/admin-activity-BTmcmkkP.js",
     "name": "admin-activity",
     "src": "resources/js/admin-activity.js",
     "isEntry": true
   },
   "resources/js/admin-dashboard.js": {
-    "file": "assets/admin-dashboard-lX_hguih.js",
+    "file": "assets/admin-dashboard-Dp46IFjM.js",
     "name": "admin-dashboard",
     "src": "resources/js/admin-dashboard.js",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-D89yttUO.js",
+    "file": "assets/app-CYjnzJe6.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
   },
   "resources/js/auth.js": {
-    "file": "assets/auth-FYcINXuW.js",
+    "file": "assets/auth-DT8C924p.js",
     "name": "auth",
     "src": "resources/js/auth.js",
     "isEntry": true

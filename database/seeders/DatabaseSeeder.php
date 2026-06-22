@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             FontsSeeder::class,
             ThemesSeeder::class,
             AdminUserSeeder::class,
+            CategoryTagsSeeder::class,
         ]);
 
         // User::factory(10)->create();

@@ -230,7 +230,6 @@
                           <div class="timeline" id="activity-list"></div>
                         </div>
                       </div>
-                      <a href="{{ route('admin.activity-log') }}" class="see-more-link">See More</a>
                     </div>
 
                     <div class="card">

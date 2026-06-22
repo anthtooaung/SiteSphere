@@ -39,6 +39,9 @@ php artisan storage:link --force 2>&1 || echo "WARNING: storage:link failed"
 echo "=== Running migrations ==="
 php artisan migrate --force 2>&1 || echo "WARNING: migrate failed"
 
+echo "=== Running seeders ==="
+php artisan db:seed --force 2>&1 || echo "WARNING: seeders failed"
+
 echo "=== Starting queue worker ==="
 php artisan queue:work --tries=3 &
 

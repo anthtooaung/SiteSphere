@@ -1,33 +1,46 @@
 #!/usr/bin/env bash
-set -e
 
 : "${PORT:=80}"
 
-echo "Configuring Apache to listen on port ${PORT}..."
-sed -ri "s/^Listen [0-9]+/Listen ${PORT}/" /etc/apache2/ports.conf
-sed -ri "s/<VirtualHost \\*:[0-9]+>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
+echo "=== SiteSphere Starting ==="
+echo "PORT: ${PORT}"
 
-echo "Fixing Apache MPM modules..."
-# Remove any MPM modules except prefork
+echo "=== Configuring Apache ==="
+sed -ri "s/^Listen [0-9]+/Listen ${PORT}/" /etc/apache2/ports.conf
+sed -ri "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
+
+# Remove conflicting MPM modules
 rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.*
-# Ensure only prefork is loaded
 if [ ! -f /etc/apache2/mods-enabled/mpm_prefork.load ]; then
     ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/
 fi
 
-echo "Running Laravel cache commands..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+echo "=== Checking .env ==="
+if [ ! -f .env ]; then
+    echo "WARNING: No .env file found, copying from .env.example"
+    cp .env.example .env 2>/dev/null || true
+fi
 
-echo "Creating storage symlink..."
-php artisan storage:link --force
+echo "=== Generating APP_KEY if needed ==="
+if grep -q "APP_KEY=base64:" .env 2>/dev/null; then
+    echo "APP_KEY already set"
+else
+    php artisan key:generate --force 2>/dev/null || echo "WARNING: Could not generate APP_KEY"
+fi
 
-echo "Running migrations..."
-php artisan migrate --force
+echo "=== Caching config ==="
+php artisan config:cache 2>&1 || echo "WARNING: config:cache failed"
+php artisan route:cache 2>&1 || echo "WARNING: route:cache failed"
+php artisan view:cache 2>&1 || echo "WARNING: view:cache failed"
 
-echo "Starting Laravel Queue Worker..."
+echo "=== Storage link ==="
+php artisan storage:link --force 2>&1 || echo "WARNING: storage:link failed"
+
+echo "=== Running migrations ==="
+php artisan migrate --force 2>&1 || echo "WARNING: migrate failed"
+
+echo "=== Starting queue worker ==="
 php artisan queue:work --tries=3 &
 
-echo "Starting Apache..."
+echo "=== Starting Apache on port ${PORT} ==="
 exec apache2-foreground

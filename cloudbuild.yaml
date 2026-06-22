@@ -13,7 +13,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'sitesphere'
+      - 'sitesphere-service'
       - '--image'
       - 'gcr.io/$PROJECT_ID/sitesphere:$COMMIT_SHA'
       - '--region'

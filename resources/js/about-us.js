@@ -6,6 +6,7 @@ function initAboutUsPage() {
     }
 
     
+    
     // --- 1. SCROLL REVEAL LOGIC ---
     const revealElements = aboutusMain.querySelectorAll('.aboutus-scroll-reveal, .scroll-reveal');
 

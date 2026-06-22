@@ -43,4 +43,10 @@ class Posts extends Model
         return $this->belongsToMany(Tags::class, 'post_tags', 'post_id', 'tag_id')
             ->withTimestamps();
     }
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Reports::class, 'target_id')
+            ->where('target_name', 'post');
+    }
 }

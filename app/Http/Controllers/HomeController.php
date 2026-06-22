@@ -31,6 +31,9 @@ class HomeController extends Controller
                     ->with('user.settings')
                     ->latest(),
                 'tags.categories',
+                'reports' => fn ($query) => $query
+                    ->where('user_id', $userId)
+                    ->when(! $userId, fn ($query) => $query->whereRaw('1 = 0')),
             ])
             ->withAvg('ratings as average_rating', 'rating')
             ->withCount([

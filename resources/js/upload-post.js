@@ -315,17 +315,45 @@ const initUploadPost = () => {
     });
   });
 
-  discardButton?.addEventListener("click", () => {
-    form.reset();
-    selectedTags = [];
-    currentCategory = window.uploadPostInitialCategory || Object.keys(categories)[0] || null;
-    ["title", "link", "desc", "tag"].forEach(clearFieldError);
-    setPreviewReady(false);
-    renderCategoryButtons();
-    syncSelectedTags();
-    renderSuggestedTags();
-    updatePreview();
-    closeTagTooltip();
+  discardButton?.addEventListener("click", async () => {
+    const hasData = titleInput.value.trim() !== "" || 
+                    linkInput.value.trim() !== "" || 
+                    descInput.value.trim() !== "" || 
+                    selectedTags.length > 0;
+
+    const doDiscard = () => {
+      form.reset();
+      selectedTags = [];
+      currentCategory = window.uploadPostInitialCategory || Object.keys(categories)[0] || null;
+      ["title", "link", "desc", "tag"].forEach(clearFieldError);
+      setPreviewReady(false);
+      renderCategoryButtons();
+      syncSelectedTags();
+      renderSuggestedTags();
+      updatePreview();
+      closeTagTooltip();
+      
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    };
+
+    if (!hasData) {
+      doDiscard();
+    } else {
+      const result = await window.sitesphereSwal.confirm({
+        title: "Discard Post?",
+        text: "Are you sure you want to discard your progress? This action cannot be undone.",
+        confirmButtonText: "Yes, discard it",
+        cancelButtonText: "Cancel"
+      });
+
+      if (result.isConfirmed) {
+        doDiscard();
+      }
+    }
   });
 
   form.addEventListener("submit", (event) => {

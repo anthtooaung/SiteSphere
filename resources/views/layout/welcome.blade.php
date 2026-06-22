@@ -63,11 +63,11 @@
                     libraries, tools, and platforms your project needs.
                 </p>
 
-                <form class="welcome-search welcome-hero-reveal-delayed" action="#" role="search" aria-label="Search trusted websites">
+                <form class="welcome-search welcome-hero-reveal-delayed" action="{{ route('home') }}" method="GET" role="search" aria-label="Search trusted websites">
                     <label class="sr-only" for="welcomeSearch">Search for a trusted website</label>
                     <div class="welcome-search-bar">
                         <x-fas-search class="welcome-search-icon" aria-hidden="true" />
-                        <input id="welcomeSearch" class="outline-none" type="search" placeholder="Search for a trusted website..." autocomplete="off">
+                        <input id="welcomeSearch" name="search" value="{{ request('search') }}" class="outline-none" type="search" placeholder="Search for a trusted website..." autocomplete="off">
                     </div>
                 </form>
             </div>

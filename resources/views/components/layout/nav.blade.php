@@ -10,9 +10,11 @@
                 <x-app-logo></x-app-logo>
                 <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">SiteSphere</span>
             </a>
-            <div class="hidden lg:block ml-2">
-                <x-search-btn />
-            </div>
+            @if(!request()->routeIs('welcome'))
+                <div class="hidden lg:block ml-2">
+                    <x-search-btn />
+                </div>
+            @endif
         </div>
 
 {{--        center path--}}

@@ -265,7 +265,7 @@ $reportFilters = $reportFilters ?? [
                         <tbody class="reports-real-body" x-show="!isLoading">
                             @forelse ($reports as $report)
                             @php
-                            $isUnread = $report->status === 'new';
+                            $isUnread = ! $report->admin_read;
                             $isHighlighted = $highlightPostId > 0 && $report->target_id === $highlightPostId;
                             @endphp
                             <tr @class([ 'reports-row' , 'unread-state'=> $isUnread,
@@ -427,7 +427,7 @@ $reportFilters = $reportFilters ?? [
                         <tbody class="reports-real-body" x-show="!isLoading">
                             @forelse ($commentReports as $report)
                             @php
-                            $isUnread = $report->status === 'new';
+                            $isUnread = ! $report->admin_read;
                             @endphp
                             <tr @class([ 'reports-row' , 'unread-state'=> $isUnread, 'read-state' => ! $isUnread ]) data-report-row data-report-id="{{ $report->id }}"
                                 onclick="if (!event.target.closest('a, button, form')) window.location.href='{{ route('reports.open', $report) }}';" style="cursor: pointer;">
@@ -582,7 +582,7 @@ $reportFilters = $reportFilters ?? [
                         <tbody class="reports-real-body" x-show="!isLoading">
                             @forelse ($userReports as $report)
                             @php
-                            $isUnread = $report->status === 'new';
+                            $isUnread = ! $report->admin_read;
                             $targetUser = $report->targetUser;
                             $initials = $targetUser ? \Illuminate\Support\Str::of($targetUser->name)->explode(' ')->map(fn ($part) => \Illuminate\Support\Str::substr($part, 0, 1))->join('') ?: '?' : '??';
                             @endphp

@@ -6,10 +6,8 @@ use App\Http\Requests\StorePostsRequest;
 use App\Models\AuditLogs;
 use App\Models\Categories;
 use App\Models\Comments;
-use App\Models\Notificatioins;
 use App\Models\Posts;
 use App\Models\Ratings;
-use App\Models\Reports;
 use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -99,29 +97,6 @@ class PostsController extends Controller
 
             $post->delete();
 
-            // Notify post creator
-            $postOwnerId = UserPosts::where('post_id', $post->id)->value('user_id');
-            if ($postOwnerId) {
-                Notificatioins::query()->create([
-                    'to_user_id' => $postOwnerId,
-                    'from_user_id' => $user->id,
-                    'target_type' => 'posts',
-                    'target_id' => $post->id,
-                    'message' => 'Your post was banned by an admin. Reason: Post violated guidelines.',
-                    'is_read' => false,
-                ]);
-            }
-
-            // Auto-resolve related reports
-            Reports::query()
-                ->where('target_name', 'posts')
-                ->where('target_id', $post->id)
-                ->where('status', '!=', Reports::STATUS_CLOSED)
-                ->update([
-                    'status' => Reports::STATUS_RESOLVED_ACTION,
-                    'resolved_at' => now(),
-                ]);
-
             AuditLogs::query()->create([
                 'user_id' => $user->id,
                 'action' => 'ban_post',
@@ -176,12 +151,6 @@ class PostsController extends Controller
             $post->ratings()->delete();
             $post->bookmarks()->delete();
             UserPosts::where('post_id', $post->id)->forceDelete();
-
-            // Clean up reports for this post
-            Reports::query()
-                ->where('target_name', 'posts')
-                ->where('target_id', $post->id)
-                ->delete();
 
             AuditLogs::query()->create([
                 'user_id' => $user->id,

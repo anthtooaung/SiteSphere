@@ -126,7 +126,7 @@ class PostCardActionsTest extends TestCase
             'target_name' => 'posts',
             'target_id' => $post->id,
             'reason' => 'Spam / Misleading',
-            'status' => Reports::STATUS_NEW,
+            'admin_read' => false,
         ]);
     }
 
@@ -183,7 +183,7 @@ class PostCardActionsTest extends TestCase
             'target_name' => 'posts',
             'target_id' => $post->id,
             'reason' => 'Fake / False Info',
-            'status' => Reports::STATUS_NEW,
+            'admin_read' => false,
         ]);
 
         $this->assertDatabaseCount((new Notificatioins)->getTable(), 0);
@@ -230,7 +230,7 @@ class PostCardActionsTest extends TestCase
             'target_name' => 'posts',
             'target_id' => $post->id,
             'reason' => "Scams / Fraud\n\nDetails: This post links to a suspicious checkout flow.",
-            'status' => Reports::STATUS_NEW,
+            'admin_read' => false,
         ]);
     }
 

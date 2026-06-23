@@ -6,12 +6,11 @@ use Database\Factories\RatingsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ratings extends Model
 {
     /** @use HasFactory<RatingsFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $guarded = [];
 

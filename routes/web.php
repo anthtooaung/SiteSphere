@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/posts/{post}/description', [PostsController::class, 'updateDescription'])->name('posts.description.update');
     Route::delete('/posts/{post}/description', [PostsController::class, 'destroyDescription'])->name('posts.description.destroy');
     Route::post('/posts/{post}/bookmark', [BookmarksController::class, 'store'])->name('posts.bookmark');
-    Route::post('/posts/{post}/report', [ReportsController::class, 'store'])->name('posts.report')->middleware('throttle:10,1440');
+    Route::post('/posts/{post}/report', [ReportsController::class, 'store'])->name('posts.report');
     Route::post('/posts/{post}/ban', [PostsController::class, 'ban'])->name('posts.ban');
     Route::post('/posts/{post}/unban', [PostsController::class, 'unban'])->name('posts.unban');
     Route::delete('/posts/{post}/force-delete', [PostsController::class, 'forceDelete'])->withTrashed()->name('posts.force-delete');
@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/comments/{comment}', [CommentsController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/{comment}/react', [CommentReactionsController::class, 'toggle'])->name('comments.react');
-    Route::post('/comments/{comment}/report', [ReportsController::class, 'storeForComment'])->name('comments.report')->middleware('throttle:10,1440');
+    Route::post('/comments/{comment}/report', [ReportsController::class, 'storeForComment'])->name('comments.report');
     Route::post('/comments/{comment}/ban', [CommentsController::class, 'ban'])->name('comments.ban');
     Route::post('/comments/{comment}/unban', [CommentsController::class, 'unban'])->name('comments.unban');
     Route::delete('/comments/{comment}/force-delete', [CommentsController::class, 'forceDelete'])->withTrashed()->name('comments.force-delete');
@@ -82,7 +82,6 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/menu/reports/{report}/unread', [AdminReportsController::class, 'markUnread'])->name('reports.unread');
     Route::get('/menu/reports/{report}/open', [AdminReportsController::class, 'open'])->name('reports.open');
     Route::delete('/menu/reports/{report}', [AdminReportsController::class, 'destroy'])->name('reports.destroy');
-    Route::patch('/menu/reports/{report}/status', [AdminReportsController::class, 'updateStatus'])->name('reports.status');
 
     Route::get('/menu/appearance', [AppearanceController::class, 'index'])->name('appearance');
     Route::patch('/menu/appearance', [AppearanceController::class, 'update'])->name('appearance.update');

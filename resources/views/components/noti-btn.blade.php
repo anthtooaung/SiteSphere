@@ -56,7 +56,7 @@
 @php
     $btnClass = $trigger === 'top' ? 'auth-menu-button relative !bg-transparent !border-transparent' : 'mobile-nav-item relative';
 @endphp
-@if (in_array($mobileMode, ['both', 'trigger'], true))
+@if (in_array($mobileMode, ['bottom', 'trigger'], true))
     <button
         type="button"
         {{ $attributes->class([

@@ -27,10 +27,17 @@
 @enddesktop
 
 @mobile
+@php
+    $trigger = $attributes->get('trigger', 'bottom');
+    $buttonId = 'mobileDropdownDividerButton' . ucfirst($trigger);
+    $dropdownId = 'mobileDropdownDivider' . ucfirst($trigger);
+    $btnClass = $trigger === 'top' ? 'auth-menu-button' : 'mobile-nav-item';
+    $placement = $trigger === 'top' ? 'bottom-end' : 'top';
+@endphp
 <button
-    id="mobileDropdownDividerButton"
-    data-dropdown-toggle="mobileDropdownDivider"
-    {{ $attributes->merge(['class' => 'mobile-nav-item', 'data-dropdown-placement' => 'top']) }}
+    id="{{ $buttonId }}"
+    data-dropdown-toggle="{{ $dropdownId }}"
+    {{ $attributes->merge(['class' => $btnClass, 'data-dropdown-placement' => $placement]) }}
     type="button"
     style="font-family: var(--font-family); color: var(--text-color);"
 >
@@ -38,8 +45,8 @@
     <span>Login</span>
 </button>
 
-<div id="mobileDropdownDivider" class="auth-menu-dropdown hidden z-50" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
-    <ul class="auth-menu-list" aria-labelledby="mobileDropdownDividerButton">
+<div id="{{ $dropdownId }}" class="auth-menu-dropdown hidden z-50" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
+    <ul class="auth-menu-list" aria-labelledby="{{ $buttonId }}">
         <li>
             <a href="{{ route('login') }}" class="auth-menu-link">
                 Login

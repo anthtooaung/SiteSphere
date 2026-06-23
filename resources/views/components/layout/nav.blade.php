@@ -60,17 +60,21 @@
 
 @mobile
     <!-- Mobile Header -->
-    <header class="mobile-header sticky top-0 z-50 flex items-center justify-between px-4 py-3" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
+    <header class="mobile-header {{ request()->routeIs(['welcome', 'about-us']) ? '!fixed w-full' : 'sticky' }} top-0 z-50 flex items-center justify-between px-4 py-3" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 20" :class="{ 'scrolled': scrolled }">
         <a href="{{ route('welcome') }}" class="flex items-center gap-2">
             <x-app-logo class="size-6"></x-app-logo>
             <span class="font-bold text-lg">SiteSphere</span>
         </a>
 
-        @auth
-            <x-profile-menu-btn trigger="top" />
+        @if(request()->routeIs(['welcome', 'about-us']))
+            <x-noti-btn trigger="top" mobile-mode="trigger" />
         @else
-            <x-login-out-menu-btn />
-        @endauth
+            @auth
+                <x-profile-menu-btn trigger="top" />
+            @else
+                <x-login-out-menu-btn trigger="top" />
+            @endauth
+        @endif
     </header>
 
     <!-- Mobile Bottom Navigation Bar -->
@@ -80,16 +84,20 @@
         @auth
             <x-create-post-btn />
         @endauth
-        <x-noti-btn mobile-mode="trigger" />
+        @if(request()->routeIs(['welcome', 'about-us']))
+            <x-about-btn />
+        @else
+            <x-noti-btn mobile-mode="trigger" />
+        @endif
         @auth
             <x-profile-menu-btn trigger="bottom" />
         @else
-            <x-login-out-menu-btn />
+            <x-login-out-menu-btn trigger="bottom" />
         @endauth
     </nav>
 
     <x-category-btn mobile-mode="overlay" />
-    {{-- <x-noti-btn mobile-mode="overlay" /> --}}
+    <x-noti-btn mobile-mode="overlay" />
 
     <!-- Mobile Navigation Interactions Script -->
     <script>

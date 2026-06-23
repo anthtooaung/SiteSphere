@@ -10,6 +10,17 @@
     $isDropdownAside = in_array($menuBarLocation, ['top', 'bottom'], true);
 @endphp
 
+<style>
+    @media (max-width: 767px) {
+        .mobile-sidebar-z {
+            z-index: 10000 !important;
+        }
+        .mobile-backdrop-z {
+            z-index: 9999 !important;
+        }
+    }
+</style>
+
 <div x-data="{ 
     open: false, 
     showTrigger: true, 
@@ -41,7 +52,7 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
     </button>
 
     {{-- Backdrop --}}
-    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 z-[60] md:hidden" @click="open = false" x-transition.opacity></div>
+    <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 mobile-backdrop-z md:hidden" @click="open = false" x-transition.opacity></div>
 
     {{-- Mobile Sidebar (75% width) --}}
     <aside
@@ -51,14 +62,14 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
         data-menu-bar-location="{{ $menuBarLocation }}"
         data-dropdown-aside="{{ $isDropdownAside ? 'true' : 'false' }}"
         {{ $attributes->class([
-            'sidebar', 
+            'sidebar mobile-sidebar-z', 
             'home-aside', 
             'home-aside--'.$menuBarLocation, 
             'home-aside--dropdown' => $isDropdownAside,
             'layout-menu--topbar' => $isDropdownAside,
             'layout-menu--horizontal' => $isDropdownAside,
             'layout-menu--'.$menuBarLocation => $isDropdownAside,
-            'fixed inset-y-0 z-[70] w-[75%] max-w-[300px] shadow-2xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out md:static md:!block md:z-0 md:shadow-none md:transform-none md:transition-none md:rounded-none',
+            'fixed inset-y-0 w-[75%] max-w-[300px] shadow-2xl p-4 overflow-y-auto transform transition-transform duration-300 ease-in-out md:static md:!block md:z-0 md:shadow-none md:transform-none md:transition-none md:rounded-none',
             'right-0' => $menuBarLocation === 'right',
             'left-0' => $menuBarLocation !== 'right',
             'md:h-full md:w-[280px]' => ! $isDropdownAside,
@@ -76,7 +87,7 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
         style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);"
     >
         {{-- Close Button --}}
-        <button class="absolute top-2 right-2 p-2 md:hidden" @click="open = false">
+        <button class="absolute top-0 right-0 p-4 z-10 md:hidden" @click="open = false">
             <x-fas-xmark class="size-6 text-gray-500 dark:text-gray-400" />
         </button>
 

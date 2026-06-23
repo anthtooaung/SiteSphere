@@ -76,7 +76,21 @@
             <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
         @endif
 
-        <main class="dashboard-content profile-detail-content" x-data="{ expandedSection: null }">
+        <main class="dashboard-content profile-detail-content" x-data="{
+            expandedSection: null,
+            reportOpen: false,
+            reportReason: '',
+            reportDetails: '',
+            openReportModal() {
+                this.reportOpen = true;
+            },
+            closeReportModal() {
+                this.reportOpen = false;
+                this.reportReason = '';
+                this.reportDetails = '';
+            },
+            reportDetailsCount() { return this.reportDetails.length; }
+        }">
             <!-- Background Blur -->
             <div class="bg-blur blur1"></div>
             <div class="bg-blur blur2"></div>
@@ -90,6 +104,13 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                             Edit
                         </a>
+                    @else
+                        @auth
+                            <button type="button" x-on:click="openReportModal()" class="edit-btn" style="text-decoration: none; color: var(--ui-danger); border-color: color-mix(in srgb, var(--ui-danger) 20%, transparent); background: color-mix(in srgb, var(--ui-danger) 10%, transparent);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                                Report
+                            </button>
+                        @endauth
                     @endif
 
                     <div class="profile-content">
@@ -241,7 +262,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
                                         </div>
                                         <div class="list-info">
-                                            <a href="{{ route('posts.show', $review->post->slug) }}#comment-{{ $review->id }}" class="list-title">{{ $review->post->title }}</a>
+                                            <a href="{{ $review->post ? route('posts.show', $review->post->slug) . '#comment-' . $review->id : '#' }}" class="list-title">{{ $review->post?->title ?? 'Deleted Post' }}</a>
                                             <span class="list-subtitle">{{ Str::limit($review->content, 60) }}</span>
                                         </div>
                                     </div>
@@ -272,13 +293,15 @@
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/></svg>
                                                         </div>
                                                         <div class="list-info">
-                                                            <a href="{{ route('posts.show', $upload->post->slug) }}#panel-user-{{ $user->id }}" class="list-title">{{ $upload->post->title }}</a>
+                                                            <a href="{{ $upload->post ? route('posts.show', $upload->post->slug) . '#panel-user-' . $user->id : '#' }}" class="list-title">{{ $upload->post?->title ?? 'Deleted Post' }}</a>
                                                             <span class="list-subtitle">Contributed Resource</span>
                                                         </div>
                                                     </div>
                                                     <div class="list-right">
                                                         <span class="list-meta">{{ $upload->created_at->format('d M Y') }}</span>
-                                                        <a href="{{ route('posts.show', $upload->post->slug) }}#panel-user-{{ $user->id }}" class="view-btn">View</a>
+                                                        @if($upload->post)
+                                                            <a href="{{ route('posts.show', $upload->post->slug) }}#panel-user-{{ $user->id }}" class="view-btn">View</a>
+                                                        @endif
                                                     </div>
                                                 </div>
                             @empty
@@ -289,6 +312,120 @@
                 </div>
 
             </div>
+
+            {{-- Report modal (teleported to body, same style as post-detail) --}}
+            @auth
+                @if(auth()->id() !== $user->id)
+                    <template x-teleport="body">
+                        <div x-cloak x-show="reportOpen" x-transition.opacity.duration.200ms
+                            class="fixed inset-0 z-[100000] flex items-center justify-center bg-black/45 p-4 backdrop-blur-md"
+                            role="presentation"
+                            x-on:click.self="closeReportModal()"
+                            x-on:keydown.escape.window="closeReportModal()">
+                            <form method="POST" action="{{ route('users.report', $user->id) }}"
+                                class="flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl border [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_8%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_30px_60px_-15px_color-mix(in_srgb,var(--text-color,#0d1b2a)_28%,transparent)]"
+                                aria-labelledby="user-report-modal-title-{{ $user->id }}"
+                                x-on:click.stop>
+                                @csrf
+
+                                <div class="flex items-start justify-between gap-4 px-7 pb-2 pt-7">
+                                    <div class="min-w-0">
+                                        <h3 id="user-report-modal-title-{{ $user->id }}"
+                                            class="text-[22px] font-bold leading-tight tracking-normal [color:var(--text-color,#0d1b2a)]">
+                                            Report User
+                                        </h3>
+                                        <p class="mt-2 text-sm leading-6 [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_64%,transparent)]">
+                                            Select the reason that best describes the issue with this user.
+                                        </p>
+                                    </div>
+                                    <button type="button"
+                                        class="flex size-9 shrink-0 items-center justify-center rounded-full transition [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--text-color,#0d1b2a)] focus:outline-none"
+                                        aria-label="Close report dialog"
+                                        x-on:click="closeReportModal()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                    </button>
+                                </div>
+
+                                <div class="flex-1 space-y-6 overflow-y-auto px-7 py-4">
+                                    <div class="space-y-3">
+                                        <span class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Content Quality</span>
+                                        <div class="grid gap-3 sm:grid-cols-2">
+                                            @foreach ([
+                                                ['label' => 'Spam / Misleading'],
+                                                ['label' => 'Fake / False Info'],
+                                                ['label' => 'Misinformation'],
+                                                ['label' => 'Nudity / Obscenity'],
+                                            ] as $option)
+                                                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
+                                                    x-bind:class="reportReason === @js($option['label']) ? '[border-color:var(--accent-color,#6c5ce7)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] [box-shadow:0_0_0_1px_var(--accent-color,#6c5ce7)]' : ''">
+                                                    <span class="flex min-w-0 items-center gap-3 text-sm font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]"
+                                                        x-bind:class="reportReason === @js($option['label']) ? '[color:var(--accent-color,#6c5ce7)]' : ''">
+                                                        <span>{{ $option['label'] }}</span>
+                                                    </span>
+                                                    <input type="radio" name="reason" value="{{ $option['label'] }}"
+                                                        class="size-4 shrink-0 accent-[var(--accent-color,#6c5ce7)]"
+                                                        x-model="reportReason">
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-3">
+                                        <span class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Safety &amp; Conduct</span>
+                                        <div class="grid gap-3 sm:grid-cols-2">
+                                            @foreach ([
+                                                ['label' => 'Hate Speech'],
+                                                ['label' => 'Harassment / Abuse'],
+                                                ['label' => 'Violence / Threats'],
+                                                ['label' => 'Other'],
+                                            ] as $option)
+                                                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border p-4 transition active:scale-[0.98] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_12%,transparent)] [background:var(--background-color,#ffffff)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_92%,var(--accent-color,#6c5ce7)_8%)]"
+                                                    x-bind:class="reportReason === @js($option['label']) ? '[border-color:var(--accent-color,#6c5ce7)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] [box-shadow:0_0_0_1px_var(--accent-color,#6c5ce7)]' : ''">
+                                                    <span class="flex min-w-0 items-center gap-3 text-sm font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)]"
+                                                        x-bind:class="reportReason === @js($option['label']) ? '[color:var(--accent-color,#6c5ce7)]' : ''">
+                                                        <span>{{ $option['label'] }}</span>
+                                                    </span>
+                                                    <input type="radio" name="reason" value="{{ $option['label'] }}"
+                                                        class="size-4 shrink-0 accent-[var(--accent-color,#6c5ce7)]"
+                                                        x-model="reportReason">
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <label for="user-report-details-{{ $user->id }}"
+                                                class="block text-[11px] font-bold uppercase tracking-[0.08em] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]">Additional Details <span class="ml-1 font-medium normal-case tracking-normal opacity-70">(Optional)</span></label>
+                                            <span class="text-xs font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_42%,transparent)]"
+                                                x-bind:class="reportDetailsCount() >= 560 ? '[color:var(--accent-color,#6c5ce7)]' : ''"
+                                                x-text="`${reportDetailsCount()} / 600`">0 / 600</span>
+                                        </div>
+                                        <textarea id="user-report-details-{{ $user->id }}" name="details" maxlength="600" rows="4"
+                                            x-model="reportDetails"
+                                            class="w-full resize-y rounded-2xl border px-4 py-3 text-[15px] leading-relaxed transition-colors placeholder:[color:color-mix(in_srgb,var(--text-color,#0d1b2a)_38%,transparent)] focus:outline-none focus:ring-4 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_16%,transparent)] [background:color-mix(in_srgb,var(--text-color,#0d1b2a)_2%,transparent)] [color:var(--text-color,#0d1b2a)] focus:[border-color:var(--accent-color,#6c5ce7)] focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_16%,transparent)]"
+                                            placeholder="Describe context or reasons to help us review this report faster."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-end gap-3 border-t px-7 py-5 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_8%,transparent)] [background:color-mix(in_srgb,var(--text-color,#0d1b2a)_2%,transparent)]">
+                                    <button type="button"
+                                        class="rounded-xl px-5 py-2.5 text-[15px] font-bold transition hover:[background:color-mix(in_srgb,var(--text-color,#0d1b2a)_6%,transparent)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)] focus:outline-none"
+                                        x-on:click="closeReportModal()">
+                                        Cancel
+                                    </button>
+                                    <button type="submit"
+                                        class="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-[15px] font-bold shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50 [background:var(--accent-color,#6c5ce7)] [color:var(--background-color,#ffffff)] hover:![background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_85%,#000_15%)] focus:outline-none focus:ring-4 focus:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,transparent)]"
+                                        x-bind:disabled="! reportReason" disabled>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                                        <span>Submit Report</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </template>
+                @endif
+            @endauth
         </main>
     </div>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLogs;
+use App\Models\Comments;
 use App\Models\Ratings;
 use App\Models\User;
 use App\Models\UserPosts;
@@ -59,12 +60,14 @@ class ProfileDetailController extends Controller
         $isOwnProfile = $request->user()?->is($user) ?? false;
 
         $userPostsQuery = UserPosts::query()
+            ->has('post')
             ->where('user_id', $user->id)
             ->when(! $isOwnProfile, fn ($query) => $query->where('user_hidden', false));
 
         $uploadsCount = (clone $userPostsQuery)->count();
 
-        $commentsQuery = \App\Models\Comments::query()
+        $commentsQuery = Comments::query()
+            ->has('post')
             ->where('user_id', $user->id);
 
         $reviewsCount = (clone $commentsQuery)->count();

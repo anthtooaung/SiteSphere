@@ -160,7 +160,7 @@ class CategoryTagsSeeder extends Seeder
                 );
 
                 // Attach tag to category if not already attached
-                if (!$category->tags()->where('tag_id', $tag->id)->exists()) {
+                if (! $category->tags()->where('tag_id', $tag->id)->exists()) {
                     $category->tags()->attach($tag->id);
                 }
             }

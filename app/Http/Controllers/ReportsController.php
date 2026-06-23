@@ -93,6 +93,49 @@ class ReportsController extends Controller
     }
 
     /**
+     * Store a report for a user.
+     */
+    public function storeForUser(Request $request, User $user): RedirectResponse
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:500'],
+            'details' => ['nullable', 'string', 'max:600'],
+        ]);
+
+        $reason = $this->reportReason(
+            reason: $validated['reason'],
+            details: $validated['details'] ?? null,
+        );
+
+        Reports::query()->create([
+            'user_id' => $request->user()->id,
+            'target_name' => 'users',
+            'target_id' => $user->id,
+            'reason' => $reason,
+            'admin_read' => false,
+        ]);
+
+        $this->notifyAdminsAboutUserReport($request, $user);
+
+        Swal::fire([
+            'toast' => true,
+            'position' => $this->toastPositionForRequest($request),
+            'showConfirmButton' => false,
+            'timer' => 1000,
+            'timerProgressBar' => true,
+            'icon' => 'success',
+            'title' => 'Report submitted',
+            'text' => 'Thanks for helping us keep SiteSphere safe.',
+            'didOpen' => '(toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }',
+        ]);
+
+        return back()->with('success', 'User reported.');
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Reports $reports)
@@ -205,6 +248,27 @@ class ReportsController extends Controller
                     'from_user_id' => $reporter->id,
                     'target_type' => 'comments',
                     'target_id' => $comment->id,
+                    'message' => $message,
+                    'is_read' => false,
+                ]);
+            });
+    }
+
+    private function notifyAdminsAboutUserReport(Request $request, User $reportedUser): void
+    {
+        $reporter = $request->user();
+        $message = "{$reporter->name} reported user: {$reportedUser->name}";
+
+        User::query()
+            ->where('role', 'admin')
+            ->select('id')
+            ->get()
+            ->each(function (User $admin) use ($reporter, $reportedUser, $message): void {
+                Notificatioins::query()->create([
+                    'to_user_id' => $admin->id,
+                    'from_user_id' => $reporter->id,
+                    'target_type' => 'users',
+                    'target_id' => $reportedUser->id,
                     'message' => $message,
                     'is_read' => false,
                 ]);

@@ -364,19 +364,34 @@ Route::delete('/menu/reports/{report}/resolve', [AdminReportsController::class, 
 
 ## 8. Testing Checklist
 
-- [ ] User can report a post only once
-- [ ] User cannot report their own content
-- [ ] `report_count` increments on target when reported
-- [ ] Owner gets notified on every report
-- [ ] Admin gets notified on every report
-- [ ] Notifications with report_count >= 3 show unsecure tag
-- [ ] "Mark all as read" button works
-- [ ] User profile shows unsecure badge when report_count >= 3
-- [ ] User tab shows unsecure tag for unsecure users
+### Phase 1: Bug Fixes ✅
+- [x] `report_count` increments on target when reported
+- [x] Notification enum includes 'users' target type
+- [x] Posts model `reports()` relation fixed (`'post'` → `'posts'`)
+- [x] `user_posts` report submission endpoint added
+
+### Phase 2: Duplicate Prevention ✅
+- [x] User can report a post only once
+- [x] User cannot report their own content
+- [x] Unique constraint on `(user_id, target_name, target_id)`
+
+### Phase 3: Notifications ✅
+- [x] Owner gets notified on every report
+- [x] Admin gets notified on every report
+- [x] Notifications with report_count >= 3 show unsecure tag
+- [x] "Mark all as read" button works
+- [x] Notification routing redirects to content page
+
+### Phase 4: User Status & Bans ✅
+- [x] User profile shows unsecure badge when report_count >= 3
+- [x] User tab shows unsecure tag for unsecure users
+- [x] Banned user cannot login (regular + OAuth)
+- [x] Hover profile card shows unsecure badge
+
+### Phase 5: Admin Resolve (Pending)
 - [ ] Admin can resolve a report (deletes records, resets count)
-- [ ] Banned user cannot login (regular + OAuth)
 - [ ] All audit logs created correctly
 
 ---
 
-**Next Step:** Start with Phase 1 — fix the existing bugs.
+**Next Step:** Start with Phase 5 — Admin Resolve.

@@ -182,25 +182,6 @@ class PostsController extends Controller
             ->with('success', 'Post permanently deleted.');
     }
 
-    public function deleteAudit(Request $request, UserPosts $userPost): RedirectResponse
-    {
-        $user = $request->user();
-
-        abort_unless($user?->role === 'admin', 403);
-
-        AuditLogs::query()->create([
-            'user_id' => $user->id,
-            'action' => 'delete_audit',
-            'category' => 'moderation',
-            'target_type' => UserPosts::class,
-            'target_id' => $userPost->id,
-            'reason' => 'Description permanently deleted by an admin.',
-        ]);
-
-        $userPost->forceDelete();
-
-        return back()->with('success', 'Description permanently deleted.');
-    }
 
     public function deleteAudit(Request $request, UserPosts $userPost): RedirectResponse
     {

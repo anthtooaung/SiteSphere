@@ -24,22 +24,19 @@
 
 ---
 
-## ⚠️ Priority 2 — Not Working As Specified
+## ~~⚠️ Priority 2 — Not Working As Specified~~ ✅ FIXED
 
-### 5. Reports model missing `userPost()` relation
+### ~~5. Reports model missing `userPost()` relation~~ ✅
 - **File:** `app/Models/Reports.php`
-- **Problem:** Has `post()`, `comment()`, `targetUser()` but no `userPost()` relation for `user_posts` target type.
-- **Fix:** Add `public function userPost() { return $this->belongsTo(UserPosts::class, 'target_id'); }`
+- **Fix:** Added `public function userPost(): BelongsTo { return $this->belongsTo(UserPosts::class, 'target_id'); }`
 
-### 6. "Mark all as read" button missing from notification dropdown
+### ~~6. "Mark all as read" button missing from notification dropdown~~ ✅
 - **File:** `resources/views/components/noti-btn.blade.php`
-- **Problem:** Route `POST /notifications/mark-all-read` and controller method exist, but no UI button triggers them.
-- **Fix:** Add a "Mark all as read" button/link in the notification dropdown header.
+- **Fix:** Added "Mark all read" button in both desktop dropdown header and mobile overlay header. Only shows when there are unread notifications.
 
-### 7. `restore_user` audit log category is `moderation` instead of `resolved`
-- **File:** `app/Http/Controllers/AdminUsersController.php` (~line 93)
-- **Problem:** `restore()` calls `$this->audit(...)` without specifying category, so it defaults to `'moderation'`.
-- **Fix:** Pass `category: 'resolved'` explicitly in the audit call.
+### ~~7. `restore_user` audit log category is `moderation` instead of `resolved`~~ ✅
+- **File:** `app/Http/Controllers/AdminUsersController.php`
+- **Fix:** Passed `category: 'resolved'` explicitly in the `audit()` call inside `restore()`.
 
 ---
 
@@ -88,8 +85,8 @@
 | Priority | Count | Status |
 |---|---|---|
 | 🚨 P1 — Runtime errors | 4 | ✅ All fixed (2026-06-24) |
-| ⚠️ P2 — Missing features | 3 | Pending |
+| ⚠️ P2 — Missing features | 3 | ✅ All fixed (2026-06-24) |
 | ⚠️ P3 — UI not cleaned up | 3 | Pending |
 | 📝 P4 — Naming / dead code | 4 | Pending |
 
-**Total remaining: 10 items**
+**Total remaining: 7 items**

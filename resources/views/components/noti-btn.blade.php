@@ -21,7 +21,17 @@
     @endif
 </button>
 <div id="notificationDropdown" class="noti-dropdown hidden" aria-labelledby="notificationDropdownButton" style="font-family: var(--font-family); color: var(--text-color); background-color: var(--background-color);">
-    <div class="noti-dropdown-header" style="font-family: var(--font-family); color: var(--text-color);">Notifications</div>
+    <div class="noti-dropdown-header" style="font-family: var(--font-family); color: var(--text-color); display: flex; justify-content: space-between; align-items: center;">
+        <span>Notifications</span>
+        @if ($unreadNotifications->isNotEmpty())
+            <form method="POST" action="{{ route('notifications.mark-all-read') }}" class="m-0">
+                @csrf
+                <button type="submit" class="text-xs font-medium opacity-60 hover:opacity-100 transition-opacity" style="color: var(--text-color);" title="Mark all as read">
+                    Mark all read
+                </button>
+            </form>
+        @endif
+    </div>
 
     @if ($unreadNotifications->isEmpty())
         <p class="noti-empty" style="font-family: var(--font-family); color: var(--text-color);">No unread notifications</p>
@@ -80,14 +90,24 @@
 
 @if (in_array($mobileMode, ['both', 'overlay'], true))
     <div class="mobile-menu-overlay category-mobile-overlay" id="mobileNotiOverlay" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
-        <button
-            type="button"
-            class="mobile-close-button category-mobile-close"
-            data-mobile-noti-close
-            aria-label="Close notifications"
-        >
-            <x-fas-times class="size-8"/>
-        </button>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+            <button
+                type="button"
+                class="mobile-close-button category-mobile-close"
+                data-mobile-noti-close
+                aria-label="Close notifications"
+            >
+                <x-fas-times class="size-8"/>
+            </button>
+            @if ($unreadNotifications->isNotEmpty())
+                <form method="POST" action="{{ route('notifications.mark-all-read') }}" class="m-0">
+                    @csrf
+                    <button type="submit" class="text-sm font-medium opacity-60 hover:opacity-100 transition-opacity" style="color: var(--text-color);">
+                        Mark all read
+                    </button>
+                </form>
+            @endif
+        </div>
 
         @forelse ($unreadNotifications as $notification)
             @if ($notification->target_type === 'posts')

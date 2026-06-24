@@ -90,7 +90,7 @@ class AdminUsersController extends Controller
             $user->save();
             $user->restore(); // clears deleted_at
 
-            $this->audit($admin, 'restore_user', $user, 'User account was restored by an admin.');
+            $this->audit($admin, 'restore_user', $user, 'User account was restored by an admin.', category: 'resolved');
         });
 
         return back()->with('success', "{$user->name}'s account was restored.");

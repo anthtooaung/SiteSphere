@@ -100,6 +100,7 @@ class SavedPostsController extends Controller
             'ratings_count' => (int) $post->ratings_count,
             'comments_count' => (int) $post->comments_count,
             'is_bookmarked' => true,
+            'is_unsecure' => (bool) $post->is_unsecure,
             'saved_at' => $bookmark->created_at?->toDateString() ?? '',
             'saved_at_label' => $bookmark->created_at?->diffForHumans() ?? '',
             'profiles' => $post->userPosts

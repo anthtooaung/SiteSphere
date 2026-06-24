@@ -147,4 +147,25 @@
         window.uploadPostInitialCategory = @js($initialCategory?->slug);
         window.uploadPostOldTags = @js($oldTagIds);
     </script>
+
+    @if (session('unsecure_post'))
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const unsecurePost = @js(session('unsecure_post'));
+            const result = await window.sitesphereSwal.fire({
+                icon: 'warning',
+                title: 'This URL has been flagged',
+                text: 'This URL is associated with an unsecure post. Would you like to visit that post or cancel?',
+                showCancelButton: true,
+                confirmButtonText: 'Visit Post',
+                cancelButtonText: 'Cancel',
+                cancelButtonColor: '#d33',
+            });
+
+            if (result.isConfirmed) {
+                window.location.href = `/post/${unsecurePost.slug}`;
+            }
+        });
+    </script>
+    @endif
 </main>

@@ -39,10 +39,9 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/posts/{post}/description', [PostsController::class, 'destroyDescription'])->name('posts.description.destroy');
     Route::post('/posts/{post}/bookmark', [BookmarksController::class, 'store'])->name('posts.bookmark');
     Route::post('/posts/{post}/report', [ReportsController::class, 'store'])->name('posts.report');
-    Route::post('/posts/{post}/ban', [PostsController::class, 'ban'])->name('posts.ban');
     Route::post('/posts/{post}/unban', [PostsController::class, 'unban'])->name('posts.unban');
     Route::delete('/posts/{post}/force-delete', [PostsController::class, 'forceDelete'])->withTrashed()->name('posts.force-delete');
-    Route::post('/audits/{userPost}/ban', [PostsController::class, 'banAudit'])->name('audits.ban');
+    Route::delete('/audits/{userPost}/delete', [PostsController::class, 'deleteAudit'])->name('audits.delete');
     Route::post('/audits/{userPost}/unban', [PostsController::class, 'unbanAudit'])->withTrashed()->name('audits.unban');
     Route::delete('/audits/{userPost}/force-delete', [PostsController::class, 'forceDeleteAudit'])->withTrashed()->name('audits.force-delete');
     Route::post('/user-posts/{userPost}/report', [ReportsController::class, 'storeForUserPost'])->name('user-posts.report');
@@ -52,7 +51,7 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/{comment}/react', [CommentReactionsController::class, 'toggle'])->name('comments.react');
     Route::post('/comments/{comment}/report', [ReportsController::class, 'storeForComment'])->name('comments.report');
-    Route::post('/comments/{comment}/ban', [CommentsController::class, 'ban'])->name('comments.ban');
+    Route::delete('/comments/{comment}/delete', [CommentsController::class, 'delete'])->name('comments.delete');
     Route::post('/comments/{comment}/unban', [CommentsController::class, 'unban'])->name('comments.unban');
     Route::delete('/comments/{comment}/force-delete', [CommentsController::class, 'forceDelete'])->withTrashed()->name('comments.force-delete');
 });

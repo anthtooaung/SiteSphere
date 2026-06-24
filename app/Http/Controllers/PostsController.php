@@ -62,6 +62,21 @@ class PostsController extends Controller
             ]);
         }
 
+        // Check if URL is flagged as unsecure
+        $unsecurePost = Posts::query()
+            ->where('url', $validated['url'])
+            ->where('is_unsecure', true)
+            ->first();
+
+        if ($unsecurePost) {
+            return back()
+                ->with('unsecure_post', [
+                    'url' => $unsecurePost->url,
+                    'slug' => $unsecurePost->slug,
+                ])
+                ->withInput();
+        }
+
         DB::transaction(function () use ($existingPost, $user, $validated): void {
             $post = $existingPost ?? Posts::query()->create([
                 'title' => $validated['title'],
@@ -82,34 +97,6 @@ class PostsController extends Controller
         return redirect()
             ->route('home')
             ->with('success', 'Post created successfully.');
-    }
-
-    public function ban(Request $request, Posts $post): RedirectResponse
-    {
-        $user = $request->user();
-
-        abort_unless($user?->role === 'admin', 403);
-
-        DB::transaction(function () use ($post, $user): void {
-            UserPosts::query()
-                ->where('post_id', $post->id)
-                ->update(['user_hidden' => true]);
-
-            $post->delete();
-
-            AuditLogs::query()->create([
-                'user_id' => $user->id,
-                'action' => 'ban_post',
-                'category' => 'moderation',
-                'target_type' => Posts::class,
-                'target_id' => $post->id,
-                'reason' => 'Post soft deleted and all descriptions hidden by an admin.',
-            ]);
-        });
-
-        return redirect()
-            ->route('home')
-            ->with('success', 'Post banned and soft deleted.');
     }
 
     public function unban(Request $request, int $id): RedirectResponse
@@ -217,6 +204,26 @@ class PostsController extends Controller
         return back()->with('success', 'Description restored.');
     }
 
+    public function deleteAudit(Request $request, UserPosts $userPost): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+
+        $userPost->forceDelete();
+
+        AuditLogs::query()->create([
+            'user_id' => $user->id,
+            'action' => 'delete_audit',
+            'category' => 'moderation',
+            'target_type' => UserPosts::class,
+            'target_id' => $userPost->id,
+            'reason' => 'Description permanently deleted by an admin.',
+        ]);
+
+        return back()->with('success', 'Description permanently deleted.');
+    }
+
     public function forceDeleteAudit(Request $request, UserPosts $userPost): RedirectResponse
     {
         $user = $request->user();
@@ -293,6 +300,9 @@ class PostsController extends Controller
                 'saved' => false,
             ]);
         }
+
+        // Handle unsecure posts — visible to all, banner shown
+        $isUnsecure = (bool) $posts->is_unsecure;
 
         $isAdmin = auth()->user()?->role === 'admin';
 
@@ -392,6 +402,7 @@ class PostsController extends Controller
         return view('layout.post-detail', [
             'post' => $posts,
             'isBanned' => false,
+            'isUnsecure' => $isUnsecure,
             'banLog' => null,
             'averageRating' => $averageRating,
             'ratingsCount' => $ratingsCount,

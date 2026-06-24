@@ -69,6 +69,7 @@ class ReportsController extends Controller
 
         $post->increment('report_count');
 
+        $this->notifyPostOwner($post);
         $this->notifyAdminsAboutReport($request, $post);
         $this->flashSuccessToast($request);
 
@@ -118,6 +119,7 @@ class ReportsController extends Controller
 
         $comment->increment('report_count');
 
+        $this->notifyCommentOwner($comment);
         $this->notifyAdminsAboutCommentReport($request, $comment);
 
         Swal::fire([
@@ -181,6 +183,7 @@ class ReportsController extends Controller
 
         $user->increment('report_count');
 
+        $this->notifyReportedUser($user);
         $this->notifyAdminsAboutUserReport($request, $user);
 
         Swal::fire([
@@ -244,6 +247,7 @@ class ReportsController extends Controller
 
         $userPost->increment('report_count');
 
+        $this->notifyUserPostOwner($userPost);
         $this->notifyAdminsAboutUserPostReport($request, $userPost);
 
         Swal::fire([
@@ -345,12 +349,13 @@ class ReportsController extends Controller
     {
         $reporter = $request->user();
         $message = "{$reporter->name} reported post: {$post->title}";
+        $isUnsecure = $post->report_count >= 3;
 
         User::query()
             ->where('role', 'admin')
             ->select('id')
             ->get()
-            ->each(function (User $admin) use ($reporter, $post, $message): void {
+            ->each(function (User $admin) use ($reporter, $post, $message, $isUnsecure): void {
                 Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
@@ -358,6 +363,7 @@ class ReportsController extends Controller
                     'target_id' => $post->id,
                     'message' => $message,
                     'is_read' => false,
+                    'is_unsecure' => $isUnsecure,
                 ]);
             });
     }
@@ -366,12 +372,13 @@ class ReportsController extends Controller
     {
         $reporter = $request->user();
         $message = "{$reporter->name} reported a comment by {$comment->user->name}";
+        $isUnsecure = $comment->report_count >= 3;
 
         User::query()
             ->where('role', 'admin')
             ->select('id')
             ->get()
-            ->each(function (User $admin) use ($reporter, $comment, $message): void {
+            ->each(function (User $admin) use ($reporter, $comment, $message, $isUnsecure): void {
                 Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
@@ -379,6 +386,7 @@ class ReportsController extends Controller
                     'target_id' => $comment->id,
                     'message' => $message,
                     'is_read' => false,
+                    'is_unsecure' => $isUnsecure,
                 ]);
             });
     }
@@ -387,12 +395,13 @@ class ReportsController extends Controller
     {
         $reporter = $request->user();
         $message = "{$reporter->name} reported user: {$reportedUser->name}";
+        $isUnsecure = $reportedUser->report_count >= 3;
 
         User::query()
             ->where('role', 'admin')
             ->select('id')
             ->get()
-            ->each(function (User $admin) use ($reporter, $reportedUser, $message): void {
+            ->each(function (User $admin) use ($reporter, $reportedUser, $message, $isUnsecure): void {
                 Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
@@ -400,6 +409,7 @@ class ReportsController extends Controller
                     'target_id' => $reportedUser->id,
                     'message' => $message,
                     'is_read' => false,
+                    'is_unsecure' => $isUnsecure,
                 ]);
             });
     }
@@ -409,12 +419,13 @@ class ReportsController extends Controller
         $reporter = $request->user();
         $postTitle = $userPost->post?->title ?? 'Unknown Post';
         $message = "{$reporter->name} reported a description on post: {$postTitle}";
+        $isUnsecure = $userPost->report_count >= 3;
 
         User::query()
             ->where('role', 'admin')
             ->select('id')
             ->get()
-            ->each(function (User $admin) use ($reporter, $userPost, $message): void {
+            ->each(function (User $admin) use ($reporter, $userPost, $message, $isUnsecure): void {
                 Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
@@ -422,7 +433,68 @@ class ReportsController extends Controller
                     'target_id' => $userPost->post_id,
                     'message' => $message,
                     'is_read' => false,
+                    'is_unsecure' => $isUnsecure,
                 ]);
             });
+    }
+
+    private function notifyPostOwner(Posts $post): void
+    {
+        // Get all contributors to this post
+        $contributorIds = UserPosts::query()
+            ->where('post_id', $post->id)
+            ->pluck('user_id')
+            ->unique();
+
+        foreach ($contributorIds as $userId) {
+            Notificatioins::query()->create([
+                'to_user_id' => $userId,
+                'from_user_id' => null,
+                'target_type' => 'posts',
+                'target_id' => $post->id,
+                'message' => "Your post \"{$post->title}\" has been reported.",
+                'is_read' => false,
+                'is_unsecure' => false,
+            ]);
+        }
+    }
+
+    private function notifyCommentOwner(Comments $comment): void
+    {
+        Notificatioins::query()->create([
+            'to_user_id' => $comment->user_id,
+            'from_user_id' => null,
+            'target_type' => 'comments',
+            'target_id' => $comment->id,
+            'message' => 'Your comment has been reported.',
+            'is_read' => false,
+            'is_unsecure' => false,
+        ]);
+    }
+
+    private function notifyReportedUser(User $user): void
+    {
+        Notificatioins::query()->create([
+            'to_user_id' => $user->id,
+            'from_user_id' => null,
+            'target_type' => 'users',
+            'target_id' => $user->id,
+            'message' => 'Your account has been reported.',
+            'is_read' => false,
+            'is_unsecure' => false,
+        ]);
+    }
+
+    private function notifyUserPostOwner(UserPosts $userPost): void
+    {
+        Notificatioins::query()->create([
+            'to_user_id' => $userPost->user_id,
+            'from_user_id' => null,
+            'target_type' => 'posts',
+            'target_id' => $userPost->post_id,
+            'message' => 'Your description has been reported.',
+            'is_read' => false,
+            'is_unsecure' => false,
+        ]);
     }
 }

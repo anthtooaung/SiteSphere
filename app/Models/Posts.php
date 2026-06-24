@@ -47,6 +47,6 @@ class Posts extends Model
     public function reports(): HasMany
     {
         return $this->hasMany(Reports::class, 'target_id')
-            ->where('target_name', 'post');
+            ->where('target_name', 'posts');
     }
 }

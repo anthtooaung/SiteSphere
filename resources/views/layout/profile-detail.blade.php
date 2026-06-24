@@ -132,6 +132,12 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
                                         </span>
                                     @endif
+                                    @if($user->isUnsecure())
+                                        <span class="unsecure-badge" title="Unsecure Account (Reported {{ $user->report_count }} times)" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: color-mix(in srgb, #ffc107 20%, transparent); color: #ffc107; border: 1px solid color-mix(in srgb, #ffc107 30%, transparent); border-radius: 12px; font-size: 12px; font-weight: 500;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                                            Unsecure
+                                        </span>
+                                    @endif
                                 </div>
 
                                 <p>

@@ -131,7 +131,32 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'two_factor_enabled' => 'boolean',
+            'banned_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Check if the user is banned.
+     */
+    public function isBanned(): bool
+    {
+        return $this->status === 'banned';
+    }
+
+    /**
+     * Check if the user is unsecure (report_count >= 3).
+     */
+    public function isUnsecure(): bool
+    {
+        return $this->report_count >= 3;
+    }
+
+    /**
+     * Get the admin who banned this user.
+     */
+    public function bannedBy()
+    {
+        return $this->belongsTo(User::class, 'banned_by');
     }
 
     /**

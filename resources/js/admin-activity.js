@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const hrefAttr = targetUrl ? ` href="${targetUrl}"` : '';
           const clickableClass = targetUrl ? ' alc-entry--clickable' : '';
           return `<${entryTag} class="alc-entry${clickableClass}"${hrefAttr}>
-            <div class="alc-icon" style="background:${a.color};"><i class="fa-solid fa-${a.icon}" style="color:#fff; font-size:13px;"></i></div>
+            <div class="alc-icon" style="background:${a.color}18;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${a.color};"></span></div>
             <div class="alc-info">
               <div class="alc-txt">${a.txt}</div>
               <div class="alc-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> <i class="fa-regular fa-clock"></i> ${a.timeAbsolute || a.time}</div>
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const hrefAttr = targetUrl ? ` href="${targetUrl}"` : '';
             const clickableClass = targetUrl ? ' modal-row--clickable' : '';
             return `<${rowTag} class="modal-row${clickableClass}"${hrefAttr}>
-              <div class="modal-icon" style="background:${a.color}; color:#fff;"><i class="fa-solid fa-${a.icon}" style="font-size:13px;"></i></div>
+              <div class="modal-icon" style="background:${a.color}18; color:${a.color};"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${a.color};"></span></div>
               <div class="modal-info"><div class="tl-txt">${a.txt}</div><div class="tl-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> ${a.timeAbsolute || a.time}</div></div>
               <span class="modal-date-chip">${a.date}</span>
             </${rowTag}>`;

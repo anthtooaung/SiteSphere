@@ -148,7 +148,7 @@ class CommentsController extends Controller
             AuditLogs::query()->create([
                 'user_id' => $user->id,
                 'action' => 'unban_comment',
-                'category' => 'moderation',
+                'category' => 'resolved',
                 'target_type' => Comments::class,
                 'target_id' => $comment->id,
                 'reason' => 'Comment unbanned and restored by an admin.',

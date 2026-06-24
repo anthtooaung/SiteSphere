@@ -51,11 +51,9 @@
                     
                     $jsActs = $recentActivity->map(function($log) {
                         $colorStr = $log->getColor();
-                        $iconStr = str_replace('fa-', '', $log->getIcon());
                         $userName = $log->user?->name ?? 'System';
                         return [
                             "color" => $colorStr,
-                            "icon" => $iconStr,
                             "category" => $log->category,
                             "user" => $userName,
                             "txt" => $log->action,
@@ -222,9 +220,9 @@
                       <div class="act-body">
                         <div class="act-legend-row">
                           <span class="act-legend-item"><span class="act-legend-dot" style="background: #ef4444"></span> Moderation</span>
-                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #10b981"></span> Resolved</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #3b82f6"></span> Check</span>
                           <span class="act-legend-item"><span class="act-legend-dot" style="background: #7c3aed"></span> Announcement</span>
-                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #f59e0b"></span> System</span>
+                          <span class="act-legend-item"><span class="act-legend-dot" style="background: #10b981"></span> Resolved</span>
                         </div>
                         <div class="act-timeline-wrap">
                           <div class="timeline" id="activity-list"></div>

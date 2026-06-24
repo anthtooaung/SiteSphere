@@ -229,6 +229,7 @@ class EditTagsController extends Controller
             AuditLogs::query()->create([
                 'user_id' => $admin->id,
                 'action' => 'update_tag_taxonomy',
+                'category' => 'announcement',
                 'target_type' => Categories::class,
                 'target_id' => 0,
                 'reason' => 'Published global category and tag defaults for users.',

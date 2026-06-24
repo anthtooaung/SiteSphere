@@ -206,6 +206,14 @@
             </div>
         </div>
 
+        {{-- unsecure banner --}}
+        @if ($isUnsecure)
+            <div class="flex items-center gap-2 rounded-lg border px-3 py-2 [border-color:color-mix(in_srgb,#d97706_25%,transparent)] [background:color-mix(in_srgb,#d97706_8%,transparent)]">
+                <x-fas-shield-halved class="size-4 shrink-0 [color:#d97706]" aria-hidden="true" />
+                <span class="text-xs font-semibold [color:#d97706]">This post has been flagged as unsecure by an admin.</span>
+            </div>
+        @endif
+
         {{-- stars section --}}
         <div
             class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_24%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_88%,var(--accent-color,#6c5ce7)_12%)]"

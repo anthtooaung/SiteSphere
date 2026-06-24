@@ -289,6 +289,8 @@ $reportFilters = $reportFilters ?? [
                                         {{ $report->post?->title ?? 'Deleted or unavailable post' }}
                                         @if ($report->post?->trashed())
                                             <span class="reports-banned-badge">Banned</span>
+                                        @elseif ($report->post?->is_unsecure)
+                                            <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706;">Unsecure</span>
                                         @endif
                                     </span>
                                     <span class="reports-post-meta">
@@ -349,6 +351,15 @@ $reportFilters = $reportFilters ?? [
                                             <x-tooltip content="Restore Post">
                                                 <button type="submit" class="reports-icon-btn restore-action" aria-label="Restore Post">
                                                     <x-fas-undo aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
+                                        @elseif ($report->post && $report->post->is_unsecure)
+                                        <form method="POST" action="{{ route('posts.toggle-unsecure', $report->post->id) }}" @submit="confirmAction($event, 'Mark this post as secure?', 'This will remove the unsecure flag from this post.', 'Mark Secure', 'info')">
+                                            @csrf
+                                            <x-tooltip content="Mark Secure">
+                                                <button type="submit" class="reports-icon-btn restore-action" aria-label="Mark Secure">
+                                                    <x-fas-shield-halved aria-hidden="true" />
                                                 </button>
                                             </x-tooltip>
                                         </form>
@@ -498,18 +509,7 @@ $reportFilters = $reportFilters ?? [
                                         </form>
                                         @endif
 
-                                        @if ($report->comment?->trashed())
-                                        <form method="POST" action="{{ route('comments.unban', $report->comment->id) }}" @submit="confirmAction($event, 'Restore Comment?', 'This action will restore the comment and make it visible again.', 'Restore Comment', 'info')">
-                                            @csrf
-                                            <x-tooltip content="Restore Comment">
-                                                <button type="submit" class="reports-icon-btn restore-action" aria-label="Restore Comment">
-                                                    <x-fas-undo aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
-                                        @endif
-
-                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
+                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Comment Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
                                             @csrf
                                             @method('DELETE')
                                             <x-tooltip content="Delete Report">

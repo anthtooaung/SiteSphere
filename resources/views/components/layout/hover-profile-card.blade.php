@@ -11,7 +11,12 @@
         </div>
 
         <div class="user-info">
-            <h2>{{ $cardUser->name }}</h2>
+            <h2>
+                {{ $cardUser->name }}
+                @if ($cardUser->isUnsecure())
+                    <span style="display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; vertical-align: middle;">Unsecure</span>
+                @endif
+            </h2>
             <p>{{ $role }}</p>
         </div>
     </div>

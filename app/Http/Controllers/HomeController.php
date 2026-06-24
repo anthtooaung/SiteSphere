@@ -132,6 +132,7 @@ class HomeController extends Controller
                     'ratings_count' => (int) $post->ratings_count,
                     'comments_count' => (int) $post->comments_count,
                     'is_bookmarked' => (bool) $post->is_bookmarked,
+                    'is_unsecure' => (bool) $post->is_unsecure,
                     'profiles' => $post->userPosts
                         ->map(function ($userPost): array {
                             $user = $userPost->user;

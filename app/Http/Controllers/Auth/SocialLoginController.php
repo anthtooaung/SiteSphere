@@ -54,6 +54,12 @@ class SocialLoginController extends Controller
         if ($socialAccount) {
             $user = $socialAccount->user;
 
+            if ($user->isBanned()) {
+                return redirect()
+                    ->route('login')
+                    ->withErrors(['social' => 'Your account has been banned. Reason: '.($user->ban_reason ?? 'No reason provided')]);
+            }
+
             $this->fillMissingAvatar($user, $socialiteUser);
 
             Auth::login($user);
@@ -81,6 +87,12 @@ class SocialLoginController extends Controller
                 'is_verified' => true,
             ],
         );
+
+        if ($user->isBanned()) {
+            return redirect()
+                ->route('login')
+                ->withErrors(['social' => 'Your account has been banned. Reason: '.($user->ban_reason ?? 'No reason provided')]);
+        }
 
         $this->fillMissingAvatar($user, $socialiteUser);
 

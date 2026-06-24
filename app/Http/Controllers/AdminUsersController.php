@@ -59,14 +59,19 @@ class AdminUsersController extends Controller
         $this->abortIfSelfAction($admin, $user);
 
         DB::transaction(function () use ($admin, $user): void {
-            $user->delete();
+            $user->status = 'banned';
+            $user->banned_by = $admin->id;
+            $user->banned_at = now();
+            $user->ban_reason = $request->input('reason', 'No reason provided');
+            $user->save();
+            $user->delete(); // soft-delete (sets deleted_at)
 
-            $this->audit($admin, 'delete_user', $user, 'User account was restricted by an admin.');
+            $this->audit($admin, 'ban_user', $user, 'User account was banned by an admin. Reason: '.$user->ban_reason);
         });
 
         Mail::to($user->email)->send(new UserAccountDeletedMail($user, $admin));
 
-        return back()->with('success', "{$user->name}'s account was restricted.");
+        return back()->with('success', "{$user->name}'s account was banned.");
     }
 
     public function restore(Request $request, User $user): RedirectResponse
@@ -77,11 +82,34 @@ class AdminUsersController extends Controller
 
         abort_unless($user->trashed(), 404);
 
-        $user->restore();
+        DB::transaction(function () use ($admin, $user): void {
+            $user->status = 'verified';
+            $user->banned_by = null;
+            $user->banned_at = null;
+            $user->ban_reason = null;
+            $user->save();
+            $user->restore(); // clears deleted_at
 
-        $this->audit($admin, 'restore_user', $user, 'User account was restored by an admin.');
+            $this->audit($admin, 'restore_user', $user, 'User account was restored by an admin.');
+        });
 
         return back()->with('success', "{$user->name}'s account was restored.");
+    }
+
+    public function toggleUnsecure(Request $request, User $user): RedirectResponse
+    {
+        $admin = $this->authorizeAdmin($request);
+        $this->abortIfSelfAction($admin, $user);
+
+        $newStatus = $user->status === 'unsecure' ? 'verified' : 'unsecure';
+        $user->status = $newStatus;
+        $user->save();
+
+        $label = $newStatus === 'unsecure' ? 'unsecure' : 'secure';
+
+        $this->audit($admin, 'toggle_unsecure_user', $user, "User marked as {$label} by an admin.");
+
+        return back()->with('success', "{$user->name} marked as {$label}.");
     }
 
     public function forceDelete(Request $request, User $user): RedirectResponse

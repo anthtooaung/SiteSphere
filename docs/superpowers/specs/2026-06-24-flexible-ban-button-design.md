@@ -1,8 +1,33 @@
 # Flexible Admin Actions Design — Unsecure/Secure + Delete
 **Date:** 2026-06-24
-**Status:** Revised
+**Status:** In Progress
 
 ---
+
+## Implementation Progress
+
+### Completed
+- [x] Migration: `add_is_unsecure_to_content_tables` — `is_unsecure` on posts, user_posts, comments + `status`/`banned_by`/`banned_at`/`ban_reason` on users
+- [x] Migration: Converts existing soft-deleted posts to `is_unsecure = true`
+- [x] Models: Added `is_unsecure` cast to Posts, Comments, UserPosts
+- [x] User model: Added `status`, `banned_by`, `banned_at`, `ban_reason` to fillable; added `isBanned()` and `isUnsecure()` methods
+- [x] Auth: Added `isBanned()` check in `AuthenticatedSessionController::store()` and `SocialLoginController::callback()`
+- [x] PostsController: Added `toggleUnsecure()`, URL blocking in `store()`, `deleteAudit()` (permanent)
+- [x] CommentsController: Replaced `ban()`/`unban()` with permanent `delete()`
+- [x] AdminUsersController: Added `toggleUnsecure()`, fixed `destroy()` to set `status='banned'`, fixed `restore()` to clear ban fields
+- [x] Routes: Added `posts.toggle-unsecure`, `users.toggle-unsecure`, `comments.delete` (DELETE), `audits.delete` (DELETE); removed `comments.unban`, `audits.unban`
+- [x] post-card.blade.php: Added `isUnsecure` prop, replaced Ban with Unsecure/Secure toggle
+- [x] post-detail.blade.php: Added unsecure banner, replaced Ban Post with toggle, replaced Ban Description with Delete Description
+- [x] comments.blade.php: Replaced Ban Comment with Delete Comment (permanent), removed Revert button
+- [x] reports.blade.php: Added Mark Secure button for unsecure posts, removed Restore Comment, added Unsecure badge
+- [x] profile-detail.blade.php: Added Mark Unsecure/Secure + Ban User buttons for admins
+- [x] users.blade.php: Added Mark Unsecure/Secure toggle in actions, updated ban dialog text
+- [x] hover-profile-card.blade.php: Added Unsecure badge
+
+### Remaining
+- [ ] URL blocking SweetAlert in post creation (currently throws ValidationException, spec wants a SweetAlert with "Visit Post" / "Cancel" buttons)
+- [ ] Test migration on fresh database
+- [ ] Verify all route names are correctly referenced in views
 
 ## Problem
 

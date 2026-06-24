@@ -21,7 +21,7 @@ The current admin actions are wrong:
 | **Comment** | Permanent delete | "Delete Comment" | Gone forever, no restore |
 | **Description** | Permanent delete | "Delete Description" | Gone forever, no restore |
 | **User** | Toggle unsecure | "Mark Unsecure" / "Mark Secure" | `status` column: `verified` ↔ `unsecure` |
-| **User** | Ban/Unban | "Ban User" / "Unban User" | `status` column: → `banned` / back to `verified` |
+| **User** | Ban/Unban | "Ban User" / "Unban User" | Soft-delete (`deleted_at`) + `status = 'banned'`. Login blocked for banned users (regular + OAuth/Gmail) |
 
 ## Database Changes
 
@@ -163,9 +163,35 @@ Replace "Ban" (soft-delete) with "Delete Description" (permanent):
 
 Users keep TWO actions:
 - "Mark Unsecure" / "Mark Secure" — toggles `status` between `verified` and `unsecure`
-- "Ban User" / "Unban User" — sets `status` to `banned` or back to `verified`
+- "Ban User" / "Unban User" — soft-delete + sets `status` to `banned`
 
-These already exist in the reports page and profile. Just need flexible text.
+**Ban implementation** (in `AdminUsersController::destroy()`):
+```php
+$user->status = 'banned';
+$user->banned_by = $admin->id;
+$user->banned_at = now();
+$user->ban_reason = $request->input('reason');
+$user->save();
+$user->delete(); // soft-delete (sets deleted_at)
+```
+
+**Unban implementation** (in `AdminUsersController::restore()`):
+```php
+$user->status = 'verified';
+$user->banned_by = null;
+$user->banned_at = null;
+$user->ban_reason = null;
+$user->save();
+$user->restore(); // clears deleted_at
+```
+
+**Login blocking** (already implemented):
+- `AuthenticatedSessionController::store()` — checks `$user->isBanned()` after authenticate
+- `SocialLoginController` — checks `$user->isBanned()` for both existing social accounts and email-based users
+- Both regular login and Google OAuth are blocked
+- Shows error: "Your account has been banned. Reason: [reason]"
+
+**Bug fix needed:** Current `destroy()` does `$user->delete()` without setting `status = 'banned'`. This means the login check (`isBanned()`) doesn't catch soft-deleted users. Must set `status = 'banned'` before soft-deleting.
 
 ### 6. Reports Page — `reports.blade.php`
 
@@ -220,7 +246,7 @@ The unsecure badge shows in these places:
 ### Controllers
 - `PostsController.php` — add `toggleUnsecure()`, add URL check in `store()`, remove `ban()` usage for posts
 - `CommentsController.php` — replace `ban()` with permanent `delete()`, remove `unban()`
-- `AdminUsersController.php` — add `toggleUnsecure()` if not exists
+- `AdminUsersController.php` — add `toggleUnsecure()`, fix `destroy()` to set `status = 'banned'`, fix `restore()` to set `status = 'verified'`
 - `AdminReportsController.php` — update resolve to handle new action types
 
 ### Views

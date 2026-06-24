@@ -14,7 +14,6 @@
                 $actsExpanded[] = [
                     'date' => $date,
                     'color' => $log->getColor(),
-                    'icon' => str_replace('fa-', '', $log->getIcon()),
                     'category' => $log->category,
                     'user' => $log->user?->name ?? 'System',
                     'txt' => $log->action,

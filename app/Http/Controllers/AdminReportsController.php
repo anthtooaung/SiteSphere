@@ -7,7 +7,6 @@ use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\Reports;
 use App\Models\User;
-use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -101,6 +100,7 @@ class AdminReportsController extends Controller
             AuditLogs::query()->create([
                 'user_id' => $admin->id,
                 'action' => 'read_report',
+                'category' => 'check',
                 'target_type' => Reports::class,
                 'target_id' => $report->id,
                 'reason' => 'Report marked as read.',
@@ -122,6 +122,7 @@ class AdminReportsController extends Controller
             AuditLogs::query()->create([
                 'user_id' => $admin->id,
                 'action' => 'read_report',
+                'category' => 'check',
                 'target_type' => Reports::class,
                 'target_id' => $report->id,
                 'reason' => 'Report opened and marked as read.',
@@ -253,6 +254,7 @@ class AdminReportsController extends Controller
             AuditLogs::query()->create([
                 'user_id' => $admin->id,
                 'action' => 'unread_report',
+                'category' => 'check',
                 'target_type' => Reports::class,
                 'target_id' => $report->id,
                 'reason' => 'Report marked as unread.',
@@ -272,6 +274,7 @@ class AdminReportsController extends Controller
         AuditLogs::query()->create([
             'user_id' => $admin->id,
             'action' => 'delete_report',
+            'category' => 'moderation',
             'target_type' => Reports::class,
             'target_id' => $reportId,
             'reason' => 'Report record deleted by an admin.',
@@ -299,6 +302,7 @@ class AdminReportsController extends Controller
         AuditLogs::query()->create([
             'user_id' => $admin->id,
             'action' => 'resolve_report',
+            'category' => 'resolved',
             'target_type' => Reports::class,
             'target_id' => $report->id,
             'reason' => "Resolved {$deletedCount} report(s) for {$targetName} #{$targetId}.",
@@ -312,7 +316,6 @@ class AdminReportsController extends Controller
         match ($targetName) {
             'posts' => Posts::where('id', $targetId)->update(['report_count' => 0]),
             'comments' => Comments::where('id', $targetId)->update(['report_count' => 0]),
-            'user_posts' => UserPosts::where('id', $targetId)->update(['report_count' => 0]),
             'users' => User::where('id', $targetId)->update(['report_count' => 0]),
             default => null,
         };

@@ -23,30 +23,17 @@ class AuditLogs extends Model
     }
 
     /**
-     * Get the icon for the audit log category.
-     */
-    public function getIcon(): string
-    {
-        return match ($this->category) {
-            'moderation' => 'fa-hammer',
-            'success' => 'fa-check-circle',
-            'announcement' => 'fa-bullhorn',
-            default => 'fa-cog',
-        };
-    }
-
-    /**
      * Get the hex color for the audit log category.
-     * Must match CSS variables in app.css: --chart-reports, --chart-resolved, --chart-announcement.
+     * Color circle boxes — no icons.
      */
     public function getColor(): string
     {
         return match ($this->category) {
-            'moderation' => '#ef4444',    // --chart-reports — bans, deletes, warnings
-            'success' => '#10b981',       // --chart-resolved — resolved, approved
-            'announcement' => '#7c3aed',  // --chart-announcement — announcements, bulk
-            'system' => '#f59e0b',        // Amber — settings, system changes
-            default => '#6b7280',         // Gray
+            'moderation' => '#ef4444',    // Red — bans, deletes, warnings
+            'check' => '#3b82f6',         // Blue — admin reviews/inspections
+            'announcement' => '#7c3aed',  // Purple — taxonomy/structure changes
+            'resolved' => '#10b981',      // Green — restored, resolved
+            default => '#6b7280',         // Gray — fallback
         };
     }
 }

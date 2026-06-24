@@ -100,6 +100,7 @@ class PostsController extends Controller
             AuditLogs::query()->create([
                 'user_id' => $user->id,
                 'action' => 'ban_post',
+                'category' => 'moderation',
                 'target_type' => Posts::class,
                 'target_id' => $post->id,
                 'reason' => 'Post soft deleted and all descriptions hidden by an admin.',
@@ -129,6 +130,7 @@ class PostsController extends Controller
             AuditLogs::query()->create([
                 'user_id' => $user->id,
                 'action' => 'unban_post',
+                'category' => 'resolved',
                 'target_type' => Posts::class,
                 'target_id' => $post->id,
                 'reason' => 'Post unbanned and all descriptions restored by an admin.',
@@ -206,7 +208,7 @@ class PostsController extends Controller
         AuditLogs::query()->create([
             'user_id' => $user->id,
             'action' => 'unban_audit',
-            'category' => 'moderation',
+            'category' => 'resolved',
             'target_type' => UserPosts::class,
             'target_id' => $userPost->id,
             'reason' => 'Description restored by an admin.',

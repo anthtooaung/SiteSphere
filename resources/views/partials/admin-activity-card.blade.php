@@ -1,7 +1,7 @@
 @forelse($logs as $log)
     <div class="alc-entry">
         <div class="alc-icon" style="background: {{ $log->getColor() }}18">
-            <i class="fa-solid {{ $log->getIcon() }}" style="color: {{ $log->getColor() }}"></i>
+            <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: {{ $log->getColor() }};"></span>
         </div>
         <div class="alc-info">
             <div class="alc-txt">{{ $log->action }}</div>

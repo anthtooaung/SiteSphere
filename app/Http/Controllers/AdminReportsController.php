@@ -71,11 +71,28 @@ class AdminReportsController extends Controller
             ->paginate(12, ['*'], 'users_page')
             ->withQueryString();
 
+        $userPostReports = Reports::query()
+            ->where('target_name', 'user_posts')
+            ->with([
+                'userPost:id,title,slug,deleted_at',
+                'reporter:id,name,email,user_image',
+            ])
+            ->when($filters['search'] !== '', fn (Builder $query) => $this->applyUserPostSearch($query, $filters['search']))
+            ->when($filters['status'] === 'unread', fn (Builder $query) => $query->where('admin_read', false))
+            ->when($filters['status'] === 'read', fn (Builder $query) => $query->where('admin_read', true))
+            ->when($filters['status'] === 'all', fn (Builder $query) => $query->orderBy('admin_read', 'asc'))
+            ->when($filters['reported_date'] !== '', fn (Builder $query) => $query->whereDate('created_at', $filters['reported_date']))
+            ->latest()
+            ->paginate(12, ['*'], 'user_posts_page')
+            ->withQueryString();
+
         $activeTab = 'posts';
         if ($request->has('comments_page')) {
             $activeTab = 'comments';
         } elseif ($request->has('users_page')) {
             $activeTab = 'users';
+        } elseif ($request->has('user_posts_page')) {
+            $activeTab = 'user_posts';
         }
 
         return view('layout.menu.reports', [
@@ -85,6 +102,7 @@ class AdminReportsController extends Controller
             'reports' => $reports,
             'commentReports' => $commentReports,
             'userReports' => $userReports,
+            'userPostReports' => $userPostReports,
             'activeTab' => $activeTab,
         ]);
     }
@@ -93,7 +111,7 @@ class AdminReportsController extends Controller
     {
         $admin = $this->authorizeAdmin($request);
 
-        abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
+        abort_unless(in_array($report->target_name, ['posts', 'comments', 'users', 'user_posts'], true), 404);
 
         if (! $report->admin_read) {
             $report->forceFill(['admin_read' => true])->save();
@@ -115,7 +133,7 @@ class AdminReportsController extends Controller
     {
         $admin = $this->authorizeAdmin($request);
 
-        abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
+        abort_unless(in_array($report->target_name, ['posts', 'comments', 'users', 'user_posts'], true), 404);
 
         if (! $report->admin_read) {
             $report->forceFill(['admin_read' => true])->save();
@@ -145,6 +163,11 @@ class AdminReportsController extends Controller
             $targetUser = User::find($report->target_id);
             if ($targetUser) {
                 return redirect()->route('profile-detail', $targetUser->name);
+            }
+        } elseif ($report->target_name === 'user_posts') {
+            $userPost = UserPosts::find($report->target_id);
+            if ($userPost && $userPost->user) {
+                return redirect()->route('profile-detail', $userPost->user->name);
             }
         }
 
@@ -206,6 +229,25 @@ class AdminReportsController extends Controller
         });
     }
 
+    private function applyUserPostSearch(Builder $query, string $search): void
+    {
+        $query->where(function (Builder $query) use ($search): void {
+            $query
+                ->where('reason', 'like', "%{$search}%")
+                ->orWhere('target_id', 'like', "%{$search}%")
+                ->orWhereHas('userPost', function (Builder $query) use ($search): void {
+                    $query
+                        ->where('title', 'like', "%{$search}%")
+                        ->orWhere('slug', 'like', "%{$search}%");
+                })
+                ->orWhereHas('reporter', function (Builder $query) use ($search): void {
+                    $query
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+        });
+    }
+
     private function summary(): array
     {
         $counts = Reports::query()
@@ -217,6 +259,7 @@ class AdminReportsController extends Controller
             'posts' => ['total' => 0, 'unread' => 0, 'read' => 0],
             'comments' => ['total' => 0, 'unread' => 0, 'read' => 0],
             'users' => ['total' => 0, 'unread' => 0, 'read' => 0],
+            'user_posts' => ['total' => 0, 'unread' => 0, 'read' => 0],
         ];
 
         foreach ($counts as $row) {
@@ -247,7 +290,7 @@ class AdminReportsController extends Controller
     {
         $admin = $this->authorizeAdmin($request);
 
-        abort_unless(in_array($report->target_name, ['posts', 'comments', 'users'], true), 404);
+        abort_unless(in_array($report->target_name, ['posts', 'comments', 'users', 'user_posts'], true), 404);
 
         if ($report->admin_read) {
             $report->forceFill(['admin_read' => false])->save();
@@ -265,25 +308,6 @@ class AdminReportsController extends Controller
         return back()->with('success', 'Report marked as unread.');
     }
 
-    public function destroy(Request $request, Reports $report): RedirectResponse
-    {
-        $admin = $this->authorizeAdmin($request);
-
-        $reportId = $report->id;
-        $report->delete();
-
-        AuditLogs::query()->create([
-            'user_id' => $admin->id,
-            'action' => 'delete_report',
-            'category' => 'moderation',
-            'target_type' => Reports::class,
-            'target_id' => $reportId,
-            'reason' => 'Report record deleted by an admin.',
-        ]);
-
-        return back()->with('success', 'Report has been deleted.');
-    }
-
     public function resolve(Request $request, Reports $report): RedirectResponse
     {
         $admin = $this->authorizeAdmin($request);
@@ -291,11 +315,11 @@ class AdminReportsController extends Controller
         $targetName = $report->target_name;
         $targetId = $report->target_id;
 
-        // Delete all reports for this target
-        $deletedCount = Reports::query()
+        // Mark all reports for this target as read (keep them in table)
+        Reports::query()
             ->where('target_name', $targetName)
             ->where('target_id', $targetId)
-            ->delete();
+            ->update(['admin_read' => true]);
 
         // Reset report_count on the target
         $this->resetReportCount($targetName, $targetId);
@@ -306,10 +330,10 @@ class AdminReportsController extends Controller
             'category' => 'resolved',
             'target_type' => Reports::class,
             'target_id' => $report->id,
-            'reason' => "Resolved {$deletedCount} report(s) for {$targetName} #{$targetId}.",
+            'reason' => "Resolved reports for {$targetName} #{$targetId}.",
         ]);
 
-        return back()->with('success', "Resolved {$deletedCount} report(s).");
+        return back()->with('success', 'Reports resolved.');
     }
 
     private function resetReportCount(string $targetName, int $targetId): void

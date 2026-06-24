@@ -7,55 +7,45 @@
 ## ~~🚨 Priority 1 — Will Break at Runtime~~ ✅ FIXED
 
 ### ~~1. Stale `comments.unban` route → 500 error~~ ✅
-- **File:** `routes/web.php`
 - **Fix:** Removed the `comments.unban` route line.
 
 ### ~~2. Duplicate `deleteAudit()` in PostsController~~ ✅
-- **File:** `app/Http/Controllers/PostsController.php`
 - **Fix:** Removed the first (dead) definition, kept the second with full logic.
 
 ### ~~3. Duplicate `delete()` in CommentsController~~ ✅
-- **File:** `app/Http/Controllers/CommentsController.php`
 - **Fix:** Removed the first (dead) definition, kept the second which includes notification to comment author.
 
 ### ~~4. `resetReportCount()` missing `user_posts` case~~ ✅
-- **File:** `app/Http/Controllers/AdminReportsController.php`
-- **Fix:** Added `'user_posts' => UserPosts::where('id', $targetId)->update(['report_count' => 0])` case and imported `UserPosts` model.
+- **Fix:** Added `user_posts` case and imported `UserPosts` model.
 
 ---
 
 ## ~~⚠️ Priority 2 — Not Working As Specified~~ ✅ FIXED
 
 ### ~~5. Reports model missing `userPost()` relation~~ ✅
-- **File:** `app/Models/Reports.php`
-- **Fix:** Added `public function userPost(): BelongsTo { return $this->belongsTo(UserPosts::class, 'target_id'); }`
+- **Fix:** Added `userPost(): BelongsTo` relation.
 
 ### ~~6. "Mark all as read" button missing from notification dropdown~~ ✅
-- **File:** `resources/views/components/noti-btn.blade.php`
-- **Fix:** Added "Mark all read" button in both desktop dropdown header and mobile overlay header. Only shows when there are unread notifications.
+- **Fix:** Added "Mark all read" button in both desktop dropdown and mobile overlay.
 
 ### ~~7. `restore_user` audit log category is `moderation` instead of `resolved`~~ ✅
-- **File:** `app/Http/Controllers/AdminUsersController.php`
-- **Fix:** Passed `category: 'resolved'` explicitly in the `audit()` call inside `restore()`.
+- **Fix:** Passed `category: 'resolved'` explicitly.
 
 ---
 
-## ⚠️ Priority 3 — Report Box Upgrade Missing Removals
+## ~~⚠️ Priority 3 — Report Box Upgrade Missing Removals~~ ✅ FIXED
 
-### 8. Delete button still visible on POST report table
-- **File:** `resources/views/admin/reports.blade.php` (~lines 380-388)
-- **Problem:** Spec says remove delete buttons from POST and COMMENT tables. They're still there.
-- **Fix:** Remove the "Delete Report" button/form from the POST reports table row.
+### ~~8. Delete button still visible on POST report table~~ ✅
+- **File:** `resources/views/layout/menu/reports.blade.php`
+- **Fix:** Removed the "Delete Report" button/form from the POST reports table row.
 
-### 9. Delete button still visible on COMMENT report table
-- **File:** `resources/views/admin/reports.blade.php` (~lines 546-554)
-- **Problem:** Same as above for COMMENT tab.
-- **Fix:** Remove the "Delete Report" button/form from the COMMENT reports table row.
+### ~~9. Delete button still visible on COMMENT report table~~ ✅
+- **File:** `resources/views/layout/menu/reports.blade.php`
+- **Fix:** Removed the "Delete Report" button/form from the COMMENT reports table row.
 
-### 10. Restore button still visible on POST report table
-- **File:** `resources/views/admin/reports.blade.php` (~lines 360-368)
-- **Problem:** Spec says remove restore button. Still present for trashed posts.
-- **Fix:** Remove the "Restore Post" button/form from the POST reports table row.
+### ~~10. Restore button still visible on POST report table~~ ✅
+- **File:** `resources/views/layout/menu/reports.blade.php`
+- **Fix:** Removed the "Restore Post" button/form. Kept the "Mark Secure" button for unsecure posts.
 
 ---
 
@@ -86,7 +76,7 @@
 |---|---|---|
 | 🚨 P1 — Runtime errors | 4 | ✅ All fixed (2026-06-24) |
 | ⚠️ P2 — Missing features | 3 | ✅ All fixed (2026-06-24) |
-| ⚠️ P3 — UI not cleaned up | 3 | Pending |
+| ⚠️ P3 — UI not cleaned up | 3 | ✅ All fixed (2026-06-24) |
 | 📝 P4 — Naming / dead code | 4 | Pending |
 
-**Total remaining: 7 items**
+**Total remaining: 4 items**

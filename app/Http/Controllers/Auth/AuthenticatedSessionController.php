@@ -49,6 +49,20 @@ class AuthenticatedSessionController extends Controller
     {
         $user = $request->authenticate();
 
+        // Check if user is banned
+        if ($user->isBanned()) {
+            Auth::guard('web')->logout();
+
+            $banMessage = 'Your account has been banned.';
+            if ($user->ban_reason) {
+                $banMessage .= ' Reason: '.$user->ban_reason;
+            }
+
+            return back()->withErrors([
+                'email' => $banMessage,
+            ]);
+        }
+
         if ($user->two_factor_enabled) {
             $this->createAndSendTwoFactorOtp($user);
 

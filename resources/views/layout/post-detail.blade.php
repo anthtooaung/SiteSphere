@@ -19,73 +19,73 @@
 
     <x-layout.nav />
 
-    @if ($isBanned)
-        <div class="banned-banner">
-            <div class="banned-banner-inner">
-                <div class="banned-banner-icon">
-                    <i class="fa-solid fa-ban"></i>
-                </div>
-                <div class="banned-banner-content">
-                    <div class="banned-banner-title">This post has been banned</div>
-                    <div class="banned-banner-meta">
-                        @if ($banLog && $banLog->user)
-                            Banned by <strong>{{ $banLog->user->name }}</strong>
-                            on <strong>{{ $banLog->created_at->format('M d, Y \a\t h:i A') }}</strong>
-                        @endif
-                    </div>
-                    @if ($banLog && $banLog->reason)
-                        <div class="banned-banner-reason">Reason: {{ $banLog->reason }}</div>
-                    @endif
-                </div>
-                <div class="banned-banner-actions">
-                    <form method="POST" action="{{ route('posts.unban', $post->id) }}" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="banned-btn banned-btn-revert">
-                            <i class="fa-solid fa-rotate-left"></i> Revert
-                        </button>
-                    </form>
-                    <form method="POST" action="{{ route('posts.force-delete', $post->id) }}" style="display:inline;"
-                        x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
-                            title: 'Delete Permanently?',
-                            text: 'This action cannot be undone. The post and all its data will be permanently removed.',
-                            icon: 'warning',
-                            confirmButtonColor: 'var(--ui-danger)',
-                            cancelButtonColor: '#6c757d',
-                            confirmButtonText: 'Yes, delete forever!'
-                        }).then((result) => { if (result.isConfirmed) $el.submit(); })">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="banned-btn banned-btn-delete">
-                            <i class="fa-solid fa-trash"></i> Delete Permanently
-                        </button>
-                    </form>
-                    <a href="{{ route('home') }}" class="banned-btn banned-btn-home">
-                        <i class="fa-solid fa-house"></i> Home
-                    </a>
-                </div>
-            </div>
-        </div>
-    @elseif ($isUnsecure)
-        <div class="banned-banner" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;">
-            <div class="banned-banner-inner">
-                <div class="banned-banner-icon">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div class="banned-banner-content">
-                    <div class="banned-banner-title">This post is unsecure</div>
-                    <div class="banned-banner-reason" style="color: rgba(255,255,255,0.9);">This URL cannot be used for new posts.</div>
-                </div>
-                <div class="banned-banner-actions">
-                    <a href="{{ route('home') }}" class="banned-btn banned-btn-home">
-                        <i class="fa-solid fa-house"></i> Home
-                    </a>
-                </div>
-            </div>
-        </div>
-    @endif
-
     <div class="dashboard-page dashboard-page--{{ $dashboardMenuLocation }} post-detail-page">
         <main class="dashboard-content post-detail-content">
+            @if ($isBanned)
+                <div class="banned-banner" style="position: sticky; top: -24px; margin: -24px -24px 24px -24px; z-index: 40;">
+                    <div class="banned-banner-inner">
+                        <div class="banned-banner-icon">
+                            <x-fas-ban class="size-5" aria-hidden="true" />
+                        </div>
+                        <div class="banned-banner-content">
+                            <div class="banned-banner-title">This post has been banned</div>
+                            <div class="banned-banner-meta">
+                                @if ($banLog && $banLog->user)
+                                    Banned by <strong>{{ $banLog->user->name }}</strong>
+                                    on <strong>{{ $banLog->created_at->format('M d, Y \a\t h:i A') }}</strong>
+                                @endif
+                            </div>
+                            @if ($banLog && $banLog->reason)
+                                <div class="banned-banner-reason">Reason: {{ $banLog->reason }}</div>
+                            @endif
+                        </div>
+                        <div class="banned-banner-actions">
+                            <form method="POST" action="{{ route('posts.unban', $post->id) }}" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all hover:opacity-90" style="background: var(--accent-color, #10b981); color: var(--background-color, #ffffff);">
+                                    <x-fas-rotate-left class="size-3" aria-hidden="true" /> Revert
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ route('posts.force-delete', $post->id) }}" style="display:inline;"
+                                x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                    title: 'Delete Permanently?',
+                                    text: 'This action cannot be undone. The post and all its data will be permanently removed.',
+                                    icon: 'warning',
+                                    confirmButtonColor: 'var(--ui-danger)',
+                                    cancelButtonColor: '#6c757d',
+                                    confirmButtonText: 'Yes, delete forever!'
+                                }).then((result) => { if (result.isConfirmed) $el.submit(); })">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all hover:opacity-90" style="background: var(--ui-danger, #ef4444); color: #ffffff;">
+                                    <x-fas-trash class="size-3" aria-hidden="true" /> Delete Permanently
+                                </button>
+                            </form>
+                            <a href="{{ route('home') }}" class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all hover:opacity-90" style="background: var(--background-color, #ffffff); color: var(--text-color, #0d1b2a); border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 20%, transparent);">
+                                <x-fas-house class="size-3" aria-hidden="true" /> Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @elseif ($isUnsecure)
+                <div class="banned-banner" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; position: sticky; top: -24px; margin: -24px -24px 24px -24px; z-index: 40;">
+                    <div class="banned-banner-inner">
+                        <div class="banned-banner-icon">
+                            <x-fas-shield-halved class="size-5" aria-hidden="true" />
+                        </div>
+                        <div class="banned-banner-content">
+                            <div class="banned-banner-title">This post is unsecure</div>
+                            <div class="banned-banner-reason" style="color: rgba(255,255,255,0.9);">This URL cannot be used for new posts.</div>
+                        </div>
+                        <div class="banned-banner-actions">
+                            <a href="{{ route('home') }}" class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all hover:opacity-90" style="background: var(--background-color, #ffffff); color: var(--text-color, #0d1b2a); border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 20%, transparent);">
+                                <x-fas-house class="size-3" aria-hidden="true" /> Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Background Blur -->
             <div class="bg-blur blur1"></div>
             <div class="bg-blur blur2"></div>
@@ -153,7 +153,7 @@
                                                 </button>
                                             </form>
 
-                                            @if (Auth::user()?->role !== 'admin')
+                                            @if (Auth::user()?->role !== 'admin' && Auth::id() !== $post->user_id)
                                                 <div
                                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
                                                     <button type="button"
@@ -350,9 +350,9 @@
                                             <span class="aud-depo-tab-body">
                                                 <span class="aud-depo-tab-name">
                                                     {{ $displayName }}
-                                                    @if($isProfileVisible && $userPost->user->isUnsecure())
-                                                        <span class="unsecure-badge" title="Unsecure Account" style="display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; background: color-mix(in srgb, #ffc107 20%, transparent); color: #ffc107; border: 1px solid color-mix(in srgb, #ffc107 30%, transparent); border-radius: 10px; font-size: 10px; font-weight: 500; vertical-align: middle; margin-left: 4px;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                                                    @if($userPost->user->isUnsecure())
+                                                        <span class="unsecure-badge" title="Unsecure Account" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; border: 1px solid color-mix(in srgb, #d97706 30%, transparent); border-radius: 10px; font-size: 10px; font-weight: 600; vertical-align: middle; margin-left: 6px;">
+                                                            <x-fas-shield-halved style="width: 10px; height: 10px;" />
                                                             Unsecure
                                                         </span>
                                                     @endif
@@ -419,8 +419,14 @@
                                                     </span>
                                                 @endif
                                                 <div class="aud-depo-id">
-                                                    <div class="aud-depo-name-row">
+                                                    <div class="aud-depo-name-row" style="display: flex; align-items: center; gap: 8px;">
                                                         <h3>{{ $displayName }}</h3>
+                                                        @if($userPost->user->isUnsecure())
+                                                            <span class="unsecure-badge" title="Unsecure Account" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; border: 1px solid color-mix(in srgb, #d97706 30%, transparent); border-radius: 12px; font-size: 11px; font-weight: 600;">
+                                                                <x-fas-shield-halved style="width: 12px; height: 12px;" />
+                                                                Unsecure
+                                                            </span>
+                                                        @endif
                                                     </div>
                                                     <p class="aud-depo-date ss-mono">{{ $userPost->created_at->diffForHumans() }}</p>
                                                 </div>
@@ -443,7 +449,7 @@
                                                         role="menu">
                                                         @auth
                                                             @if ($post->id)
-                                                                @if (Auth::user()?->role !== 'admin')
+                                                                @if (Auth::user()?->role !== 'admin' && Auth::id() !== $userPost->user_id)
                                                                     <div
                                                                         class=" ">
                                                                         <button type="button"
@@ -462,7 +468,7 @@
                                                                         role="menuitem"
                                                                         x-on:click="openEditModal()">
                                                                         <x-fas-pen class="size-3" aria-hidden="true" />
-                                                                        <span>Edit Description</span>
+                                                                        <span>Edit</span>
                                                                     </button>
 
                                                                     <form method="POST" action="{{ route('posts.description.destroy', $post->id) }}"
@@ -485,7 +491,7 @@
                                                                             class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--ui-danger)_28%,transparent)]"
                                                                             role="menuitem">
                                                                             <x-fas-trash class="size-3" aria-hidden="true" />
-                                                                            <span>Delete Description</span>
+                                                                            <span>Delete</span>
                                                                         </button>
                                                                     </form>
                                                                 @endif

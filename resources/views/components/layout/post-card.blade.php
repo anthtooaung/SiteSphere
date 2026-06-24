@@ -112,6 +112,15 @@
                 </h2>
             </div>
 
+            @if ($isUnsecure)
+                <div class="shrink-0 flex items-center pt-0.5">
+                    <span class="unsecure-badge" title="Unsecure Post" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; border: 1px solid color-mix(in srgb, #d97706 30%, transparent); border-radius: 10px; font-size: 10px; font-weight: 600; vertical-align: middle;">
+                        <x-fas-shield-halved style="width: 10px; height: 10px;" />
+                        Unsecure
+                    </span>
+                </div>
+            @endif
+
             <div class="relative shrink-0">
                 <button type="button"
                     class="flex size-8 shrink-0 items-center justify-center [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_62%,transparent)] transition-all hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_84%,var(--accent-color,#6c5ce7)_16%)] hover:[color:var(--accent-color,#6c5ce7)]"
@@ -205,14 +214,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- unsecure banner --}}
-        @if ($isUnsecure)
-            <div class="flex items-center gap-2 rounded-lg border px-3 py-2 [border-color:color-mix(in_srgb,#d97706_25%,transparent)] [background:color-mix(in_srgb,#d97706_8%,transparent)]">
-                <x-fas-shield-halved class="size-4 shrink-0 [color:#d97706]" aria-hidden="true" />
-                <span class="text-xs font-semibold [color:#d97706]">This post has been flagged as unsecure by an admin.</span>
-            </div>
-        @endif
 
         {{-- stars section --}}
         <div

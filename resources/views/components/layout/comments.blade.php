@@ -127,8 +127,16 @@
                 @endif
                 <div class="aud-row-body">
                     <div class="aud-row-head">
-                        <span class="aud-row-head-left">
-                            <span class="aud-row-name" data-hover-profile="{{ $comment->user_id }}">{{ $comment->user->name }}</span>
+                        <span class="aud-row-head-left" style="width: 100%; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="aud-row-name" data-hover-profile="{{ $comment->user_id }}">{{ $comment->user->name }}</span>
+                                @if($comment->user->isUnsecure())
+                                    <span class="unsecure-badge" title="Unsecure Account" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; border: 1px solid color-mix(in srgb, #d97706 30%, transparent); border-radius: 10px; font-size: 10px; font-weight: 600; vertical-align: middle;">
+                                        <x-fas-shield-halved style="width: 10px; height: 10px;" />
+                                        Unsecure
+                                    </span>
+                                @endif
+                            </div>
                             @if($cRating > 0)
                                 <span
                                     class="ss-stars"
@@ -265,7 +273,7 @@
                                                             class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
                                                             role="menuitem">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                                                            <span>Delete Comment</span>
+                                                            <span>Delete</span>
                                                         </button>
                                                     </form>
                                                 </div>

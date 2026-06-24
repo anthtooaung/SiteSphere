@@ -43,7 +43,6 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/posts/{post}/toggle-unsecure', [PostsController::class, 'toggleUnsecure'])->name('posts.toggle-unsecure');
     Route::delete('/posts/{post}/force-delete', [PostsController::class, 'forceDelete'])->withTrashed()->name('posts.force-delete');
     Route::delete('/audits/{userPost}/delete', [PostsController::class, 'deleteAudit'])->name('audits.delete');
-    Route::post('/audits/{userPost}/unban', [PostsController::class, 'unbanAudit'])->withTrashed()->name('audits.unban');
     Route::delete('/audits/{userPost}/force-delete', [PostsController::class, 'forceDeleteAudit'])->withTrashed()->name('audits.force-delete');
     Route::post('/user-posts/{userPost}/report', [ReportsController::class, 'storeForUserPost'])->name('user-posts.report');
 

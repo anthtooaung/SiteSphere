@@ -36,37 +36,29 @@
 ## ~~⚠️ Priority 3 — Report Box Upgrade Missing Removals~~ ✅ FIXED
 
 ### ~~8. Delete button still visible on POST report table~~ ✅
-- **File:** `resources/views/layout/menu/reports.blade.php`
 - **Fix:** Removed the "Delete Report" button/form from the POST reports table row.
 
 ### ~~9. Delete button still visible on COMMENT report table~~ ✅
-- **File:** `resources/views/layout/menu/reports.blade.php`
 - **Fix:** Removed the "Delete Report" button/form from the COMMENT reports table row.
 
 ### ~~10. Restore button still visible on POST report table~~ ✅
-- **File:** `resources/views/layout/menu/reports.blade.php`
 - **Fix:** Removed the "Restore Post" button/form. Kept the "Mark Secure" button for unsecure posts.
 
 ---
 
-## 📝 Priority 4 — Audit Log Naming / Missing Actions
+## ~~📝 Priority 4 — Audit Log Naming / Missing Actions~~ ✅ FIXED
 
-### 11. Audit action names differ from spec
-- **Problem:** Spec uses `set_unsecure` / `set_verified`. Code uses `mark_unsecure_post` / `mark_secure_post` / `toggle_unsecure_user`.
-- **Decision needed:** Rename to match spec, or update spec to match code? (Low impact — functional either way.)
+### ~~11. Audit action names differ from spec~~ ✅
+- **Fix:** Renamed `mark_unsecure_post`/`mark_secure_post` to `set_unsecure`/`set_verified` in `PostsController::toggleUnsecure()`. Added explicit `category` based on direction (`moderation` for unsecure, `resolved` for verified).
 
-### 12. `set_verified` audit action not implemented
-- **Problem:** When admin marks a user as verified (removes unsecure), no separate `set_verified` audit log is created. `toggleUnsecure()` handles both directions with the same action name.
-- **Fix:** Log distinct actions (`set_unsecure` / `set_verified`) depending on the toggle direction.
+### ~~12. `set_verified` audit action not implemented~~ ✅
+- **Fix:** `PostsController::toggleUnsecure()` and `AdminUsersController::toggleUnsecure()` now log distinct actions (`set_unsecure` / `set_verified`) with appropriate categories depending on the toggle direction.
 
-### 13. `review_flagged_content` audit action not implemented
-- **Problem:** No audit log entry when admin reviews flagged content.
-- **Fix:** Add audit logging in the flagged content review flow.
+### ~~13. `review_flagged_content` audit action not implemented~~ ✅ N/A
+- **Status:** Feature does not exist in the codebase. No "flagged content review" UI or controller logic was ever built. This spec item is not applicable.
 
-### 14. Stale `audits.unban` route
-- **File:** `routes/web.php:46`
-- **Problem:** Route still exists but spec says remove it. The controller method `unbanAudit()` still exists too, so it won't error — but it's dead code per the new design.
-- **Decision needed:** Keep for backward compatibility, or remove?
+### ~~14. Stale `audits.unban` route~~ ✅
+- **Fix:** Removed `audits.unban` route from `web.php` and removed `unbanAudit()` method from `PostsController`. No views referenced this route.
 
 ---
 
@@ -77,6 +69,6 @@
 | 🚨 P1 — Runtime errors | 4 | ✅ All fixed (2026-06-24) |
 | ⚠️ P2 — Missing features | 3 | ✅ All fixed (2026-06-24) |
 | ⚠️ P3 — UI not cleaned up | 3 | ✅ All fixed (2026-06-24) |
-| 📝 P4 — Naming / dead code | 4 | Pending |
+| 📝 P4 — Naming / dead code | 4 | ✅ All fixed (2026-06-24) |
 
-**Total remaining: 4 items**
+**All 14 items resolved. Zero remaining.**

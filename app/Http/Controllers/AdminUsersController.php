@@ -105,9 +105,10 @@ class AdminUsersController extends Controller
         $user->status = $newStatus;
         $user->save();
 
+        $action = $newStatus === 'unsecure' ? 'set_unsecure' : 'set_verified';
         $label = $newStatus === 'unsecure' ? 'unsecure' : 'secure';
 
-        $this->audit($admin, 'toggle_unsecure_user', $user, "User marked as {$label} by an admin.");
+        $this->audit($admin, $action, $user, "User marked as {$label} by an admin.", category: $newStatus === 'unsecure' ? 'moderation' : 'resolved');
 
         return back()->with('success', "{$user->name} marked as {$label}.");
     }

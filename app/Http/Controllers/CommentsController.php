@@ -117,38 +117,6 @@ class CommentsController extends Controller
                 'reason' => 'Comment permanently deleted by an admin.',
             ]);
 
-            $comment->forceDelete();
-        });
-
-        return back()->with('success', 'Comment permanently deleted.');
-    }
-
-    /**
-     * Permanently delete the specified comment (admin only).
-     */
-    public function delete(Request $request, Comments $comment): RedirectResponse
-    {
-        $user = $request->user();
-
-        abort_unless($user?->role === 'admin', 403);
-
-        DB::transaction(function () use ($comment, $user): void {
-            Ratings::query()
-                ->where('user_id', $comment->user_id)
-                ->where('post_id', $comment->post_id)
-                ->delete();
-
-            $comment->commentReactions()->delete();
-
-            AuditLogs::query()->create([
-                'user_id' => $user->id,
-                'action' => 'delete_comment',
-                'category' => 'moderation',
-                'target_type' => Comments::class,
-                'target_id' => $comment->id,
-                'reason' => 'Comment permanently deleted by an admin.',
-            ]);
-
             Notificatioins::query()->create([
                 'to_user_id' => $comment->user_id,
                 'from_user_id' => $user->id,

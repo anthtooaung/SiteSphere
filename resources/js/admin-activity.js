@@ -5,6 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const userSlugs = data.userSlugs || {};
   const commentPostSlugs = data.commentPostSlugs || {};
 
+  let activeFilter = 'all';
+
+  function getFilteredActs() {
+    if (activeFilter === 'all') return actsExpanded;
+    return actsExpanded.filter(a => a.category === activeFilter);
+  }
+
   function getTargetUrl(a) {
     if (a.targetType === 'App\\Models\\Posts') {
       const slug = postSlugs[a.targetId];
@@ -28,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function buildDateMap() {
     const map = {};
-    actsExpanded.forEach((a) => {
+    const filtered = getFilteredActs();
+    filtered.forEach((a) => {
       (map[a.date] = map[a.date] || []).push(a);
     });
     return map;
@@ -238,8 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function openLogModal(scope) {
     const dateMap = buildDateMap();
     const isDate = scope === "date";
-    const entries = isDate ? dateMap[selectedDate] || [] : actsExpanded;
-    const label = isDate ? `Actions on ${selectedDate}` : "All Admin Actions";
+    const entries = isDate ? dateMap[selectedDate] || [] : getFilteredActs();
+    const filterLabel = activeFilter === 'all' ? '' : ` (${activeFilter})`;
+    const label = isDate ? `Actions on ${selectedDate}${filterLabel}` : `All Admin Actions${filterLabel}`;
     
     const titleEl = document.getElementById("modal-title");
     if(titleEl) titleEl.textContent = "Detailed Admin Log";
@@ -305,7 +314,32 @@ document.addEventListener('DOMContentLoaded', () => {
       modalObj.addEventListener('click', closeLogModal);
   }
 
+  // Filter bar functionality
+  function initFilterBar() {
+    const filterBar = document.getElementById('act-filter-bar');
+    if (!filterBar) return;
+
+    const filterBtns = filterBar.querySelectorAll('.act-filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+        if (filter === activeFilter) return;
+
+        activeFilter = filter;
+
+        // Update active state
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Re-render with filter
+        renderCalendar();
+        renderDatePanel();
+      });
+    });
+  }
+
   // Initialize
+  initFilterBar();
   renderCalendar();
   renderDatePanel();
 });

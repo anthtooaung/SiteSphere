@@ -80,6 +80,29 @@
                   </div>
                 </div>
 
+                <div class="act-filter-bar" id="act-filter-bar">
+                  <button class="act-filter-btn active" data-filter="all" type="button">
+                    <span class="act-filter-dot" style="background: var(--text-color);"></span>
+                    All
+                  </button>
+                  <button class="act-filter-btn" data-filter="announcement" type="button">
+                    <span class="act-filter-dot" style="background: #7c3aed;"></span>
+                    Announcement
+                  </button>
+                  <button class="act-filter-btn" data-filter="check" type="button">
+                    <span class="act-filter-dot" style="background: #3b82f6;"></span>
+                    Check
+                  </button>
+                  <button class="act-filter-btn" data-filter="moderation" type="button">
+                    <span class="act-filter-dot" style="background: #ef4444;"></span>
+                    Moderation
+                  </button>
+                  <button class="act-filter-btn" data-filter="resolved" type="button">
+                    <span class="act-filter-dot" style="background: #10b981;"></span>
+                    Resolved
+                  </button>
+                </div>
+
                 <div class="expanded-body">
                   <div class="cal-widget">
                     <div class="cal-header">

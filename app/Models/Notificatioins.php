@@ -21,6 +21,7 @@ class Notificatioins extends Model
         'target_id',
         'message',
         'is_read',
+        'is_unsecure',
     ];
 
     /**
@@ -32,6 +33,7 @@ class Notificatioins extends Model
     {
         return [
             'is_read' => 'boolean',
+            'is_unsecure' => 'boolean',
         ];
     }
 

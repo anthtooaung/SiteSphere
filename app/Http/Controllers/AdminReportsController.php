@@ -7,6 +7,7 @@ use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\Reports;
 use App\Models\User;
+use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -277,5 +278,43 @@ class AdminReportsController extends Controller
         ]);
 
         return back()->with('success', 'Report has been deleted.');
+    }
+
+    public function resolve(Request $request, Reports $report): RedirectResponse
+    {
+        $admin = $this->authorizeAdmin($request);
+
+        $targetName = $report->target_name;
+        $targetId = $report->target_id;
+
+        // Delete all reports for this target
+        $deletedCount = Reports::query()
+            ->where('target_name', $targetName)
+            ->where('target_id', $targetId)
+            ->delete();
+
+        // Reset report_count on the target
+        $this->resetReportCount($targetName, $targetId);
+
+        AuditLogs::query()->create([
+            'user_id' => $admin->id,
+            'action' => 'resolve_report',
+            'target_type' => Reports::class,
+            'target_id' => $report->id,
+            'reason' => "Resolved {$deletedCount} report(s) for {$targetName} #{$targetId}.",
+        ]);
+
+        return back()->with('success', "Resolved {$deletedCount} report(s).");
+    }
+
+    private function resetReportCount(string $targetName, int $targetId): void
+    {
+        match ($targetName) {
+            'posts' => Posts::where('id', $targetId)->update(['report_count' => 0]),
+            'comments' => Comments::where('id', $targetId)->update(['report_count' => 0]),
+            'user_posts' => UserPosts::where('id', $targetId)->update(['report_count' => 0]),
+            'users' => User::where('id', $targetId)->update(['report_count' => 0]),
+            default => null,
+        };
     }
 }

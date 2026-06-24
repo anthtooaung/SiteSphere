@@ -363,6 +363,15 @@ $reportFilters = $reportFilters ?? [
                                                 </button>
                                             </x-tooltip>
                                         </form>
+                                        <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this post and reset the report count. Users can re-report if needed.', 'Resolve All')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-tooltip content="Resolve All Reports">
+                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
+                                                    <x-fas-check aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -515,6 +524,15 @@ $reportFilters = $reportFilters ?? [
                                             <x-tooltip content="Delete Report">
                                                 <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
                                                     <x-fas-trash aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
+                                        <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this comment and reset the report count. Users can re-report if needed.', 'Resolve All')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-tooltip content="Resolve All Reports">
+                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
+                                                    <x-fas-check aria-hidden="true" />
                                                 </button>
                                             </x-tooltip>
                                         </form>
@@ -673,6 +691,15 @@ $reportFilters = $reportFilters ?? [
                                             <x-tooltip content="Delete Report">
                                                 <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
                                                     <x-fas-trash aria-hidden="true" />
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
+                                        <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this user and reset the report count. Users can re-report if needed.', 'Resolve All')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-tooltip content="Resolve All Reports">
+                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
+                                                    <x-fas-check aria-hidden="true" />
                                                 </button>
                                             </x-tooltip>
                                         </form>

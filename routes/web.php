@@ -101,6 +101,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/api/admin/activity/{date}', [AdminActivityLogController::class, 'show'])->name('admin.activity-date');
 
     Route::post('/notifications/{notification}/open', NotificationOpenController::class)->name('notifications.open');
+    Route::post('/notifications/mark-all-read', [NotificationOpenController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 });
 
 require __DIR__.'/auth.php';

@@ -30,6 +30,29 @@ class ReportsController extends Controller
      */
     public function store(StoreReportsRequest $request, Posts $post): RedirectResponse
     {
+        $user = $request->user();
+
+        // Check if user is a contributor to this post (has a user_post entry)
+        $isContributor = UserPosts::query()
+            ->where('post_id', $post->id)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if ($isContributor) {
+            return back()->with('error', 'You cannot report your own content.');
+        }
+
+        // Check if user already reported this target
+        $alreadyReported = Reports::query()
+            ->where('user_id', $user->id)
+            ->where('target_name', 'posts')
+            ->where('target_id', $post->id)
+            ->exists();
+
+        if ($alreadyReported) {
+            return back()->with('error', 'You have already reported this.');
+        }
+
         $validated = $request->validated();
         $reason = $this->reportReason(
             reason: $validated['reason'],
@@ -37,7 +60,7 @@ class ReportsController extends Controller
         );
 
         Reports::query()->create([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'target_name' => 'posts',
             'target_id' => $post->id,
             'reason' => $reason,
@@ -57,6 +80,24 @@ class ReportsController extends Controller
      */
     public function storeForComment(Request $request, Comments $comment): RedirectResponse
     {
+        $user = $request->user();
+
+        // Check if user is reporting their own content
+        if ($comment->user_id === $user->id) {
+            return back()->with('error', 'You cannot report your own content.');
+        }
+
+        // Check if user already reported this target
+        $alreadyReported = Reports::query()
+            ->where('user_id', $user->id)
+            ->where('target_name', 'comments')
+            ->where('target_id', $comment->id)
+            ->exists();
+
+        if ($alreadyReported) {
+            return back()->with('error', 'You have already reported this.');
+        }
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'max:500'],
             'details' => ['nullable', 'string', 'max:600'],
@@ -68,7 +109,7 @@ class ReportsController extends Controller
         );
 
         Reports::query()->create([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'target_name' => 'comments',
             'target_id' => $comment->id,
             'reason' => $reason,
@@ -102,6 +143,24 @@ class ReportsController extends Controller
      */
     public function storeForUser(Request $request, User $user): RedirectResponse
     {
+        $currentUser = $request->user();
+
+        // Check if user is reporting themselves
+        if ($user->id === $currentUser->id) {
+            return back()->with('error', 'You cannot report yourself.');
+        }
+
+        // Check if user already reported this target
+        $alreadyReported = Reports::query()
+            ->where('user_id', $currentUser->id)
+            ->where('target_name', 'users')
+            ->where('target_id', $user->id)
+            ->exists();
+
+        if ($alreadyReported) {
+            return back()->with('error', 'You have already reported this.');
+        }
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'max:500'],
             'details' => ['nullable', 'string', 'max:600'],
@@ -113,7 +172,7 @@ class ReportsController extends Controller
         );
 
         Reports::query()->create([
-            'user_id' => $request->user()->id,
+            'user_id' => $currentUser->id,
             'target_name' => 'users',
             'target_id' => $user->id,
             'reason' => $reason,
@@ -147,6 +206,24 @@ class ReportsController extends Controller
      */
     public function storeForUserPost(Request $request, UserPosts $userPost): RedirectResponse
     {
+        $user = $request->user();
+
+        // Check if user is reporting their own content
+        if ($userPost->user_id === $user->id) {
+            return back()->with('error', 'You cannot report your own content.');
+        }
+
+        // Check if user already reported this target
+        $alreadyReported = Reports::query()
+            ->where('user_id', $user->id)
+            ->where('target_name', 'user_posts')
+            ->where('target_id', $userPost->id)
+            ->exists();
+
+        if ($alreadyReported) {
+            return back()->with('error', 'You have already reported this.');
+        }
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'max:500'],
             'details' => ['nullable', 'string', 'max:600'],
@@ -158,7 +235,7 @@ class ReportsController extends Controller
         );
 
         Reports::query()->create([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'target_name' => 'user_posts',
             'target_id' => $userPost->id,
             'reason' => $reason,

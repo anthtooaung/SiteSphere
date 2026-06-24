@@ -4,27 +4,23 @@
 
 ---
 
-## 🚨 Priority 1 — Will Break at Runtime
+## ~~🚨 Priority 1 — Will Break at Runtime~~ ✅ FIXED
 
-### 1. Stale `comments.unban` route → 500 error
-- **File:** `routes/web.php:56`
-- **Problem:** Route `comments.unban` points to `CommentsController::unban` which no longer exists. Visiting this route throws a 500.
-- **Fix:** Remove the route line entirely.
+### ~~1. Stale `comments.unban` route → 500 error~~ ✅
+- **File:** `routes/web.php`
+- **Fix:** Removed the `comments.unban` route line.
 
-### 2. Duplicate `deleteAudit()` in PostsController
-- **File:** `app/Http/Controllers/PostsController.php` (lines ~184 and ~226)
-- **Problem:** Two `deleteAudit()` methods exist. PHP silently uses the second, overriding the first.
-- **Fix:** Remove the first (dead) definition, keep the second which includes full logic.
+### ~~2. Duplicate `deleteAudit()` in PostsController~~ ✅
+- **File:** `app/Http/Controllers/PostsController.php`
+- **Fix:** Removed the first (dead) definition, kept the second with full logic.
 
-### 3. Duplicate `delete()` in CommentsController
-- **File:** `app/Http/Controllers/CommentsController.php` (lines ~97 and ~129)
-- **Problem:** Two `delete()` methods exist. Second overrides the first.
-- **Fix:** Remove the first (dead) definition, keep the second which includes notification to comment author.
+### ~~3. Duplicate `delete()` in CommentsController~~ ✅
+- **File:** `app/Http/Controllers/CommentsController.php`
+- **Fix:** Removed the first (dead) definition, kept the second which includes notification to comment author.
 
-### 4. `resetReportCount()` missing `user_posts` case
-- **File:** `app/Http/Controllers/AdminReportsController.php` (~line 316)
-- **Problem:** When resolving a `user_posts` report, `report_count` on the user_posts record is NOT reset.
-- **Fix:** Add a `case 'user_posts':` block that resets `UserPosts::where('id', $targetId)->update(['report_count' => 0])`.
+### ~~4. `resetReportCount()` missing `user_posts` case~~ ✅
+- **File:** `app/Http/Controllers/AdminReportsController.php`
+- **Fix:** Added `'user_posts' => UserPosts::where('id', $targetId)->update(['report_count' => 0])` case and imported `UserPosts` model.
 
 ---
 
@@ -89,11 +85,11 @@
 
 ## Summary Count
 
-| Priority | Count | Impact |
+| Priority | Count | Status |
 |---|---|---|
-| 🚨 P1 — Runtime errors | 4 | Broken pages / silent bugs |
-| ⚠️ P2 — Missing features | 3 | Incomplete user experience |
-| ⚠️ P3 — UI not cleaned up | 3 | Spec mismatch, extra buttons |
-| 📝 P4 — Naming / dead code | 4 | Low impact, cosmetic |
+| 🚨 P1 — Runtime errors | 4 | ✅ All fixed (2026-06-24) |
+| ⚠️ P2 — Missing features | 3 | Pending |
+| ⚠️ P3 — UI not cleaned up | 3 | Pending |
+| 📝 P4 — Naming / dead code | 4 | Pending |
 
-**Total remaining: 14 items**
+**Total remaining: 10 items**

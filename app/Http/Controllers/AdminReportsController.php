@@ -7,6 +7,7 @@ use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\Reports;
 use App\Models\User;
+use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -317,6 +318,7 @@ class AdminReportsController extends Controller
             'posts' => Posts::where('id', $targetId)->update(['report_count' => 0]),
             'comments' => Comments::where('id', $targetId)->update(['report_count' => 0]),
             'users' => User::where('id', $targetId)->update(['report_count' => 0]),
+            'user_posts' => UserPosts::where('id', $targetId)->update(['report_count' => 0]),
             default => null,
         };
     }

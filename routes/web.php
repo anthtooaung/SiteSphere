@@ -53,7 +53,6 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/comments/{comment}/react', [CommentReactionsController::class, 'toggle'])->name('comments.react');
     Route::post('/comments/{comment}/report', [ReportsController::class, 'storeForComment'])->name('comments.report');
     Route::delete('/comments/{comment}/delete', [CommentsController::class, 'delete'])->name('comments.delete');
-    Route::post('/comments/{comment}/unban', [CommentsController::class, 'unban'])->name('comments.unban');
     Route::delete('/comments/{comment}/force-delete', [CommentsController::class, 'forceDelete'])->withTrashed()->name('comments.force-delete');
 });
 

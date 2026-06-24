@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/audits/{userPost}/ban', [PostsController::class, 'banAudit'])->name('audits.ban');
     Route::post('/audits/{userPost}/unban', [PostsController::class, 'unbanAudit'])->withTrashed()->name('audits.unban');
     Route::delete('/audits/{userPost}/force-delete', [PostsController::class, 'forceDeleteAudit'])->withTrashed()->name('audits.force-delete');
+    Route::post('/user-posts/{userPost}/report', [ReportsController::class, 'storeForUserPost'])->name('user-posts.report');
 
     Route::post('/posts/{posts:slug}/comments', [CommentsController::class, 'store'])->name('posts.comments.store');
     Route::patch('/comments/{comment}', [CommentsController::class, 'update'])->name('comments.update');

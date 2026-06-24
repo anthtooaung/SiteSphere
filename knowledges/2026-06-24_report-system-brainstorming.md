@@ -1,210 +1,150 @@
 # Report System Brainstorming & Upgrade Plan
 **Date:** 2026-06-24
-**Status:** Planning Phase
+**Status:** Revised — Simplified for School Assignment
 
 ---
 
-## 1. Current Problems
+## 1. Current Problems (Real Bugs)
 
-### Problem 1: No Duplicate Report Prevention
+### Bug 1: `report_count` is Dead Code
+- The column exists on `users` table but is **never incremented** when reports are filed
+- `AdminUsersController` reads it for filtering, but it's always 0
+
+### Bug 2: Enum Mismatch on Notifications
+- `notificatioins.target_type` enum is `['posts', 'comments']`
+- But `ReportsController::notifyAdminsAboutUserReport()` writes `'users'`
+- Fails on MySQL strict mode or silently stores invalid value
+
+### Bug 3: Posts Model `reports()` Relation Bug
+- Filters by `target_name = 'post'` (singular) instead of `'posts'` (plural)
+- The relation never matches anything
+
+### Bug 4: No Duplicate Report Prevention
 - A user can report the same post/comment/user unlimited times
 - Creates noise in the admin report table
-- No way to track if a report was already submitted
 
-### Problem 2: No Status Tracking
-- `admin_read` boolean is too simple
-- No way to mark reports as resolved/dismissed
-- No audit trail of admin actions on reports
+### Bug 5: `user_posts` Report Type is Incomplete
+- The enum includes `user_posts` but no submission or display code exists
 
-### Problem 3: Silent Bans
-- When admin bans a post/comment, the owner is NOT notified
-- No feedback loop to content creators
-
-### Problem 4: No Cascade Effect
-- Banning a user doesn't affect their content
-- No way to mark a user as "unsecure" before banning
-
-### Problem 5: No URL Security
-- A banned post's URL can be reused without warning
-- No way to flag "unsecure" URLs
+### Bug 6: Inconsistent Ban Notifications
+- Comment bans notify the author, but post bans are silent
 
 ---
 
-## 2. New Requirements (Finalized)
+## 2. Revised Requirements (Simplified)
 
 ### 2.1 One Report Per User Per Target
-**Rule:** A user can report a specific post/comment/description/user **only once**.
+**Rule:** A user can report a specific post/comment/user **only once**.
 
 **Implementation:**
 - Add unique constraint on `(user_id, target_name, target_id)` in `reports` table
 - If user already reported → show "You have already reported this" toast
 - **Self-reporting blocked:** Users cannot report their own content
 
-### 2.2 Status-Based Target Tracking
-**New Status Enum:**
+**When admin resolves a report:**
+- Delete the old report records for that target
+- This frees up the same users to report again if the problem comes back
+- No need for a `status` column on reports (resolved/unresolved)
 
-| Target | Status Values | Default |
-|--------|---------------|---------|
-| `posts` | `active`, `unsecure` | `active` |
-| `user_posts` (descriptions) | `active`, `unsecure`, `banned` | `active` |
-| `comments` | `active`, `unsecure`, `banned` | `active` |
-| `users` | `verified`, `unsecure`, `banned` | `verified` |
+### 2.2 Report Count (Actually Working)
+**Rule:** When a report is filed, increment `report_count` on the target.
 
-### 2.3 Threshold-Based "Unsecure" Status
-**Rule:** When a target accumulates **3 or more reports** → auto-set status to `unsecure`.
+| Target | Column to Increment |
+|--------|-------------------|
+| `posts` | `posts.report_count` (need to add column) |
+| `comments` | `comments.report_count` (need to add column) |
+| `user_posts` | `user_posts.report_count` (need to add column) |
+| `users` | `users.report_count` (already exists, just not used) |
 
-**What happens when target becomes unsecure:**
-- Target gets `status = 'unsecure'`
-- `report_count` updated on the target
-- **Admin notification sent** (only at threshold, not on every report)
-
-### 2.4 Owner Notifications (Every Report)
-**Rule:** Owner gets notified on **every single report**, regardless of count.
+### 2.3 Notifications — Owner + Admin on Every Report
+**Rule:** Both the content owner AND admin get notified on **every single report**.
 
 | Report Target | Who Gets Notified |
 |---------------|-------------------|
-| Post | Post creator (via `user_posts.user_id`) |
-| Description | Description author (`user_posts.user_id`) |
-| Comment | Comment author (`comments.user_id`) |
-| User | The reported user themselves |
+| Post | Post creator + Admin |
+| Comment | Comment author + Admin |
+| User | The reported user + Admin |
 
-**Message format:** "Your [post/description/comment] has been reported."
+**Message format:** "Your [post/comment] has been reported." (owner) / "[Target] has been reported." (admin)
 
-### 2.5 Admin Notifications (Threshold Only)
-**Rule:** Admin only gets notified when a target hits **3+ reports** (unsecure status).
+### 2.4 Unsecure Tag on Notifications (3+ Reports)
+**Rule:** When a target's `report_count >= 3`, the notification gets a distinct visual tag.
 
-**NOT notified on:**
-- 1st report
-- 2nd report
-- Reports after target is already unsecure
+**Implementation:**
+- Check `report_count` on the target when creating the notification
+- If `report_count >= 3`, add a flag/tag to the notification (e.g., `is_unsecure = true` or a distinct message format)
+- In the notification dropdown, show a red badge or "⚠️ Unsecure" label on those notifications
 
-**Notified on:**
-- Target crossing 3-report threshold
-- Target crossing threshold again after admin reset
+### 2.5 Mark All as Read
+**Rule:** Add a "Mark all as read" button in the notification box.
 
-### 2.6 Admin Notification Routing
-**When admin clicks notification:**
-1. Mark notification as read
-2. Mark ALL reports for that target as `admin_read = true`
-3. Redirect DIRECTLY to the content page:
-   - Post → `/posts/{slug}`
-   - Comment → `/posts/{slug}#comment-{id}`
-   - Description → `/posts/{slug}#description-{id}`
-   - User → `/profile/{name}`
+**Implementation:**
+- New route: `POST /notifications/mark-all-read`
+- Sets `is_read = true` for all notifications belonging to the current user
+- Button appears in the notification dropdown
 
-### 2.7 Post Unsecure Logic
-**Admin can:**
-- Mark post as unsecure (sets `status = 'unsecure'`)
-- Remove unsecure status (sets `status = 'active'`, resets `report_count = 0`)
+### 2.6 User Profile Unsecure Tag
+**Rule:** If a user's `report_count >= 3`, show an "Unsecure" badge on their profile.
 
-**URL Security:**
-- When post becomes unsecure → its URL is flagged
-- When any user creates a new post with that URL → show warning:
-  - "This URL has been flagged as unsecure"
-  - Link to the unsecure post
-- User can still proceed OR cancel
+**Implementation:**
+- Check `users.report_count` when rendering the profile
+- Show a visual badge (e.g., yellow/red warning) if `report_count >= 3`
+- This is display-only — no status change, no cascade
 
-**Admin CANNOT ban posts** — only toggle unsecure status.
+### 2.7 User Tab Unsecure Tag (on Posts)
+**Rule:** On a post's user tab (the list of contributors/descriptions), show "Unsecure" next to users whose `report_count >= 3`.
 
-### 2.8 User Unsecure/Ban Logic
+**Implementation:**
+- When rendering the user tab, check each user's `report_count`
+- Show a small badge next to unsecure users
+- This is display-only — no content status change
 
-**Cascade Effect (Bidirectional):**
+### 2.8 Banned User Login Block
+**Rule:** If a user is banned (`status = 'banned'`), block login and show a message.
 
-```
-User hits 3+ reports → status = 'unsecure'
-    │
-    ├─ All user's user_posts → status = 'unsecure'
-    ├─ All user's comments → status = 'unsecure'
-    └─ All posts where user is sole author → status = 'unsecure'
-
-Admin restores user to 'verified'
-    │
-    ├─ User → status = 'verified', report_count = 0
-    ├─ All user_posts → status = 'active', report_count = 0
-    ├─ All comments → status = 'active', report_count = 0
-    └─ All posts → status = 'active', report_count = 0
-
-Admin bans user
-    │
-    ├─ User → status = 'banned', banned_by, banned_at, ban_reason
-    ├─ Soft-delete user (deleted_at = now)
-    ├─ All user_posts → status = 'banned', soft-delete
-    ├─ All comments → status = 'banned', soft-delete
-    └─ All posts → status = 'banned', soft-delete
-
-Admin restores banned user
-    │
-    ├─ User → status = 'verified', clear ban fields, restore deleted_at
-    ├─ All user_posts → status = 'active', restore deleted_at
-    ├─ All comments → status = 'active', restore deleted_at
-    └─ All posts → status = 'active', restore deleted_at
-```
-
-### 2.9 Banned User Login Flow
-**When banned user tries to login:**
-1. Check `users.status = 'banned'`
-2. Show error: "Your account has been banned by [admin name]. Reason: [reason]"
-3. Block login entirely
-
-**OAuth login also blocked:**
-- Check ban status on Google OAuth callback
-- If banned email tries OAuth → show same banned message
-
-### 2.10 Description/Comment Unsecure/Ban Logic
-
-**Same pattern as user:**
-
-```
-Description/Comment hits 3+ reports → status = 'unsecure'
-    │
-    └─ Owner notified: "Your [description/comment] has been marked as unsecure"
-
-Admin bans description/comment
-    │
-    ├─ status = 'banned', banned_by, banned_at
-    ├─ Soft-delete
-    └─ Notify owner: "Your [description/comment] has been banned"
-
-Admin restores description/comment
-    │
-    ├─ status = 'active', clear ban fields, report_count = 0
-    ├─ Restore deleted_at
-    └─ Notify owner: "Your [description/comment] has been restored"
-```
+**Implementation:**
+- Check `users.status` on login (both regular and OAuth)
+- If banned → show: "Your account has been banned. Reason: [reason]"
+- Block login entirely
 
 ---
 
 ## 3. Database Schema Changes
 
-### 3.1 Migration: `add_status_columns_to_content_tables`
+### 3.1 Migration: `add_report_count_to_content_tables`
 
 #### `posts` table
 ```php
-$table->enum('status', ['active', 'unsecure'])->default('active')->after('url');
-$table->foreignId('status_by')->nullable()->after('status');   // admin who set status
-$table->timestamp('status_at')->nullable()->after('status_by'); // when status changed
-$table->integer('report_count')->default(0)->after('status_at'); // denormalized count
+$table->integer('report_count')->default(0)->after('url');
 ```
 
 #### `user_posts` table
 ```php
-$table->enum('status', ['active', 'unsecure', 'banned'])->default('active')->after('user_hidden');
-$table->foreignId('banned_by')->nullable()->after('status');
-$table->timestamp('banned_at')->nullable()->after('banned_by');
-$table->integer('report_count')->default(0)->after('banned_at'); // denormalized count
+$table->integer('report_count')->default(0)->after('user_hidden');
 ```
 
 #### `comments` table
 ```php
-$table->enum('status', ['active', 'unsecure', 'banned'])->default('active')->after('content');
-$table->foreignId('banned_by')->nullable()->after('status');
-$table->timestamp('banned_at')->nullable()->after('banned_by');
-$table->integer('report_count')->default(0)->after('banned_at'); // denormalized count
+$table->integer('report_count')->default(0)->after('content');
 ```
 
-#### `users` table
+*(No changes to `users` — `report_count` already exists)*
+
+### 3.2 Migration: `add_unique_constraint_and_indexes_to_reports`
+
 ```php
-// Replace is_verified boolean with status enum
+// Unique constraint (one report per user per target)
+$table->unique(['user_id', 'target_name', 'target_id'], 'unique_user_target_report');
+
+// Indexes for performance
+$table->index(['target_name', 'target_id']);
+$table->index('admin_read');
+$table->index('created_at');
+```
+
+### 3.3 Migration: `add_status_and_ban_fields_to_users`
+
+```php
 $table->enum('status', ['verified', 'unsecure', 'banned'])->default('verified')->after('role');
 $table->foreignId('banned_by')->nullable()->after('status');
 $table->timestamp('banned_at')->nullable()->after('banned_by');
@@ -215,63 +155,55 @@ $table->string('ban_reason')->nullable()->after('banned_at');
 - `status = 'verified'` → `is_verified = true`
 - `status != 'verified'` → `is_verified = false`
 
-### 3.2 Migration: `update_reports_table`
+### 3.4 Migration: `fix_notification_target_type_enum`
 
 ```php
-// Add unique constraint (one report per user per target)
-$table->unique(['user_id', 'target_name', 'target_id'], 'unique_user_target_report');
-
-// Add indexes for performance
-$table->index(['target_name', 'target_id']);
-$table->index('admin_read');
-$table->index('created_at');
+// Update enum to include 'users'
+$table->enum('target_type', ['posts', 'comments', 'users'])->change();
 ```
 
-### 3.3 Final Schema Summary
+### 3.5 Final Schema Summary
 
 ```
-reports
+reports (no new columns, just constraint)
 ├── id
-├── user_id (FK → users)          -- reporter
+├── user_id (FK → users)
 ├── target_name (enum: posts, comments, user_posts, users)
 ├── target_id
 ├── reason
 ├── admin_read (boolean)
 ├── timestamps
-└── UNIQUE(user_id, target_name, target_id)
+└── UNIQUE(user_id, target_name, target_id)  ← NEW
 
 posts
-├── id, title, slug, url (unique)
-├── status (enum: active, unsecure)      ← NEW
-├── status_by (FK → users, nullable)     ← NEW
-├── status_at (timestamp, nullable)      ← NEW
+├── id, title, slug, url
 ├── report_count (integer, default 0)    ← NEW
 ├── timestamps, deleted_at
 
 user_posts
 ├── id, post_id, user_id, description, user_hidden
-├── status (enum: active, unsecure, banned) ← NEW
-├── banned_by (FK → users, nullable)        ← NEW
-├── banned_at (timestamp, nullable)          ← NEW
-├── report_count (integer, default 0)       ← NEW
+├── report_count (integer, default 0)    ← NEW
 ├── timestamps, deleted_at
 
 comments
 ├── id, user_id, post_id, content
-├── status (enum: active, unsecure, banned) ← NEW
-├── banned_by (FK → users, nullable)        ← NEW
-├── banned_at (timestamp, nullable)          ← NEW
-├── report_count (integer, default 0)       ← NEW
+├── report_count (integer, default 0)    ← NEW
 ├── timestamps, deleted_at
 
 users
 ├── id, name, slug, role, email, ...
-├── status (enum: verified, unsecure, banned) ← NEW (replaces is_verified)
-├── banned_by (FK → users, nullable)           ← NEW
-├── banned_at (timestamp, nullable)             ← NEW
-├── ban_reason (string, nullable)               ← NEW
-├── report_count (integer)                      ← EXISTS
+├── status (enum: verified, unsecure, banned) ← NEW
+├── banned_by (FK → users, nullable)          ← NEW
+├── banned_at (timestamp, nullable)            ← NEW
+├── ban_reason (string, nullable)              ← NEW
+├── report_count (integer, default 0)          ← EXISTS (but never used)
 ├── timestamps, deleted_at
+
+notificatioins
+├── id, to_user_id, from_user_id
+├── target_type (enum: posts, comments, users) ← FIX enum
+├── target_id, message, is_read
+├── timestamps
 ```
 
 ---
@@ -281,7 +213,7 @@ users
 ### 4.1 User Submits a Report
 
 ```
-User clicks "Report" on a post/comment/description/user
+User clicks "Report" on a post/comment/user
     │
     ├─ Check: Is user reporting their own content?
     │   ├─ YES → Show "You cannot report your own content" toast → STOP
@@ -293,150 +225,54 @@ User clicks "Report" on a post/comment/description/user
     │
     ├─ Create report in `reports` table
     │
-    ├─ Increment `report_count` on target (denormalized column):
+    ├─ Increment `report_count` on target:
     │   ├─ posts.report_count += 1
-    │   ├─ user_posts.report_count += 1
     │   ├─ comments.report_count += 1
-    │   └─ users.report_count += 1 (already exists)
+    │   ├─ user_posts.report_count += 1
+    │   └─ users.report_count += 1
     │
     ├─ Notify OWNER (every report):
-    │   ├─ Post report → notify post creator (via user_posts.user_id)
-    │   ├─ Description report → notify description author (user_posts.user_id)
-    │   ├─ Comment report → notify comment author (comments.user_id)
+    │   ├─ Post report → notify post creator
+    │   ├─ Comment report → notify comment author
     │   └─ User report → notify the reported user
-    │   Message: "Your [post/description/comment] has been reported."
+    │   Message: "Your [post/comment] has been reported."
     │
-    ├─ Check report_count for this target:
-    │   ├─ Count < 3 → Show in admin report table only (no admin noti)
-    │   └─ Count >= 3 AND target not already 'unsecure':
-    │       ├─ Set target status = 'unsecure'
-    │       ├─ If target is USER → cascade to their content
-    │       ├─ Notify ALL admins: "[Target] has reached 3+ reports and is now unsecure"
-    │       └─ Admin noti contains target_type + target_id for direct redirect to content
+    ├─ Notify ADMIN (every report):
+    │   ├─ Check target's report_count
+    │   ├─ If report_count >= 3 → notification with "⚠️ Unsecure" tag
+    │   └─ If report_count < 3 → normal notification
     │
     └─ Show success toast to reporter
 ```
 
-### 4.2 Admin Opens a Report Notification (Direct to Content)
+### 4.2 Admin Resolves a Report
 
 ```
-Admin clicks notification in notification box
+Admin opens report → takes action on content → resolves
     │
-    ├─ NotificationOpenController:
-    │   ├─ Mark notification as read (is_read = true)
-    │   ├─ Mark ALL reports for this target as admin_read = true
-    │   ├─ Log in AuditLogs
-    │   └─ Redirect DIRECTLY to the content:
-    │       ├─ target_type = 'posts' → /posts/{slug}
-    │       ├─ target_type = 'comments' → /posts/{slug}#comment-{id}
-    │       ├─ target_type = 'user_posts' → /posts/{slug}#description-{id}
-    │       └─ target_type = 'users' → /profile/{name}
-    │
-    └─ Done — admin lands on the actual content page
-       (no intermediate report page visit)
+    ├─ Delete all report records for that target
+    ├─ Reset report_count on the target to 0
+    ├─ Log in AuditLogs
+    └─ Content is now "clean" — users can re-report if needed
 ```
 
-### 4.3 Admin Actions
-
-#### Post (toggle unsecure only)
-```
-Admin sees unsecure post → can "Mark as Safe"
-    │
-    ├─ Set posts.status = 'active'
-    ├─ Set posts.status_by = admin.id, status_at = now()
-    ├─ Reset posts.report_count = 0 (allows re-triggering at 3 new reports)
-    ├─ AuditLogs: action = 'mark_post_safe'
-    └─ Post no longer shows unsecure warning
-
-Admin sees active post with reports → can "Mark as Unsecure"
-    │
-    ├─ Set posts.status = 'unsecure'
-    ├─ Set posts.status_by = admin.id, status_at = now()
-    ├─ AuditLogs: action = 'mark_post_unsecure'
-    └─ Post shows unsecure badge
-```
-
-#### User (ban / restore)
-```
-Admin bans user:
-    │
-    ├─ Set users.status = 'banned'
-    ├─ Set users.banned_by = admin.id, banned_at = now(), ban_reason = reason
-    ├─ Soft-delete user (deleted_at = now)
-    ├─ Cascade: all user's user_posts, comments → status = 'banned', banned_by = admin
-    ├─ AuditLogs: action = 'ban_user'
-    ├─ Send email: "Your account has been banned. Reason: {reason}"
-    └─ On next login attempt: "Your account has been banned by {admin_name}"
-
-Admin restores user (from banned OR unsecure → verified):
-    │
-    ├─ Set users.status = 'verified'
-    ├─ Clear banned_by, banned_at, ban_reason
-    ├─ Reset users.report_count = 0
-    ├─ Restore user (deleted_at = null)
-    ├─ CASCADE: All user's content auto-restores:
-    │   ├─ user_posts: status = 'active', clear banned_by/banned_at, report_count = 0, restore deleted_at
-    │   ├─ comments: status = 'active', clear banned_by/banned_at, report_count = 0, restore deleted_at
-    │   └─ posts (where user is author): status = 'active', clear status_by/status_at, report_count = 0
-    ├─ AuditLogs: action = 'restore_user'
-    └─ Send email: "Your account has been restored"
-
-**Important:** When admin changes user from unsecure to verified, ALL of the user's content (posts, descriptions, comments) automatically changes back to normal (active) status.
-```
-
-#### Description / Comment (ban / restore)
-```
-Admin bans description/comment:
-    │
-    ├─ Set status = 'banned', banned_by = admin.id, banned_at = now()
-    ├─ Soft-delete the record
-    ├─ Notify owner: "Your [description/comment] has been banned. Reason: {reason}"
-    ├─ AuditLogs: action = 'ban_description' / 'ban_comment'
-    └─ If it was a comment → also delete associated rating (existing logic)
-
-Admin restores description/comment:
-    │
-    ├─ Set status = 'active', clear banned_by, banned_at
-    ├─ Reset report_count = 0
-    ├─ Restore the record (deleted_at = null)
-    ├─ Notify owner: "Your [description/comment] has been restored"
-    └─ AuditLogs: action = 'restore_description' / 'restore_comment'
-```
-
-### 4.4 URL Security Check (Post Creation)
+### 4.3 Mark All as Read
 
 ```
-User submits new post with URL
+User clicks "Mark all as read" in notification box
     │
-    ├─ Check: Does any post exist with this URL AND status = 'unsecure'?
-    │   (Include soft-deleted posts via withTrashed())
-    │
-    ├─ YES → Show warning:
-    │   "This URL has been flagged as unsecure. [Link to the unsecure post]"
-    │   User can still proceed OR cancel
-    │
-    └─ NO → Proceed with normal creation
+    ├─ Update all notifications for current user: is_read = true
+    └─ Refresh notification dropdown
 ```
 
-### 4.5 User Cascade (Both Directions)
+### 4.4 Banned User Login
 
 ```
-User hits 3+ reports → status changes to 'unsecure'
+Banned user tries to login (regular or OAuth)
     │
-    ├─ All user's user_posts → status = 'unsecure'
-    ├─ All user's comments → status = 'unsecure'
-    ├─ All posts where user is the sole author → status = 'unsecure'
-    │
-    └─ These show "unsecure" badge in the UI
-       Other users see warning when interacting with this content
-
-Admin restores user to 'verified'
-    │
-    ├─ All user's user_posts → status = 'active', report_count = 0
-    ├─ All user's comments → status = 'active', report_count = 0
-    ├─ All posts where user is the sole author → status = 'active', report_count = 0
-    │
-    └─ All unsecure badges removed, content fully restored
+    ├─ Check users.status = 'banned'
+    ├─ Show error: "Your account has been banned. Reason: [reason]"
+    └─ Block login entirely
 ```
 
 ---
@@ -444,142 +280,103 @@ Admin restores user to 'verified'
 ## 5. Files to Change
 
 ### 5.1 New Migrations
-- `add_status_columns_to_content_tables.php` — posts, user_posts, comments status columns
-- `add_status_and_ban_fields_to_users.php` — users status, banned_by, banned_at, ban_reason
+- `add_report_count_to_content_tables.php` — posts, user_posts, comments report_count
 - `add_unique_constraint_and_indexes_to_reports.php` — unique constraint + indexes
+- `add_status_and_ban_fields_to_users.php` — users status, banned_by, banned_at, ban_reason
+- `fix_notification_target_type_enum.php` — add 'users' to enum
 
 ### 5.2 Models to Update
-- `Reports.php` — add unique validation rule
-- `Posts.php` — add status field, scopes (active, unsecure)
-- `UserPosts.php` — add status field, scopes
-- `Comments.php` — add status field, scopes
-- `User.php` — replace is_verified with status, add ban methods, login check
+- `Reports.php` — add unique validation, add `userPost()` relation
+- `Posts.php` — fix `reports()` relation (`'post'` → `'posts'`), add report_count fillable
+- `Comments.php` — add report_count fillable
+- `UserPosts.php` — add report_count fillable
+- `User.php` — add status field, ban methods, login check
 
 ### 5.3 Controllers to Update
-- `ReportsController.php` — add duplicate check, owner notifications, threshold logic
-- `AdminReportsController.php` — add mark-safe/mark-unsecure actions, update open() routing
-- `PostsController.php` — remove ban/unban, add toggleUnsecure; add URL security check in store()
-- `CommentsController.php` — update ban to use status field
-- `AdminUsersController.php` — update ban to use status field + email blocking
-- `NotificationOpenController.php` — redirect directly to content (not report page)
+- `ReportsController.php` — add duplicate check, self-report block, increment report_count, notify owner + admin, add `user_posts` submission
+- `AdminReportsController.php` — add resolve action (delete reports + reset count)
+- `NotificationOpenController.php` — fix enum routing, add `markAllAsRead` method
 - `AuthenticatedSessionController.php` — add banned-user login block
-- `DashboardController.php` — update activity log for new status values
+- `CommentsController.php` — fix ban to also notify owner consistently
 
 ### 5.4 Views to Update
 - Report modal — show "already reported" state
-- Admin reports page — add mark-safe/unsecure buttons per tab
-- Post detail page — show unsecure badge if post is unsecure
-- Post creation form — show URL security warning
-- User profile — show unsecure/banned badge
-- Login page — show banned message with admin name and reason
-- Notification dropdown — route correctly for all target types
+- Notification dropdown — show unsecure tag on 3+ report notifications, add "Mark all as read" button
+- User profile — show unsecure badge if report_count >= 3
+- Post user tab — show unsecure tag next to users with report_count >= 3
+- Login page — show banned message
 
 ### 5.5 New/Updated Routes
 ```php
-// Post status toggle (replaces ban/unban)
-Route::patch('/posts/{post}/toggle-unsecure', [PostsController::class, 'toggleUnsecure'])->name('posts.toggle-unsecure');
+// Mark all notifications as read
+Route::post('/notifications/mark-all-read', [NotificationOpenController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 
-// Description ban/restore
-Route::patch('/descriptions/{userPost}/ban', [PostsController::class, 'banAudit'])->name('descriptions.ban');
-Route::patch('/descriptions/{userPost}/restore', [PostsController::class, 'restoreAudit'])->name('descriptions.restore');
-
-// Comment ban/restore (already exist, update logic)
-Route::patch('/comments/{comment}/ban', [CommentsController::class, 'ban'])->name('comments.ban');
-Route::patch('/comments/{comment}/restore', [CommentsController::class, 'unban'])->name('comments.restore');
-
-// Report open (already exists, update routing for descriptions)
-Route::get('/menu/reports/{report}/open', [AdminReportsController::class, 'open'])->name('reports.open');
+// Report resolve (admin)
+Route::delete('/menu/reports/{report}/resolve', [AdminReportsController::class, 'resolve'])->name('reports.resolve');
 ```
 
 ---
 
-## 6. Edge Cases to Handle
+## 6. Implementation Order
+
+### Phase 1: Bug Fixes (Start Here)
+1. Fix `report_count` — actually increment it in `ReportsController`
+2. Fix `notificatioins.target_type` enum to include `'users'`
+3. Fix Posts model `reports()` relation (`'post'` → `'posts'`)
+4. Add `user_posts` report submission endpoint
+
+### Phase 2: Duplicate Prevention
+5. Add unique constraint migration
+6. Add duplicate check in `ReportsController`
+7. Add self-reporting block
+8. Show "already reported" toast in UI
+
+### Phase 3: Notifications
+9. Update `ReportsController` to notify both owner AND admin on every report
+10. Add unsecure tag logic (check report_count >= 3 when creating notification)
+11. Add "Mark all as read" button + route
+12. Update notification dropdown UI
+
+### Phase 4: User Status & Bans
+13. Add `status`, `banned_by`, `banned_at`, `ban_reason` to users
+14. Update `AuthenticatedSessionController` to block banned users
+15. Add unsecure badge on user profile (display only)
+16. Add unsecure tag on user tab in posts (display only)
+
+### Phase 5: Admin Resolve
+17. Add resolve action to `AdminReportsController` (delete reports + reset count)
+18. Update admin reports UI with resolve button
+
+---
+
+## 7. Edge Cases
 
 | Scenario | Handling |
 |----------|----------|
-| User reports, admin resolves, user tries to re-report | Blocked by unique constraint → "Already reported" |
 | User reports their own content | Blocked → "You cannot report your own content" |
-| Post has 5 reports, admin marks safe, gets 6th report | Re-triggers unsecure when count reaches 3 again (after reset) |
-| User banned → creates new account with same email | Email is already blocked in DB → show banned message |
-| User banned → tries OAuth with same email | Check ban status on OAuth callback too |
-| Description author != post author | Owner notification goes to description author |
-| Post with no user_posts (edge case) | No owner to notify — only admin gets noti at threshold |
+| User reports same target twice | Blocked by unique constraint → "Already reported" |
+| Admin resolves, user re-reports | Old reports deleted, user can report again |
 | Report target was deleted | Show "Content no longer available" in report table |
-| Admin bans user who is also an admin | Block — cannot ban admin accounts (existing logic) |
+| User with report_count >= 3 gets reported again | Count increments, notification still shows unsecure tag |
+| Banned user tries OAuth | Check status on OAuth callback, block login |
 
 ---
 
-## 7. Implementation Order
-
-### Phase 1: Database Foundation
-1. Create migration for status columns on all content tables
-2. Create migration for users.status + ban fields
-3. Create migration for reports unique constraint + indexes
-4. Update all models with new fields and scopes
-
-### Phase 2: Report Submission Logic
-5. Add duplicate-report check in ReportsController
-6. Add owner notifications (all report types)
-7. Add threshold detection (3+ reports → set unsecure)
-8. Add admin notifications (only at threshold)
-
-### Phase 3: Admin Actions
-9. Update PostsController: remove ban/unban, add toggleUnsecure
-10. Update CommentsController: use status field for ban/restore
-11. Update AdminUsersController: use status field for ban/restore
-12. Update AdminReportsController: add new action methods
-
-### Phase 4: URL Security & Cascade
-13. Add URL security check in PostsController::store()
-14. Implement user cascade on unsecure status change
-
-### Phase 5: Auth & Login
-15. Add banned-user login block in AuthenticatedSessionController
-16. Show ban message with admin name and reason
-
-### Phase 6: UI Updates
-17. Update report modals with "already reported" state
-18. Update admin reports page with new action buttons
-19. Add unsecure badges across the UI
-20. Add URL security warning on post creation
-21. Update login page banned message
-22. Update notification routing for all target types
-
----
-
-## 8. Finalized Decisions
-
-| # | Question | Decision |
-|---|----------|----------|
-| 1 | Self-reporting | **Blocked** — users cannot report their own content |
-| 2 | Unsecure re-triggering | **Yes** — after admin marks safe, new reports can re-trigger unsecure at 3 |
-| 3 | OAuth ban check | **Yes** — banned email blocks Google OAuth login too |
-| 4 | Content restoration cascade | **Yes** — when admin restores user → all their content auto-restores to active |
-| 5 | Admin unsecure→verified cascade | **Yes** — when admin changes user from unsecure to verified, all related data automatically changes to normal (active) |
-| 6 | Report limit | **One report per user per target** — user can report a specific post/comment/description/user only once |
-
----
-
-## 9. Testing Checklist
+## 8. Testing Checklist
 
 - [ ] User can report a post only once
 - [ ] User cannot report their own content
+- [ ] `report_count` increments on target when reported
 - [ ] Owner gets notified on every report
-- [ ] Admin only gets notified at 3+ reports
-- [ ] Admin notification redirects to content
-- [ ] Reports marked as read when admin opens notification
-- [ ] Post can be marked/unmarked as unsecure
-- [ ] URL security warning shows on post creation
-- [ ] User becomes unsecure at 3+ reports
-- [ ] User's content cascades to unsecure
-- [ ] Admin can ban user (blocks email)
-- [ ] Banned user sees ban message on login
-- [ ] Banned user's OAuth login is blocked
-- [ ] Admin can restore banned user
-- [ ] Restored user's content cascades back to active
-- [ ] Description/comment ban/restore works
+- [ ] Admin gets notified on every report
+- [ ] Notifications with report_count >= 3 show unsecure tag
+- [ ] "Mark all as read" button works
+- [ ] User profile shows unsecure badge when report_count >= 3
+- [ ] User tab shows unsecure tag for unsecure users
+- [ ] Admin can resolve a report (deletes records, resets count)
+- [ ] Banned user cannot login (regular + OAuth)
 - [ ] All audit logs created correctly
 
 ---
 
-**Next Step:** Review this document, then begin Phase 1 implementation.
+**Next Step:** Start with Phase 1 — fix the existing bugs.

@@ -333,13 +333,25 @@ $reportFilters = $reportFilters ?? [
                                         </x-tooltip>
                                         @endif
 
-                                        @if (! $isUnread)
+                                        @if ($isUnread)
+                                        <form method="POST" action="{{ route('reports.read', $report) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <x-tooltip content="Mark Read">
+                                                <button type="submit" class="reports-icon-btn mark-read-action" aria-label="Mark Read">
+                                                    <x-fas-check aria-hidden="true" />
+                                                    <span class="reports-btn-text">Mark Read</span>
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
+                                        @else
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
                                             <x-tooltip content="Mark Unread">
                                                 <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
                                                     <x-fas-check-double aria-hidden="true" />
+                                                    <span class="reports-btn-text">Mark Unread</span>
                                                 </button>
                                             </x-tooltip>
                                         </form>
@@ -374,11 +386,12 @@ $reportFilters = $reportFilters ?? [
                                                 </button>
                                             </x-tooltip>
                                         </form>
+
                                         <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this post and reset the report count. Users can re-report if needed.', 'Resolve All')">
                                             @csrf
                                             @method('DELETE')
                                             <x-tooltip content="Resolve All Reports">
-                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
+                                                <button type="submit" class="reports-icon-btn resolve-action" aria-label="Resolve Report">
                                                     <x-fas-check aria-hidden="true" />
                                                 </button>
                                             </x-tooltip>
@@ -506,13 +519,25 @@ $reportFilters = $reportFilters ?? [
                                         </x-tooltip>
                                         @endif
 
-                                        @if (! $isUnread)
+                                        @if ($isUnread)
+                                        <form method="POST" action="{{ route('reports.read', $report) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <x-tooltip content="Mark Read">
+                                                <button type="submit" class="reports-icon-btn mark-read-action" aria-label="Mark Read">
+                                                    <x-fas-check aria-hidden="true" />
+                                                    <span class="reports-btn-text">Mark Read</span>
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
+                                        @else
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
                                             <x-tooltip content="Mark Unread">
                                                 <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
                                                     <x-fas-check-double aria-hidden="true" />
+                                                    <span class="reports-btn-text">Mark Unread</span>
                                                 </button>
                                             </x-tooltip>
                                         </form>
@@ -527,11 +552,12 @@ $reportFilters = $reportFilters ?? [
                                                 </button>
                                             </x-tooltip>
                                         </form>
+
                                         <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this comment and reset the report count. Users can re-report if needed.', 'Resolve All')">
                                             @csrf
                                             @method('DELETE')
                                             <x-tooltip content="Resolve All Reports">
-                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
+                                                <button type="submit" class="reports-icon-btn resolve-action" aria-label="Resolve Report">
                                                     <x-fas-check aria-hidden="true" />
                                                 </button>
                                             </x-tooltip>
@@ -673,32 +699,35 @@ $reportFilters = $reportFilters ?? [
                                         </x-tooltip>
                                         @endif
 
-                                        @if (! $isUnread)
+                                        @if ($isUnread)
+                                        <form method="POST" action="{{ route('reports.read', $report) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <x-tooltip content="Mark Read">
+                                                <button type="submit" class="reports-icon-btn mark-read-action" aria-label="Mark Read">
+                                                    <x-fas-check aria-hidden="true" />
+                                                    <span class="reports-btn-text">Mark Read</span>
+                                                </button>
+                                            </x-tooltip>
+                                        </form>
+                                        @else
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
                                             <x-tooltip content="Mark Unread">
                                                 <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
                                                     <x-fas-check-double aria-hidden="true" />
+                                                    <span class="reports-btn-text">Mark Unread</span>
                                                 </button>
                                             </x-tooltip>
                                         </form>
                                         @endif
 
-                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Delete Report">
-                                                <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
-                                                    <x-fas-trash aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
                                         <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this user and reset the report count. Users can re-report if needed.', 'Resolve All')">
                                             @csrf
                                             @method('DELETE')
                                             <x-tooltip content="Resolve All Reports">
-                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
+                                                <button type="submit" class="reports-icon-btn resolve-action" aria-label="Resolve Report">
                                                     <x-fas-check aria-hidden="true" />
                                                 </button>
                                             </x-tooltip>

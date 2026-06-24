@@ -66,21 +66,20 @@
             </div>
         </div>
     @elseif ($isUnsecure)
-        <div style="background: color-mix(in srgb, #d97706 10%, transparent); border-bottom: 2px solid color-mix(in srgb, #d97706 30%, transparent); padding: 12px 20px;">
-            <div style="display: flex; align-items: center; gap: 12px; max-width: 1200px; margin: 0 auto;">
-                <i class="fa-solid fa-shield-halved" style="color: #d97706; font-size: 18px;"></i>
-                <div style="flex: 1;">
-                    <div style="font-weight: 700; color: #d97706;">This post is unsecure</div>
-                    <div style="font-size: 13px; color: color-mix(in srgb, var(--text-color) 70%, transparent);">This URL cannot be used for new posts.</div>
+        <div class="banned-banner" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;">
+            <div class="banned-banner-inner">
+                <div class="banned-banner-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                @if (Auth::user()?->role === 'admin')
-                    <form method="POST" action="{{ route('posts.toggle-unsecure', $post->id) }}" style="display:inline;">
-                        @csrf
-                        <button type="submit" style="background: #16a34a; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer;">
-                            <i class="fa-solid fa-shield-halved"></i> Mark Secure
-                        </button>
-                    </form>
-                @endif
+                <div class="banned-banner-content">
+                    <div class="banned-banner-title">This post is unsecure</div>
+                    <div class="banned-banner-reason" style="color: rgba(255,255,255,0.9);">This URL cannot be used for new posts.</div>
+                </div>
+                <div class="banned-banner-actions">
+                    <a href="{{ route('home') }}" class="banned-btn banned-btn-home">
+                        <i class="fa-solid fa-house"></i> Home
+                    </a>
+                </div>
             </div>
         </div>
     @endif
@@ -172,10 +171,10 @@
                                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
                                                     @csrf
                                                     <button type="submit"
-                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] {{ $isUnsecure ? '[color:#16a34a] hover:[background:color-mix(in_srgb,#16a34a_12%,transparent)]' : '[color:#d97706] hover:[background:color-mix(in_srgb,#d97706_12%,transparent)]' }} focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#d97706_28%,transparent)]"
+                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] {{ $post->is_unsecure ? 'text-green-600 hover:[background:color-mix(in_srgb,#16a34a_12%,transparent)]' : '[color:#d97706] hover:[background:color-mix(in_srgb,#d97706_12%,transparent)]' }} focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2"
                                                         role="menuitem">
                                                         <x-fas-shield-halved class="size-3" aria-hidden="true" />
-                                                        <span>{{ $isUnsecure ? 'Mark Secure' : 'Mark Unsecure' }}</span>
+                                                        <span>{{ $post->is_unsecure ? 'Mark Secure' : 'Mark Unsecure' }}</span>
                                                     </button>
                                                 </form>
                                             @endif
@@ -513,7 +512,7 @@
                                                                             </button>
                                                                         </form>
                                                                     @else
-                                                                        {{-- Ban --}}
+                                                                        {{-- Delete Description (permanent) --}}
                                                                         <form method="POST" action="{{ route('audits.delete', $userPost->id) }}"
                                                                             class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
                                                                             x-on:submit.prevent="window.sitesphereSwal.confirm({
@@ -523,7 +522,11 @@
                                                                                 confirmButtonColor: '#ef4444',
                                                                                 cancelButtonColor: '#6c757d',
                                                                                 confirmButtonText: 'Yes, delete it!'
-                                                                            }).then((result) => { if (result.isConfirmed) $el.submit(); })">
+                                                                            }).then((result) => {
+                                                                                if (result.isConfirmed) {
+                                                                                    $el.submit();
+                                                                                }
+                                                                            })">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <button type="submit"

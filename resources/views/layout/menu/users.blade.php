@@ -330,6 +330,9 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                     <span class="admin-users-status {{ $status }}">
                                         {{ ucfirst($status) }}
                                     </span>
+                                    @if ($listedUser->status === 'unsecure')
+                                        <span style="display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; margin-top: 2px;">Unsecure</span>
+                                    @endif
                                 </td>
                                 <td data-label="Report">
                                     <span class="admin-users-report-count">{{ $listedUser->report_count }}</span>
@@ -348,6 +351,16 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                             </button>
                                         </form>
                                         @else
+                                        <form method="POST" action="{{ route('users.toggle-unsecure', $listedUser->id) }}"
+                                            @submit="confirmAction($event, '{{ $listedUser->isUnsecure() ? 'Mark ' . addslashes($listedUser->name) . ' as secure?' : 'Mark ' . addslashes($listedUser->name) . ' as unsecure?' }}', '{{ $listedUser->isUnsecure() ? 'Yes, mark secure' : 'Yes, mark unsecure' }}')">
+                                            @csrf
+                                            <button type="submit"
+                                                class="admin-users-action-btn {{ $listedUser->isUnsecure() ? 'restore-action' : 'delete-action' }}"
+                                                @disabled($isSelf) title="{{ $listedUser->isUnsecure() ? 'Mark secure' : 'Mark unsecure' }}"
+                                                aria-label="{{ $listedUser->isUnsecure() ? 'Mark ' . $listedUser->name . ' secure' : 'Mark ' . $listedUser->name . ' unsecure' }}">
+                                                <x-fas-shield-halved aria-hidden="true" />
+                                            </button>
+                                        </form>
                                         <form method="POST" action="{{ route('users.role', $listedUser) }}"
                                             @submit="confirmAction($event, 'Change {{ addslashes($listedUser->name) }} role?', 'Yes, change')">
                                             @csrf
@@ -363,13 +376,13 @@ return $user->report_count > 0 ? 'warning' : 'safe';
 
                                         @unless ($listedUser->trashed())
                                         <form method="POST" action="{{ route('users.destroy', $listedUser) }}"
-                                            @submit="confirmAction($event, 'Restrict {{ addslashes($listedUser->name) }} account?', 'Yes, restrict')">
+                                            @submit="confirmAction($event, 'Ban {{ addslashes($listedUser->name) }} account?', 'Yes, ban')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="admin-users-action-btn delete-action"
-                                                @disabled($isSelf) title="Restrict user"
-                                                aria-label="Restrict {{ $listedUser->name }}">
-                                                <x-fas-trash aria-hidden="true" />
+                                                @disabled($isSelf) title="Ban user"
+                                                aria-label="Ban {{ $listedUser->name }}">
+                                                <x-fas-ban aria-hidden="true" />
                                             </button>
                                         </form>
                                         @endunless

@@ -209,78 +209,27 @@
                                         </div>
                                     @else
                                         @if(auth()->user()->role === 'admin')
-                                            @if($comment->trashed())
-                                                {{-- Revert (Unban) --}}
-                                                <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
-                                                    <form method="POST" action="{{ route('comments.unban', $comment->id) }}">
-                                                        @csrf
-                                                        <button type="submit"
-                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#10b981] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#10b981_12%,transparent)] focus:outline-none"
-                                                            role="menuitem">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-left"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                                                            <span>Revert</span>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                                {{-- Delete Permanently --}}
-                                                <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
-                                                    <form method="POST" action="{{ route('comments.force-delete', $comment->id) }}"
-                                                        x-on:submit.prevent="window.sitesphereSwal.confirm({
-                                                            title: 'Delete Permanently?',
-                                                            text: 'This action cannot be undone. The comment will be permanently removed.',
-                                                            icon: 'warning',
-                                                            confirmButtonColor: '#ef4444',
-                                                            cancelButtonColor: '#6c757d',
-                                                            confirmButtonText: 'Yes, delete forever!'
-                                                        }).then((result) => { if (result.isConfirmed) $el.submit(); })">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
-                                                            role="menuitem">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                                                            <span>Delete Permanently</span>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            @else
-                                                {{-- Ban --}}
-                                                <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
-                                                    <form method="POST" action="{{ route('comments.ban', $comment->id) }}"
-                                                        x-on:submit.prevent="window.sitesphereSwal.confirm({
-                                                            title: 'Ban this comment?',
-                                                            text: 'Please specify the reason for banning this comment:',
-                                                            icon: 'warning',
-                                                            input: 'textarea',
-                                                            inputPlaceholder: 'Enter the ban reason here...',
-                                                            inputValidator: (value) => {
-                                                                if (!value) {
-                                                                    return 'A ban reason is required!';
-                                                                }
-                                                            },
-                                                            confirmButtonColor: '#ef4444',
-                                                            cancelButtonColor: '#6c757d',
-                                                            confirmButtonText: 'Yes, ban it!'
-                                                        }).then((result) => {
-                                                            if (result.isConfirmed) {
-                                                                const input = document.createElement('input');
-                                                                input.type = 'hidden';
-                                                                input.name = 'reason';
-                                                                input.value = result.value;
-                                                                $el.appendChild(input);
-                                                                $el.submit();
-                                                            }
-                                                        })">
-                                                        @csrf
-                                                        <button type="submit"
-                                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
-                                                            role="menuitem">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
-                                                            <span>Ban</span>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            @endif
+                                            {{-- Delete Comment (permanent) --}}
+                                            <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
+                                                <form method="POST" action="{{ route('comments.delete', $comment->id) }}"
+                                                    x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                                        title: 'Delete this comment?',
+                                                        text: 'This will permanently delete this comment. This action cannot be undone.',
+                                                        icon: 'warning',
+                                                        confirmButtonColor: '#ef4444',
+                                                        cancelButtonColor: '#6c757d',
+                                                        confirmButtonText: 'Yes, delete it!'
+                                                    }).then((result) => { if (result.isConfirmed) $el.submit(); })">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
+                                                        role="menuitem">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                                                        <span>Delete Comment</span>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         @else
                                             {{-- Report --}}
                                             <div class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">

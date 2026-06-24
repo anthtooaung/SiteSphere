@@ -10,6 +10,7 @@
     'commentsCount' => 0,
     'saved' => false,
     'slug' => null,
+    'isUnsecure' => false,
 ])
 
 <article
@@ -156,14 +157,14 @@
                             @endif
 
                             @if (Auth::user()?->role === 'admin')
-                                <form method="POST" action="{{ route('posts.ban', $postId) }}"
+                                <form method="POST" action="{{ route('posts.toggle-unsecure', $postId) }}"
                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
                                     @csrf
                                     <button type="submit"
-                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#b91c1c] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#b91c1c_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#b91c1c_28%,transparent)]"
-                                        role="menuitem" data-post-card-action="ban">
-                                        <x-fas-ban class="size-3" aria-hidden="true" />
-                                        <span>Ban</span>
+                                        class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] {{ $isUnsecure ? '[color:#16a34a] hover:[background:color-mix(in_srgb,#16a34a_12%,transparent)]' : '[color:#d97706] hover:[background:color-mix(in_srgb,#d97706_12%,transparent)]' }} focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#d97706_28%,transparent)]"
+                                        role="menuitem" data-post-card-action="toggle-unsecure">
+                                        <x-fas-shield-halved class="size-3" aria-hidden="true" />
+                                        <span>{{ $isUnsecure ? 'Mark Secure' : 'Mark Unsecure' }}</span>
                                     </button>
                                 </form>
                             @endif

@@ -92,70 +92,35 @@ class CommentsController extends Controller
     }
 
     /**
-     * Ban the specified comment (admin only).
+     * Permanently delete the specified comment (admin only).
      */
-    public function ban(Request $request, Comments $comment): RedirectResponse
+    public function delete(Request $request, Comments $comment): RedirectResponse
     {
         $user = $request->user();
 
         abort_unless($user?->role === 'admin', 403);
 
-        $validated = $request->validate([
-            'reason' => 'required|string|max:500',
-        ]);
-
-        DB::transaction(function () use ($comment, $user, $validated): void {
+        DB::transaction(function () use ($comment, $user): void {
             Ratings::query()
                 ->where('user_id', $comment->user_id)
                 ->where('post_id', $comment->post_id)
                 ->delete();
 
-            $comment->delete();
+            $comment->commentReactions()->delete();
 
             AuditLogs::query()->create([
                 'user_id' => $user->id,
-                'action' => 'ban_comment',
+                'action' => 'delete_comment',
                 'category' => 'moderation',
                 'target_type' => Comments::class,
                 'target_id' => $comment->id,
-                'reason' => $validated['reason'],
+                'reason' => 'Comment permanently deleted by an admin.',
             ]);
 
-            Notificatioins::query()->create([
-                'to_user_id' => $comment->user_id,
-                'from_user_id' => $user->id,
-                'target_type' => 'comments',
-                'target_id' => $comment->id,
-                'message' => 'Your comment was banned by an admin. Reason: '.$validated['reason'],
-                'is_read' => false,
-            ]);
+            $comment->forceDelete();
         });
 
-        return back()->with('success', 'Comment banned and soft deleted.');
-    }
-
-    public function unban(Request $request, int $id): RedirectResponse
-    {
-        $user = $request->user();
-
-        abort_unless($user?->role === 'admin', 403);
-
-        $comment = Comments::onlyTrashed()->findOrFail($id);
-
-        DB::transaction(function () use ($comment, $user): void {
-            $comment->restore();
-
-            AuditLogs::query()->create([
-                'user_id' => $user->id,
-                'action' => 'unban_comment',
-                'category' => 'resolved',
-                'target_type' => Comments::class,
-                'target_id' => $comment->id,
-                'reason' => 'Comment unbanned and restored by an admin.',
-            ]);
-        });
-
-        return back()->with('success', 'Comment restored successfully.');
+        return back()->with('success', 'Comment permanently deleted.');
     }
 
     public function forceDelete(Request $request, Comments $comment): RedirectResponse

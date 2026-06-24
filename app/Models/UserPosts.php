@@ -24,6 +24,7 @@ class UserPosts extends Model
     {
         return [
             'user_hidden' => 'boolean',
+            'is_unsecure' => 'boolean',
         ];
     }
 

@@ -18,6 +18,13 @@ class Posts extends Model
 
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'is_unsecure' => 'boolean',
+        ];
+    }
+
     public function userPosts(): HasMany
     {
         return $this->hasMany(UserPosts::class, 'post_id');

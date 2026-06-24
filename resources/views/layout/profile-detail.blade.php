@@ -106,10 +106,38 @@
                         </a>
                     @else
                         @auth
-                            <button type="button" x-on:click="openReportModal()" class="edit-btn" style="text-decoration: none; color: var(--ui-danger); border-color: color-mix(in srgb, var(--ui-danger) 20%, transparent); background: color-mix(in srgb, var(--ui-danger) 10%, transparent);">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
-                                Report
-                            </button>
+                            @if (Auth::user()?->role === 'admin')
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <form method="POST" action="{{ route('users.toggle-unsecure', $user->id) }}">
+                                        @csrf
+                                        <button type="submit" class="edit-btn" style="text-decoration: none; {{ $user->isUnsecure() ? 'color: #16a34a; border-color: color-mix(in srgb, #16a34a 20%, transparent); background: color-mix(in srgb, #16a34a 10%, transparent);' : 'color: #d97706; border-color: color-mix(in srgb, #d97706 20%, transparent); background: color-mix(in srgb, #d97706 10%, transparent);' }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-half"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 22V2"/></svg>
+                                            {{ $user->isUnsecure() ? 'Mark Secure' : 'Mark Unsecure' }}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('users.destroy', $user) }}"
+                                        x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                            title: 'Ban this user?',
+                                            text: 'This will ban and soft-delete the user account.',
+                                            icon: 'warning',
+                                            confirmButtonColor: 'var(--ui-danger)',
+                                            cancelButtonColor: '#6c757d',
+                                            confirmButtonText: 'Yes, ban user!'
+                                        }).then((result) => { if (result.isConfirmed) $el.submit(); })">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="edit-btn" style="text-decoration: none; color: var(--ui-danger); border-color: color-mix(in srgb, var(--ui-danger) 20%, transparent); background: color-mix(in srgb, var(--ui-danger) 10%, transparent);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                                            Ban User
+                                        </button>
+                                    </form>
+                                </div>
+                            @else
+                                <button type="button" x-on:click="openReportModal()" class="edit-btn" style="text-decoration: none; color: var(--ui-danger); border-color: color-mix(in srgb, var(--ui-danger) 20%, transparent); background: color-mix(in srgb, var(--ui-danger) 10%, transparent);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                                    Report
+                                </button>
+                            @endif
                         @endauth
                     @endif
 

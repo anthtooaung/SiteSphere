@@ -62,6 +62,18 @@ class PostsController extends Controller
             ]);
         }
 
+        // Check if URL is flagged as unsecure
+        $unsecurePost = Posts::query()
+            ->where('url', $validated['url'])
+            ->where('is_unsecure', true)
+            ->first();
+
+        if ($unsecurePost) {
+            throw ValidationException::withMessages([
+                'url' => 'This URL has been flagged as unsecure and cannot be used for new posts.',
+            ]);
+        }
+
         DB::transaction(function () use ($existingPost, $user, $validated): void {
             $post = $existingPost ?? Posts::query()->create([
                 'title' => $validated['title'],
@@ -140,6 +152,29 @@ class PostsController extends Controller
         return back()->with('success', 'Post unbanned and restored.');
     }
 
+    public function toggleUnsecure(Request $request, Posts $post): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+
+        $post->is_unsecure = ! $post->is_unsecure;
+        $post->save();
+
+        $action = $post->is_unsecure ? 'mark_unsecure_post' : 'mark_secure_post';
+        $label = $post->is_unsecure ? 'unsecure' : 'secure';
+
+        AuditLogs::query()->create([
+            'user_id' => $user->id,
+            'action' => $action,
+            'target_type' => Posts::class,
+            'target_id' => $post->id,
+            'reason' => "Post marked as {$label} by an admin.",
+        ]);
+
+        return back()->with('success', "Post marked as {$label}.");
+    }
+
     public function forceDelete(Request $request, Posts $post): RedirectResponse
     {
         $user = $request->user();
@@ -171,28 +206,24 @@ class PostsController extends Controller
             ->with('success', 'Post permanently deleted.');
     }
 
-    public function banAudit(Request $request, UserPosts $userPost): RedirectResponse
+    public function deleteAudit(Request $request, UserPosts $userPost): RedirectResponse
     {
         $user = $request->user();
 
         abort_unless($user?->role === 'admin', 403);
 
-        $validated = $request->validate([
-            'reason' => 'required|string|max:500',
-        ]);
-
-        $userPost->delete(); // Soft delete
-
         AuditLogs::query()->create([
             'user_id' => $user->id,
-            'action' => 'ban_audit',
+            'action' => 'delete_audit',
             'category' => 'moderation',
             'target_type' => UserPosts::class,
             'target_id' => $userPost->id,
-            'reason' => $validated['reason'],
+            'reason' => 'Description permanently deleted by an admin.',
         ]);
 
-        return back()->with('success', 'Description banned.');
+        $userPost->forceDelete();
+
+        return back()->with('success', 'Description permanently deleted.');
     }
 
     public function unbanAudit(Request $request, int $id): RedirectResponse
@@ -260,9 +291,11 @@ class PostsController extends Controller
      */
     public function show(Posts $posts): View
     {
-        // Handle banned (soft-deleted) posts — admins only
+        $isAdmin = auth()->user()?->role === 'admin';
+
+        // Handle banned (soft-deleted) posts — legacy, admins only
         if ($posts->trashed()) {
-            abort_unless(auth()->user()?->role === 'admin', 404);
+            abort_unless($isAdmin, 404);
 
             $banLog = AuditLogs::query()
                 ->with('user')
@@ -280,6 +313,7 @@ class PostsController extends Controller
                 'post' => $posts,
                 'isBanned' => true,
                 'banLog' => $banLog,
+                'isUnsecure' => false,
                 'averageRating' => round((float) ($posts->average_rating ?? 0), 1),
                 'ratingsCount' => (int) $posts->ratings_count,
                 'auditsCount' => (int) $posts->audits_count,
@@ -393,6 +427,7 @@ class PostsController extends Controller
             'post' => $posts,
             'isBanned' => false,
             'banLog' => null,
+            'isUnsecure' => $posts->is_unsecure,
             'averageRating' => $averageRating,
             'ratingsCount' => $ratingsCount,
             'auditsCount' => $auditsCount,

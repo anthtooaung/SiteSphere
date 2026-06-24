@@ -18,6 +18,13 @@ class Comments extends Model
 
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'is_unsecure' => 'boolean',
+        ];
+    }
+
     public function post(): BelongsTo
     {
         return $this->belongsTo(Posts::class, 'post_id');

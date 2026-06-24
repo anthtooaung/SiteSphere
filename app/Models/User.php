@@ -15,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'slug', 'password', 'password_set', 'user_dob', 'user_phone', 'user_bio', 'user_image', 'two_factor_enabled', 'is_verified'])]
+#[Fillable(['name', 'email', 'slug', 'password', 'password_set', 'user_dob', 'user_phone', 'user_bio', 'user_image', 'two_factor_enabled', 'is_verified', 'status', 'banned_by', 'banned_at', 'ban_reason'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -136,7 +136,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if the user is banned.
+     * Determine if the user is banned.
      */
     public function isBanned(): bool
     {
@@ -144,19 +144,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if the user is unsecure (report_count >= 3).
+     * Determine if the user is marked as unsecure.
      */
     public function isUnsecure(): bool
     {
-        return $this->report_count >= 3;
-    }
-
-    /**
-     * Get the admin who banned this user.
-     */
-    public function bannedBy()
-    {
-        return $this->belongsTo(User::class, 'banned_by');
+        return $this->status === 'unsecure';
     }
 
     /**

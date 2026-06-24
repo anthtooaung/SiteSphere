@@ -136,6 +136,54 @@
   padding: 3px 10px;
   border-radius: 20px;
 }
+
+/* ── FILTER BAR ── */
+.act-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ui-border);
+  margin-bottom: 16px;
+}
+
+.act-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--ui-border);
+  border-radius: 20px;
+  background: var(--ui-surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.act-filter-btn:hover {
+  background: color-mix(in srgb, var(--text-color) 5%, transparent);
+  color: var(--text-color);
+}
+
+.act-filter-btn.active {
+  background: var(--text-color);
+  color: var(--background-color);
+  border-color: var(--text-color);
+}
+
+.act-filter-btn.active .act-filter-dot {
+  background: var(--background-color) !important;
+}
+
+.act-filter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 .expanded-body {
   display: grid;
   grid-template-columns: 1fr 1fr;

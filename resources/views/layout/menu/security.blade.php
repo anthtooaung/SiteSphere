@@ -146,7 +146,8 @@
                                     <div class="password-input-wrapper">
                                         <input :type="current ? 'text' : 'password'" id="current-password" name="current_password"
                                             placeholder="Enter current password" autocomplete="current-password"
-                                            @class(['is-invalid' => $errors->has('current_password')])>
+                                            @class(['is-invalid' => $errors->has('current_password')])
+                                            :disabled="!showForm">
                                         <button class="visibility-btn" type="button" aria-label="Toggle current password visibility"
                                             :aria-pressed="current.toString()" @click="current = ! current">
                                             <x-fas-eye x-show="! current" aria-hidden="true" />
@@ -160,7 +161,8 @@
                                     <div class="password-input-wrapper">
                                         <input :type="password ? 'text' : 'password'" id="new-password" name="password"
                                             placeholder="Enter new password" autocomplete="new-password" required minlength="8" pattern="(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}" title="Password must be at least 8 characters long and contain at least one letter, one number, and one special character."
-                                            @class(['is-invalid' => $errors->has('password')])>
+                                            @class(['is-invalid' => $errors->has('password')])
+                                            :disabled="!showForm">
                                         <button class="visibility-btn" type="button" aria-label="Toggle new password visibility"
                                             :aria-pressed="password.toString()" @click="password = ! password">
                                             <x-fas-eye x-show="! password" aria-hidden="true" />
@@ -173,7 +175,8 @@
                                     <label for="confirm-password">Confirm New Password</label>
                                     <div class="password-input-wrapper">
                                         <input :type="confirm ? 'text' : 'password'" id="confirm-password" name="password_confirmation"
-                                            placeholder="Confirm new password" autocomplete="new-password">
+                                            placeholder="Confirm new password" autocomplete="new-password"
+                                            :disabled="!showForm">
                                         <button class="visibility-btn" type="button" aria-label="Toggle confirm password visibility"
                                             :aria-pressed="confirm.toString()" @click="confirm = ! confirm">
                                             <x-fas-eye x-show="! confirm" aria-hidden="true" />

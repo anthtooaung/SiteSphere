@@ -343,7 +343,15 @@
                                                 </span>
                                             @endif
                                             <span class="aud-depo-tab-body">
-                                                <span class="aud-depo-tab-name">{{ $displayName }}</span>
+                                                <span class="aud-depo-tab-name">
+                                                    {{ $displayName }}
+                                                    @if($isProfileVisible && $userPost->user->isUnsecure())
+                                                        <span class="unsecure-badge" title="Unsecure Account" style="display: inline-flex; align-items: center; gap: 2px; padding: 1px 6px; background: color-mix(in srgb, #ffc107 20%, transparent); color: #ffc107; border: 1px solid color-mix(in srgb, #ffc107 30%, transparent); border-radius: 10px; font-size: 10px; font-weight: 500; vertical-align: middle; margin-left: 4px;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                                                            Unsecure
+                                                        </span>
+                                                    @endif
+                                                </span>
                                             </span>
                                         </button>
                                     @endforeach

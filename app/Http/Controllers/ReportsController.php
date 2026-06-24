@@ -9,6 +9,7 @@ use App\Models\Notificatioins;
 use App\Models\Posts;
 use App\Models\Reports;
 use App\Models\User;
+use App\Models\UserPosts;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use SweetAlert2\Laravel\Swal;
@@ -43,6 +44,8 @@ class ReportsController extends Controller
             'admin_read' => false,
         ]);
 
+        $post->increment('report_count');
+
         $this->notifyAdminsAboutReport($request, $post);
         $this->flashSuccessToast($request);
 
@@ -71,6 +74,8 @@ class ReportsController extends Controller
             'reason' => $reason,
             'admin_read' => false,
         ]);
+
+        $comment->increment('report_count');
 
         $this->notifyAdminsAboutCommentReport($request, $comment);
 
@@ -115,6 +120,8 @@ class ReportsController extends Controller
             'admin_read' => false,
         ]);
 
+        $user->increment('report_count');
+
         $this->notifyAdminsAboutUserReport($request, $user);
 
         Swal::fire([
@@ -133,6 +140,51 @@ class ReportsController extends Controller
         ]);
 
         return back()->with('success', 'User reported.');
+    }
+
+    /**
+     * Store a report for a user post (description).
+     */
+    public function storeForUserPost(Request $request, UserPosts $userPost): RedirectResponse
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:500'],
+            'details' => ['nullable', 'string', 'max:600'],
+        ]);
+
+        $reason = $this->reportReason(
+            reason: $validated['reason'],
+            details: $validated['details'] ?? null,
+        );
+
+        Reports::query()->create([
+            'user_id' => $request->user()->id,
+            'target_name' => 'user_posts',
+            'target_id' => $userPost->id,
+            'reason' => $reason,
+            'admin_read' => false,
+        ]);
+
+        $userPost->increment('report_count');
+
+        $this->notifyAdminsAboutUserPostReport($request, $userPost);
+
+        Swal::fire([
+            'toast' => true,
+            'position' => $this->toastPositionForRequest($request),
+            'showConfirmButton' => false,
+            'timer' => 1000,
+            'timerProgressBar' => true,
+            'icon' => 'success',
+            'title' => 'Report submitted',
+            'text' => 'Thanks for helping us keep SiteSphere safe.',
+            'didOpen' => '(toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }',
+        ]);
+
+        return back()->with('success', 'Description reported.');
     }
 
     /**
@@ -269,6 +321,28 @@ class ReportsController extends Controller
                     'from_user_id' => $reporter->id,
                     'target_type' => 'users',
                     'target_id' => $reportedUser->id,
+                    'message' => $message,
+                    'is_read' => false,
+                ]);
+            });
+    }
+
+    private function notifyAdminsAboutUserPostReport(Request $request, UserPosts $userPost): void
+    {
+        $reporter = $request->user();
+        $postTitle = $userPost->post?->title ?? 'Unknown Post';
+        $message = "{$reporter->name} reported a description on post: {$postTitle}";
+
+        User::query()
+            ->where('role', 'admin')
+            ->select('id')
+            ->get()
+            ->each(function (User $admin) use ($reporter, $userPost, $message): void {
+                Notificatioins::query()->create([
+                    'to_user_id' => $admin->id,
+                    'from_user_id' => $reporter->id,
+                    'target_type' => 'posts',
+                    'target_id' => $userPost->post_id,
                     'message' => $message,
                     'is_read' => false,
                 ]);

@@ -136,12 +136,13 @@ class PostsController extends Controller
         $post->is_unsecure = ! $post->is_unsecure;
         $post->save();
 
-        $action = $post->is_unsecure ? 'mark_unsecure_post' : 'mark_secure_post';
+        $action = $post->is_unsecure ? 'set_unsecure' : 'set_verified';
         $label = $post->is_unsecure ? 'unsecure' : 'secure';
 
         AuditLogs::query()->create([
             'user_id' => $user->id,
             'action' => $action,
+            'category' => $post->is_unsecure ? 'moderation' : 'resolved',
             'target_type' => Posts::class,
             'target_id' => $post->id,
             'reason' => "Post marked as {$label} by an admin.",
@@ -199,28 +200,6 @@ class PostsController extends Controller
         $userPost->forceDelete();
 
         return back()->with('success', 'Description permanently deleted.');
-    }
-
-    public function unbanAudit(Request $request, int $id): RedirectResponse
-    {
-        $user = $request->user();
-
-        abort_unless($user?->role === 'admin', 403);
-
-        $userPost = UserPosts::onlyTrashed()->findOrFail($id);
-
-        $userPost->restore();
-
-        AuditLogs::query()->create([
-            'user_id' => $user->id,
-            'action' => 'unban_audit',
-            'category' => 'resolved',
-            'target_type' => UserPosts::class,
-            'target_id' => $userPost->id,
-            'reason' => 'Description restored by an admin.',
-        ]);
-
-        return back()->with('success', 'Description restored.');
     }
 
     public function deleteAudit(Request $request, UserPosts $userPost): RedirectResponse

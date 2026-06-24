@@ -519,15 +519,19 @@
 }
 
 .reports-icon-btn {
-    display: inline-grid;
-    width: 26px;
-    height: 26px;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
     border: 1px solid currentColor;
     border-radius: 6px;
     background: var(--background-color, #ffffff);
     cursor: pointer;
     text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
     transition:
         background 180ms ease,
         box-shadow 180ms ease,
@@ -537,6 +541,11 @@
 .reports-icon-btn svg {
     width: 11px;
     height: 11px;
+    flex-shrink: 0;
+}
+
+.reports-btn-text {
+    line-height: 1;
 }
 
 .reports-icon-btn:hover:not(:disabled) {
@@ -550,7 +559,16 @@
 }
 
 .reports-icon-btn.view-action {
+    display: inline-grid;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    place-items: center;
     color: #6366f1;
+}
+
+.reports-icon-btn.view-action .reports-btn-text {
+    display: none;
 }
 
 .reports-icon-btn.mark-read-action {
@@ -571,6 +589,15 @@
 
 .reports-icon-btn.restore-action {
     color: #10b981;
+}
+
+.reports-icon-btn.resolve-action {
+    display: inline-grid;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    place-items: center;
+    color: var(--ui-success, #28a745);
 }
 
 .reports-banned-badge {

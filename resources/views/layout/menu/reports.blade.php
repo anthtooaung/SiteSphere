@@ -357,16 +357,7 @@ $reportFilters = $reportFilters ?? [
                                         </form>
                                         @endif
 
-                                        @if ($report->post?->trashed())
-                                        <form method="POST" action="{{ route('posts.unban', $report->post->id) }}" @submit="confirmAction($event, 'Restore Post?', 'This action will restore the post and make it visible again.', 'Restore Post', 'info')">
-                                            @csrf
-                                            <x-tooltip content="Restore Post">
-                                                <button type="submit" class="reports-icon-btn restore-action" aria-label="Restore Post">
-                                                    <x-fas-undo aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
-                                        @elseif ($report->post && $report->post->is_unsecure)
+                                        @if ($report->post && $report->post->is_unsecure)
                                         <form method="POST" action="{{ route('posts.toggle-unsecure', $report->post->id) }}" @submit="confirmAction($event, 'Mark this post as secure?', 'This will remove the unsecure flag from this post.', 'Mark Secure', 'info')">
                                             @csrf
                                             <x-tooltip content="Mark Secure">
@@ -376,16 +367,6 @@ $reportFilters = $reportFilters ?? [
                                             </x-tooltip>
                                         </form>
                                         @endif
-
-                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Delete Report">
-                                                <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
-                                                    <x-fas-trash aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
 
                                         <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this post and reset the report count. Users can re-report if needed.', 'Resolve All')">
                                             @csrf
@@ -542,16 +523,6 @@ $reportFilters = $reportFilters ?? [
                                             </x-tooltip>
                                         </form>
                                         @endif
-
-                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Comment Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Delete Report">
-                                                <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
-                                                    <x-fas-trash aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
 
                                         <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this comment and reset the report count. Users can re-report if needed.', 'Resolve All')">
                                             @csrf

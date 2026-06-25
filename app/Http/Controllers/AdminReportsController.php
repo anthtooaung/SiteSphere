@@ -163,12 +163,13 @@ class AdminReportsController extends Controller
         } elseif ($report->target_name === 'users') {
             $targetUser = User::find($report->target_id);
             if ($targetUser) {
-                return redirect()->route('profile-detail', $targetUser->name);
+                return redirect()->route('profile-detail', ['slug' => $targetUser->slug]);
             }
         } elseif ($report->target_name === 'user_posts') {
             $userPost = UserPosts::find($report->target_id);
-            if ($userPost && $userPost->user) {
-                return redirect()->route('profile-detail', $userPost->user->name);
+            if ($userPost && $userPost->post) {
+                return redirect()->route('posts.show', $userPost->post->slug)
+                    ->withFragment("panel-user-{$userPost->user_id}");
             }
         }
 

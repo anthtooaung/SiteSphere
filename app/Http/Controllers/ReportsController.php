@@ -429,8 +429,8 @@ class ReportsController extends Controller
                 Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
-                    'target_type' => 'posts',
-                    'target_id' => $userPost->post_id,
+                    'target_type' => 'user_posts',
+                    'target_id' => $userPost->id,
                     'message' => $message,
                     'is_read' => false,
                     'is_unsecure' => $isUnsecure,
@@ -490,8 +490,8 @@ class ReportsController extends Controller
         Notificatioins::query()->create([
             'to_user_id' => $userPost->user_id,
             'from_user_id' => null,
-            'target_type' => 'posts',
-            'target_id' => $userPost->post_id,
+            'target_type' => 'user_posts',
+            'target_id' => $userPost->id,
             'message' => 'Your description has been reported.',
             'is_read' => false,
             'is_unsecure' => false,

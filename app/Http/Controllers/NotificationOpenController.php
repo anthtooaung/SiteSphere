@@ -28,6 +28,7 @@ class NotificationOpenController extends Controller
         return match ($notification->target_type) {
             'posts' => $this->redirectToPost($notification->target_id),
             'comments' => $this->redirectToComment($notification->target_id),
+            'user_posts' => $this->redirectToUserPost($notification->target_id),
             'users' => $this->redirectToProfile($notification->target_id),
             default => redirect()->route('home'),
         };
@@ -47,7 +48,16 @@ class NotificationOpenController extends Controller
         $comment = Comments::find($commentId);
 
         return $comment && $comment->post
-            ? redirect()->route('posts.show', ['posts' => $comment->post->slug])
+            ? redirect(route('posts.show', ['posts' => $comment->post->slug]) . '#comment-' . $comment->id)
+            : redirect()->route('home');
+    }
+
+    private function redirectToUserPost(int $userPostId): RedirectResponse
+    {
+        $userPost = \App\Models\UserPosts::find($userPostId);
+
+        return $userPost && $userPost->post
+            ? redirect(route('posts.show', ['posts' => $userPost->post->slug]) . '#panel-user-' . $userPost->user_id)
             : redirect()->route('home');
     }
 

@@ -38,24 +38,15 @@
     @else
         <div class="noti-list" style="font-family: var(--font-family);">
             @foreach ($unreadNotifications as $notification)
-                @if ($notification->target_type === 'posts')
-                    <form method="POST" action="{{ route('notifications.open', $notification) }}" class="noti-form">
-                        @csrf
-                        <button type="submit" class="noti-item noti-item-action" style="font-family: var(--font-family);">
-                            <span class="noti-message" style="color: var(--text-color);">{{ $notification->message }}</span>
-                            @if ($notification->created_at)
-                                <span class="noti-time">{{ $notification->created_at->diffForHumans() }}</span>
-                            @endif
-                        </button>
-                    </form>
-                @else
-                    <div class="noti-item" style="font-family: var(--font-family);">
+                <form method="POST" action="{{ route('notifications.open', $notification) }}" class="noti-form">
+                    @csrf
+                    <button type="submit" class="noti-item noti-item-action" style="font-family: var(--font-family);">
                         <span class="noti-message" style="color: var(--text-color);">{{ $notification->message }}</span>
                         @if ($notification->created_at)
                             <span class="noti-time">{{ $notification->created_at->diffForHumans() }}</span>
                         @endif
-                    </div>
-                @endif
+                    </button>
+                </form>
             @endforeach
         </div>
     @endif
@@ -110,21 +101,9 @@
         </div>
 
         @forelse ($unreadNotifications as $notification)
-            @if ($notification->target_type === 'posts')
-                <form method="POST" action="{{ route('notifications.open', $notification) }}" class="m-0 w-full">
-                    @csrf
-                    <button type="submit" class="mobile-overlay-link w-full text-left !justify-start">
-                        <x-far-bell class="icon size-8"/>
-                        <div class="flex flex-col gap-0.5">
-                            <span class="text-sm font-bold">{{ $notification->message }}</span>
-                            @if ($notification->created_at)
-                                <span class="text-[10px] opacity-60">{{ $notification->created_at->diffForHumans() }}</span>
-                            @endif
-                        </div>
-                    </button>
-                </form>
-            @else
-                <div class="mobile-overlay-link !justify-start">
+            <form method="POST" action="{{ route('notifications.open', $notification) }}" class="m-0 w-full">
+                @csrf
+                <button type="submit" class="mobile-overlay-link w-full text-left !justify-start">
                     <x-far-bell class="icon size-8"/>
                     <div class="flex flex-col gap-0.5">
                         <span class="text-sm font-bold">{{ $notification->message }}</span>
@@ -132,8 +111,8 @@
                             <span class="text-[10px] opacity-60">{{ $notification->created_at->diffForHumans() }}</span>
                         @endif
                     </div>
-                </div>
-            @endif
+                </button>
+            </form>
         @empty
             <div class="p-12 text-center opacity-60 flex flex-col items-center justify-center gap-4 w-full h-full">
                 <x-far-bell-slash class="size-16" />

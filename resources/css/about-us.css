@@ -710,6 +710,10 @@
 }
 
 @media (max-width: 860px) {
+    .aboutus-main {
+        padding-top: 20px;
+    }
+
     .aboutus-main .aboutus-hero-grid {
         grid-template-columns: 1fr;
     }

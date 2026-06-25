@@ -1616,7 +1616,6 @@
 .review-card {
     width: 100%;
     max-width: 320px;
-    max-height: 450px;
     height: 100%;
     background: var(--background-color, #ffffff);
     border: 1px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, var(--background-color, #ffffff));
@@ -3180,4 +3179,10 @@
 
 .pagination-container svg {
     color: currentColor;
+}
+
+@media (max-width: 900px) {
+    .pagination-bottom {
+        padding-bottom: 100px;
+    }
 }

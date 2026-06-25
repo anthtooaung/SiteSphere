@@ -2465,6 +2465,11 @@ button.saved-post-control {
     }
 }
 
+/* Hide noti trigger buttons rendered outside nav elements */
+[data-mobile-noti-open]:not(.mobile-bottom-nav *):not(.mobile-header *) {
+    display: none !important;
+}
+
 .mobile-nav-item {
     position: relative;
     display: flex;

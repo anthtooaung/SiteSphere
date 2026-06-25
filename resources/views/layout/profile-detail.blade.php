@@ -277,7 +277,7 @@
                         <div>
                             <h2>{{ $reviewsCount }}</h2>
                             <p>My Reviews</p>
-                            <button @click="expandedSection = expandedSection === 'reviews' ? null : 'reviews'" class="bottom-link">
+                            <button @click="expandedSection = expandedSection === 'reviews' ? null : 'reviews'; $nextTick(() => { if(expandedSection) document.querySelector('.expansion-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="bottom-link">
                                 <span x-text="expandedSection === 'reviews' ? 'Collapse ↑' : 'View all reviews &rarr;'"></span>
                             </button>
                         </div>
@@ -301,7 +301,7 @@
                         <div>
                             <h2>{{ $uploadsCount }}</h2>
                             <p>My Uploads</p>
-                            <button @click="expandedSection = expandedSection === 'uploads' ? null : 'uploads'" class="bottom-link">
+                            <button @click="expandedSection = expandedSection === 'uploads' ? null : 'uploads'; $nextTick(() => { if(expandedSection) document.querySelector('.expansion-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="bottom-link">
                                 <span x-text="expandedSection === 'uploads' ? 'Collapse ↑' : 'View all uploads &rarr;'"></span>
                             </button>
                         </div>

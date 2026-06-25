@@ -34,6 +34,19 @@ $reportFilters = $reportFilters ?? [
                 isLoading: false,
                 status: '{{ $reportFilters['status'] }}',
                 reportSummary: @js($reportSummary),
+                init() {
+                    const url = new URL(window.location.href);
+                    if (!url.searchParams.has('tab')) {
+                        url.searchParams.set('tab', this.activeTab);
+                        window.history.replaceState({}, '', url);
+                    }
+                },
+                setTab(tab) {
+                    this.activeTab = tab;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('tab', tab);
+                    window.history.replaceState({}, '', url);
+                },
                 async submitForm(e) {
                     this.isFiltering = true;
                     this.isLoading = true;
@@ -59,6 +72,8 @@ $reportFilters = $reportFilters ?? [
                             url.searchParams.set(key, value);
                         }
                     }
+                    url.searchParams.set('tab', this.activeTab);
+                    window.history.replaceState({}, '', url);
                     try {
                         const response = await fetch(url.toString(), {
                             headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -120,28 +135,28 @@ $reportFilters = $reportFilters ?? [
                     <button type="button" class="reports-tab" id="users-tab" role="tab"
                         :class="{ 'active': activeTab === 'users' }"
                         :aria-selected="activeTab === 'users'"
-                        @click="activeTab = 'users'"
+                        @click="setTab('users')"
                         data-report-tab="users">
                         USER
                     </button>
                     <button type="button" class="reports-tab" id="posts-tab" role="tab"
                         :class="{ 'active': activeTab === 'posts' }"
                         :aria-selected="activeTab === 'posts'"
-                        @click="activeTab = 'posts'"
+                        @click="setTab('posts')"
                         data-report-tab="posts">
                         POST
                     </button>
                     <button type="button" class="reports-tab" id="user_posts-tab" role="tab"
                         :class="{ 'active': activeTab === 'user_posts' }"
                         :aria-selected="activeTab === 'user_posts'"
-                        @click="activeTab = 'user_posts'"
+                        @click="setTab('user_posts')"
                         data-report-tab="user_posts">
                         DESCRIPTION
                     </button>
                     <button type="button" class="reports-tab" id="comments-tab" role="tab"
                         :class="{ 'active': activeTab === 'comments' }"
                         :aria-selected="activeTab === 'comments'"
-                        @click="activeTab = 'comments'"
+                        @click="setTab('comments')"
                         data-report-tab="comments">
                         COMMENT
                     </button>
@@ -296,14 +311,20 @@ $reportFilters = $reportFilters ?? [
                                     </span>
                                 </td>
                                 <td data-label="Post">
-                                    <span class="reports-post-title">
-                                        {{ $report->post?->title ?? 'Deleted or unavailable post' }}
-                                        @if ($report->post?->trashed())
-                                            <span class="reports-banned-badge">Banned</span>
-                                        @elseif ($report->post?->is_unsecure)
-                                            <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706;">Unsecure</span>
-                                        @endif
-                                    </span>
+                                    @if ($report->post?->slug)
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-post-title hover:underline">
+                                            {{ $report->post->title }}
+                                            @if ($report->post->trashed())
+                                                <span class="reports-banned-badge">Banned</span>
+                                            @elseif ($report->post->is_unsecure)
+                                                <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706;">Unsecure</span>
+                                            @endif
+                                        </a>
+                                    @else
+                                        <span class="reports-post-title">
+                                            Deleted or unavailable post
+                                        </span>
+                                    @endif
                                     <span class="reports-post-meta">
                                         target_id: {{ $report->target_id }}
                                         @if ($report->post?->url)
@@ -436,12 +457,18 @@ $reportFilters = $reportFilters ?? [
                                     </span>
                                 </td>
                                 <td data-label="Comment Snippet">
-                                    <span class="reports-post-title">
-                                        "{{ Str::limit($report->comment?->content ?? 'Deleted or unavailable comment', 60) }}"
-                                        @if ($report->comment?->trashed())
-                                            <span class="reports-banned-badge">Banned</span>
-                                        @endif
-                                    </span>
+                                    @if ($report->comment?->post?->slug)
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-post-title hover:underline">
+                                            "{{ Str::limit($report->comment->content, 60) }}"
+                                            @if ($report->comment->trashed())
+                                                <span class="reports-banned-badge">Banned</span>
+                                            @endif
+                                        </a>
+                                    @else
+                                        <span class="reports-post-title">
+                                            Deleted or unavailable comment
+                                        </span>
+                                    @endif
                                     <span class="reports-post-meta">
                                         target_id: {{ $report->target_id }}
                                     </span>
@@ -583,9 +610,15 @@ $reportFilters = $reportFilters ?? [
                                         </div>
                                         @endif
                                         <div>
-                                            <span class="reports-reporter">
-                                                {{ $targetUser?->name ?? 'Unknown User' }}
-                                            </span>
+                                            @if ($targetUser?->slug)
+                                                <a href="{{ route('reports.open', $report) }}" class="reports-reporter hover:underline" style="color: var(--text-color);">
+                                                    {{ $targetUser->name }}
+                                                </a>
+                                            @else
+                                                <span class="reports-reporter">
+                                                    Unknown User
+                                                </span>
+                                            @endif
                                             <span class="reports-post-meta">
                                                 @if ($targetUser?->email)
                                                 {{ $targetUser->email }}
@@ -721,12 +754,18 @@ $reportFilters = $reportFilters ?? [
                                     </span>
                                 </td>
                                 <td data-label="Description Snippet">
-                                    <span class="reports-post-title">
-                                        "{{ Str::limit($report->userPost?->description ?? 'Deleted or unavailable description', 60) }}"
-                                        @if ($report->userPost?->trashed())
-                                            <span class="reports-banned-badge">Banned</span>
-                                        @endif
-                                    </span>
+                                    @if ($report->userPost?->post?->slug)
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-post-title hover:underline">
+                                            "{{ Str::limit($report->userPost->description, 60) }}"
+                                            @if ($report->userPost->trashed())
+                                                <span class="reports-banned-badge">Banned</span>
+                                            @endif
+                                        </a>
+                                    @else
+                                        <span class="reports-post-title">
+                                            Deleted or unavailable description
+                                        </span>
+                                    @endif
                                     <span class="reports-post-meta">
                                         target_id: {{ $report->target_id }}
                                     </span>

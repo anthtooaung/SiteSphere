@@ -104,6 +104,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                 url.searchParams.set(key, value);
                             }
                         }
+                        window.history.replaceState({}, '', url);
                         try {
                             const response = await fetch(url.toString(), {
                                 headers: { 'X-Requested-With': 'XMLHttpRequest' }

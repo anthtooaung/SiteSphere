@@ -87,13 +87,15 @@ class AdminReportsController extends Controller
             ->paginate(12, ['*'], 'user_posts_page')
             ->withQueryString();
 
-        $activeTab = 'users';
+        $activeTab = $request->query('tab', 'users');
         if ($request->has('posts_page')) {
             $activeTab = 'posts';
         } elseif ($request->has('comments_page')) {
             $activeTab = 'comments';
         } elseif ($request->has('user_posts_page')) {
             $activeTab = 'user_posts';
+        } elseif ($request->has('users_page')) {
+            $activeTab = 'users';
         }
 
         return view('layout.menu.reports', [

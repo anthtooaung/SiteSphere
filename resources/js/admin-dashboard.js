@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
           announcement: 'Announcement',
           system: 'System'
         };
-        const defaultCategoryLabel = 'Activity';
+        const defaultCategoryLabel = 'Check';
         activityList.innerHTML = acts.map(a => {
           const catLabel = categoryLabels[a.category] || defaultCategoryLabel;
           const targetUrl = getTargetUrl(a);

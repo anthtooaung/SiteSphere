@@ -332,11 +332,10 @@ $reportFilters = $reportFilters ?? [
                                     <div class="reports-action-group">
                                         @if ($report->post?->slug)
                                         <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Post">
-                                            <x-fas-eye aria-hidden="true" /> View
-                                        </a>
+                                            <x-fas-eye aria-hidden="true" /></a>
                                         @else
                                         <button type="button" class="reports-icon-btn view-action" disabled aria-label="Post unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                            <x-fas-eye aria-hidden="true" /> View
+                                            <x-fas-eye aria-hidden="true" /> 
                                         </button>
                                         @endif
 
@@ -345,7 +344,7 @@ $reportFilters = $reportFilters ?? [
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="reports-icon-btn read-action" aria-label="Mark Read" style="color: var(--ui-success, #28a745);">
-                                                <x-fas-check aria-hidden="true" /> Mark Read
+                                                <x-fas-check aria-hidden="true" />
                                             </button>
                                         </form>
                                         @else
@@ -353,7 +352,7 @@ $reportFilters = $reportFilters ?? [
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
-                                                <x-fas-check-double aria-hidden="true" /> Mark Unread
+                                                <x-fas-check-double aria-hidden="true" /> 
                                             </button>
                                         </form>
                                         @endif
@@ -468,11 +467,11 @@ $reportFilters = $reportFilters ?? [
                                     <div class="reports-action-group">
                                         @if ($report->comment?->post?->slug)
                                         <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Comment">
-                                            <x-fas-eye aria-hidden="true" /> View
+                                            <x-fas-eye aria-hidden="true" /> 
                                         </a>
                                         @else
                                         <button type="button" class="reports-icon-btn view-action" disabled aria-label="Comment unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                            <x-fas-eye aria-hidden="true" /> View
+                                            <x-fas-eye aria-hidden="true" /> 
                                         </button>
                                         @endif
 
@@ -481,7 +480,7 @@ $reportFilters = $reportFilters ?? [
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="reports-icon-btn read-action" aria-label="Mark Read" style="color: var(--ui-success, #28a745);">
-                                                <x-fas-check aria-hidden="true" /> Mark Read
+                                                <x-fas-check aria-hidden="true" />
                                             </button>
                                         </form>
                                         @else
@@ -489,7 +488,7 @@ $reportFilters = $reportFilters ?? [
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
-                                                <x-fas-check-double aria-hidden="true" /> Mark Unread
+                                                <x-fas-check-double aria-hidden="true" /> 
                                             </button>
                                         </form>
                                         @endif
@@ -618,11 +617,11 @@ $reportFilters = $reportFilters ?? [
                                     <div class="reports-action-group">
                                         @if ($targetUser?->slug)
                                         <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Profile">
-                                            <x-fas-eye aria-hidden="true" /> View
+                                            <x-fas-eye aria-hidden="true" /> 
                                         </a>
                                         @else
                                         <button type="button" class="reports-icon-btn view-action" disabled aria-label="User unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                            <x-fas-eye aria-hidden="true" /> View
+                                            <x-fas-eye aria-hidden="true" /> 
                                         </button>
                                         @endif
 
@@ -631,15 +630,14 @@ $reportFilters = $reportFilters ?? [
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="reports-icon-btn read-action" aria-label="Mark Read" style="color: var(--ui-success, #28a745);">
-                                                <x-fas-check aria-hidden="true" /> Mark Read
-                                            </button>
+                                                <x-fas-check aria-hidden="true" /></button>
                                         </form>
                                         @else
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
-                                                <x-fas-check-double aria-hidden="true" /> Mark Unread
+                                                <x-fas-check-double aria-hidden="true" />
                                             </button>
                                         </form>
                                         @endif
@@ -754,11 +752,11 @@ $reportFilters = $reportFilters ?? [
                                     <div class="reports-action-group">
                                         @if ($report->userPost?->user?->name)
                                         <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Description">
-                                            <x-fas-eye aria-hidden="true" /> View
+                                            <x-fas-eye aria-hidden="true" /> 
                                         </a>
                                         @else
                                         <button type="button" class="reports-icon-btn view-action" disabled aria-label="Description unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                            <x-fas-eye aria-hidden="true" /> View
+                                            <x-fas-eye aria-hidden="true" /> 
                                         </button>
                                         @endif
 
@@ -767,7 +765,7 @@ $reportFilters = $reportFilters ?? [
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="reports-icon-btn read-action" aria-label="Mark Read" style="color: var(--ui-success, #28a745);">
-                                                <x-fas-check aria-hidden="true" /> Mark Read
+                                                <x-fas-check aria-hidden="true" />
                                             </button>
                                         </form>
                                         @else
@@ -775,7 +773,7 @@ $reportFilters = $reportFilters ?? [
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
-                                                <x-fas-check-double aria-hidden="true" /> Mark Unread
+                                                <x-fas-check-double aria-hidden="true" />
                                             </button>
                                         </form>
                                         @endif

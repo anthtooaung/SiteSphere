@@ -80,6 +80,7 @@
     <!-- Review ledger -->
     <div class="aud-ledger" id="reviewLedger">
         @forelse($comments as $comment)
+            @if(!$comment->user) @continue @endif
             @php
                 $cInitials = collect(explode(' ', $comment->user->name))
                     ->map(fn($n) => Str::substr($n, 0, 1))

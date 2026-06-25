@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comments;
 use App\Models\Notificatioins;
+use App\Models\Posts;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -23,11 +26,38 @@ class NotificationOpenController extends Controller
 
         // Redirect based on target type
         return match ($notification->target_type) {
-            'posts' => redirect()->route('posts.show', ['posts' => $notification->target_id]),
-            'comments' => redirect()->route('posts.show', ['posts' => $notification->target_id]),
-            'users' => redirect()->route('profile-detail', ['slug' => $notification->target_id]),
+            'posts' => $this->redirectToPost($notification->target_id),
+            'comments' => $this->redirectToComment($notification->target_id),
+            'users' => $this->redirectToProfile($notification->target_id),
             default => redirect()->route('home'),
         };
+    }
+
+    private function redirectToPost(int $postId): RedirectResponse
+    {
+        $post = Posts::find($postId);
+
+        return $post
+            ? redirect()->route('posts.show', ['posts' => $post->slug])
+            : redirect()->route('home');
+    }
+
+    private function redirectToComment(int $commentId): RedirectResponse
+    {
+        $comment = Comments::find($commentId);
+
+        return $comment && $comment->post
+            ? redirect()->route('posts.show', ['posts' => $comment->post->slug])
+            : redirect()->route('home');
+    }
+
+    private function redirectToProfile(int $userId): RedirectResponse
+    {
+        $user = User::find($userId);
+
+        return $user
+            ? redirect()->route('profile-detail', ['slug' => $user->slug])
+            : redirect()->route('home');
     }
 
     /**

@@ -208,6 +208,6 @@
         </section>
     </main>
 
-    <x-layout.footer class="mt-auto"/>
+    <x-layout.footer class="mt-auto" />
 
 @endsection

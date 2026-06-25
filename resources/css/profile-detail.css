@@ -22,6 +22,13 @@
     display: block;
 }
 
+@media (max-width: 900px) {
+    .profile-detail-content {
+        padding: 24px 24px 24px;
+        margin-bottom: 96px;
+    }
+}
+
 .profile-detail-page.dashboard-page--no-menu .profile-detail-content {
     width: 100%;
 }

@@ -3,6 +3,8 @@
     width: 100%;
 }
 
-.admin-users-table {
-    min-width: 600px;
+@media (min-width: 1025px) {
+    .admin-users-table {
+        min-width: 600px;
+    }
 }

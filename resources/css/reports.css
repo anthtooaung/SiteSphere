@@ -87,10 +87,17 @@
 
 .reports-tabs {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     gap: 4px;
     border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
     padding: 0 12px;
+}
+
+.reports-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .reports-tab {
@@ -108,6 +115,7 @@
     font-weight: 900;
     letter-spacing: 0.08em;
     padding: 0 14px;
+    white-space: nowrap;
     transition:
         border-color 180ms ease,
         color 180ms ease;

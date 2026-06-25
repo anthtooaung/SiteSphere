@@ -56,8 +56,10 @@
 @mobile
 @php
     $btnClass = $trigger === 'top' ? 'auth-menu-button relative !bg-transparent !border-transparent' : 'mobile-nav-item relative';
+    $showTrigger = in_array($mobileMode, ['bottom', 'trigger', 'both'], true);
+    $showOverlay = in_array($mobileMode, ['overlay', 'both'], true);
 @endphp
-@if (in_array($mobileMode, ['bottom', 'trigger'], true))
+@if ($showTrigger)
     <button
         type="button"
         {{ $attributes->class([
@@ -79,7 +81,7 @@
     </button>
 @endif
 
-@if (in_array($mobileMode, ['both', 'overlay'], true))
+@if ($showOverlay)
     <div class="mobile-menu-overlay category-mobile-overlay" id="mobileNotiOverlay" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
             <button

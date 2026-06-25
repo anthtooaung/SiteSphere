@@ -1,4 +1,4 @@
-<footer class="relative overflow-hidden bg-slate-900 px-6 py-16 font-sans text-slate-200 sm:px-10 md:px-16">
+<footer class="relative overflow-hidden bg-slate-900 px-6 py-16 font-sans text-slate-200 sm:px-10 md:px-16" style="padding-bottom: 100px;">
     <div class="pointer-events-none absolute inset-0 hidden opacity-10 md:block" aria-hidden="true">
         <div class="absolute -right-32 -top-32 h-96 w-96 animate-pulse rounded-full bg-white mix-blend-screen blur-[120px] duration-[6s]"></div>
         <div class="absolute -bottom-32 -left-32 h-[500px] w-[500px] rounded-full bg-slate-400 opacity-30 blur-[150px]"></div>

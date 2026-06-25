@@ -105,14 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (messageBtn && messageBtn.getAttribute('href') === '#') {
             messageBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (window.Swal) {
-                    window.Swal.fire({
+                if (window.sitesphereSwal) {
+                    window.sitesphereSwal.fire({
                         title: 'Profile Unavailable',
                         text: 'Viewing profile of other users is not available.',
                         icon: 'info',
-                        confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-                        background: 'var(--background-color, #ffffff)',
-                        color: 'var(--text-color, #0d1b2a)',
                     });
                 } else {
                     alert('Viewing profile of other users is not available.');

@@ -124,24 +124,6 @@ const init = () => {
     profileImageDataUrl: "",
   };
 
-  const createAuthAlertMixin = () => {
-    if (!window.Swal?.mixin) {
-      return null;
-    }
-
-    return window.Swal.mixin({
-      toast: true,
-      position: window.toastPosition || "top-end",
-      showConfirmButton: false,
-      timer: 1000,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.onmouseenter = window.Swal.stopTimer;
-        toast.onmouseleave = window.Swal.resumeTimer;
-      },
-    });
-  };
-
   const showAlert = (options) => {
     if (typeof window.authToast === "function") {
       const toast = window.authToast(options);
@@ -151,21 +133,10 @@ const init = () => {
       }
     }
 
-    const authAlertMixin = createAuthAlertMixin();
-
-    if (authAlertMixin) {
-      return authAlertMixin.fire({
+    if (window.sitesphereSwal) {
+      return window.sitesphereSwal.toast({
         ...options,
-        showConfirmButton: false,
-      });
-    }
-
-    if (window.Swal) {
-      return window.Swal.fire({
-        ...options,
-        confirmButtonColor: "var(--accent-color, #6c5ce7)",
-        background: "var(--background-color, #ffffff)",
-        color: "var(--text-color, #0d1b2a)",
+        timer: 1000,
       });
     }
 

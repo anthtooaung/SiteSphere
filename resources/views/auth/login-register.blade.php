@@ -13,28 +13,16 @@
         const authToastPosition = {{ Illuminate\Support\Js::from($toastPosition ?? 'top-end') }};
 
         window.authToast = (options = {}) => {
-            if (!window.Swal?.mixin) {
+            if (!window.sitesphereSwal) {
                 return null;
             }
 
-            const toast = window.Swal.mixin({
-                toast: true,
+            return window.sitesphereSwal.toast({
+                ...options,
                 position: authToastPosition,
-                showConfirmButton: false,
                 timer: 1000,
-                timerProgressBar: true,
                 width: 'auto',
                 height: '100px',
-                didOpen: (toastElement) => {
-                    toastElement.onmouseenter = window.Swal.stopTimer;
-                    toastElement.onmouseleave = window.Swal.resumeTimer;
-                },
-
-            });
-
-            return toast.fire({
-                ...options,
-                showConfirmButton: false,
             });
         };
     </script>

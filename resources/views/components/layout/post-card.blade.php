@@ -75,21 +75,18 @@
             return this.reportDetails.length;
         },
         authAlert(action) {
-            if (!window.Swal) {
+            if (!window.sitesphereSwal) {
                 window.location.href = '{{ route('login') }}';
                 return;
             }
 
-            window.Swal.fire({
+            window.sitesphereSwal.fire({
                 title: 'Authentication Required',
                 text: `Please log in to ${action} this content.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Log In',
                 cancelButtonText: 'Cancel',
-                confirmButtonColor: 'var(--accent-color, #6c5ce7)',
-                background: 'var(--background-color, #ffffff)',
-                color: 'var(--text-color, #0d1b2a)',
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = '{{ route('login') }}';

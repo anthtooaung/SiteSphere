@@ -70,6 +70,33 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                             form.submit();
                         }
                     },
+                    async confirmBan(event, userName) {
+                        event.preventDefault();
+                        const form = event.target;
+                        const result = await window.sitesphereSwal.confirm({
+                            title: 'Ban this user?',
+                            text: `Ban ${userName}'s account? This will soft-delete their account.`,
+                            icon: 'warning',
+                            input: 'text',
+                            inputPlaceholder: 'Enter reason for banning...',
+                            confirmButtonColor: 'var(--ui-danger)',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Yes, ban',
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'You need to provide a reason!'
+                                }
+                            }
+                        });
+                        if (result.isConfirmed) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'reason';
+                            input.value = result.value;
+                            form.appendChild(input);
+                            form.submit();
+                        }
+                    },
                     async fetchData(formData) {
                         const url = new URL('{{ route('users') }}');
                         for (const [key, value] of formData.entries()) {
@@ -330,7 +357,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                     <span class="admin-users-status {{ $status }}">
                                         {{ ucfirst($status) }}
                                     </span>
-                                    @if ($listedUser->status === 'unsecure')
+                                    @if ($listedUser->status === 'unsecure' && $status !== 'warning')
                                         <span style="display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; margin-top: 2px;">Unsecure</span>
                                     @endif
                                 </td>
@@ -376,7 +403,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
 
                                         @unless ($listedUser->trashed())
                                         <form method="POST" action="{{ route('users.destroy', $listedUser) }}"
-                                            @submit="confirmAction($event, 'Ban {{ addslashes($listedUser->name) }} account?', 'Yes, ban')">
+                                            @submit="confirmBan($event, '{{ addslashes($listedUser->name) }}')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="admin-users-action-btn delete-action"

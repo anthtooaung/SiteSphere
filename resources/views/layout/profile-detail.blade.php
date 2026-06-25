@@ -17,55 +17,6 @@
 
     <x-layout.nav />
 
-    @if ($isBanned)
-        <div class="banned-banner">
-            <div class="banned-banner-inner">
-                <div class="banned-banner-icon">
-                    <i class="fa-solid fa-ban"></i>
-                </div>
-                <div class="banned-banner-content">
-                    <div class="banned-banner-title">This user has been banned</div>
-                    <div class="banned-banner-meta">
-                        @if ($banLog && $banLog->user)
-                            Banned by <strong>{{ $banLog->user->name }}</strong>
-                            on <strong>{{ $banLog->created_at->format('M d, Y \a\t h:i A') }}</strong>
-                        @endif
-                    </div>
-                    @if ($banLog && $banLog->reason)
-                        <div class="banned-banner-reason">Reason: {{ $banLog->reason }}</div>
-                    @endif
-                </div>
-                <div class="banned-banner-actions">
-                    <form method="POST" action="{{ route('users.restore', $user->id) }}" style="display:inline;">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="banned-btn banned-btn-revert">
-                            <i class="fa-solid fa-rotate-left"></i> Revert
-                        </button>
-                    </form>
-                    <form method="POST" action="{{ route('users.force-delete', $user->id) }}" style="display:inline;"
-                        x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
-                            title: 'Delete Permanently?',
-                            text: 'This action cannot be undone. The user and all their data will be permanently removed.',
-                            icon: 'warning',
-                            confirmButtonColor: 'var(--ui-danger)',
-                            cancelButtonColor: '#6c757d',
-                            confirmButtonText: 'Yes, delete forever!'
-                        }).then((result) => { if (result.isConfirmed) $el.submit(); })">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="banned-btn banned-btn-delete">
-                            <i class="fa-solid fa-trash"></i> Delete Permanently
-                        </button>
-                    </form>
-                    <a href="{{ route('home') }}" class="banned-btn banned-btn-home">
-                        <i class="fa-solid fa-house"></i> Home
-                    </a>
-                </div>
-            </div>
-        </div>
-    @endif
-
     <div @class([
         'dashboard-page',
         'dashboard-page--'.$dashboardMenuLocation,
@@ -91,6 +42,52 @@
             },
             reportDetailsCount() { return this.reportDetails.length; }
         }">
+            @if ($isBanned)
+                <div class="banned-banner" style="position: sticky; top: -24px; margin: -24px -24px 24px -24px; z-index: 40;">
+                    <div class="banned-banner-inner">
+                        <div class="banned-banner-icon">
+                            <x-fas-ban class="size-5" aria-hidden="true" />
+                        </div>
+                        <div class="banned-banner-content">
+                            <div class="banned-banner-title">This user has been banned</div>
+                            <div class="banned-banner-meta">
+                                @if ($banLog && $banLog->user)
+                                    Banned by <strong>{{ $banLog->user->name }}</strong>
+                                    on <strong>{{ $banLog->created_at->format('M d, Y \a\t h:i A') }}</strong>
+                                @endif
+                            </div>
+                            @if ($banLog && $banLog->reason)
+                                <div class="banned-banner-reason">Reason: {{ $banLog->reason }}</div>
+                            @endif
+                        </div>
+                        <div class="banned-banner-actions">
+                            <form method="POST" action="{{ route('users.restore', $user->id) }}" style="display:inline;">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="banned-btn banned-btn-revert">
+                                    <x-fas-rotate-left class="size-4" /> Revert
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ route('users.force-delete', $user->id) }}" style="display:inline;"
+                                x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                    title: 'Delete Permanently?',
+                                    text: 'This action cannot be undone. The user and all their data will be permanently removed.',
+                                    icon: 'warning',
+                                    confirmButtonColor: 'var(--ui-danger)',
+                                    cancelButtonColor: '#6c757d',
+                                    confirmButtonText: 'Yes, delete forever!'
+                                }).then((result) => { if (result.isConfirmed) $el.submit(); })">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="banned-btn banned-btn-delete">
+                                    <x-fas-trash class="size-4" /> Delete Permanently
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Background Blur -->
             <div class="bg-blur blur1"></div>
             <div class="bg-blur blur2"></div>
@@ -106,38 +103,80 @@
                         </a>
                     @else
                         @auth
-                            @if (Auth::user()?->role === 'admin')
-                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                    <form method="POST" action="{{ route('users.toggle-unsecure', $user->id) }}">
-                                        @csrf
-                                        <button type="submit" class="edit-btn" style="text-decoration: none; {{ $user->isUnsecure() ? 'color: #16a34a; border-color: color-mix(in srgb, #16a34a 20%, transparent); background: color-mix(in srgb, #16a34a 10%, transparent);' : 'color: #d97706; border-color: color-mix(in srgb, #d97706 20%, transparent); background: color-mix(in srgb, #d97706 10%, transparent);' }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-half"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 22V2"/></svg>
-                                            {{ $user->isUnsecure() ? 'Mark Secure' : 'Mark Unsecure' }}
-                                        </button>
-                                    </form>
-                                    <form method="POST" action="{{ route('users.destroy', $user) }}"
-                                        x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
-                                            title: 'Ban this user?',
-                                            text: 'This will ban and soft-delete the user account.',
-                                            icon: 'warning',
-                                            confirmButtonColor: 'var(--ui-danger)',
-                                            cancelButtonColor: '#6c757d',
-                                            confirmButtonText: 'Yes, ban user!'
-                                        }).then((result) => { if (result.isConfirmed) $el.submit(); })">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="edit-btn" style="text-decoration: none; color: var(--ui-danger); border-color: color-mix(in srgb, var(--ui-danger) 20%, transparent); background: color-mix(in srgb, var(--ui-danger) 10%, transparent);">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
-                                            Ban User
-                                        </button>
-                                    </form>
-                                </div>
-                            @else
-                                <button type="button" x-on:click="openReportModal()" class="edit-btn" style="text-decoration: none; color: var(--ui-danger); border-color: color-mix(in srgb, var(--ui-danger) 20%, transparent); background: color-mix(in srgb, var(--ui-danger) 10%, transparent);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
-                                    Report
+                            <div class="relative shrink-0" x-data="{ actionsOpen: false }" x-on:click.outside="actionsOpen = false" style="position: absolute; right: 20px; top: 20px; z-index: 20;">
+                                <button type="button"
+                                    class="flex size-9 shrink-0 items-center justify-center rounded-full border [border-color:var(--border)] [background:var(--card)] [color:var(--muted)] transition-all hover:[border-color:var(--accent-1)] hover:[background:color-mix(in_srgb,var(--accent-1)_10%,transparent)] hover:[color:var(--accent-1)]"
+                                    aria-label="More options" aria-haspopup="menu" x-on:click.stop="actionsOpen = ! actionsOpen"
+                                    x-on:keydown.escape.window="actionsOpen = false" x-bind:aria-expanded="actionsOpen.toString()">
+                                    <x-fas-ellipsis class="size-4" aria-hidden="true" />
                                 </button>
-                            @endif
+
+                                <div x-cloak x-show="actionsOpen" x-transition:enter="transition ease-out duration-200 origin-top-right"
+                                    x-transition:enter-start="opacity-0 -translate-y-1 scale-95"
+                                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                    x-transition:leave="transition ease-in duration-150 origin-top-right"
+                                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                                    x-transition:leave-end="opacity-0 -translate-y-1 scale-95"
+                                    class="absolute right-0 top-11 w-48 overflow-hidden rounded-lg border p-2 text-sm font-bold [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,var(--background-color,#ffffff))] [background:var(--background-color,#ffffff)] [box-shadow:0_16px_36px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)]"
+                                    role="menu">
+                                    
+                                    @if (Auth::user()?->role === 'admin')
+                                        <form method="POST" action="{{ route('users.toggle-unsecure', $user->id) }}">
+                                            @csrf
+                                            <button type="submit"
+                                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] {{ $user->isUnsecure() ? 'text-green-600 hover:[background:color-mix(in_srgb,#16a34a_12%,transparent)]' : '[color:#d97706] hover:[background:color-mix(in_srgb,#d97706_12%,transparent)]' }} focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2"
+                                                role="menuitem">
+                                                <x-fas-shield-halved class="size-3" aria-hidden="true" />
+                                                <span>{{ $user->isUnsecure() ? 'Mark Secure' : 'Mark Unsecure' }}</span>
+                                            </button>
+                                        </form>
+
+                                        <form method="POST" action="{{ route('users.destroy', $user) }}"
+                                            class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
+                                            x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                                title: 'Ban this user?',
+                                                text: 'This will ban and soft-delete the user account.',
+                                                icon: 'warning',
+                                                input: 'text',
+                                                inputPlaceholder: 'Enter reason for banning...',
+                                                confirmButtonColor: 'var(--ui-danger)',
+                                                cancelButtonColor: '#6c757d',
+                                                confirmButtonText: 'Yes, ban user!',
+                                                inputValidator: (value) => {
+                                                    if (!value) {
+                                                        return 'You need to provide a reason!'
+                                                    }
+                                                }
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    let input = document.createElement('input');
+                                                    input.type = 'hidden';
+                                                    input.name = 'reason';
+                                                    input.value = result.value;
+                                                    $el.appendChild(input);
+                                                    $el.submit();
+                                                }
+                                            })">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:var(--ui-danger)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--ui-danger)_12%,transparent)] focus:outline-none"
+                                                role="menuitem">
+                                                <x-fas-ban class="size-3" aria-hidden="true" />
+                                                <span>Ban User</span>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button type="button"
+                                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none"
+                                            role="menuitem"
+                                            x-on:click="actionsOpen = false; openReportModal()">
+                                            <x-fas-flag class="size-3" aria-hidden="true" />
+                                            <span>Report</span>
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
                         @endauth
                     @endif
 
@@ -155,7 +194,7 @@
                             <div class="user-info">
                                 <div class="name-row">
                                     <h2>{{ $user->name }}</h2>
-                                    @if($user->is_verified)
+                                    @if($user->is_verified && !$user->isUnsecure())
                                         <span class="verified" title="Verified Account">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
                                         </span>

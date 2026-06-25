@@ -58,7 +58,7 @@ class AdminUsersController extends Controller
         $admin = $this->authorizeAdmin($request);
         $this->abortIfSelfAction($admin, $user);
 
-        DB::transaction(function () use ($admin, $user): void {
+        DB::transaction(function () use ($admin, $user, $request): void {
             $user->status = 'banned';
             $user->banned_by = $admin->id;
             $user->banned_at = now();

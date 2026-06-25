@@ -39,32 +39,7 @@
                                 <div class="banned-banner-reason">Reason: {{ $banLog->reason }}</div>
                             @endif
                         </div>
-                        <div class="banned-banner-actions">
-                            <form method="POST" action="{{ route('posts.unban', $post->id) }}" style="display:inline;">
-                                @csrf
-                                <button type="submit" class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all hover:opacity-90" style="background: var(--accent-color, #10b981); color: var(--background-color, #ffffff);">
-                                    <x-fas-rotate-left class="size-3" aria-hidden="true" /> Revert
-                                </button>
-                            </form>
-                            <form method="POST" action="{{ route('posts.force-delete', $post->id) }}" style="display:inline;"
-                                x-data x-on:submit.prevent="window.sitesphereSwal.confirm({
-                                    title: 'Delete Permanently?',
-                                    text: 'This action cannot be undone. The post and all its data will be permanently removed.',
-                                    icon: 'warning',
-                                    confirmButtonColor: 'var(--ui-danger)',
-                                    cancelButtonColor: '#6c757d',
-                                    confirmButtonText: 'Yes, delete forever!'
-                                }).then((result) => { if (result.isConfirmed) $el.submit(); })">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all hover:opacity-90" style="background: var(--ui-danger, #ef4444); color: #ffffff;">
-                                    <x-fas-trash class="size-3" aria-hidden="true" /> Delete Permanently
-                                </button>
-                            </form>
-                            <a href="{{ route('home') }}" class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all hover:opacity-90" style="background: var(--background-color, #ffffff); color: var(--text-color, #0d1b2a); border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 20%, transparent);">
-                                <x-fas-house class="size-3" aria-hidden="true" /> Home
-                            </a>
-                        </div>
+                        
                     </div>
                 </div>
             @elseif ($isUnsecure)
@@ -76,11 +51,6 @@
                         <div class="banned-banner-content">
                             <div class="banned-banner-title">This post is unsecure</div>
                             <div class="banned-banner-reason" style="color: rgba(255,255,255,0.9);">This URL cannot be used for new posts.</div>
-                        </div>
-                        <div class="banned-banner-actions">
-                            <a href="{{ route('home') }}" class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all hover:opacity-90" style="background: var(--background-color, #ffffff); color: var(--text-color, #0d1b2a); border: 1px solid color-mix(in srgb, var(--text-color, #0d1b2a) 20%, transparent);">
-                                <x-fas-house class="size-3" aria-hidden="true" /> Home
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -355,6 +325,8 @@
                                                             <x-fas-shield-halved style="width: 10px; height: 10px;" />
                                                             Unsecure
                                                         </span>
+                                                    @else
+                                                        <svg style="color: var(--accent-color); margin-left: 6px;" class="inline-block size-3" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc. --><path fill="currentColor" d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 5.4-25.7-5.3-33.5z"></path></svg>
                                                     @endif
                                                 </span>
                                             </span>
@@ -426,6 +398,8 @@
                                                                 <x-fas-shield-halved style="width: 12px; height: 12px;" />
                                                                 Unsecure
                                                             </span>
+                                                        @else
+                                                            <svg style="color: var(--accent-color);" class="inline-block size-3" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc. --><path fill="currentColor" d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 5.4-25.7-5.3-33.5z"></path></svg>
                                                         @endif
                                                     </div>
                                                     <p class="aud-depo-date ss-mono">{{ $userPost->created_at->diffForHumans() }}</p>
@@ -539,7 +513,7 @@
                                                                                 class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
                                                                                 role="menuitem">
                                                                                 <x-fas-trash class="size-3" aria-hidden="true" />
-                                                                                <span>Delete Description</span>
+                                                                                <span>Delete</span>
                                                                             </button>
                                                                         </form>
                                                                     @endif

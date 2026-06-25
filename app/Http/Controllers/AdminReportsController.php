@@ -74,7 +74,8 @@ class AdminReportsController extends Controller
         $userPostReports = Reports::query()
             ->where('target_name', 'user_posts')
             ->with([
-                'userPost:id,title,slug,deleted_at',
+                'userPost:id,post_id,user_id,description,deleted_at',
+                'userPost.user:id,name',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyUserPostSearch($query, $filters['search']))
@@ -237,8 +238,7 @@ class AdminReportsController extends Controller
                 ->orWhere('target_id', 'like', "%{$search}%")
                 ->orWhereHas('userPost', function (Builder $query) use ($search): void {
                     $query
-                        ->where('title', 'like', "%{$search}%")
-                        ->orWhere('slug', 'like', "%{$search}%");
+                        ->where('description', 'like', "%{$search}%");
                 })
                 ->orWhereHas('reporter', function (Builder $query) use ($search): void {
                     $query

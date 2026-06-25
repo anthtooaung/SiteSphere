@@ -67,7 +67,7 @@ $reportFilters = $reportFilters ?? [
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(html, 'text/html');
                         
-                        ['posts', 'comments', 'users'].forEach(tab => {
+                        ['posts', 'comments', 'users', 'user_posts'].forEach(tab => {
                             const tPanel = document.querySelector(`#${tab}-view`);
                             const nPanel = doc.querySelector(`#${tab}-view`);
                             if (tPanel && nPanel) {
@@ -138,6 +138,13 @@ $reportFilters = $reportFilters ?? [
                         data-report-tab="users">
                         USER
                     </button>
+                    <button type="button" class="reports-tab" id="user_posts-tab" role="tab"
+                        :class="{ 'active': activeTab === 'user_posts' }"
+                        :aria-selected="activeTab === 'user_posts'"
+                        @click="activeTab = 'user_posts'"
+                        data-report-tab="user_posts">
+                        DESCRIPTION
+                    </button>
                 </div>
             </section>
 
@@ -162,6 +169,7 @@ $reportFilters = $reportFilters ?? [
                         <h2 x-show="activeTab === 'posts'">Post Audit Queue</h2>
                         <h2 x-show="activeTab === 'comments'" x-cloak>Comment Audit Queue</h2>
                         <h2 x-show="activeTab === 'users'" x-cloak>User Account Flags</h2>
+                        <h2 x-show="activeTab === 'user_posts'" x-cloak>Description Flags</h2>
 
                         <p x-show="activeTab === 'posts'" data-count-posts>
                             Showing {{ $reports->firstItem() ?? 0 }}-{{ $reports->lastItem() ?? 0 }} of {{ $reports->total() }} reports
@@ -171,6 +179,9 @@ $reportFilters = $reportFilters ?? [
                         </p>
                         <p x-show="activeTab === 'users'" data-count-users x-cloak>
                             Showing {{ $userReports->firstItem() ?? 0 }}-{{ $userReports->lastItem() ?? 0 }} of {{ $userReports->total() }} reports
+                        </p>
+                        <p x-show="activeTab === 'user_posts'" data-count-user_posts x-cloak>
+                            Showing {{ $userPostReports->firstItem() ?? 0 }}-{{ $userPostReports->lastItem() ?? 0 }} of {{ $userPostReports->total() }} reports
                         </p>
                     </div>
                 </div>
@@ -320,69 +331,32 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
                                         @if ($report->post?->slug)
-                                        <x-tooltip content="View Post">
-                                            <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Post">
-                                                <x-fas-eye aria-hidden="true" />
-                                            </a>
-                                        </x-tooltip>
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Post">
+                                            <x-fas-eye aria-hidden="true" /> View
+                                        </a>
                                         @else
-                                        <x-tooltip content="Post unavailable">
-                                            <button type="button" class="reports-icon-btn view-action" disabled aria-label="Post unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                                <x-fas-eye aria-hidden="true" />
-                                            </button>
-                                        </x-tooltip>
+                                        <button type="button" class="reports-icon-btn view-action" disabled aria-label="Post unavailable" style="opacity:0.4;cursor:not-allowed;">
+                                            <x-fas-eye aria-hidden="true" /> View
+                                        </button>
                                         @endif
 
-                                        @if (! $isUnread)
+                                        @if ($isUnread)
+                                        <form method="POST" action="{{ route('reports.read', $report) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="reports-icon-btn read-action" aria-label="Mark Read" style="color: var(--ui-success, #28a745);">
+                                                <x-fas-check aria-hidden="true" /> Mark Read
+                                            </button>
+                                        </form>
+                                        @else
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <x-tooltip content="Mark Unread">
-                                                <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
-                                                    <x-fas-check-double aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
+                                            <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
+                                                <x-fas-check-double aria-hidden="true" /> Mark Unread
+                                            </button>
                                         </form>
                                         @endif
-
-                                        @if ($report->post?->trashed())
-                                        <form method="POST" action="{{ route('posts.unban', $report->post->id) }}" @submit="confirmAction($event, 'Restore Post?', 'This action will restore the post and make it visible again.', 'Restore Post', 'info')">
-                                            @csrf
-                                            <x-tooltip content="Restore Post">
-                                                <button type="submit" class="reports-icon-btn restore-action" aria-label="Restore Post">
-                                                    <x-fas-undo aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
-                                        @elseif ($report->post && $report->post->is_unsecure)
-                                        <form method="POST" action="{{ route('posts.toggle-unsecure', $report->post->id) }}" @submit="confirmAction($event, 'Mark this post as secure?', 'This will remove the unsecure flag from this post.', 'Mark Secure', 'info')">
-                                            @csrf
-                                            <x-tooltip content="Mark Secure">
-                                                <button type="submit" class="reports-icon-btn restore-action" aria-label="Mark Secure">
-                                                    <x-fas-shield-halved aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
-                                        @endif
-
-                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Delete Report">
-                                                <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
-                                                    <x-fas-trash aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
-                                        <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this post and reset the report count. Users can re-report if needed.', 'Resolve All')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Resolve All Reports">
-                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
-                                                    <x-fas-check aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -493,49 +467,32 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
                                         @if ($report->comment?->post?->slug)
-                                        <x-tooltip content="View Comment">
-                                            <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Comment">
-                                                <x-fas-eye aria-hidden="true" />
-                                            </a>
-                                        </x-tooltip>
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Comment">
+                                            <x-fas-eye aria-hidden="true" /> View
+                                        </a>
                                         @else
-                                        <x-tooltip content="Comment unavailable">
-                                            <button type="button" class="reports-icon-btn view-action" disabled aria-label="Comment unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                                <x-fas-eye aria-hidden="true" />
-                                            </button>
-                                        </x-tooltip>
+                                        <button type="button" class="reports-icon-btn view-action" disabled aria-label="Comment unavailable" style="opacity:0.4;cursor:not-allowed;">
+                                            <x-fas-eye aria-hidden="true" /> View
+                                        </button>
                                         @endif
 
-                                        @if (! $isUnread)
+                                        @if ($isUnread)
+                                        <form method="POST" action="{{ route('reports.read', $report) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="reports-icon-btn read-action" aria-label="Mark Read" style="color: var(--ui-success, #28a745);">
+                                                <x-fas-check aria-hidden="true" /> Mark Read
+                                            </button>
+                                        </form>
+                                        @else
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <x-tooltip content="Mark Unread">
-                                                <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
-                                                    <x-fas-check-double aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
+                                            <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
+                                                <x-fas-check-double aria-hidden="true" /> Mark Unread
+                                            </button>
                                         </form>
                                         @endif
-
-                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Comment Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Delete Report">
-                                                <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
-                                                    <x-fas-trash aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
-                                        <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this comment and reset the report count. Users can re-report if needed.', 'Resolve All')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Resolve All Reports">
-                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
-                                                    <x-fas-check aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -660,49 +617,32 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Actions">
                                     <div class="reports-action-group">
                                         @if ($targetUser?->slug)
-                                        <x-tooltip content="View Profile">
-                                            <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Profile">
-                                                <x-fas-eye aria-hidden="true" />
-                                            </a>
-                                        </x-tooltip>
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Profile">
+                                            <x-fas-eye aria-hidden="true" /> View
+                                        </a>
                                         @else
-                                        <x-tooltip content="User unavailable">
-                                            <button type="button" class="reports-icon-btn view-action" disabled aria-label="User unavailable" style="opacity:0.4;cursor:not-allowed;">
-                                                <x-fas-eye aria-hidden="true" />
-                                            </button>
-                                        </x-tooltip>
+                                        <button type="button" class="reports-icon-btn view-action" disabled aria-label="User unavailable" style="opacity:0.4;cursor:not-allowed;">
+                                            <x-fas-eye aria-hidden="true" /> View
+                                        </button>
                                         @endif
 
-                                        @if (! $isUnread)
+                                        @if ($isUnread)
+                                        <form method="POST" action="{{ route('reports.read', $report) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="reports-icon-btn read-action" aria-label="Mark Read" style="color: var(--ui-success, #28a745);">
+                                                <x-fas-check aria-hidden="true" /> Mark Read
+                                            </button>
+                                        </form>
+                                        @else
                                         <form method="POST" action="{{ route('reports.unread', $report) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <x-tooltip content="Mark Unread">
-                                                <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
-                                                    <x-fas-check-double aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
+                                            <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
+                                                <x-fas-check-double aria-hidden="true" /> Mark Unread
+                                            </button>
                                         </form>
                                         @endif
-
-                                        <form method="POST" action="{{ route('reports.destroy', $report) }}" @submit="confirmAction($event, 'Delete Report?', 'This action will remove the report record from the queue.', 'Delete Report')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Delete Report">
-                                                <button type="submit" class="reports-icon-btn delete-action" aria-label="Delete Report">
-                                                    <x-fas-trash aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
-                                        <form method="POST" action="{{ route('reports.resolve', $report) }}" @submit="confirmAction($event, 'Resolve Report?', 'This will delete ALL reports for this user and reset the report count. Users can re-report if needed.', 'Resolve All')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-tooltip content="Resolve All Reports">
-                                                <button type="submit" class="reports-icon-btn" aria-label="Resolve Report" style="color: var(--ui-success, #28a745);">
-                                                    <x-fas-check aria-hidden="true" />
-                                                </button>
-                                            </x-tooltip>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -734,6 +674,142 @@ $reportFilters = $reportFilters ?? [
 
                         @if ($userReports->hasMorePages())
                         <a href="{{ $userReports->nextPageUrl() }}" class="reports-secondary-button" style="padding: 0 12px; min-height: 28px; text-decoration: none;">Next</a>
+                        @else
+                        <button disabled class="reports-secondary-button" style="opacity: 0.5; cursor: not-allowed; padding: 0 12px; min-height: 28px;">Next</button>
+                        @endif
+                    </div>
+                </div>
+            </section>
+
+            <section class="reports-table-card" id="user_posts-view" role="tabpanel" aria-label="Description reports" aria-labelledby="user_posts-tab"
+                x-show="activeTab === 'user_posts'" x-cloak>
+                <div class="reports-table-wrap">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Description Snippet</th>
+                                <th>Reason</th>
+                                <th>Reported By</th>
+                                <th>Reported Date</th>
+                                <th class="reports-actions-heading">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody x-show="isLoading" x-cloak>
+                            @for($i = 0; $i < 5; $i++)
+                                <tr>
+                                <td colspan="6">
+                                    <div class="reports-skeleton-bar"></div>
+                                </td>
+                                </tr>
+                                @endfor
+                        </tbody>
+                        <tbody class="reports-real-body" x-show="!isLoading">
+                            @forelse ($userPostReports as $report)
+                            @php
+                            $isUnread = ! $report->admin_read;
+                            @endphp
+                            <tr @class([ 'reports-row' , 'unread-state'=> $isUnread, 'read-state' => ! $isUnread ]) data-report-row data-report-id="{{ $report->id }}"
+                                onclick="if (!event.target.closest('a, button, form')) window.location.href='{{ route('reports.open', $report) }}';" style="cursor: pointer;">
+                                <td data-label="No">
+                                    <span class="reports-row-number">
+                                        @if ($isUnread)
+                                        <span class="reports-ping-wrap" aria-label="Unread report">
+                                            <span class="reports-ping animate-ping" aria-hidden="true"></span>
+                                            <span class="reports-ping-core" aria-hidden="true"></span>
+                                        </span>
+                                        @endif
+                                        #{{ $report->id }}
+                                    </span>
+                                </td>
+                                <td data-label="Description Snippet">
+                                    <span class="reports-post-title">
+                                        "{{ Str::limit($report->userPost?->description ?? 'Deleted or unavailable description', 60) }}"
+                                        @if ($report->userPost?->trashed())
+                                            <span class="reports-banned-badge">Banned</span>
+                                        @endif
+                                    </span>
+                                    <span class="reports-post-meta">
+                                        target_id: {{ $report->target_id }}
+                                    </span>
+                                </td>
+                                <td data-label="Reason">
+                                    <span class="reports-reason">{{ $report->reason }}</span>
+                                </td>
+                                <td data-label="Reported By">
+                                    <span class="reports-reporter">
+                                        {{ $report->reporter?->name ?? 'Unknown user' }}
+                                    </span>
+                                    @if ($report->reporter?->email)
+                                    <span class="reports-post-meta">{{ $report->reporter->email }}</span>
+                                    @endif
+                                </td>
+                                <td data-label="Reported Date">
+                                    <span class="reports-date-stack">
+                                        <span>{{ $report->created_at?->format('M d, Y') }}</span>
+                                        <span>{{ $report->created_at?->format('H:i') }}</span>
+                                    </span>
+                                </td>
+                                <td data-label="Actions">
+                                    <div class="reports-action-group">
+                                        @if ($report->userPost?->user?->name)
+                                        <a href="{{ route('reports.open', $report) }}" class="reports-icon-btn view-action" aria-label="View Description">
+                                            <x-fas-eye aria-hidden="true" /> View
+                                        </a>
+                                        @else
+                                        <button type="button" class="reports-icon-btn view-action" disabled aria-label="Description unavailable" style="opacity:0.4;cursor:not-allowed;">
+                                            <x-fas-eye aria-hidden="true" /> View
+                                        </button>
+                                        @endif
+
+                                        @if ($isUnread)
+                                        <form method="POST" action="{{ route('reports.read', $report) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="reports-icon-btn read-action" aria-label="Mark Read" style="color: var(--ui-success, #28a745);">
+                                                <x-fas-check aria-hidden="true" /> Mark Read
+                                            </button>
+                                        </form>
+                                        @else
+                                        <form method="POST" action="{{ route('reports.unread', $report) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="reports-icon-btn read-done-action" aria-label="Mark Unread">
+                                                <x-fas-check-double aria-hidden="true" /> Mark Unread
+                                            </button>
+                                        </form>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="reports-empty-row">
+                                    <div class="reports-empty-state">
+                                        <div class="reports-empty-icon">
+                                            <x-fas-flag aria-hidden="true" />
+                                        </div>
+                                        <h3>No description reports found</h3>
+                                        <p>Try adjusting your filters or check back later.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="reports-pagination-row">
+                    <span>Page {{ $userPostReports->currentPage() }} of {{ max(1, $userPostReports->lastPage()) }}</span>
+                    <div style="display: flex; gap: 8px;">
+                        @if ($userPostReports->onFirstPage())
+                        <button disabled class="reports-secondary-button" style="opacity: 0.5; cursor: not-allowed; padding: 0 12px; min-height: 28px;">Previous</button>
+                        @else
+                        <a href="{{ $userPostReports->previousPageUrl() }}" class="reports-secondary-button" style="padding: 0 12px; min-height: 28px; text-decoration: none;">Previous</a>
+                        @endif
+
+                        @if ($userPostReports->hasMorePages())
+                        <a href="{{ $userPostReports->nextPageUrl() }}" class="reports-secondary-button" style="padding: 0 12px; min-height: 28px; text-decoration: none;">Next</a>
                         @else
                         <button disabled class="reports-secondary-button" style="opacity: 0.5; cursor: not-allowed; padding: 0 12px; min-height: 28px;">Next</button>
                         @endif

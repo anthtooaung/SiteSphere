@@ -66,7 +66,7 @@
             <div class="error-title">Server Error</div>
             <p class="error-desc">Oops, something went wrong on our servers.</p>
             <a href="{{ route('welcome') }}" class="error-btn">
-                <i class="fa-solid fa-house"></i> Go to Home
+                <x-fas-house /> Go to Home
             </a>
         </div>
     </div>

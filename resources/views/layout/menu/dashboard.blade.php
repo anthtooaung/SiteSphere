@@ -239,7 +239,32 @@
                           <span class="card-title">Top Rated Posts</span>
                         </div>
                       </div>
-                      <div id="top-posts"></div>
+                      <div id="top-posts">
+                         @forelse($jsPosts as $i => $p)
+                           @php $numClass = ["gold", "silver", "bronze", "", ""][$i] ?? ""; @endphp
+                           <a class="rank-item" href="{{ route('posts.show', $p['slug']) }}">
+                             <div class="rank-num {{ $numClass }}">{{ $i + 1 }}</div>
+                             <div style="flex:1;min-width:0">
+                               <div class="rank-title">{{ $p['title'] }}</div>
+                               <div class="rank-sub" style="display:flex; align-items:center; margin-top: 2px;">
+                                 <div style="display:flex; gap:2px; align-items:center;">
+                                     @for($s=1; $s<=5; $s++)
+                                       @if($s <= $p['rating'])
+                                         <x-fas-star style="width: 11px; height: 11px; color: #f59e0b;" />
+                                       @else
+                                         <x-far-star style="width: 11px; height: 11px; color: #cbd5e1;" />
+                                       @endif
+                                     @endfor
+                                 </div>
+                                 <span style="color:#cbd5e1; margin-left:4px;">·</span>
+                                 <span style="font-size:12px;color:#94a3b8; margin-left:4px;">{{ $p['comments'] }} comments</span>
+                               </div>
+                             </div>
+                           </a>
+                         @empty
+                           <div class="rank-item" style="color:var(--muted)">No top posts found.</div>
+                         @endforelse
+                      </div>
                     </div>
                   </section>
                 </div>

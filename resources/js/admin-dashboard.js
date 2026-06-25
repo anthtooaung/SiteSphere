@@ -373,30 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ══ TOP POSTS ═══════════════════════════════════════════════════════════
-  function starIcons(r) {
-    let s = "";
-    for (let i = 1; i <= 5; i++)
-      s += `<i class="${i <= r ? 'fa-solid' : 'fa-regular'} fa-star" style="font-size:11px; color:${i <= r ? "#f59e0b" : "#cbd5e1"}; margin-right:2px;"></i>`;
-    return s;
-  }
-  const topPostsEl = document.getElementById("top-posts");
-  if(topPostsEl) {
-    if(posts.length === 0) {
-        topPostsEl.innerHTML = `<div class="rank-item" style="color:var(--muted)">No top posts found.</div>`;
-    } else {
-        const numClass = ["gold", "silver", "bronze", "", ""];
-        topPostsEl.innerHTML = posts.map((p, i) =>
-          `<a class="rank-item" href="/posts/${p.slug}">
-            <div class="rank-num ${numClass[i] || ''}">${i + 1}</div>
-            <div style="flex:1;min-width:0">
-              <div class="rank-title">${p.title}</div>
-              <div class="rank-sub">${starIcons(p.rating)}<span style="color:#cbd5e1">·</span><span style="font-size:12px;color:#94a3b8">${p.comments} comments</span></div>
-            </div>
-          </a>`
-        ).join("");
-    }
-  }
+
 
   // ══ MONTH PICKER ════════════════════════════════════════════════════════
   let ovYear = 2026, ovMonth = 5, ovPickerYear = 2026;

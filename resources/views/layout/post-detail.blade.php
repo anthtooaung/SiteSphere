@@ -123,7 +123,7 @@
                                                 </button>
                                             </form>
 
-                                            @if (Auth::user()?->role !== 'admin' && Auth::id() !== $post->user_id)
+                                            @if (Auth::user()?->role !== 'admin' && Auth::id() !== $post->user_id && !$post->userPosts->contains('user_id', Auth::id()))
                                                 <div
                                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
                                                     <button type="button"
@@ -166,9 +166,8 @@
                                         </a>
                                     @endguest
                                 </div>
+                                <x-layout.report-modal :post-id="$post->id" />
                             </div>
-
-                            <x-layout.report-modal :post-id="$post->id" />
                         </div>
 
                         <!-- Domain pill -->
@@ -533,7 +532,7 @@
                                                 </div>
                                             </header>
 
-                                            <x-layout.report-modal :post-id="$post->id" :modal-id="'audit-' . $userPost->id" />
+                                            <x-layout.report-modal :post-id="$post->id" :modal-id="'audit-' . $userPost->id" :action="route('user-posts.report', $userPost->id)" />
 
                                             @if (Auth::id() === $userPost->user_id)
                                                 <template x-teleport="body">

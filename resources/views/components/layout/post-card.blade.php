@@ -152,7 +152,7 @@
                                 </button>
                             </form>
 
-                            @if (Auth::user()?->role !== 'admin')
+                            @if (Auth::user()?->role !== 'admin' && !collect($profiles)->contains('user_id', Auth::id()))
                                 <div
                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
                                     <button type="button"
@@ -184,7 +184,7 @@
                                 <x-far-bookmark class="size-3" />
                                 <span>Save Post</span>
                             </button>
-                            @if (Auth::user()?->role !== 'admin')
+                            @if (Auth::user()?->role !== 'admin' && !collect($profiles)->contains('user_id', Auth::id()))
                                 <button type="button"
                                     class="mt-1 flex min-h-9 w-full items-center gap-2 rounded-lg border-t px-2.5 py-1.5 pt-2 text-left transition-all duration-[180ms] [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)]"
                                     role="menuitem" data-post-card-action="report">

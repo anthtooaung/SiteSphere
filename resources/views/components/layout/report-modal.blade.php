@@ -1,4 +1,4 @@
-@props(['postId', 'modalId' => null])
+@props(['postId', 'modalId' => null, 'action' => null])
 
 @php
     $uid = $modalId ?? $postId;
@@ -11,7 +11,7 @@
                 class="fixed inset-0 z-[100000] flex items-center justify-center bg-black/45 p-4 backdrop-blur-md"
                 role="presentation" x-on:click.self="closeReportModal()"
                 x-on:keydown.escape.window="closeReportModal()">
-                <form method="POST" action="{{ route('posts.report', $postId) }}"
+                <form method="POST" action="{{ $action ?? route('posts.report', $postId) }}"
                     class="flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl border [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_8%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_30px_60px_-15px_color-mix(in_srgb,var(--text-color,#0d1b2a)_28%,transparent)]"
                     aria-labelledby="report-modal-title-{{ $uid }}"
                     x-on:click.stop>

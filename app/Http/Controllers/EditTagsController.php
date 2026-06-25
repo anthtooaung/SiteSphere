@@ -137,6 +137,9 @@ class EditTagsController extends Controller
             ->get()
             ->keyBy('id');
 
+        $tagIdsToDelete = [];
+        $tagsToUpdate = [];
+
         foreach ($taxonomy as $category) {
             foreach (($category['tags'] ?? []) as $payloadTag) {
                 $tagId = (int) ($payloadTag['id'] ?? 0);
@@ -150,22 +153,38 @@ class EditTagsController extends Controller
                 $color = $this->normalizeColor((string) $payloadTag['color']);
 
                 if ($name === $tag->name && $color === $this->normalizeColor($tag->tag_color)) {
-                    CustomTags::query()
-                        ->where('user_id', $user->id)
-                        ->where('tag_id', $tag->id)
-                        ->delete();
-
+                    $tagIdsToDelete[] = $tag->id;
                     continue;
                 }
 
+                $tagsToUpdate[] = [
+                    'user_id' => $user->id,
+                    'tag_id' => $tag->id,
+                    'name' => $name,
+                    'color' => $color,
+                ];
+            }
+        }
+
+        // Batch delete tags that match defaults
+        if (!empty($tagIdsToDelete)) {
+            CustomTags::query()
+                ->where('user_id', $user->id)
+                ->whereIn('tag_id', $tagIdsToDelete)
+                ->delete();
+        }
+
+        // Batch upsert custom tags
+        if (!empty($tagsToUpdate)) {
+            foreach ($tagsToUpdate as $data) {
                 CustomTags::query()->updateOrCreate(
                     [
-                        'user_id' => $user->id,
-                        'tag_id' => $tag->id,
+                        'user_id' => $data['user_id'],
+                        'tag_id' => $data['tag_id'],
                     ],
                     [
-                        'name' => $name,
-                        'color' => $color,
+                        'name' => $data['name'],
+                        'color' => $data['color'],
                     ],
                 );
             }
@@ -178,7 +197,7 @@ class EditTagsController extends Controller
     private function updateGlobalTaxonomy(array $taxonomy, User $admin): void
     {
         DB::transaction(function () use ($taxonomy, $admin): void {
-            $currentCategories = Categories::query()->with('tags.posts')->get()->keyBy('id');
+            $currentCategories = Categories::query()->with('tags')->get()->keyBy('id');
             $incomingCategoryIds = collect($taxonomy)
                 ->pluck('id')
                 ->filter()
@@ -200,21 +219,31 @@ class EditTagsController extends Controller
                     ? $category->tags()->pluck('tags.id')
                     : collect();
 
-                $currentTagIds
-                    ->diff($incomingTagIds)
-                    ->each(function (int $tagId) use ($category): void {
-                        $tag = Tags::query()->withCount('posts')->find($tagId);
+                $tagsToRemove = $currentTagIds->diff($incomingTagIds);
 
-                        if (! $tag instanceof Tags) {
-                            return;
-                        }
+                if ($tagsToRemove->isNotEmpty()) {
+                    // Batch load tags with post counts and category counts
+                    $tags = Tags::query()
+                        ->withCount('posts')
+                        ->whereIn('id', $tagsToRemove)
+                        ->get()
+                        ->keyBy('id');
 
-                        $category->tags()->detach($tag->id);
+                    // Batch detach all tags from this category
+                    $category->tags()->detach($tagsToRemove);
 
+                    // Find orphaned tags (no categories) and delete them
+                    $orphanedTagIds = [];
+                    foreach ($tags as $tag) {
                         if ($tag->categories()->count() === 0) {
-                            $tag->delete();
+                            $orphanedTagIds[] = $tag->id;
                         }
-                    });
+                    }
+
+                    if (!empty($orphanedTagIds)) {
+                        Tags::query()->whereIn('id', $orphanedTagIds)->delete();
+                    }
+                }
 
                 $syncIds = [];
 
@@ -273,13 +302,24 @@ class EditTagsController extends Controller
 
     private function deleteCategoryOrFail(Categories $category): void
     {
-        $category->loadMissing('tags.posts');
+        $category->loadMissing('tags');
 
-        foreach ($category->tags as $tag) {
-            $category->tags()->detach($tag->id);
+        $tagIds = $category->tags->pluck('id')->toArray();
 
-            if ($tag->categories()->count() === 0) {
-                $tag->delete();
+        if (!empty($tagIds)) {
+            // Batch detach all tags from this category
+            $category->tags()->detach();
+
+            // Find orphaned tags (no categories) and delete them in batch
+            $orphanedTagIds = [];
+            foreach ($category->tags as $tag) {
+                if ($tag->categories()->count() === 0) {
+                    $orphanedTagIds[] = $tag->id;
+                }
+            }
+
+            if (!empty($orphanedTagIds)) {
+                Tags::query()->whereIn('id', $orphanedTagIds)->delete();
             }
         }
 

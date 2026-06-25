@@ -422,13 +422,15 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .upload-post-page {
     padding-top: 132px;
+    padding-bottom: 96px;
   }
 
   .upload-post-panel {
     min-height: 560px;
     padding: 18px;
+    margin-bottom: 24px;
   }
 }

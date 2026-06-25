@@ -556,7 +556,7 @@
 .post-detail-page .ss-page {
   width: min(900px, calc(100vw - 48px));
   margin: 0 auto;
-  padding: calc(40px * var(--dsc)) 0 96px;
+  padding: calc(40px * var(--dsc)) 0;
 }
 
 @media (max-width: 720px) {

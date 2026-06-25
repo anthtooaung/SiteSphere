@@ -2093,7 +2093,7 @@ button.saved-post-control {
 
     .dashboard-content {
         height: auto;
-        padding: 24px 18px 96px;
+        padding: 24px;
         overflow: visible;
     }
 
@@ -2213,6 +2213,9 @@ button.saved-post-control {
     }
 
     .admin-users-table tr {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
         overflow: hidden;
         border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
         border-radius: 12px;
@@ -2460,8 +2463,11 @@ button.saved-post-control {
     footer {
         padding-bottom: max(64px, 100px) !important;
     }
-    body:not(:has(footer)) {
+    body:not(:has(footer)):not(:has(.dashboard-page)):not(:has(.upload-post-page)) {
         padding-bottom: 100px !important;
+    }
+    .dashboard-content {
+        padding-bottom: 96px;
     }
 }
 

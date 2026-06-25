@@ -379,14 +379,14 @@
                                         >
                                             <header class="aud-depo-panel-head">
                                                 @if($avatarUrl)
-                                                    <img src="{{ $avatarUrl }}" alt="{{ $displayName }} profile" class="ss-avatar" style="width: 62px; height: 62px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                                                    <img src="{{ $avatarUrl }}" alt="{{ $displayName }} profile" class="ss-avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
                                                 @else
                                                     <span
                                                         class="ss-avatar is-initial"
                                                         aria-hidden="true"
-                                                        style="width: 62px; height: 62px; border-radius: 50%; --ph-hue: {{ $hue }};"
+                                                        style="width: 40px; height: 40px; border-radius: 50%; --ph-hue: {{ $hue }};"
                                                     >
-                                                        <span class="ss-avatar-initials" style="font-size: 21.1px">{{ $initials }}</span>
+                                                        <span class="ss-avatar-initials" style="font-size: 13.6px">{{ $initials }}</span>
                                                     </span>
                                                 @endif
                                                 <div class="aud-depo-id">

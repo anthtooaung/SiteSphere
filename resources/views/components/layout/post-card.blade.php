@@ -14,7 +14,7 @@
 ])
 
 <article
-    {{ $attributes->merge(['class' => 'review-card w-full max-w-md overflow-hidden rounded-[8px] border [border-color:color-mix(in_srgb,var(--text-color,#182230)_10%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_4px_14px_rgba(15,23,42,0.06)]']) }}
+    {{ $attributes->merge(['class' => 'review-card !p-0 flex flex-col h-full w-full max-w-md overflow-hidden rounded-[8px] border [border-color:color-mix(in_srgb,var(--text-color,#182230)_10%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_4px_14px_rgba(15,23,42,0.06)]']) }}
     x-data="{
         profiles: {{ \Illuminate\Support\Js::from(collect($profiles)->sortBy(fn($p) => $p['username'] !== 'Test User')->values()->toArray()) }},
         activeProfile: 0,
@@ -316,7 +316,7 @@
                     <span class="font-bold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_52%,transparent)]"
                         x-text="currentProfile.time">{{ $profiles[0]['time'] ?? '' }}</span>
                 </div>
-                <p class="line-clamp-3 whitespace-pre-wrap break-words text-[13px] leading-5 [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)]"
+                <p class="line-clamp-3 min-h-[60px] whitespace-pre-wrap break-words text-[13px] leading-5 [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)]"
                     data-post-card-description x-text="currentProfile.description">
                     {{ $profiles[0]['description'] ?? '' }}</p>
             </a>
@@ -324,7 +324,7 @@
     </section>
 
     <footer
-        class="relative flex items-center  justify-between gap-3 border-t px-4 py-3 sm:px-5 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_96%,var(--accent-color,#6c5ce7)_4%)]">
+        class="mt-auto relative flex items-center justify-between gap-3 border-t px-4 py-3 sm:px-5 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_96%,var(--accent-color,#6c5ce7)_4%)]">
         @if($slug)
             <a href="{{ route('posts.show', $slug) }}#reviewLedger"
                 class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--accent-color,#6c5ce7)]">

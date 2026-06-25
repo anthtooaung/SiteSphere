@@ -117,20 +117,6 @@ $reportFilters = $reportFilters ?? [
 
             <section class="reports-tabs-card">
                 <div class="reports-tabs" role="tablist" aria-label="Report type tabs">
-                    <button type="button" class="reports-tab" id="posts-tab" role="tab"
-                        :class="{ 'active': activeTab === 'posts' }"
-                        :aria-selected="activeTab === 'posts'"
-                        @click="activeTab = 'posts'"
-                        data-report-tab="posts">
-                        POST
-                    </button>
-                    <button type="button" class="reports-tab" id="comments-tab" role="tab"
-                        :class="{ 'active': activeTab === 'comments' }"
-                        :aria-selected="activeTab === 'comments'"
-                        @click="activeTab = 'comments'"
-                        data-report-tab="comments">
-                        COMMENT
-                    </button>
                     <button type="button" class="reports-tab" id="users-tab" role="tab"
                         :class="{ 'active': activeTab === 'users' }"
                         :aria-selected="activeTab === 'users'"
@@ -138,12 +124,26 @@ $reportFilters = $reportFilters ?? [
                         data-report-tab="users">
                         USER
                     </button>
+                    <button type="button" class="reports-tab" id="posts-tab" role="tab"
+                        :class="{ 'active': activeTab === 'posts' }"
+                        :aria-selected="activeTab === 'posts'"
+                        @click="activeTab = 'posts'"
+                        data-report-tab="posts">
+                        POST
+                    </button>
                     <button type="button" class="reports-tab" id="user_posts-tab" role="tab"
                         :class="{ 'active': activeTab === 'user_posts' }"
                         :aria-selected="activeTab === 'user_posts'"
                         @click="activeTab = 'user_posts'"
                         data-report-tab="user_posts">
                         DESCRIPTION
+                    </button>
+                    <button type="button" class="reports-tab" id="comments-tab" role="tab"
+                        :class="{ 'active': activeTab === 'comments' }"
+                        :aria-selected="activeTab === 'comments'"
+                        @click="activeTab = 'comments'"
+                        data-report-tab="comments">
+                        COMMENT
                     </button>
                 </div>
             </section>
@@ -166,22 +166,22 @@ $reportFilters = $reportFilters ?? [
             <div class="reports-actions-card">
                 <div class="reports-table-actions">
                     <div class="reports-title-wrapper">
-                        <h2 x-show="activeTab === 'posts'">Post Audit Queue</h2>
-                        <h2 x-show="activeTab === 'comments'" x-cloak>Comment Audit Queue</h2>
                         <h2 x-show="activeTab === 'users'" x-cloak>User Account Flags</h2>
+                        <h2 x-show="activeTab === 'posts'">Post Audit Queue</h2>
                         <h2 x-show="activeTab === 'user_posts'" x-cloak>Description Flags</h2>
+                        <h2 x-show="activeTab === 'comments'" x-cloak>Comment Audit Queue</h2>
 
-                        <p x-show="activeTab === 'posts'" data-count-posts>
-                            Showing {{ $reports->firstItem() ?? 0 }}-{{ $reports->lastItem() ?? 0 }} of {{ $reports->total() }} reports
-                        </p>
-                        <p x-show="activeTab === 'comments'" data-count-comments x-cloak>
-                            Showing {{ $commentReports->firstItem() ?? 0 }}-{{ $commentReports->lastItem() ?? 0 }} of {{ $commentReports->total() }} reports
-                        </p>
                         <p x-show="activeTab === 'users'" data-count-users x-cloak>
                             Showing {{ $userReports->firstItem() ?? 0 }}-{{ $userReports->lastItem() ?? 0 }} of {{ $userReports->total() }} reports
                         </p>
+                        <p x-show="activeTab === 'posts'" data-count-posts>
+                            Showing {{ $reports->firstItem() ?? 0 }}-{{ $reports->lastItem() ?? 0 }} of {{ $reports->total() }} reports
+                        </p>
                         <p x-show="activeTab === 'user_posts'" data-count-user_posts x-cloak>
                             Showing {{ $userPostReports->firstItem() ?? 0 }}-{{ $userPostReports->lastItem() ?? 0 }} of {{ $userPostReports->total() }} reports
+                        </p>
+                        <p x-show="activeTab === 'comments'" data-count-comments x-cloak>
+                            Showing {{ $commentReports->firstItem() ?? 0 }}-{{ $commentReports->lastItem() ?? 0 }} of {{ $commentReports->total() }} reports
                         </p>
                     </div>
                 </div>

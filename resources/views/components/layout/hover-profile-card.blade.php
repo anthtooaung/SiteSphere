@@ -24,7 +24,7 @@
     <div class="info-list">
         <div class="info-item">
             <div class="left">
-                <i class="fa-solid fa-envelope"></i>
+                <x-fas-envelope />
                 <span>Email</span>
             </div>
             <div class="right email">{{ $cardUser->email }}</div>
@@ -33,7 +33,7 @@
         @if($cardUser->user_phone)
             <div class="info-item">
                 <div class="left">
-                    <i class="fa-solid fa-phone"></i>
+                    <x-fas-phone />
                     <span>Phone</span>
                 </div>
                 <div class="right">{{ $cardUser->user_phone }}</div>
@@ -46,7 +46,7 @@
             <div class="stat-item">
                 <div>
                     <strong>
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <x-fas-cloud-arrow-up />
                         {{ $uploadsCount }}
                     </strong>
                     <span>Uploads</span>
@@ -56,7 +56,7 @@
             <div class="stat-item">
                 <div>
                     <strong>
-                        <i class="fa-solid fa-star"></i>
+                        <x-fas-star />
                         {{ $averageRating }}
                     </strong>
                     <span>Rating</span>

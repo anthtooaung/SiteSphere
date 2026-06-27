@@ -16,7 +16,7 @@
         "laravel/tinker": "^3.0",
         "owenvoke/blade-fontawesome": "^3.2",
         "pusher/pusher-php-server": "^7.2",
-        "resend/resend-laravel": "^1.4",
+        "resend/resend-laravel": "*",
         "sweetalert2/laravel": "^1.4"
     },
     "require-dev": {

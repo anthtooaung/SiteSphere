@@ -35,7 +35,7 @@ class PasswordResetTest extends TestCase
             ->assertSessionHas('password_reset_user_id', $user->id)
             ->assertSessionHas('password_reset_email', $user->email);
 
-        Mail::assertSent(PasswordResetOtpMail::class, function (PasswordResetOtpMail $mail) use ($user) {
+        Mail::assertQueued(PasswordResetOtpMail::class, function (PasswordResetOtpMail $mail) use ($user) {
             return $mail->hasTo($user->email)
                 && $mail->otpCode !== '';
         });

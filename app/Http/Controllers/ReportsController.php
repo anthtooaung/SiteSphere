@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationCreated;
 use App\Http\Requests\StoreReportsRequest;
 use App\Http\Requests\UpdateReportsRequest;
 use App\Models\Comments;
@@ -356,7 +357,7 @@ class ReportsController extends Controller
             ->select('id')
             ->get()
             ->each(function (User $admin) use ($reporter, $post, $message, $isUnsecure): void {
-                Notificatioins::query()->create([
+                $notification = Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
                     'target_type' => 'posts',
@@ -365,6 +366,8 @@ class ReportsController extends Controller
                     'is_read' => false,
                     'is_unsecure' => $isUnsecure,
                 ]);
+
+                event(new NotificationCreated($notification));
             });
     }
 
@@ -379,7 +382,7 @@ class ReportsController extends Controller
             ->select('id')
             ->get()
             ->each(function (User $admin) use ($reporter, $comment, $message, $isUnsecure): void {
-                Notificatioins::query()->create([
+                $notification = Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
                     'target_type' => 'comments',
@@ -388,6 +391,8 @@ class ReportsController extends Controller
                     'is_read' => false,
                     'is_unsecure' => $isUnsecure,
                 ]);
+
+                event(new NotificationCreated($notification));
             });
     }
 
@@ -402,7 +407,7 @@ class ReportsController extends Controller
             ->select('id')
             ->get()
             ->each(function (User $admin) use ($reporter, $reportedUser, $message, $isUnsecure): void {
-                Notificatioins::query()->create([
+                $notification = Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
                     'target_type' => 'users',
@@ -411,6 +416,8 @@ class ReportsController extends Controller
                     'is_read' => false,
                     'is_unsecure' => $isUnsecure,
                 ]);
+
+                event(new NotificationCreated($notification));
             });
     }
 
@@ -426,7 +433,7 @@ class ReportsController extends Controller
             ->select('id')
             ->get()
             ->each(function (User $admin) use ($reporter, $userPost, $message, $isUnsecure): void {
-                Notificatioins::query()->create([
+                $notification = Notificatioins::query()->create([
                     'to_user_id' => $admin->id,
                     'from_user_id' => $reporter->id,
                     'target_type' => 'user_posts',
@@ -435,6 +442,8 @@ class ReportsController extends Controller
                     'is_read' => false,
                     'is_unsecure' => $isUnsecure,
                 ]);
+
+                event(new NotificationCreated($notification));
             });
     }
 
@@ -447,7 +456,7 @@ class ReportsController extends Controller
             ->unique();
 
         foreach ($contributorIds as $userId) {
-            Notificatioins::query()->create([
+            $notification = Notificatioins::query()->create([
                 'to_user_id' => $userId,
                 'from_user_id' => null,
                 'target_type' => 'posts',
@@ -456,12 +465,14 @@ class ReportsController extends Controller
                 'is_read' => false,
                 'is_unsecure' => false,
             ]);
+
+            event(new NotificationCreated($notification));
         }
     }
 
     private function notifyCommentOwner(Comments $comment): void
     {
-        Notificatioins::query()->create([
+        $notification = Notificatioins::query()->create([
             'to_user_id' => $comment->user_id,
             'from_user_id' => null,
             'target_type' => 'comments',
@@ -470,11 +481,13 @@ class ReportsController extends Controller
             'is_read' => false,
             'is_unsecure' => false,
         ]);
+
+        event(new NotificationCreated($notification));
     }
 
     private function notifyReportedUser(User $user): void
     {
-        Notificatioins::query()->create([
+        $notification = Notificatioins::query()->create([
             'to_user_id' => $user->id,
             'from_user_id' => null,
             'target_type' => 'users',
@@ -483,11 +496,13 @@ class ReportsController extends Controller
             'is_read' => false,
             'is_unsecure' => false,
         ]);
+
+        event(new NotificationCreated($notification));
     }
 
     private function notifyUserPostOwner(UserPosts $userPost): void
     {
-        Notificatioins::query()->create([
+        $notification = Notificatioins::query()->create([
             'to_user_id' => $userPost->user_id,
             'from_user_id' => null,
             'target_type' => 'user_posts',
@@ -496,5 +511,7 @@ class ReportsController extends Controller
             'is_read' => false,
             'is_unsecure' => false,
         ]);
+
+        event(new NotificationCreated($notification));
     }
 }

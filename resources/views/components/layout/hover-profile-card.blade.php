@@ -27,7 +27,7 @@
                 <x-fas-envelope />
                 <span>Email</span>
             </div>
-            <div class="right email">{{ $cardUser->email }}</div>
+            <div class="right email">{{ $maskedEmail ?? $cardUser->email }}</div>
         </div>
 
         @if($cardUser->user_phone)

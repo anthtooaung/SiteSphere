@@ -94,7 +94,7 @@ class ProfileDetailController extends Controller
             ->get();
 
         $allUploads = (clone $userPostsQuery)
-            ->with(['post.tags'])
+            ->with(['post.tags', 'post.ratings'])
             ->latest()
             ->get();
 

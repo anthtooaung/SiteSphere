@@ -2441,6 +2441,23 @@ button.saved-post-control {
     color: var(--accent-color, #6c5ce7);
 }
 
+.mobile-header .desktop-search-container {
+    width: auto;
+    max-width: 200px;
+    height: 36px;
+    padding: 0 10px;
+}
+
+.mobile-header .desktop-search-container:hover,
+.mobile-header .desktop-search-container:focus-within {
+    width: auto;
+    max-width: 240px;
+}
+
+.mobile-header .desktop-search-container input {
+    font-size: 0.85rem;
+}
+
 .mobile-bottom-nav {
     position: fixed;
     right: 16px;

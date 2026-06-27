@@ -49,7 +49,20 @@
 @endif
 
 @if (in_array($mobileMode, ['both', 'overlay'], true))
-    <div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
+    <div class="mobile-menu-overlay category-mobile-overlay" id="mobileCategoryOverlay"
+        x-data="{
+            search: '',
+            categories: @js($categories->map(fn($c) => ['name' => $c->name, 'slug' => $c->slug])->values()),
+            matches(name) {
+                return name.toLowerCase().includes(this.search.toLowerCase());
+            },
+            hasResults() {
+                if (this.search === '') return true;
+                return this.categories.some(c => this.matches(c.name));
+            }
+        }"
+        style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);"
+    >
         <button
             type="button"
             class="mobile-close-button category-mobile-close"
@@ -59,14 +72,27 @@
             <x-fas-times class="size-8"/>
         </button>
 
-        @forelse ($categories as $category)
-            <a href="{{ route('home', ['category' => $category->slug]) }}" class="mobile-overlay-link">
+        <div class="mobile-search">
+            <div class="mobile-search-inner">
+                <x-fas-search class="icon w-4 h-4"/>
+                <input type="text" x-model="search" placeholder="Search categories..." autocomplete="off">
+            </div>
+        </div>
+
+        @foreach ($categories as $category)
+            <a href="{{ route('home', ['category' => $category->slug]) }}" class="mobile-overlay-link" x-show="search === '' || matches('{{ $category->name }}')">
                 <x-fas-layer-group class="icon size-8"/>
                 {{ $category->name }}
             </a>
-        @empty
+        @endforeach
+
+        <span class="mobile-overlay-link" x-show="!hasResults()" x-cloak>
+            No categories found.
+        </span>
+
+        @if ($categories->isEmpty())
             <span class="mobile-overlay-link">No categories available.</span>
-        @endforelse
+        @endif
     </div>
 @endif
 @endmobile

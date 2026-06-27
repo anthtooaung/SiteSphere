@@ -82,7 +82,20 @@
 @endif
 
 @if ($showOverlay)
-    <div class="mobile-menu-overlay category-mobile-overlay" id="mobileNotiOverlay" style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);">
+    <div class="mobile-menu-overlay category-mobile-overlay" id="mobileNotiOverlay"
+        x-data="{
+            search: '',
+            notifications: @js($unreadNotifications->map(fn($n) => ['message' => $n->message, 'time' => $n->created_at?->diffForHumans()])->values()),
+            matches(msg) {
+                return msg.toLowerCase().includes(this.search.toLowerCase());
+            },
+            hasResults() {
+                if (this.search === '') return this.notifications.length > 0;
+                return this.notifications.some(n => this.matches(n.message));
+            }
+        }"
+        style="background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family);"
+    >
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
             <button
                 type="button"
@@ -102,8 +115,15 @@
             @endif
         </div>
 
-        @forelse ($unreadNotifications as $notification)
-            <form method="POST" action="{{ route('notifications.open', $notification) }}" class="m-0 w-full">
+        <div class="mobile-search">
+            <div class="mobile-search-inner">
+                <x-fas-search class="icon w-4 h-4"/>
+                <input type="text" x-model="search" placeholder="Search notifications..." autocomplete="off">
+            </div>
+        </div>
+
+        @foreach ($unreadNotifications as $notification)
+            <form method="POST" action="{{ route('notifications.open', $notification) }}" class="m-0 w-full" x-show="search === '' || matches('{{ addslashes($notification->message) }}')">
                 @csrf
                 <button type="submit" class="mobile-overlay-link w-full text-left !justify-start">
                     <x-far-bell class="icon size-8"/>
@@ -115,13 +135,21 @@
                     </div>
                 </button>
             </form>
-        @empty
+        @endforeach
+
+        <div x-show="!hasResults()" x-cloak class="p-12 text-center opacity-60 flex flex-col items-center justify-center gap-4 w-full h-full">
+            <x-far-bell-slash class="size-16" />
+            <p class="text-xl font-black" x-text="search === '' ? 'No unread notifications' : 'No notifications found'"></p>
+            <p class="text-sm" x-text="search === '' ? 'You\'re all caught up!' : 'Try a different search term'"></p>
+        </div>
+
+        @if ($unreadNotifications->isEmpty())
             <div class="p-12 text-center opacity-60 flex flex-col items-center justify-center gap-4 w-full h-full">
                 <x-far-bell-slash class="size-16" />
                 <p class="text-xl font-black">No unread notifications</p>
                 <p class="text-sm">You're all caught up!</p>
             </div>
-        @endforelse
+        @endif
     </div>
 @endif
 @endmobile

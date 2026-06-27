@@ -231,7 +231,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                                     <div>
                                         <span>Email</span>
-                                        <h4>{{ $user->email }}</h4>
+                                        <h4>{{ $maskedEmail ?? $user->email }}</h4>
                                     </div>
                                 </div>
 
@@ -272,7 +272,7 @@
                 <div class="stats-grid">
                     <div class="stat-card" :class="expandedSection === 'reviews' ? 'active' : ''">
                         <span class="stat-icon blue">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
                         </span>
                         <div>
                             <h2>{{ $reviewsCount }}</h2>
@@ -283,20 +283,22 @@
                         </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="stat-card" :class="expandedSection === 'rated' ? 'active' : ''">
                         <span class="stat-icon gold">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </span>
                         <div>
                             <h2>{{ $ratingsCount }}</h2>
                             <p>Rate Items</p>
-                            <span class="bottom-link" style="cursor: default; opacity: 0.7;">Total Rated</span>
+                            <button @click="expandedSection = expandedSection === 'rated' ? null : 'rated'; $nextTick(() => { if(expandedSection) document.querySelector('.expansion-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="bottom-link">
+                                <span x-text="expandedSection === 'rated' ? 'Collapse ↑' : 'View all rated →'"></span>
+                            </button>
                         </div>
                     </div>
 
                     <div class="stat-card" :class="expandedSection === 'uploads' ? 'active' : ''">
                         <span class="stat-icon green">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/></svg>
                         </span>
                         <div>
                             <h2>{{ $uploadsCount }}</h2>
@@ -307,14 +309,16 @@
                         </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="stat-card" :class="expandedSection === 'received' ? 'active' : ''">
                         <span class="stat-icon purple">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 21.416a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 21.416a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/></svg>
                         </span>
                         <div>
                             <h2>{{ number_format($averageRating, 1) }}</h2>
                             <p>Rating Received</p>
-                            <span class="bottom-link" style="cursor: default; opacity: 0.7;">Lifetime Average</span>
+                            <button @click="expandedSection = expandedSection === 'received' ? null : 'received'; $nextTick(() => { if(expandedSection) document.querySelector('.expansion-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="bottom-link">
+                                <span x-text="expandedSection === 'received' ? 'Collapse ↑' : 'View details →'"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -335,7 +339,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
                                         </div>
                                         <div class="list-info">
-                                            <a href="{{ $review->post ? route('posts.show', $review->post->slug) . '#comment-' . $review->id : '#' }}" class="list-title">{{ $review->post?->title ?? 'Deleted Post' }}</a>
+                                            <a href="{{ $review->post ? route('posts.show', $review->post->slug) . '#comment-' . $review->id : '#' }}" class="list-title">{{ $review->post ? parse_url($review->post->url, PHP_URL_HOST) : 'Deleted Post' }}</a>
                                             <span class="list-subtitle">{{ Str::limit($review->content, 60) }}</span>
                                         </div>
                                     </div>
@@ -366,8 +370,8 @@
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/></svg>
                                                         </div>
                                                         <div class="list-info">
-                                                            <a href="{{ $upload->post ? route('posts.show', $upload->post->slug) . '#panel-user-' . $user->id : '#' }}" class="list-title">{{ $upload->post?->title ?? 'Deleted Post' }}</a>
-                                                            <span class="list-subtitle">Contributed Resource</span>
+                                                            <a href="{{ $upload->post ? route('posts.show', $upload->post->slug) . '#panel-user-' . $user->id : '#' }}" class="list-title">{{ $upload->post ? parse_url($upload->post->url, PHP_URL_HOST) : 'Deleted Post' }}</a>
+                                                            <span class="list-subtitle">{{ $upload->post ? number_format($upload->post->average_rating ?? 0, 1) . ' ★ rating' : 'Contributed Resource' }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="list-right">
@@ -379,6 +383,66 @@
                                                 </div>
                             @empty
                                 <div class="empty-state">No uploads yet.</div>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <!-- Rated Items Panel -->
+                    <div x-show="expandedSection === 'rated'" class="expansion-panel">
+                        <div class="panel-header">
+                            <h3>Rated Items</h3>
+                            <span class="count-pill">{{ $ratingsCount }} Items</span>
+                        </div>
+                        <div class="dense-list">
+                            @forelse($allRatings as $rating)
+                                <div class="list-row">
+                                    <div class="list-left">
+                                        <div class="list-icon-bg gold-bg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                        </div>
+                                        <div class="list-info">
+                                            <a href="{{ $rating->post ? route('posts.show', $rating->post->slug) : '#' }}" class="list-title">
+                                                {{ $rating->post ? parse_url($rating->post->url, PHP_URL_HOST) : 'Deleted Post' }}
+                                            </a>
+                                            <span class="list-subtitle">Rated {{ number_format($rating->rating, 1) }} ★</span>
+                                        </div>
+                                    </div>
+                                    <div class="list-right">
+                                        <span class="list-meta">{{ $rating->created_at->format('d M Y') }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="empty-state">No ratings given yet.</div>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <!-- Ratings Received Panel -->
+                    <div x-show="expandedSection === 'received'" class="expansion-panel">
+                        <div class="panel-header">
+                            <h3>Ratings Received</h3>
+                            <span class="count-pill">{{ $ratingsCount }} Items</span>
+                        </div>
+                        <div class="dense-list">
+                            @forelse($allRatings as $rating)
+                                <div class="list-row">
+                                    <div class="list-left">
+                                        <div class="list-icon-bg purple-bg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 21.416a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/></svg>
+                                        </div>
+                                        <div class="list-info">
+                                            <a href="{{ $rating->post ? route('posts.show', $rating->post->slug) : '#' }}" class="list-title">
+                                                {{ $rating->post ? parse_url($rating->post->url, PHP_URL_HOST) : 'Deleted Post' }}
+                                            </a>
+                                            <span class="list-subtitle">Rated {{ number_format($rating->rating, 1) }} ★</span>
+                                        </div>
+                                    </div>
+                                    <div class="list-right">
+                                        <span class="list-meta">{{ $rating->created_at->format('d M Y') }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="empty-state">No ratings received yet.</div>
                             @endforelse
                         </div>
                     </div>

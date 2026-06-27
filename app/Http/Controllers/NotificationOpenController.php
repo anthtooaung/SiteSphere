@@ -8,6 +8,7 @@ use App\Models\Posts;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class NotificationOpenController extends Controller
 {
@@ -81,6 +82,8 @@ class NotificationOpenController extends Controller
             ->where('to_user_id', $user->id)
             ->where('is_read', false)
             ->update(['is_read' => true]);
+
+        Cache::forget('notifications.unread.' . $user->id);
 
         return back()->with('success', 'All notifications marked as read.');
     }

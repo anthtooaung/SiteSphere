@@ -11,6 +11,7 @@
     'saved' => false,
     'slug' => null,
     'isUnsecure' => false,
+    'hasReported' => false,
 ])
 
 <article
@@ -149,7 +150,7 @@
                                 </button>
                             </form>
 
-                            @if (Auth::user()?->role !== 'admin' && !collect($profiles)->contains('user_id', Auth::id()))
+                            @if (Auth::user()?->role !== 'admin' && !collect($profiles)->contains('user_id', Auth::id()) && !$hasReported)
                                 <div
                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
                                     <button type="button"
@@ -238,7 +239,7 @@
             </span>
             <span
                 class="min-w-0 flex-1 truncate text-xs font-bold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_82%,transparent)] group-hover:[color:var(--accent-color,#6c5ce7)]"
-                data-post-card-url>{{ $url }}</span>
+                data-post-card-url>{{ parse_url($url, PHP_URL_HOST) ?? $url }}</span>
             <x-fas-arrow-up-right-from-square class="size-2.5 opacity-70 [color:var(--accent-color,#6c5ce7)]" />
         </a>
 
@@ -324,7 +325,7 @@
     </section>
 
     <footer
-        class="mt-auto relative flex items-center justify-between gap-3 border-t px-4 py-3 sm:px-5 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_96%,var(--accent-color,#6c5ce7)_4%)]">
+        class="mt-auto relative flex items-center justify-between gap-3 border-t px-4 py-2 sm:px-5 [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_18%,transparent)] [background:color-mix(in_srgb,var(--background-color,#ffffff)_96%,var(--accent-color,#6c5ce7)_4%)]">
         @if($slug)
             <a href="{{ route('posts.show', $slug) }}#reviewLedger"
                 class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition-all [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_72%,transparent)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_86%,var(--accent-color,#6c5ce7)_14%)] hover:[color:var(--accent-color,#6c5ce7)]">

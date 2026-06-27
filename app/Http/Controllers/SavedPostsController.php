@@ -46,6 +46,8 @@ class SavedPostsController extends Controller
                             ->with('user.settings')
                             ->latest(),
                         'tags.categories',
+                        'reports' => fn ($query) => $query
+                            ->where('user_id', $user->id),
                     ])
                     ->withAvg('ratings as average_rating', 'rating')
                     ->withCount(['ratings', 'comments']),
@@ -101,6 +103,7 @@ class SavedPostsController extends Controller
             'comments_count' => (int) $post->comments_count,
             'is_bookmarked' => true,
             'is_unsecure' => (bool) $post->is_unsecure,
+            'has_reported' => $post->reports->isNotEmpty(),
             'saved_at' => $bookmark->created_at?->toDateString() ?? '',
             'saved_at_label' => $bookmark->created_at?->diffForHumans() ?? '',
             'profiles' => $post->userPosts

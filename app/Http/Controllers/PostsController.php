@@ -228,6 +228,27 @@ class PostsController extends Controller
         return back()->with('success', 'Description permanently deleted.');
     }
 
+    public function restoreAudit(Request $request, UserPosts $userPost): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user?->role === 'admin', 403);
+        abort_unless($userPost->trashed(), 404);
+
+        AuditLogs::query()->create([
+            'user_id' => $user->id,
+            'action' => 'restore_audit',
+            'category' => 'moderation',
+            'target_type' => UserPosts::class,
+            'target_id' => $userPost->id,
+            'reason' => 'Description restored by admin.',
+        ]);
+
+        $userPost->restore();
+
+        return back()->with('success', 'Description restored.');
+    }
+
     private function uniqueSlug(string $title, ?Posts $ignorePost = null): string
     {
         $baseSlug = Str::slug($title) ?: 'post';

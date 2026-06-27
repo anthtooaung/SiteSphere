@@ -263,9 +263,9 @@
                     } else {
                         const index = this.filters[type].indexOf(value);
                         if (index > -1) {
-                            this.filters[type].splice(index, 1);
+                            this.filters[type] = this.filters[type].filter((_, i) => i !== index);
                         } else {
-                            this.filters[type].push(value);
+                            this.filters[type] = [...this.filters[type], value];
                         }
                     }
                     this.updateResults();

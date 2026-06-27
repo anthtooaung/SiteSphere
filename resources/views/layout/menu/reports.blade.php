@@ -611,8 +611,11 @@ $reportFilters = $reportFilters ?? [
                                         @endif
                                         <div>
                                             @if ($targetUser?->slug)
-                                                <a href="{{ route('reports.open', $report) }}" class="reports-reporter hover:underline" style="color: var(--text-color);">
+                                                <a href="{{ route('profile-detail', ['slug' => $targetUser->slug]) }}" class="reports-reporter hover:underline" style="color: var(--text-color);">
                                                     {{ $targetUser->name }}
+                                                    @if ($targetUser->trashed())
+                                                        <span class="reports-banned-badge">Banned</span>
+                                                    @endif
                                                 </a>
                                             @else
                                                 <span class="reports-reporter">

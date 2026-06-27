@@ -4,12 +4,15 @@
             <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: {{ $log->getColor() }};"></span>
         </div>
         <div class="alc-info">
-            <div class="alc-txt">{{ $log->action }}</div>
+            <div class="alc-txt">{{ $log->getActionLabel() }}</div>
             <div class="alc-time">
                 <x-far-user /> {{ $log->user->name }}
-                <span style="margin: 0 4px opacity: 0.5">·</span>
+                <span style="margin: 0 4px; opacity: 0.5;">·</span>
                 <x-far-clock /> {{ $log->created_at->format('H:i') }}
             </div>
+            @if($log->reason)
+                <div class="alc-reason" style="font-size: 12px; color: var(--muted); margin-top: 4px;">{{ Str::limit($log->reason, 80) }}</div>
+            @endif
         </div>
     </div>
     @if(!$loop->last)

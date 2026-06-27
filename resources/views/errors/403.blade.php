@@ -66,7 +66,7 @@
             <div class="error-title">Forbidden</div>
             <p class="error-desc">You don't have permission to access this page.</p>
             <a href="{{ route('welcome') }}" class="error-btn">
-                <x-fas-house /> Go to Home
+                <x-fas-house class="size-4" /> Go to Home
             </a>
         </div>
     </div>

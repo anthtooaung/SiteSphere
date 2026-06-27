@@ -10,37 +10,48 @@
 
 ## 📸 Screenshots
 
-### Homepage
-![Homepage](screenshots/homepage.png)
-
-### Login & Register
-| Login | Register |
-|-------|----------|
-| ![Login](screenshots/login.png) | ![Register](screenshots/register.png) |
-
-### Home Feed
-![Home Feed](screenshots/home-feed.png)
-
-### Admin Dashboard
-![Admin Dashboard](screenshots/admin-dashboard.png)
-
-### Admin User Management
-![Admin Users](screenshots/admin-users.png)
-
-### Create Post
-![Create Post](screenshots/create-post.png)
-
-### Edit Profile
-![Edit Profile](screenshots/edit-profile.png)
-
-### Appearance Settings
-![Appearance](screenshots/appearance.png)
-
-### About Page
-![About](screenshots/about.png)
-
-### Mobile View
-![Mobile Home](screenshots/mobile-home.png)
+<table>
+  <tr>
+    <td align="center"><b>Homepage</b></td>
+    <td align="center"><b>Login</b></td>
+    <td align="center"><b>Register</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/homepage.png" width="300"></td>
+    <td><img src="screenshots/login.png" width="300"></td>
+    <td><img src="screenshots/register.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Home Feed</b></td>
+    <td align="center"><b>Admin Dashboard</b></td>
+    <td align="center"><b>Admin Users</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/home-feed.png" width="300"></td>
+    <td><img src="screenshots/admin-dashboard.png" width="300"></td>
+    <td><img src="screenshots/admin-users.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Create Post</b></td>
+    <td align="center"><b>Edit Profile</b></td>
+    <td align="center"><b>Appearance</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/create-post.png" width="300"></td>
+    <td><img src="screenshots/edit-profile.png" width="300"></td>
+    <td><img src="screenshots/appearance.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>About Page</b></td>
+    <td align="center"><b>Mobile View</b></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/about.png" width="300"></td>
+    <td><img src="screenshots/mobile-home.png" width="300"></td>
+    <td></td>
+  </tr>
+</table>
 
 ---
 

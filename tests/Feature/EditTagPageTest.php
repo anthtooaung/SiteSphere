@@ -64,7 +64,7 @@ class EditTagPageTest extends TestCase
             ->assertSee('Add Category')
             ->assertSee(":class=\"{ 'is-loading': isSubmitting }\"", false)
             ->assertSee(':disabled="isSubmitting"', false)
-            ->assertDontSee('Reset to Defaults');
+            ->assertDontSee('data-edit-tag-reset', false);
     }
 
     public function test_user_saves_custom_tag_override_without_changing_global_tag(): void

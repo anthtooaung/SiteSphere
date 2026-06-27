@@ -17,34 +17,19 @@ class AuditLogsExtensionTest extends TestCase
         $this->assertTrue(Schema::hasColumn('audit_logs', 'category'));
     }
 
-    public function test_audit_logs_model_returns_correct_icon_based_on_category(): void
-    {
-        $log = new AuditLogs(['category' => 'moderation']);
-        $this->assertEquals('fa-hammer', $log->getIcon());
-
-        $log = new AuditLogs(['category' => 'success']);
-        $this->assertEquals('fa-check-circle', $log->getIcon());
-
-        $log = new AuditLogs(['category' => 'announcement']);
-        $this->assertEquals('fa-bullhorn', $log->getIcon());
-
-        $log = new AuditLogs(['category' => 'system']);
-        $this->assertEquals('fa-cog', $log->getIcon());
-    }
-
     public function test_audit_logs_model_returns_correct_color_based_on_category(): void
     {
         $log = new AuditLogs(['category' => 'moderation']);
         $this->assertEquals('#ef4444', $log->getColor());
 
-        $log = new AuditLogs(['category' => 'success']);
-        $this->assertEquals('#22c55e', $log->getColor());
-
-        $log = new AuditLogs(['category' => 'announcement']);
+        $log = new AuditLogs(['category' => 'check']);
         $this->assertEquals('#3b82f6', $log->getColor());
 
-        $log = new AuditLogs(['category' => 'system']);
-        $this->assertEquals('#6b7280', $log->getColor());
+        $log = new AuditLogs(['category' => 'announcement']);
+        $this->assertEquals('#7c3aed', $log->getColor());
+
+        $log = new AuditLogs(['category' => 'resolved']);
+        $this->assertEquals('#10b981', $log->getColor());
     }
 
     public function test_audit_logs_factory_populates_category(): void

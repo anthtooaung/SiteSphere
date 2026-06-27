@@ -189,6 +189,8 @@ class PostsController extends Controller
 
         abort_unless($user?->role === 'admin', 403);
 
+        $reason = $request->input('reason', 'No reason provided');
+
         $userPost->forceDelete();
 
         AuditLogs::query()->create([
@@ -197,7 +199,7 @@ class PostsController extends Controller
             'category' => 'moderation',
             'target_type' => UserPosts::class,
             'target_id' => $userPost->id,
-            'reason' => 'Description permanently deleted by an admin.',
+            'reason' => 'Description permanently deleted by an admin. Reason: '.$reason,
         ]);
 
         return back()->with('success', 'Description permanently deleted.');
@@ -210,13 +212,15 @@ class PostsController extends Controller
         abort_unless($user?->role === 'admin', 403);
         abort_unless($userPost->trashed(), 404);
 
+        $reason = $request->input('reason', 'No reason provided');
+
         AuditLogs::query()->create([
             'user_id' => $user->id,
             'action' => 'force_delete_audit',
             'category' => 'moderation',
             'target_type' => UserPosts::class,
             'target_id' => $userPost->id,
-            'reason' => 'Description permanently deleted by admin.',
+            'reason' => 'Description permanently deleted by admin. Reason: '.$reason,
         ]);
 
         $userPost->forceDelete();

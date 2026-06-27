@@ -69,7 +69,7 @@ class AdminUsersController extends Controller
             $this->audit($admin, 'ban_user', $user, 'User account was banned by an admin. Reason: '.$user->ban_reason);
         });
 
-        Mail::to($user->email)->send(new UserAccountDeletedMail($user, $admin));
+        Mail::to($user->email)->send(new UserAccountDeletedMail($user, $admin, $user->ban_reason));
 
         return back()->with('success', "{$user->name}'s account was banned.");
     }

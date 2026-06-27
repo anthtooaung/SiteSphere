@@ -27,24 +27,7 @@ class UserHoverCardController extends Controller
             'uploadsCount' => $uploadsCount,
             'averageRating' => $averageRating,
             'role' => $role,
-            'maskedEmail' => $this->maskEmail($user->email),
+            'maskedEmail' => maskEmail($user->email),
         ]);
-    }
-
-    private function maskEmail(string $email): string
-    {
-        $parts = explode('@', $email);
-        if (count($parts) !== 2) {
-            return $email;
-        }
-
-        $local = $parts[0];
-        $domain = $parts[1];
-
-        if (strlen($local) <= 4) {
-            return str_repeat('*', strlen($local) - 1) . substr($local, -1) . '@' . $domain;
-        }
-
-        return substr($local, 0, 2) . str_repeat('*', strlen($local) - 4) . substr($local, -2) . '@' . $domain;
     }
 }

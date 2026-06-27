@@ -842,6 +842,12 @@
     }
 }
 
+@media (max-width: 900px) {
+    .appearance-content {
+        margin-bottom: 96px;
+    }
+}
+
 @media (max-width: 760px) {
     .appearance-content {
         padding: 16px;

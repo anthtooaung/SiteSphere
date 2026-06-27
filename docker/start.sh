@@ -36,6 +36,10 @@ php artisan view:cache 2>&1 || echo "WARNING: view:cache failed"
 echo "=== Storage link ==="
 php artisan storage:link --force 2>&1 || echo "WARNING: storage:link failed"
 
+echo "=== Fixing permissions ==="
+touch storage/logs/laravel.log 2>/dev/null || true
+chown -R www-data:www-data storage bootstrap/cache
+
 echo "=== Running migrations ==="
 php artisan migrate --force 2>&1 || echo "WARNING: migrate failed"
 

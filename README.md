@@ -8,6 +8,53 @@
 
 ---
 
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td align="center"><b>Homepage</b></td>
+    <td align="center"><b>Login</b></td>
+    <td align="center"><b>Register</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/homepage.png" width="300"></td>
+    <td><img src="screenshots/login.png" width="300"></td>
+    <td><img src="screenshots/register.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Home Feed</b></td>
+    <td align="center"><b>Admin Dashboard</b></td>
+    <td align="center"><b>Admin Users</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/home-feed.png" width="300"></td>
+    <td><img src="screenshots/admin-dashboard.png" width="300"></td>
+    <td><img src="screenshots/admin-users.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Create Post</b></td>
+    <td align="center"><b>Edit Profile</b></td>
+    <td align="center"><b>Appearance</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/create-post.png" width="300"></td>
+    <td><img src="screenshots/edit-profile.png" width="300"></td>
+    <td><img src="screenshots/appearance.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>About Page</b></td>
+    <td align="center"><b>Mobile View</b></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/about.png" width="300"></td>
+    <td><img src="screenshots/mobile-home.png" width="300"></td>
+    <td></td>
+  </tr>
+</table>
+
+---
+
 ## ✨ Features
 
 - 🔍 **Browse & Search** — Find dev tools by category, tag, or keyword
@@ -72,10 +119,16 @@ Visit **http://localhost:8000**
 
 ---
 
-## 📸 Screenshots
+## 👥 Team
 
-<!-- Add your screenshots here -->
-*Screenshots coming soon...*
+| Name | Role | Contribution |
+|------|------|--------------|
+| <!-- Your Name --> | **Team Leader / Full-Stack** | Backend development, frontend compilation, project architecture |
+| <!-- Member 2 --> | Frontend Developer | UI components, responsive design |
+| <!-- Member 3 --> | Frontend Developer | UI components, styling |
+| <!-- Member 4 --> | Frontend Developer | UI components, interactions |
+
+> 💡 *Fill in your team members' names and specific contributions above.*
 
 ---
 

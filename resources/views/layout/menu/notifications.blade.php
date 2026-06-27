@@ -94,27 +94,36 @@
                             @php
                                 $isUnread = ! $notification->is_read;
                             @endphp
-                            <form method="POST" action="{{ route('notifications.open', $notification) }}" class="notifications-item-form">
-                                @csrf
-                                <button type="submit" class="notifications-item {{ $isUnread ? 'notifications-item--unread' : 'notifications-item--read' }}">
-                                    <div class="notifications-item-icon">
-                                        @if ($isUnread)
-                                            <span class="notifications-unread-dot" aria-label="Unread"></span>
-                                        @else
-                                            <x-fas-check class="size-4 opacity-40" aria-hidden="true" />
-                                        @endif
-                                    </div>
-                                    <div class="notifications-item-body">
-                                        <span class="notifications-item-message">{{ $notification->message }}</span>
-                                        @if ($notification->created_at)
-                                            <span class="notifications-item-time">{{ $notification->created_at->diffForHumans() }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="notifications-item-action">
-                                        <x-fas-chevron-right class="size-4 opacity-40" aria-hidden="true" />
-                                    </div>
-                                </button>
-                            </form>
+                            <div class="notifications-item-wrapper">
+                                <form method="POST" action="{{ route('notifications.open', $notification) }}" class="notifications-item-form">
+                                    @csrf
+                                    <button type="submit" class="notifications-item {{ $isUnread ? 'notifications-item--unread' : 'notifications-item--read' }}">
+                                        <div class="notifications-item-icon">
+                                            @if ($isUnread)
+                                                <span class="notifications-unread-dot" aria-label="Unread"></span>
+                                            @else
+                                                <x-fas-check class="size-4 opacity-40" aria-hidden="true" />
+                                            @endif
+                                        </div>
+                                        <div class="notifications-item-body">
+                                            <span class="notifications-item-message">{{ $notification->message }}</span>
+                                            @if ($notification->created_at)
+                                                <span class="notifications-item-time">{{ $notification->created_at->diffForHumans() }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="notifications-item-action">
+                                            <x-fas-chevron-right class="size-4 opacity-40" aria-hidden="true" />
+                                        </div>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('notifications.destroy', $notification) }}" class="notifications-delete-form" data-delete-notification>
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="notifications-delete-btn" title="Delete notification">
+                                        <x-fas-trash class="size-4" aria-hidden="true" />
+                                    </button>
+                                </form>
+                            </div>
                         @endforeach
                     </div>
 
@@ -412,6 +421,49 @@
             opacity: 1;
         }
 
+        .notifications-item-wrapper {
+            position: relative;
+            display: flex;
+            align-items: stretch;
+            gap: 6px;
+        }
+
+        .notifications-item-wrapper .notifications-item-form {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notifications-delete-form {
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+
+        .notifications-delete-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+            border-radius: 8px;
+            background: transparent;
+            color: color-mix(in srgb, var(--text-color) 40%, transparent);
+            cursor: pointer;
+            opacity: 0;
+            transition: all 180ms ease;
+        }
+
+        .notifications-item-wrapper:hover .notifications-delete-btn {
+            opacity: 1;
+        }
+
+        .notifications-delete-btn:hover {
+            background: color-mix(in srgb, #e74c3c 10%, var(--background-color));
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
         .notifications-pagination {
             display: flex;
             justify-content: space-between;
@@ -473,6 +525,32 @@
                 flex: 1;
                 justify-content: center;
             }
+
+            .notifications-delete-btn {
+                opacity: 1;
+            }
         }
     </style>
+@endpush
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-delete-notification]').forEach(form => {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const result = await window.sitesphereSwal.confirm({
+                        title: 'Delete notification?',
+                        text: 'This will be permanently deleted.',
+                        icon: 'warning',
+                        confirmButtonText: 'Yes, delete',
+                        confirmButtonColor: 'var(--ui-danger)',
+                    });
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endpush

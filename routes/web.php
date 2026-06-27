@@ -104,6 +104,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/notifications', [NotificatioinsController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/open', NotificationOpenController::class)->name('notifications.open');
     Route::post('/notifications/mark-all-read', [NotificationOpenController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::delete('/notifications/{notification}', [NotificatioinsController::class, 'destroy'])->name('notifications.destroy');
 });
 
 require __DIR__.'/auth.php';

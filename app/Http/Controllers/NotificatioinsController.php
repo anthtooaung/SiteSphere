@@ -89,6 +89,12 @@ class NotificatioinsController extends Controller
      */
     public function destroy(Notificatioins $notificatioins)
     {
-        //
+        if ($notificatioins->to_user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $notificatioins->delete();
+
+        return redirect()->route('notifications.index')->with('status', 'notification-deleted');
     }
 }

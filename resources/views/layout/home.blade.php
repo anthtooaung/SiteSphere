@@ -292,7 +292,23 @@
                 },
 
                 init() {
-                    // Initialization logic if any
+                    const params = new URLSearchParams(window.location.search);
+
+                    if (params.get('category')) {
+                        this.filters.category = params.get('category').split(',');
+                    }
+                    if (params.get('tags')) {
+                        this.filters.tags = params.get('tags').split(',');
+                    }
+                    if (params.get('rating')) {
+                        this.filters.rating = params.get('rating').split(',');
+                    }
+                    if (params.get('search')) {
+                        this.filters.search = params.get('search');
+                    }
+                    if (params.get('sort')) {
+                        this.filters.sort = params.get('sort');
+                    }
                 }
             }
         }

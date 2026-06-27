@@ -1,83 +1,90 @@
 # SiteSphere
 
-SiteSphere is a web platform designed to help users discover the best websites, tools, libraries, and resources based on their needs and preferences. Instead of spending hours searching through documentation, videos, and multiple websites, users can quickly find suitable recommendations in one place.
+> Discover, review, and rate the best development tools and resources — all in one place.
+
+![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38BDF8?logo=tailwind-css&logoColor=white)
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-- Resource and website recommendations
-- Search by category or keyword
-- User ratings and comments
-- Customizable tags
-- Reporting system
-- Admin management panel
-- Responsive and user-friendly design
-
----
-
-## 👥 User Roles
-
-### Guest User
-- Browse posts and recommendations
-- View ratings and comments
-
-### Registered User
-- Add ratings and comments
-- Customize tags
-- Report inappropriate content
-
-### Administrator
-- Manage users
-- Remove inappropriate content
-- Manage tags and categories
+- 🔍 **Browse & Search** — Find dev tools by category, tag, or keyword
+- ⭐ **Rate & Review** — Share your experience with resources
+- 👤 **User Profiles** — Track your activity and contributions
+- 🏷️ **Tag System** — Filter resources by technology
+- 🌙 **Dark/Light Theme** — Comfortable viewing in any environment
+- 🔐 **OAuth Login** — Sign in with Google or GitHub
+- 📧 **Email Notifications** — Stay updated on activity
+- 👑 **Admin Dashboard** — Manage users, content, and categories
+- 📱 **Responsive Design** — Works on desktop, tablet, and mobile
 
 ---
 
-## 🛠 Technologies Used
+## 🚀 Quick Start
 
-### Frontend
-- HTML
-- CSS
-- JavaScript
-- Tailwind CSS
-- Bootstrap
+See **[INSTALL.md](INSTALL.md)** for detailed setup instructions.
 
-### Backend
-- PHP
-- Laravel Framework
+### TL;DR
 
-### Database
-- MySQL
+```bash
+# Extract and setup
+unzip sitesphere.zip
+cd sitesphere
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
 
-### Libraries
-- Flowbite
-- Animate.css
-- SweetAlert2
+# Database
+touch database/database.sqlite
+php artisan migrate --seed
 
----
+# Build and run
+npm run build
+php artisan serve
+```
 
-## 🎯 Project Goal
-
-The main goal of SiteSphere is to make finding useful development resources faster, easier, and more efficient for beginners and developers.
-
----
-
-## 📱 Responsive Design
-
-The platform supports:
-- Desktop devices
-- Tablets
-- Mobile devices
+Visit **http://localhost:8000**
 
 ---
 
-## 📌 Project Status
+## 👥 Default Accounts
 
-This project is currently under development as a PHP Final Project.
+| Role  | Email                | Password |
+|-------|----------------------|----------|
+| Admin | admin@sitesphere.com | password |
+| User  | user@sitesphere.com  | password |
 
 ---
 
-## 👨‍💻 Project Name
+## 🛠 Tech Stack
 
-**SiteSphere**
+| Layer    | Technology                        |
+|----------|-----------------------------------|
+| Backend  | PHP 8.3+, Laravel 13              |
+| Frontend | Tailwind CSS 3, Alpine.js, Vite   |
+| Database | SQLite (dev), MySQL (prod)        |
+| Auth     | Laravel Breeze, Socialite         |
+| Email    | Resend                            |
+| UI       | Flowbite, SweetAlert2, FontAwesome|
+
+---
+
+## 📸 Screenshots
+
+<!-- Add your screenshots here -->
+*Screenshots coming soon...*
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file.
+
+---
+
+## 👨‍💻 Author
+
+**SiteSphere** — PHP Final Project

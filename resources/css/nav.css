@@ -2441,21 +2441,55 @@ button.saved-post-control {
     color: var(--accent-color, #6c5ce7);
 }
 
-.mobile-header .desktop-search-container {
-    width: auto;
-    max-width: 200px;
-    height: 36px;
-    padding: 0 10px;
+/* Expandable mobile search */
+.mobile-search-expand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
 }
 
-.mobile-header .desktop-search-container:hover,
-.mobile-header .desktop-search-container:focus-within {
-    width: auto;
-    max-width: 240px;
+.mobile-search-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--text-color) 5%, transparent);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 200ms ease, background 200ms ease;
 }
 
-.mobile-header .desktop-search-container input {
+.mobile-search-icon-btn:hover,
+.mobile-search-expand.is-expanded .mobile-search-icon-btn {
+    border-color: var(--accent-color, #6c5ce7);
+    background: color-mix(in srgb, var(--accent-color) 10%, transparent);
+}
+
+.mobile-search-input-wrap {
+    overflow: hidden;
+}
+
+.mobile-search-input-wrap input {
+    width: 175px;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--text-color) 5%, transparent);
+    color: var(--text-color);
     font-size: 0.85rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 200ms ease;
+}
+
+.mobile-search-input-wrap input:focus {
+    border-color: var(--accent-color, #6c5ce7);
+    background: color-mix(in srgb, var(--background-color) 92%, transparent);
 }
 
 .mobile-bottom-nav {

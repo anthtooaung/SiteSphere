@@ -44,7 +44,7 @@ class NotificatioinsPolicy
      */
     public function delete(User $user, Notificatioins $notificatioins): bool
     {
-        return false;
+        return $user->id === $notificatioins->to_user_id;
     }
 
     /**

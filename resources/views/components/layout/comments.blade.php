@@ -240,10 +240,24 @@
                                                             title: 'Delete Permanently?',
                                                             text: 'This action cannot be undone. The comment will be permanently removed.',
                                                             icon: 'warning',
+                                                            input: 'text',
+                                                            inputPlaceholder: 'Enter reason for deletion...',
                                                             confirmButtonColor: '#ef4444',
                                                             cancelButtonColor: '#6c757d',
-                                                            confirmButtonText: 'Yes, delete forever!'
-                                                        }).then((result) => { if (result.isConfirmed) $el.submit(); })">
+                                                            confirmButtonText: 'Yes, delete forever!',
+                                                            inputValidator: (value) => {
+                                                                if (!value) return 'You need to provide a reason!'
+                                                            }
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                const input = document.createElement('input');
+                                                                input.type = 'hidden';
+                                                                input.name = 'reason';
+                                                                input.value = result.value;
+                                                                $el.appendChild(input);
+                                                                $el.submit();
+                                                            }
+                                                        })">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
@@ -262,11 +276,21 @@
                                                             title: 'Delete this comment?',
                                                             text: 'This will permanently delete this comment. This action cannot be undone.',
                                                             icon: 'warning',
+                                                            input: 'text',
+                                                            inputPlaceholder: 'Enter reason for deletion...',
                                                             confirmButtonColor: '#ef4444',
                                                             cancelButtonColor: '#6c757d',
-                                                            confirmButtonText: 'Yes, delete it!'
+                                                            confirmButtonText: 'Yes, delete it!',
+                                                            inputValidator: (value) => {
+                                                                if (!value) return 'You need to provide a reason!'
+                                                            }
                                                         }).then((result) => {
                                                             if (result.isConfirmed) {
+                                                                const input = document.createElement('input');
+                                                                input.type = 'hidden';
+                                                                input.name = 'reason';
+                                                                input.value = result.value;
+                                                                $el.appendChild(input);
                                                                 $el.submit();
                                                             }
                                                         })">

@@ -5,6 +5,8 @@ Hello {{ $deletedUser->name }},
 
 Your SiteSphere account has been restricted by an administrator and can no longer be used to sign in.
 
+**Reason:** {{ $reason }}
+
 If this was a mistake, an administrator can review and restore your account. The action was performed by {{ $admin->name }}.
 
 Thanks,<br>

@@ -100,7 +100,9 @@ class CommentsController extends Controller
 
         abort_unless($user?->role === 'admin', 403);
 
-        DB::transaction(function () use ($comment, $user): void {
+        $reason = $request->input('reason', 'No reason provided');
+
+        DB::transaction(function () use ($comment, $user, $reason): void {
             Ratings::query()
                 ->where('user_id', $comment->user_id)
                 ->where('post_id', $comment->post_id)
@@ -114,7 +116,7 @@ class CommentsController extends Controller
                 'category' => 'moderation',
                 'target_type' => Comments::class,
                 'target_id' => $comment->id,
-                'reason' => 'Comment permanently deleted by an admin.',
+                'reason' => 'Comment permanently deleted by an admin. Reason: '.$reason,
             ]);
 
             Notificatioins::query()->create([
@@ -122,7 +124,7 @@ class CommentsController extends Controller
                 'from_user_id' => $user->id,
                 'target_type' => 'comments',
                 'target_id' => $comment->id,
-                'message' => 'Your comment was permanently deleted by an admin.',
+                'message' => 'Your comment was permanently deleted by an admin. Reason: '.$reason,
                 'is_read' => false,
             ]);
 
@@ -139,6 +141,8 @@ class CommentsController extends Controller
         abort_unless($user?->role === 'admin', 403);
         abort_unless($comment->trashed(), 404);
 
+        $reason = $request->input('reason', 'No reason provided');
+
         $comment->commentReactions()->delete();
 
         AuditLogs::query()->create([
@@ -147,7 +151,7 @@ class CommentsController extends Controller
             'category' => 'moderation',
             'target_type' => Comments::class,
             'target_id' => $comment->id,
-            'reason' => 'Comment permanently deleted by admin.',
+            'reason' => 'Comment permanently deleted by admin. Reason: '.$reason,
         ]);
 
         $comment->forceDelete();

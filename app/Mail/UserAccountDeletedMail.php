@@ -20,6 +20,7 @@ class UserAccountDeletedMail extends Mailable
     public function __construct(
         public User $deletedUser,
         public User $admin,
+        public string $reason = 'No reason provided',
     ) {}
 
     /**
@@ -42,6 +43,7 @@ class UserAccountDeletedMail extends Mailable
             with: [
                 'deletedUser' => $this->deletedUser,
                 'admin' => $this->admin,
+                'reason' => $this->reason,
             ],
         );
     }

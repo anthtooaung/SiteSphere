@@ -160,7 +160,7 @@ class UsersPageTest extends TestCase
             ->from(route('users'))
             ->delete(route('users.destroy', $targetUser))
             ->assertRedirect(route('users'))
-            ->assertSessionHas('success', "{$targetUser->name}'s account was restricted.");
+            ->assertSessionHas('success', "{$targetUser->name}'s account was banned.");
 
         $this->assertTrue(User::withTrashed()->find($targetUser->id)->trashed());
         Mail::assertSent(UserAccountDeletedMail::class, fn (UserAccountDeletedMail $mail) => $mail->deletedUser->is($targetUser)

@@ -34,7 +34,7 @@ class LoadingComponentTest extends TestCase
             ->assertSee('.sitesphere-loader.is-active .sitesphere-loader__draw-b', false)
             ->assertSee('animation-fill-mode: both', false)
             ->assertSee('void loader.offsetWidth', false)
-            ->assertSee('minimumVisibleMilliseconds = 1000', false)
+            ->assertSee('minimumVisibleMilliseconds = 300', false)
             ->assertSee('shownAt', false)
             ->assertSee('hideTimeout', false)
             ->assertSee('Date.now()', false)

@@ -30,7 +30,7 @@ class ProfileTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->get('/profile');
+            ->get(route('profile-detail', $user->slug));
 
         $response->assertOk();
     }
@@ -66,7 +66,7 @@ class ProfileTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->get('/profile');
+            ->get(route('profile-detail', $user->slug));
 
         $response
             ->assertOk()

@@ -35,7 +35,7 @@ class PasswordResetTest extends TestCase
             ->assertSessionHas('password_reset_user_id', $user->id)
             ->assertSessionHas('password_reset_email', $user->email);
 
-        Mail::assertSent(PasswordResetOtpMail::class, function (PasswordResetOtpMail $mail) use ($user) {
+        Mail::assertQueued(PasswordResetOtpMail::class, function (PasswordResetOtpMail $mail) use ($user) {
             return $mail->hasTo($user->email)
                 && $mail->otpCode !== '';
         });
@@ -214,14 +214,14 @@ class PasswordResetTest extends TestCase
                 'password_reset_otp_verified' => true,
             ])
             ->post('/reset-password', [
-                'password' => 'new-password',
-                'password_confirmation' => 'new-password',
+                'password' => 'new-password1',
+                'password_confirmation' => 'new-password1',
             ]);
 
         $response->assertSessionHasNoErrors()
             ->assertRedirect(route('login'));
 
-        $this->assertTrue(Hash::check('new-password', $user->fresh()->password));
+        $this->assertTrue(Hash::check('new-password1', $user->fresh()->password));
         $response->assertSessionMissing('password_reset_user_id')
             ->assertSessionMissing('password_reset_email')
             ->assertSessionMissing('password_reset_otp_verified');
@@ -239,8 +239,8 @@ class PasswordResetTest extends TestCase
                 'password_reset_email' => $user->email,
             ])
             ->post('/reset-password', [
-                'password' => 'new-password',
-                'password_confirmation' => 'new-password',
+                'password' => 'new-password1',
+                'password_confirmation' => 'new-password1',
             ]);
 
         $response->assertRedirect(route('password.reset'));

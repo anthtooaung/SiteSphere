@@ -27,7 +27,7 @@ class UserHoverCardController extends Controller
             'uploadsCount' => $uploadsCount,
             'averageRating' => $averageRating,
             'role' => $role,
-            'maskedEmail' => maskEmail($user->email),
+            'maskedEmail' => \maskEmail($user->email),
         ]);
     }
 }

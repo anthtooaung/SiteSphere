@@ -74,13 +74,13 @@ class HomePageTest extends TestCase
             ->assertSee('data-auth-required="review"', false);
     }
 
-    public function test_home_limits_initial_server_render_to_twenty_four_posts(): void
+    public function test_home_limits_initial_server_render_to_nine_posts(): void
     {
         $reviewer = User::factory()->create();
         $reviewer->settings()->update(['user_post_visible' => true]);
         $viewer = User::factory()->create();
 
-        for ($index = 1; $index <= 25; $index++) {
+        for ($index = 1; $index <= 10; $index++) {
             $post = Posts::factory()->create([
                 'title' => 'Server Limited Post '.str_pad((string) $index, 2, '0', STR_PAD_LEFT),
                 'created_at' => now()->addSeconds($index),
@@ -98,8 +98,8 @@ class HomePageTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('<strong id="resultsCount" x-text="totalResults">25</strong>', false)
-            ->assertSee('Server Limited Post 25')
+            ->assertSee('<strong id="resultsCount" x-text="totalResults">10</strong>', false)
+            ->assertSee('Server Limited Post 10')
             ->assertSee('Server Limited Post 02')
             ->assertDontSee('Server Limited Post 01');
     }

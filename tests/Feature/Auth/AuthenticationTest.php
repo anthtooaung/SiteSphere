@@ -87,7 +87,7 @@ class AuthenticationTest extends TestCase
             'is_verified' => false,
         ]);
 
-        Mail::assertSent(LoginTwoFactorOtpMail::class, $user->email);
+        Mail::assertQueued(LoginTwoFactorOtpMail::class, $user->email);
     }
 
     public function test_invalid_two_factor_otp_does_not_authenticate(): void
@@ -196,7 +196,7 @@ class AuthenticationTest extends TestCase
             'is_verified' => false,
         ]);
 
-        Mail::assertSent(LoginTwoFactorOtpMail::class, $user->email);
+        Mail::assertQueued(LoginTwoFactorOtpMail::class, $user->email);
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

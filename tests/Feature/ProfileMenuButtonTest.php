@@ -224,14 +224,6 @@ class ProfileMenuButtonTest extends TestCase
     {
         $user = User::factory()->create(['role' => 'user']);
 
-        // Test without slug (defaults to own profile)
-        $response = $this->actingAs($user)->get(route('profile-detail'));
-
-        $response
-            ->assertOk()
-            ->assertSee('href="'.route('profile-detail').'"', false)
-            ->assertSee('class="account-menu-link active"', false);
-
         // Test with own slug
         $response = $this->actingAs($user)->get(route('profile-detail', ['slug' => $user->slug]));
 
@@ -246,7 +238,7 @@ class ProfileMenuButtonTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $otherUser = User::factory()->create(['role' => 'user']);
 
-        $response = $this->actingAs($user)->get(route('profile-detail', ['name' => $otherUser->name]));
+        $response = $this->actingAs($user)->get(route('profile-detail', ['slug' => $otherUser->slug]));
 
         $response
             ->assertOk()

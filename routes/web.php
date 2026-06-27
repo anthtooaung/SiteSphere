@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/posts/{post}/force-delete', [PostsController::class, 'forceDelete'])->withTrashed()->name('posts.force-delete');
     Route::delete('/audits/{userPost}/delete', [PostsController::class, 'deleteAudit'])->name('audits.delete');
     Route::delete('/audits/{userPost}/force-delete', [PostsController::class, 'forceDeleteAudit'])->withTrashed()->name('audits.force-delete');
+    Route::patch('/audits/{userPost}/restore', [PostsController::class, 'restoreAudit'])->withTrashed()->name('audits.restore');
     Route::post('/user-posts/{userPost}/report', [ReportsController::class, 'storeForUserPost'])->name('user-posts.report');
 
     Route::post('/posts/{posts:slug}/comments', [CommentsController::class, 'store'])->name('posts.comments.store');

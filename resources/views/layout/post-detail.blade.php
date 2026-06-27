@@ -291,18 +291,19 @@
                                     @foreach($post->userPosts as $userPost)
                                         @php
                                             $isProfileVisible = ! $userPost->user_hidden;
-                                            $displayName = $isProfileVisible ? $userPost->user->name : 'Anonymous';
-                                            $initials = $isProfileVisible 
+                                            $isUserBanned = $userPost->user->trashed();
+                                            $displayName = $isUserBanned ? 'Banned' : ($isProfileVisible ? $userPost->user->name : 'Anonymous');
+                                            $initials = $isUserBanned ? 'B' : ($isProfileVisible
                                                 ? collect(explode(' ', $userPost->user->name))->map(fn($n) => Str::substr($n, 0, 1))->join('')
-                                                : '?';
-                                            $hue = $isProfileVisible ? (($userPost->user->id * 47) % 360) : 222;
-                                            $avatarUrl = $isProfileVisible ? $userPost->user->getAvatarUrl() : '';
+                                                : '?');
+                                            $hue = $isUserBanned ? 0 : ($isProfileVisible ? (($userPost->user->id * 47) % 360) : 222);
+                                            $avatarUrl = ($isProfileVisible && !$isUserBanned) ? $userPost->user->getAvatarUrl() : '';
                                         @endphp
                                         <button
                                             type="button"
                                             class="aud-depo-tab @if($loop->first) is-active @endif"
                                             data-contributor="user-{{ $userPost->user->id }}"
-                                            @if($isProfileVisible) data-hover-profile="{{ $userPost->user->id }}" @endif
+                                            @if($isProfileVisible && !$isUserBanned) data-hover-profile="{{ $userPost->user->id }}" @endif
                                             aria-selected="{{ $loop->first ? 'true' : 'false' }}"
                                         >
                                             @if($avatarUrl)
@@ -319,7 +320,12 @@
                                             <span class="aud-depo-tab-body">
                                                 <span class="aud-depo-tab-name">
                                                     {{ $displayName }}
-                                                    @if($userPost->user->isUnsecure())
+                                                    @if($isUserBanned)
+                                                        <span class="banned-badge" title="Banned User" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: color-mix(in srgb, #ef4444 15%, transparent); color: #ef4444; border: 1px solid color-mix(in srgb, #ef4444 30%, transparent); border-radius: 10px; font-size: 10px; font-weight: 600; vertical-align: middle; margin-left: 6px;">
+                                                            <x-fas-ban style="width: 10px; height: 10px;" />
+                                                            Banned
+                                                        </span>
+                                                    @elseif($userPost->user->isUnsecure())
                                                         <span class="unsecure-badge" title="Unsecure Account" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; border: 1px solid color-mix(in srgb, #d97706 30%, transparent); border-radius: 10px; font-size: 10px; font-weight: 600; vertical-align: middle; margin-left: 6px;">
                                                             <x-fas-shield-halved style="width: 10px; height: 10px;" />
                                                             Unsecure
@@ -338,12 +344,13 @@
                                     @foreach($post->userPosts as $userPost)
                                         @php
                                             $isProfileVisible = ! $userPost->user_hidden;
-                                            $displayName = $isProfileVisible ? $userPost->user->name : 'Anonymous';
-                                            $initials = $isProfileVisible 
+                                            $isUserBanned = $userPost->user->trashed();
+                                            $displayName = $isUserBanned ? 'Banned' : ($isProfileVisible ? $userPost->user->name : 'Anonymous');
+                                            $initials = $isUserBanned ? 'B' : ($isProfileVisible
                                                 ? collect(explode(' ', $userPost->user->name))->map(fn($n) => Str::substr($n, 0, 1))->join('')
-                                                : '?';
-                                            $hue = $isProfileVisible ? (($userPost->user->id * 47) % 360) : 222;
-                                            $avatarUrl = $isProfileVisible ? $userPost->user->getAvatarUrl() : '';
+                                                : '?');
+                                            $hue = $isUserBanned ? 0 : ($isProfileVisible ? (($userPost->user->id * 47) % 360) : 222);
+                                            $avatarUrl = ($isProfileVisible && !$isUserBanned) ? $userPost->user->getAvatarUrl() : '';
                                         @endphp
                                         <article
                                             class="aud-depo-panel @if($userPost->trashed()) banned-border banned-tooltip @endif"
@@ -392,7 +399,12 @@
                                                 <div class="aud-depo-id">
                                                     <div class="aud-depo-name-row" style="display: flex; align-items: center; gap: 8px;">
                                                         <h3>{{ $displayName }}</h3>
-                                                        @if($userPost->user->isUnsecure())
+                                                        @if($isUserBanned)
+                                                            <span class="banned-badge" title="Banned User" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: color-mix(in srgb, #ef4444 15%, transparent); color: #ef4444; border: 1px solid color-mix(in srgb, #ef4444 30%, transparent); border-radius: 12px; font-size: 11px; font-weight: 600;">
+                                                                <x-fas-ban style="width: 12px; height: 12px;" />
+                                                                Banned
+                                                            </span>
+                                                        @elseif($userPost->user->isUnsecure())
                                                             <span class="unsecure-badge" title="Unsecure Account" style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: color-mix(in srgb, #d97706 15%, transparent); color: #d97706; border: 1px solid color-mix(in srgb, #d97706 30%, transparent); border-radius: 12px; font-size: 11px; font-weight: 600;">
                                                                 <x-fas-shield-halved style="width: 12px; height: 12px;" />
                                                                 Unsecure
@@ -470,6 +482,18 @@
                                                                 @endif
                                                                 @if (Auth::user()?->role === 'admin')
                                                                     @if($userPost->trashed())
+                                                                        {{-- Restore button --}}
+                                                                        <form method="POST" action="{{ route('audits.restore', $userPost->id) }}"
+                                                                            class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
+                                                                            @csrf
+                                                                            @method('PATCH')
+                                                                            <button type="submit"
+                                                                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] text-green-600 hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#16a34a_12%,transparent)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,#16a34a_28%,transparent)]"
+                                                                                role="menuitem">
+                                                                                <x-fas-rotate-left class="size-3" aria-hidden="true" />
+                                                                                <span>Restore</span>
+                                                                            </button>
+                                                                        </form>
                                                                         {{-- Delete Permanently (legacy trashed descriptions) --}}
                                                                         <form method="POST" action="{{ route('audits.force-delete', $userPost->id) }}"
                                                                             class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"

@@ -50,6 +50,9 @@
             @endforeach
         </div>
     @endif
+    <a href="{{ route('notifications.index') }}" class="noti-see-all" style="font-family: var(--font-family); color: var(--text-color);">
+        See all notifications
+    </a>
 </div>
 @enddesktop
 
@@ -150,6 +153,13 @@
                 <p class="text-sm">You're all caught up!</p>
             </div>
         @endif
+
+        <div style="padding: 0.75rem 1rem;">
+            <a href="{{ route('notifications.index') }}" class="mobile-overlay-link w-full text-center !justify-center" style="text-decoration: none;">
+                <x-fas-eye class="icon size-5"/>
+                <span class="text-sm font-bold">See all notifications</span>
+            </a>
+        </div>
     </div>
 @endif
 @endmobile

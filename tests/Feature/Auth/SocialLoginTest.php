@@ -234,7 +234,7 @@ class SocialLoginTest extends TestCase
             'menuBar_location' => 'left',
             'noti_location' => 'top-end',
             'dark_mode' => false,
-            'user_post_visible' => false,
+            'user_post_visible' => true,
             'theme_id' => $themeId,
         ]);
 

@@ -67,7 +67,7 @@ class RegistrationTest extends TestCase
             ])
             ->assertJsonMissingPath('otp');
 
-        Mail::assertSent(OtpVerificationMail::class, function (OtpVerificationMail $mail) {
+        Mail::assertQueued(OtpVerificationMail::class, function (OtpVerificationMail $mail) {
             return $mail->hasTo('test@example.com');
         });
 
@@ -102,7 +102,7 @@ class RegistrationTest extends TestCase
             ])
             ->assertJsonMissingPath('otp');
 
-        Mail::assertSentTimes(OtpVerificationMail::class, 2);
+        Mail::assertQueuedTimes(OtpVerificationMail::class, 2);
         $this->assertDatabaseCount('users', 0);
         $this->assertSame(2, OtpVerifications::where('email', 'test@example.com')->count());
     }

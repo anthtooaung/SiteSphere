@@ -93,7 +93,11 @@ class HomeController extends Controller
                     return $query;
                 }
 
-                return $query->having('average_rating', '>=', (int) min($ratings));
+                $minRating = (int) min($ratings);
+
+                return $query->whereHas('ratings', function ($q) use ($minRating) {
+                    $q->selectRaw('avg(rating)')->havingRaw('avg(rating) >= ?', [$minRating]);
+                });
             })
             // Apply sorting
             ->when($request->query('sort'), function ($query) use ($request) {

@@ -124,7 +124,7 @@ class ProfileDetailController extends Controller
             'allUploads' => $allUploads,
             'allRatings' => $allRatings,
             'recentReviewRatings' => $recentReviewRatings,
-            'maskedEmail' => maskEmail($user->email),
+            'maskedEmail' => \maskEmail($user->email),
         ]);
     }
 }

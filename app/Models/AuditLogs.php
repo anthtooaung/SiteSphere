@@ -36,4 +36,32 @@ class AuditLogs extends Model
             default => '#6b7280',         // Gray — fallback
         };
     }
+
+    /**
+     * Get a human-readable label for the action.
+     */
+    public function getActionLabel(): string
+    {
+        return match ($this->action) {
+            'ban_user' => 'Banned User',
+            'unban_user' => 'Restored User',
+            'delete_user' => 'Deleted User',
+            'force_delete_user' => 'Permanently Deleted User',
+            'ban_post' => 'Banned Post',
+            'unban_post' => 'Restored Post',
+            'delete_post' => 'Deleted Post',
+            'force_delete_post' => 'Permanently Deleted Post',
+            'ban_audit' => 'Banned Description',
+            'unban_audit' => 'Restored Description',
+            'delete_audit' => 'Deleted Description',
+            'force_delete_audit' => 'Permanently Deleted Description',
+            'restore_audit' => 'Restored Description',
+            'mark_unsecure' => 'Marked Unsecure',
+            'mark_secure' => 'Marked Secure',
+            'toggle_unsecure' => 'Toggled Security Status',
+            'resolve_report' => 'Resolved Report',
+            'dismiss_report' => 'Dismissed Report',
+            default => str_replace('_', ' ', ucfirst($this->action)),
+        };
+    }
 }

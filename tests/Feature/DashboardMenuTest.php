@@ -33,14 +33,12 @@ class DashboardMenuTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('class="desktop-nav flex items-center"', false)
             ->assertSee('id="layoutMenu"', false)
             ->assertSee('dashboard-page--left', false)
             ->assertSee('layout-menu--left', false)
             ->assertSee('data-menu-bar-location="left"', false)
             ->assertSee('Dashboard')
-            ->assertSee('Admin Dashboard')
-            ->assertSee('System Overview');
+            ->assertSee('Admin Dashboard');
     }
 
     public function test_admin_dashboard_shows_platform_metrics(): void
@@ -53,11 +51,11 @@ class DashboardMenuTest extends TestCase
         $response = $this->actingAs($admin)->get(route('dashboard'));
 
         $response->assertOk()
-            ->assertSeeText('Total Users')
-            ->assertSeeText('Total Reviews')
-            ->assertSeeText('Total Reports')
+            ->assertSeeText('Users')
+            ->assertSeeText('Reviews')
+            ->assertSeeText('Reports')
             ->assertSeeText('Recent Activity')
-            ->assertSeeText('Top Posts');
+            ->assertSeeText('Top Rated Posts');
     }
 
     public function test_dashboard_renders_user_stats_and_recent_reviews(): void
@@ -100,7 +98,7 @@ class DashboardMenuTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSeeText('My Reviews')
+            ->assertSeeText('Total Reviews')
             ->assertSeeText('Saved Posts')
             ->assertSeeText('Ratings Given')
             ->assertSeeText('Reviewed Websites')

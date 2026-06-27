@@ -8,6 +8,42 @@
 
 ---
 
+## 📸 Screenshots
+
+### Homepage
+![Homepage](screenshots/homepage.png)
+
+### Login & Register
+| Login | Register |
+|-------|----------|
+| ![Login](screenshots/login.png) | ![Register](screenshots/register.png) |
+
+### Home Feed
+![Home Feed](screenshots/home-feed.png)
+
+### Admin Dashboard
+![Admin Dashboard](screenshots/admin-dashboard.png)
+
+### Admin User Management
+![Admin Users](screenshots/admin-users.png)
+
+### Create Post
+![Create Post](screenshots/create-post.png)
+
+### Edit Profile
+![Edit Profile](screenshots/edit-profile.png)
+
+### Appearance Settings
+![Appearance](screenshots/appearance.png)
+
+### About Page
+![About](screenshots/about.png)
+
+### Mobile View
+![Mobile Home](screenshots/mobile-home.png)
+
+---
+
 ## ✨ Features
 
 - 🔍 **Browse & Search** — Find dev tools by category, tag, or keyword
@@ -72,10 +108,16 @@ Visit **http://localhost:8000**
 
 ---
 
-## 📸 Screenshots
+## 👥 Team
 
-<!-- Add your screenshots here -->
-*Screenshots coming soon...*
+| Name | Role | Contribution |
+|------|------|--------------|
+| <!-- Your Name --> | **Team Leader / Full-Stack** | Backend development, frontend compilation, project architecture |
+| <!-- Member 2 --> | Frontend Developer | UI components, responsive design |
+| <!-- Member 3 --> | Frontend Developer | UI components, styling |
+| <!-- Member 4 --> | Frontend Developer | UI components, interactions |
+
+> 💡 *Fill in your team members' names and specific contributions above.*
 
 ---
 

@@ -121,7 +121,7 @@
         <div class="mobile-search">
             <div class="mobile-search-inner">
                 <x-fas-search class="icon w-4 h-4"/>
-                <input type="text" x-model="search" placeholder="Search notifications..." autocomplete="off">
+                <input type="text" x-model="search" placeholder="Search notifications..." autocomplete="off" style="outline: none;">
             </div>
         </div>
 

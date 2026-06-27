@@ -57,7 +57,7 @@ class RegistrationTest extends TestCase
         $response = $this->postJson('/register/initiate', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password!!!',
+            'password' => 'password123!',
         ]);
 
         $response->assertOk()
@@ -91,7 +91,7 @@ class RegistrationTest extends TestCase
         $this->postJson('/register/initiate', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password!!!',
+            'password' => 'password123!',
         ])->assertOk();
 
         $response = $this->postJson('/register/resend-otp');
@@ -125,7 +125,7 @@ class RegistrationTest extends TestCase
         $response = $this->postJson('/register/initiate', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password!!!',
+            'password' => 'password123!',
         ]);
 
         $response->assertOk()
@@ -147,7 +147,7 @@ class RegistrationTest extends TestCase
         $this->postJson('/register/initiate', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password!!!',
+            'password' => 'password123!',
         ])->assertOk();
 
         $verification = OtpVerifications::where('email', 'test@example.com')->firstOrFail();
@@ -173,7 +173,7 @@ class RegistrationTest extends TestCase
         $this->postJson('/register/initiate', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password!!!',
+            'password' => 'password123!',
         ])->assertOk();
 
         $verification = OtpVerifications::where('email', 'test@example.com')->firstOrFail();
@@ -218,7 +218,7 @@ class RegistrationTest extends TestCase
         $this->postJson('/register/initiate', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password!!!',
+            'password' => 'password123!',
         ])->assertOk();
 
         $response = $this->postJson('/register/finalize', [

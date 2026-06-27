@@ -353,6 +353,31 @@
     padding: 8px 2px 2px;
 }
 
+.noti-see-all {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 6%, var(--background-color, #ffffff));
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background 180ms ease,
+        color 180ms ease;
+}
+
+.noti-see-all:hover {
+    background: color-mix(in srgb, var(--accent-color, #6c5ce7) 12%, var(--background-color, #ffffff));
+    color: var(--accent-color, #6c5ce7);
+}
+
 @keyframes bellRing {
 
     0%,

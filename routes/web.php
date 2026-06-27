@@ -15,6 +15,7 @@ use App\Http\Controllers\EditTagsController;
 use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationOpenController;
+use App\Http\Controllers\NotificatioinsController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\ProfileDetailController;
 use App\Http\Controllers\ReportsController;
@@ -100,8 +101,10 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/menu/dashboard/activity-log', [AdminActivityLogController::class, 'index'])->name('admin.activity-log');
     Route::get('/api/admin/activity/{date}', [AdminActivityLogController::class, 'show'])->name('admin.activity-date');
 
+    Route::get('/notifications', [NotificatioinsController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/open', NotificationOpenController::class)->name('notifications.open');
     Route::post('/notifications/mark-all-read', [NotificationOpenController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::delete('/notifications/{notification}', [NotificatioinsController::class, 'destroy'])->name('notifications.destroy');
 });
 
 require __DIR__.'/auth.php';

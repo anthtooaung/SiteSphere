@@ -66,7 +66,7 @@
             <div class="error-title">Page Not Found</div>
             <p class="error-desc">The page you're looking for doesn't exist or has been removed.</p>
             <a href="{{ route('welcome') }}" class="error-btn">
-                <x-fas-house /> Go to Home
+                <x-fas-house class="size-4" /> Go to Home
             </a>
         </div>
     </div>

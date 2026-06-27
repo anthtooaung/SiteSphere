@@ -70,7 +70,7 @@
             <x-noti-btn trigger="top" mobile-mode="trigger" />
         @else
             @auth
-                <x-search-btn />
+                <x-search-btn compact />
             @else
                 <x-login-out-menu-btn trigger="top" />
             @endauth

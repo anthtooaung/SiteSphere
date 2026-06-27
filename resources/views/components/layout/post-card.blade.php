@@ -239,7 +239,7 @@
             </span>
             <span
                 class="min-w-0 flex-1 truncate text-xs font-bold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_82%,transparent)] group-hover:[color:var(--accent-color,#6c5ce7)]"
-                data-post-card-url>{{ $url }}</span>
+                data-post-card-url>{{ parse_url($url, PHP_URL_HOST) ?? $url }}</span>
             <x-fas-arrow-up-right-from-square class="size-2.5 opacity-70 [color:var(--accent-color,#6c5ce7)]" />
         </a>
 

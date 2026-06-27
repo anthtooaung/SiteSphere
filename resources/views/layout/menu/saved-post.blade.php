@@ -131,6 +131,7 @@
                                 :average-rating="$post['average_rating']" :ratings-count="$post['ratings_count']"
                                 :comments-count="$post['comments_count']" :saved="true" :slug="$post['slug']"
                                 :is-unsecure="$post['is_unsecure']"
+                                :has-reported="$post['has_reported']"
                                 class="saved-post-card"
                                 data-saved-post-card
                                 data-saved-post-title="{{ $post['title'] }}"

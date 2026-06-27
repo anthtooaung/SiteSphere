@@ -11,6 +11,7 @@
     'saved' => false,
     'slug' => null,
     'isUnsecure' => false,
+    'hasReported' => false,
 ])
 
 <article
@@ -149,7 +150,7 @@
                                 </button>
                             </form>
 
-                            @if (Auth::user()?->role !== 'admin' && !collect($profiles)->contains('user_id', Auth::id()))
+                            @if (Auth::user()?->role !== 'admin' && !collect($profiles)->contains('user_id', Auth::id()) && !$hasReported)
                                 <div
                                     class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]">
                                     <button type="button"

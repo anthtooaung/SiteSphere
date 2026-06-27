@@ -133,6 +133,7 @@ class HomeController extends Controller
                     'comments_count' => (int) $post->comments_count,
                     'is_bookmarked' => (bool) $post->is_bookmarked,
                     'is_unsecure' => (bool) $post->is_unsecure,
+                    'has_reported' => $post->reports->isNotEmpty(),
                     'profiles' => $post->userPosts
                         ->map(function ($userPost): array {
                             $user = $userPost->user;

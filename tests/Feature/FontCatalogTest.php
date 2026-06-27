@@ -16,9 +16,9 @@ class FontCatalogTest extends TestCase
             ->orderBy('sort_order')
             ->get(['display_name', 'google_family', 'font_family', 'sort_order', 'is_default']);
 
-        $this->assertCount(6, $fonts);
+        $this->assertCount(13, $fonts);
         $this->assertSame(
-            ['Figtree', 'Inter', 'Poppins', 'Roboto', 'Open Sans', 'Nunito'],
+            ['Figtree', 'Inter', 'Poppins', 'Roboto', 'Open Sans', 'Nunito', 'Montserrat', 'Lato', 'Raleway', 'Oswald', 'Merriweather', 'Playfair Display', 'Lora'],
             $fonts->pluck('display_name')->all(),
         );
         $this->assertSame('Figtree, sans-serif', $fonts->firstWhere('display_name', 'Figtree')->font_family);

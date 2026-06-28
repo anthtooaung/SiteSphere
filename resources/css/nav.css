@@ -2919,3 +2919,13 @@ body::-webkit-scrollbar-track,
         gap: 6px;
     }
 }
+
+/* ---- Desktop safety net: hide mobile-only elements ---- */
+@media (min-width: 901px) {
+    .mobile-header,
+    .mobile-bottom-nav,
+    .mobile-menu-overlay,
+    .category-mobile-overlay {
+        display: none !important;
+    }
+}

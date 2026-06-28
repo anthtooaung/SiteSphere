@@ -331,6 +331,14 @@ $reportFilters = $reportFilters ?? [
                                         &bull; {{ $report->post->url }}
                                         @endif
                                     </span>
+                                    @php
+                                        $postAuthor = $report->post?->userPosts?->first()?->user;
+                                    @endphp
+                                    @if ($postAuthor?->slug)
+                                        <span class="reports-post-meta">
+                                            by <a href="{{ route('profile-detail', ['slug' => $postAuthor->slug]) }}" class="hover:underline" style="color: var(--noti-accent, #6c5ce7);">{{ $postAuthor->name }}</a>
+                                        </span>
+                                    @endif
                                 </td>
                                 <td data-label="Reason">
                                     <span class="reports-reason">{{ $report->reason }}</span>
@@ -472,6 +480,11 @@ $reportFilters = $reportFilters ?? [
                                     <span class="reports-post-meta">
                                         target_id: {{ $report->target_id }}
                                     </span>
+                                    @if ($report->comment?->user?->slug)
+                                        <span class="reports-post-meta">
+                                            by <a href="{{ route('profile-detail', ['slug' => $report->comment->user->slug]) }}" class="hover:underline" style="color: var(--noti-accent, #6c5ce7);">{{ $report->comment->user->name }}</a>
+                                        </span>
+                                    @endif
                                 </td>
                                 <td data-label="Reason">
                                     <span class="reports-reason">{{ $report->reason }}</span>
@@ -772,6 +785,11 @@ $reportFilters = $reportFilters ?? [
                                     <span class="reports-post-meta">
                                         target_id: {{ $report->target_id }}
                                     </span>
+                                    @if ($report->userPost?->user?->slug)
+                                        <span class="reports-post-meta">
+                                            by <a href="{{ route('profile-detail', ['slug' => $report->userPost->user->slug]) }}" class="hover:underline" style="color: var(--noti-accent, #6c5ce7);">{{ $report->userPost->user->name }}</a>
+                                        </span>
+                                    @endif
                                 </td>
                                 <td data-label="Reason">
                                     <span class="reports-reason">{{ $report->reason }}</span>

@@ -29,6 +29,7 @@ class AdminReportsController extends Controller
             ->where('target_name', 'posts')
             ->with([
                 'post:id,title,slug,url,deleted_at',
+                'post.userPosts.user:id,name,slug',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applySearch($query, $filters['search']))
@@ -43,8 +44,9 @@ class AdminReportsController extends Controller
         $commentReports = Reports::query()
             ->where('target_name', 'comments')
             ->with([
-                'comment:id,content,post_id,deleted_at',
+                'comment:id,content,post_id,user_id,deleted_at',
                 'comment.post:id,slug',
+                'comment.user:id,name,slug',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyCommentSearch($query, $filters['search']))
@@ -75,7 +77,7 @@ class AdminReportsController extends Controller
             ->where('target_name', 'user_posts')
             ->with([
                 'userPost:id,post_id,user_id,description,deleted_at',
-                'userPost.user:id,name',
+                'userPost.user:id,name,slug',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyUserPostSearch($query, $filters['search']))

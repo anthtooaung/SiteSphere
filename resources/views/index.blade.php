@@ -8,6 +8,27 @@
     <title>
         @yield('title', 'SiteSphere')
     </title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="@yield('description', 'SiteSphere - A modern web community platform for sharing posts, connecting with others, and discovering great content.')">
+    <meta name="keywords" content="@yield('keywords', 'community, social, posts, blog, content sharing, discussion, forums')">
+    <meta name="author" content="SiteSphere">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="@yield('canonical', 'https://sitesphere.xyz')">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="@yield('og_url', 'https://sitesphere.xyz')">
+    <meta property="og:title" content="@yield('og_title', 'SiteSphere - Share & Connect')">
+    <meta property="og:description" content="@yield('og_description', 'Join SiteSphere to share posts, connect with others, and discover great content.')">
+    <meta property="og:image" content="@yield('og_image', 'https://sitesphere.xyz/og-image.png')">
+    <meta property="og:site_name" content="SiteSphere">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('twitter_title', 'SiteSphere - Share & Connect')">
+    <meta name="twitter:description" content="@yield('twitter_description', 'Join SiteSphere to share posts, connect with others, and discover great content.')">
+    <meta name="twitter:image" content="@yield('twitter_image', 'https://sitesphere.xyz/og-image.png')">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <x-google-fonts />
     <script>

@@ -408,9 +408,6 @@ const init = () => {
         mode === "register" ? "/register" : "/login",
       );
     }
-    if(updateUrl){
-
-    }
   };
 
   const escapeHtml = (value) =>

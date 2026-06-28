@@ -319,8 +319,6 @@ class PostsController extends Controller
         // Handle unsecure posts — visible to all, banner shown
         $isUnsecure = (bool) $posts->is_unsecure;
 
-        $isAdmin = auth()->user()?->role === 'admin';
-
         $posts->load([
             'tags.categories',
             'userPosts' => fn ($query) => $query
@@ -361,7 +359,6 @@ class PostsController extends Controller
         }
 
         // Fetch user comments (User Reports) — admins can see banned comments
-        $isAdmin = auth()->user()?->role === 'admin';
         $commentsQuery = $posts->comments()
             ->with([
                 'user.settings',

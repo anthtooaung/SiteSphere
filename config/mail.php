@@ -116,7 +116,7 @@ return [
     ],
 
     'contact' => [
-        'recipient' => env('MAIL_CONTACT_RECIPIENT', 'anthtooaung2792005@outlook.com'),
+        'recipient' => env('MAIL_CONTACT_RECIPIENT', 'hello@example.com'),
     ],
 
 ];

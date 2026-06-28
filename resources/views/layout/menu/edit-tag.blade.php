@@ -565,12 +565,12 @@
                                                                 tabindex="-1">
 
                                                             <!-- Color Picker Popup -->
-                                                            <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave" @click.away="open = false" style="width: 200px;">
+                                                            <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave" @click.away="open = false">
                                                                 <div class="color-picker-popup-header">
                                                                     <span class="color-picker-popup-title">Select Color</span>
                                                                     <button type="button" class="color-picker-popup-close" @click="open = false">&times;</button>
                                                                 </div>
-                                                                <div class="color-picker-popup-grid" style="gap: 4px; padding: 10px;">
+                                                                <div class="color-picker-popup-grid">
                                                                     <template x-for="(preset, index) in presetColors" :key="index">
                                                                         <button type="button"
                                                                             class="color-picker-preset"
@@ -581,9 +581,9 @@
                                                                         </button>
                                                                     </template>
                                                                 </div>
-                                                                <div class="color-picker-popup-custom" style="padding: 8px 10px 10px;">
-                                                                    <button type="button" class="color-picker-custom-btn" @click="$refs.tagPicker.click()" style="padding: 6px 10px; font-size: 11px;">
-                                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                                <div class="color-picker-popup-custom">
+                                                                    <button type="button" class="color-picker-custom-btn" @click="$refs.tagPicker.click()">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                                             <circle cx="12" cy="12" r="10"/>
                                                                             <path d="M12 8v8M8 12h8"/>
                                                                         </svg>

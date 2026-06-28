@@ -54,7 +54,7 @@ class SavedPostsController extends Controller
             ])
             ->latest()
             ->get()
-            ->when($sort === 'az', fn ($bookmarks) => $bookmarks->sortBy(fn (Bookmarks $bookmark): string => Str::lower($bookmark->post->title)));
+            ->when($sort === 'az', fn ($bookmarks) => $bookmarks->sortBy(fn (Bookmarks $bookmark): string => Str::lower($bookmark->post->domain)));
 
         return view('layout.menu.saved-post', [
             'savedPosts' => $bookmarks
@@ -83,7 +83,6 @@ class SavedPostsController extends Controller
 
         return [
             'id' => $post->id,
-            'title' => $post->title,
             'url' => $post->url,
             'slug' => $post->slug,
             'category' => $primaryCategory?->name ?? 'Uncategorized',

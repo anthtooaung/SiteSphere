@@ -28,7 +28,7 @@ class AdminReportsController extends Controller
         $reports = Reports::query()
             ->where('target_name', 'posts')
             ->with([
-                'post:id,title,slug,url,deleted_at',
+                'post:id,slug,url,deleted_at',
                 'post.userPosts.user:id,name,slug',
                 'reporter:id,name,email,user_image',
             ])

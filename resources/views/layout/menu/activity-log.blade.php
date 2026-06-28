@@ -17,6 +17,7 @@
                     'category' => $log->category,
                     'user' => $log->user?->name ?? 'System',
                     'txt' => $log->action,
+                    'actionLabel' => $log->getActionLabel(),
                     'target' => $log->target_type ? class_basename($log->target_type) : null,
                     'targetId' => $log->target_id,
                     'targetType' => $log->target_type,

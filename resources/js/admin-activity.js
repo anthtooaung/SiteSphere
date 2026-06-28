@@ -204,10 +204,13 @@ document.addEventListener('DOMContentLoaded', () => {
           const entryTag = targetUrl ? 'a' : 'div';
           const hrefAttr = targetUrl ? ` href="${targetUrl}"` : '';
           const clickableClass = targetUrl ? ' alc-entry--clickable' : '';
+          const targetText = a.target ? `<span style="opacity:0.7; font-size:0.75rem;">${a.target} #${a.targetId}</span>` : '';
+          const reasonText = a.reason ? `<div style="opacity:0.7; font-size:0.75rem; margin-top:2px;">${a.reason}</div>` : '';
           return `<${entryTag} class="alc-entry${clickableClass}"${hrefAttr}>
             <div class="alc-icon" style="background:${a.color}18;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${a.color};"></span></div>
             <div class="alc-info">
-              <div class="alc-txt">${a.txt}</div>
+              <div class="alc-txt">${a.actionLabel || a.txt}${targetText ? ' · ' + targetText : ''}</div>
+              ${reasonText}
               <div class="alc-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> <i class="fa-regular fa-clock"></i> ${a.timeAbsolute || a.time}</div>
             </div>
           </${entryTag}>${i < visible.length - 1 ? '<div class="alc-divider"></div>' : ""}`;
@@ -264,9 +267,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const rowTag = targetUrl ? 'a' : 'div';
             const hrefAttr = targetUrl ? ` href="${targetUrl}"` : '';
             const clickableClass = targetUrl ? ' modal-row--clickable' : '';
+            const targetText = a.target ? `<span style="opacity:0.7; font-size:0.75rem;"> · ${a.target} #${a.targetId}</span>` : '';
+            const reasonText = a.reason ? `<div style="opacity:0.7; font-size:0.75rem; margin-top:4px;">Reason: ${a.reason}</div>` : '';
             return `<${rowTag} class="modal-row${clickableClass}"${hrefAttr}>
               <div class="modal-icon" style="background:${a.color}18; color:${a.color};"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${a.color};"></span></div>
-              <div class="modal-info"><div class="tl-txt">${a.txt}</div><div class="tl-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> ${a.timeAbsolute || a.time}</div></div>
+              <div class="modal-info"><div class="tl-txt">${a.actionLabel || a.txt}${targetText}</div>${reasonText}<div class="tl-time"><i class="fa-regular fa-user"></i> ${a.user} <span style="margin:0 4px;opacity:0.5">·</span> ${a.timeAbsolute || a.time}</div></div>
               <span class="modal-date-chip">${a.date}</span>
             </${rowTag}>`;
           }).join("")

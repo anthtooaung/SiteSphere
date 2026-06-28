@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('socialAccounts', function (Blueprint $table) {
+        Schema::table('social_accounts', function (Blueprint $table) {
             $table->text('token')->nullable()->change();
             $table->unique(['provider', 'provider_id']);
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('socialAccounts', function (Blueprint $table) {
+        Schema::table('social_accounts', function (Blueprint $table) {
             $table->dropUnique(['provider', 'provider_id']);
             $table->string('token')->nullable(false)->change();
         });

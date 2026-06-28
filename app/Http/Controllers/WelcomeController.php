@@ -13,7 +13,7 @@ class WelcomeController extends Controller
     public function __invoke(): View
     {
         $mostReviewedPosts = Posts::query()
-            ->select(['id', 'title', 'slug', 'url'])
+            ->select(['id', 'slug', 'url'])
             ->withCount([
                 'userPosts as visible_reviews_count',
             ])

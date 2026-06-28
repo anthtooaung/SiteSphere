@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class OtpVerifications extends Model
 {
-    protected $table = 'otpVerifications';
-
     protected $fillable = [
         'user_id',
         'email',

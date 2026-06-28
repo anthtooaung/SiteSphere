@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Traits\ChecksMailConfiguration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -43,7 +42,7 @@ class PasswordResetLinkController extends Controller
         ]);
 
         $user = User::where('email', $request->string('email')->toString())->firstOrFail();
-        $otpCode = (string) rand(100000, 999999);
+        $otpCode = (string) random_int(100000, 999999);
 
         OtpVerifications::create([
             'user_id' => $user->id,
@@ -51,8 +50,6 @@ class PasswordResetLinkController extends Controller
             'is_verified' => false,
             'expire_at' => now()->addMinutes(5),
         ]);
-
-        Log::info("Password reset OTP for {$user->email}: {$otpCode}");
 
         if ($this->isMailConfigured()) {
             try {

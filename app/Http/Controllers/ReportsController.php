@@ -424,7 +424,7 @@ class ReportsController extends Controller
     private function notifyAdminsAboutUserPostReport(Request $request, UserPosts $userPost): void
     {
         $reporter = $request->user();
-        $postTitle = $userPost->post?->title ?? 'Unknown Post';
+        $postTitle = $userPost->title ?? 'Unknown Post';
         $message = "{$reporter->name} reported a description on post: {$postTitle}";
         $isUnsecure = $userPost->report_count >= 3;
 

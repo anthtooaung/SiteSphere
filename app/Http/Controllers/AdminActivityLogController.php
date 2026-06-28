@@ -112,7 +112,7 @@ class AdminActivityLogController extends Controller
         $user = $request->user();
 
         if (! $user) {
-            abort(redirect()->route('login'));
+            abort(401);
         }
 
         abort_unless($user->role === 'admin', 403);

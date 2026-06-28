@@ -14,8 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const homePage = document.querySelector('[x-data*="homeController"]');
         if (!homePage || !searchInput) return;
 
-        const alpineData = Alpine.$data(homePage);
-        alpineData.filters.search = searchInput.value.trim();
-        alpineData.updateResults();
+        homePage.__x.$data.filters.search = searchInput.value.trim();
+        homePage.__x.$data.updateResults();
     });
 });

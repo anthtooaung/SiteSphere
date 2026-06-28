@@ -666,7 +666,7 @@
             document.addEventListener('DOMContentLoaded', function () {
                 window.sitesphereSwal.toast({
                     icon: '{{ session('success') ? 'success' : 'error' }}',
-                    title: `{!! session('success') ?? $errors->first() !!}`,
+                    title: @json(session('success') ?? $errors->first()),
                     position: '{{ $toastPosition ?? "top-end" }}'
                 });
             });

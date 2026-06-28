@@ -391,7 +391,7 @@
                         @if(auth()->id() !== $comment->user_id)
                             <template x-teleport="body">
                                 <div x-cloak x-show="reportOpen" x-transition.opacity.duration.200ms
-                                    class="fixed inset-0 z-[100000] flex items-center justify-content: center; justify-content bg-black/45 p-4 backdrop-blur-md"
+                                    class="fixed inset-0 z-[100000] flex items-center justify-center bg-black/45 p-4 backdrop-blur-md"
                                     style="justify-content: center;"
                                     role="presentation"
                                     x-on:click.self="closeReportModal()"

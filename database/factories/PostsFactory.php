@@ -18,12 +18,13 @@ class PostsFactory extends Factory
      */
     public function definition(): array
     {
-        $title = fake()->sentence(4);
+        $url = fake()->unique()->url();
+        $host = parse_url($url, PHP_URL_HOST);
+        $slug = $host ? preg_replace('/^www\./', '', $host) : Str::slug($url);
 
         return [
-            'title' => $title,
-            'slug' => Str::slug($title).'-'.fake()->unique()->randomNumber(5),
-            'url' => fake()->unique()->url(),
+            'slug' => $slug,
+            'url' => $url,
         ];
     }
 }

@@ -54,8 +54,8 @@ class HomeController extends Controller
                 }
 
                 return $query->where(function ($q) use ($search) {
-                    $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('url', 'like', "%{$search}%");
+                    $q->where('url', 'like', "%{$search}%")
+                        ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
             // Apply category filter
@@ -117,7 +117,6 @@ class HomeController extends Controller
 
                 return [
                     'id' => $post->id,
-                    'title' => $post->title,
                     'url' => $post->url,
                     'slug' => $post->slug,
                     'category' => $primaryCategory?->name ?? 'Uncategorized',

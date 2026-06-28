@@ -908,3 +908,64 @@
         height: 44px;
     }
 }
+
+/* Color Picker Component */
+.color-picker-component {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.color-picker-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--text-color) 70%, transparent);
+}
+
+.color-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.color-picker-swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid color-mix(in srgb, var(--text-color) 15%, transparent);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.color-picker-swatch:hover {
+    border-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+.color-picker-text {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
+    border-radius: 8px;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 150ms ease;
+}
+
+.color-picker-text:focus {
+    border-color: var(--accent-color);
+}
+
+.color-picker-native {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+}

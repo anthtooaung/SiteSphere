@@ -1,7 +1,7 @@
 @extends('dashboard')
 
 @section('title')
-    {{ $post->title }}
+    {{ $post->domain }}
 @endsection
 
 @push('styles')
@@ -74,7 +74,7 @@
                         <!-- Title + three-dot menu -->
                         <div class="aud-title-row">
                             <h1 class="aud-title">
-                                {{ $post->title }}
+                                {{ $post->domain }}
                             </h1>
 
                             <div class="relative shrink-0" x-data="{
@@ -397,6 +397,9 @@
                                                     </span>
                                                 @endif
                                                 <div class="aud-depo-id">
+                                                    @if($userPost->title)
+                                                        <p style="font-size: 14px; font-weight: 700; margin: 0 0 4px; color: var(--text-color);">{{ $userPost->title }}</p>
+                                                    @endif
                                                     <div class="aud-depo-name-row" style="display: flex; align-items: center; gap: 8px;">
                                                         <h3>{{ $displayName }}</h3>
                                                         @if($isUserBanned)
@@ -435,8 +438,7 @@
                                                         @auth
                                                             @if ($post->id)
                                                                 @if (Auth::user()?->role !== 'admin' && Auth::id() !== $userPost->user_id)
-                                                                    <div
-                                                                        class=" ">
+                                                                    <div>
                                                                         <button type="button"
                                                                             class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
                                                                             role="menuitem"

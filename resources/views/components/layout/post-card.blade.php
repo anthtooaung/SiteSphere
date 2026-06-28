@@ -1,6 +1,6 @@
 @props([
     'postId' => null,
-    'title',
+    'title' => null,
     'url',
     'category' => 'Uncategorized',
     'tags' => [],
@@ -13,6 +13,11 @@
     'isUnsecure' => false,
     'hasReported' => false,
 ])
+
+@php
+    $domain = parse_url($url, PHP_URL_HOST) ?? $url;
+    $domain = preg_replace('/^www\./', '', $domain);
+@endphp
 
 <article
     {{ $attributes->merge(['class' => 'review-card !p-0 flex flex-col h-full w-full max-w-md overflow-hidden rounded-[8px] border [border-color:color-mix(in_srgb,var(--text-color,#182230)_10%,transparent)] [background:var(--background-color,#ffffff)] [color:var(--text-color,#0d1b2a)] [box-shadow:0_4px_14px_rgba(15,23,42,0.06)]']) }}
@@ -97,17 +102,43 @@
     }" x-on:click.outside="if (! reportOpen) { reviewOpen = false; actionsOpen = false }">
     <header class="space-y-3 px-4 pb-3 pt-4 sm:px-5">
         <div class="flex items-start justify-between gap-3">
-            <div class="min-w-0 flex-1">
-                <h2 class="line-clamp-2 min-h-[44px] overflow-hidden break-words text-[16px] font-extrabold leading-[1.35] tracking-normal [color:var(--text-color,#0d1b2a)]"
-                    title="{{ $title }}" data-post-card-title>
-                    @if($slug)
-                        <a href="{{ route('posts.show', $slug) }}" class="hover:underline hover:[color:var(--accent-color)] transition-colors">
-                            {{ $title }}
+            <div class="min-w-0 flex-1" x-data="{ domainOpen: false }">
+                <div class="relative">
+                    <button type="button"
+                        class="flex items-center gap-2 text-[16px] font-extrabold leading-[1.35] tracking-normal [color:var(--text-color,#0d1b2a)] hover:[color:var(--accent-color)] transition-colors"
+                        title="{{ $domain }}"
+                        x-on:click.stop="domainOpen = !domainOpen"
+                        x-on:keydown.escape.window="domainOpen = false"
+                        data-post-card-domain>
+                        <span class="truncate">{{ $domain }}</span>
+                        <x-fas-chevron-down class="size-3 shrink-0 opacity-50" aria-hidden="true" />
+                    </button>
+
+                    <div x-cloak x-show="domainOpen"
+                        x-transition:enter="transition ease-out duration-200 origin-top-left"
+                        x-transition:enter-start="opacity-0 -translate-y-1 scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave="transition ease-in duration-150 origin-top-left"
+                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave-end="opacity-0 -translate-y-1 scale-95"
+                        class="absolute left-0 top-10 z-20 w-48 overflow-hidden rounded-lg border p-2 text-sm font-bold [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_20%,var(--background-color,#ffffff))] [background:var(--background-color,#ffffff)] [box-shadow:0_16px_36px_color-mix(in_srgb,var(--text-color,#0d1b2a)_18%,transparent)]"
+                        x-on:click.outside="domainOpen = false">
+                        @if($slug)
+                            <a href="{{ route('posts.show', $slug) }}"
+                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)]"
+                                x-on:click="domainOpen = false">
+                                <x-fas-eye class="size-3" aria-hidden="true" />
+                                <span>Go to post detail</span>
+                            </a>
+                        @endif
+                        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
+                            class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)]"
+                            x-on:click="domainOpen = false">
+                            <x-fas-arrow-up-right-from-square class="size-3" aria-hidden="true" />
+                            <span>Go to URL</span>
                         </a>
-                    @else
-                        {{ $title }}
-                    @endif
-                </h2>
+                    </div>
+                </div>
             </div>
 
             @if ($isUnsecure)

@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Hidden(['token'])]
 class SocialAccount extends Model
 {
-    protected $table = 'socialAccounts';
-
     protected $fillable = [
         'user_id',
         'provider',

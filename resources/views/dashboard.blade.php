@@ -50,7 +50,7 @@
     @stack('styles')
 
 </head>
-<body class="m-0 box-border overflow-none p-0 bg-[var(--background-color)] text-[var(--text-color)]" style="font-family: var(--font-family);">
+<body class="m-0 box-border overflow-hidden p-0 bg-[var(--background-color)] text-[var(--text-color)]" style="font-family: var(--font-family);">
     <x-loading />
     @yield('content')
     @stack('scripts')

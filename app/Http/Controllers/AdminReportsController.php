@@ -28,7 +28,8 @@ class AdminReportsController extends Controller
         $reports = Reports::query()
             ->where('target_name', 'posts')
             ->with([
-                'post:id,title,slug,url,deleted_at',
+                'post:id,slug,url,deleted_at',
+                'post.userPosts.user:id,name,slug',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applySearch($query, $filters['search']))
@@ -43,8 +44,9 @@ class AdminReportsController extends Controller
         $commentReports = Reports::query()
             ->where('target_name', 'comments')
             ->with([
-                'comment:id,content,post_id,deleted_at',
+                'comment:id,content,post_id,user_id,deleted_at',
                 'comment.post:id,slug',
+                'comment.user:id,name,slug',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyCommentSearch($query, $filters['search']))
@@ -75,7 +77,7 @@ class AdminReportsController extends Controller
             ->where('target_name', 'user_posts')
             ->with([
                 'userPost:id,post_id,user_id,description,deleted_at',
-                'userPost.user:id,name',
+                'userPost.user:id,name,slug',
                 'reporter:id,name,email,user_image',
             ])
             ->when($filters['search'] !== '', fn (Builder $query) => $this->applyUserPostSearch($query, $filters['search']))
@@ -186,8 +188,8 @@ class AdminReportsController extends Controller
                 ->orWhere('target_id', 'like', "%{$search}%")
                 ->orWhereHas('post', function (Builder $query) use ($search): void {
                     $query
-                        ->where('title', 'like', "%{$search}%")
-                        ->orWhere('url', 'like', "%{$search}%");
+                        ->where('url', 'like', "%{$search}%")
+                        ->orWhere('slug', 'like', "%{$search}%");
                 })
                 ->orWhereHas('reporter', function (Builder $query) use ($search): void {
                     $query

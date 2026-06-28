@@ -15,12 +15,12 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrInsert(
-            ['email' => 'anthtooaung2792005@outlook.com'],
+            ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
             [
                 'name' => 'Admin',
                 'slug' => Str::slug('Admin'),
                 'role' => 'admin',
-                'password' => Hash::make('123!@#123'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'change-me-in-production')),
                 'is_verified' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

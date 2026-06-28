@@ -67,7 +67,7 @@
                     
                     $jsPosts = $topPosts->map(function($post) {
                         return [
-                            "title" => $post->title,
+                            "title" => $post->domain,
                             "slug" => $post->slug,
                             "rating" => round($post->ratings_avg_rating ?? 0),
                             "comments" => $post->comments_count
@@ -333,7 +333,7 @@
 
                     @forelse ($recentReviews as $review)
                         <a class="dashboard-activity-link" href="{{ route('posts.show', $review->post->slug) }}">
-                            <span>{{ $review->post->title }}</span>
+                            <span>{{ $review->post->domain }}</span>
                             <small>{{ $review->created_at->diffForHumans() }}</small>
                         </a>
                     @empty

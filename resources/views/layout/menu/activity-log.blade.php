@@ -2,31 +2,52 @@
 
 @section('title', 'Activity Log - Admin')
 
-@section('content')
-    @php
-        $dashboardMenuLocation = in_array($menuBarLocation ?? 'left', ['top', 'right', 'bottom', 'left'], true)
-            ? $menuBarLocation
-            : 'left';
+@php
+    $dashboardMenuLocation = in_array($menuBarLocation ?? 'left', ['top', 'right', 'bottom', 'left'], true)
+        ? $menuBarLocation
+        : 'left';
 
-        $actsExpanded = [];
-        foreach ($auditLogs as $date => $logs) {
-            foreach ($logs as $log) {
-                $actsExpanded[] = [
-                    'date' => $date,
-                    'color' => $log->getColor(),
-                    'category' => $log->category,
-                    'user' => $log->user?->name ?? 'System',
-                    'txt' => $log->action,
-                    'target' => $log->target_type ? class_basename($log->target_type) : null,
-                    'targetId' => $log->target_id,
-                    'targetType' => $log->target_type,
-                    'reason' => $log->reason,
-                    'time' => $log->created_at->diffForHumans(),
-                    'timeAbsolute' => $log->created_at->format('H:i'),
-                ];
-            }
+    $actsExpanded = [];
+    foreach ($auditLogs as $date => $logs) {
+        foreach ($logs as $log) {
+            $actsExpanded[] = [
+                'date' => $date,
+                'color' => $log->getColor(),
+                'category' => $log->category,
+                'user' => $log->user?->name ?? 'System',
+                'txt' => $log->action,
+                'actionLabel' => $log->getActionLabel(),
+                'target' => $log->target_type ? class_basename($log->target_type) : null,
+                'targetId' => $log->target_id,
+                'targetType' => $log->target_type,
+                'reason' => $log->reason,
+                'time' => $log->created_at->diffForHumans(),
+                'timeAbsolute' => $log->created_at->format('H:i'),
+            ];
         }
-    @endphp
+    }
+@endphp
+
+@push('styles')
+    @vite('resources/css/admin-activity.css')
+@endpush
+
+@push('scripts')
+    <script>
+        window.AdminActivityData = {
+            actsExpanded: @json($actsExpanded),
+            selectedYear: {{ $selectedYear }},
+            selectedMonth: {{ $selectedMonth }},
+            selectedDate: '{{ now()->format("Y-m-d") }}',
+            postSlugs: @json($postSlugs ?? []),
+            userSlugs: @json($userSlugs ?? []),
+            commentPostSlugs: @json($commentPostSlugs ?? [])
+        };
+    </script>
+    @vite('resources/js/admin-activity.js')
+@endpush
+
+@section('content')
 
     <x-layout.nav />
 
@@ -34,24 +55,6 @@
         <x-layout.menu :menu-bar-location="$dashboardMenuLocation" />
 
         <main class="dashboard-content dashboard-home-content" aria-labelledby="activityLogTitle">
-            @push('styles')
-                @vite('resources/css/admin-activity.css')
-            @endpush
-            
-            @push('scripts')
-                <script>
-                    window.AdminActivityData = {
-                        actsExpanded: @json($actsExpanded),
-                        selectedYear: {{ $selectedYear }},
-                        selectedMonth: {{ $selectedMonth }},
-                        selectedDate: '{{ now()->format("Y-m-d") }}',
-                        postSlugs: @json($postSlugs ?? []),
-                        userSlugs: @json($userSlugs ?? []),
-                        commentPostSlugs: @json($commentPostSlugs ?? [])
-                    };
-                </script>
-                @vite('resources/js/admin-activity.js')
-            @endpush
 
             <div class="admin-shell">
               <nav class="breadcrumb" aria-label="Breadcrumb">

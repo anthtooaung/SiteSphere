@@ -349,7 +349,7 @@ class ReportsController extends Controller
     private function notifyAdminsAboutReport(StoreReportsRequest $request, Posts $post): void
     {
         $reporter = $request->user();
-        $message = "{$reporter->name} reported post: {$post->title}";
+        $message = "{$reporter->name} reported post: {$post->domain}";
         $isUnsecure = $post->report_count >= 3;
 
         User::query()
@@ -424,7 +424,7 @@ class ReportsController extends Controller
     private function notifyAdminsAboutUserPostReport(Request $request, UserPosts $userPost): void
     {
         $reporter = $request->user();
-        $postTitle = $userPost->post?->title ?? 'Unknown Post';
+        $postTitle = $userPost->title ?? 'Unknown Post';
         $message = "{$reporter->name} reported a description on post: {$postTitle}";
         $isUnsecure = $userPost->report_count >= 3;
 
@@ -461,7 +461,7 @@ class ReportsController extends Controller
                 'from_user_id' => null,
                 'target_type' => 'posts',
                 'target_id' => $post->id,
-                'message' => "Your post \"{$post->title}\" has been reported.",
+                'message' => "Your post \"{$post->domain}\" has been reported.",
                 'is_read' => false,
                 'is_unsecure' => false,
             ]);

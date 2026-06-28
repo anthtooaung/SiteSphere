@@ -40,7 +40,7 @@
                         <x-fas-search class="saved-post-search-icon" aria-hidden="true" />
                         <span class="sr-only">Search saved posts</span>
                         <input type="search" name="search" value="{{ $savedPostFilters['search'] }}"
-                            placeholder="Search by title or URL..." data-saved-post-search>
+                            placeholder="Search by domain or URL..." data-saved-post-search>
                     </label>
 
                     <div class="saved-post-control-wrapper relative">
@@ -126,7 +126,7 @@
                 @else
                     <div class="saved-post-grid" data-saved-post-grid>
                         @foreach ($savedPosts as $post)
-                            <x-layout.post-card :post-id="$post['id']" :title="$post['title']" :url="$post['url']"
+                            <x-layout.post-card :post-id="$post['id']" :url="$post['url']"
                                 :category="$post['category']" :tags="$post['tags']" :profiles="$post['profiles']"
                                 :average-rating="$post['average_rating']" :ratings-count="$post['ratings_count']"
                                 :comments-count="$post['comments_count']" :saved="true" :slug="$post['slug']"
@@ -134,7 +134,6 @@
                                 :has-reported="$post['has_reported']"
                                 class="saved-post-card"
                                 data-saved-post-card
-                                data-saved-post-title="{{ $post['title'] }}"
                                 data-saved-post-url="{{ $post['url'] }}"
                                 data-saved-post-date="{{ $post['saved_at'] }}" />
                         @endforeach

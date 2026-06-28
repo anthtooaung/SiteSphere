@@ -16,13 +16,13 @@
         "laravel/tinker": "^3.0",
         "owenvoke/blade-fontawesome": "^3.2",
         "pusher/pusher-php-server": "^7.2",
-        "resend/resend-laravel": "*",
+        "resend/resend-laravel": "^1.4",
         "sweetalert2/laravel": "^1.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/boost": "^2.2",
-        "laravel/breeze": "*",
+        "laravel/breeze": "^2.4",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",

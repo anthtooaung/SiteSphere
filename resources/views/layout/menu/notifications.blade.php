@@ -502,6 +502,7 @@
             .notifications-content {
                 padding: 1rem;
                 height: auto;
+                margin-bottom: 96px;
             }
 
             .notifications-header {

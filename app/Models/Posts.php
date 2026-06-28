@@ -56,4 +56,13 @@ class Posts extends Model
         return $this->hasMany(Reports::class, 'target_id')
             ->where('target_name', 'posts');
     }
+
+    /**
+     * Get the domain name from the URL.
+     */
+    public function getDomainAttribute(): string
+    {
+        $host = parse_url($this->url, PHP_URL_HOST);
+        return $host ? preg_replace('/^www\./', '', $host) : $this->url;
+    }
 }

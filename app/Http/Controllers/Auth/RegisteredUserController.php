@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -73,7 +72,7 @@ class RegisteredUserController extends Controller
         ]);
         $request->session()->forget(self::REGISTRATION_OTP_VERIFIED_KEY);
 
-        $otpCode = (string) rand(100000, 999999);
+        $otpCode = (string) random_int(100000, 999999);
 
         OtpVerifications::create([
             'email' => $validated['email'],
@@ -81,8 +80,6 @@ class RegisteredUserController extends Controller
             'is_verified' => false,
             'expire_at' => now()->addMinutes(5),
         ]);
-
-        Log::info("OTP verification code for {$validated['email']}: {$otpCode}");
 
         if (! $this->isMailConfigured()) {
             return response()->json([
@@ -134,7 +131,7 @@ class RegisteredUserController extends Controller
             ], 422);
         }
 
-        $otpCode = (string) rand(100000, 999999);
+        $otpCode = (string) random_int(100000, 999999);
 
         OtpVerifications::create([
             'email' => $pendingRegistration['email'],
@@ -144,8 +141,6 @@ class RegisteredUserController extends Controller
         ]);
 
         $request->session()->forget(self::REGISTRATION_OTP_VERIFIED_KEY);
-
-        Log::info("Resent OTP verification code for {$pendingRegistration['email']}: {$otpCode}");
 
         if (! $this->isMailConfigured()) {
             return response()->json([

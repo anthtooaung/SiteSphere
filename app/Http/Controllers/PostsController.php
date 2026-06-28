@@ -78,15 +78,23 @@ class PostsController extends Controller
         }
 
         DB::transaction(function () use ($existingPost, $user, $validated): void {
-            $post = $existingPost ?? Posts::query()->create([
-                'title' => $validated['title'],
-                'slug' => $this->uniqueSlug($validated['title']),
-                'url' => $validated['url'],
-            ]);
+            if ($existingPost) {
+                $post = $existingPost;
+            } else {
+                $host = parse_url($validated['url'], PHP_URL_HOST);
+                $slug = $host ? preg_replace('/^www\./', '', $host) : 'post';
+
+                $post = Posts::query()->create([
+                    'slug' => $this->uniqueSlug($slug),
+                    'url' => $validated['url'],
+                ]);
+            }
 
             UserPosts::query()->create([
                 'post_id' => $post->id,
                 'user_id' => $user->id,
+                'title' => $validated['title'],
+                'slug' => Str::slug($validated['title']),
                 'description' => $validated['description'],
                 'user_hidden' => ! ($user->settings?->user_post_visible ?? true),
             ]);
@@ -249,9 +257,9 @@ class PostsController extends Controller
         return back()->with('success', 'Description restored.');
     }
 
-    private function uniqueSlug(string $title, ?Posts $ignorePost = null): string
+    private function uniqueSlug(string $domain, ?Posts $ignorePost = null): string
     {
-        $baseSlug = Str::slug($title) ?: 'post';
+        $baseSlug = Str::slug($domain) ?: 'post';
         $slug = $baseSlug;
         $counter = 2;
 
@@ -311,8 +319,6 @@ class PostsController extends Controller
         // Handle unsecure posts — visible to all, banner shown
         $isUnsecure = (bool) $posts->is_unsecure;
 
-        $isAdmin = auth()->user()?->role === 'admin';
-
         $posts->load([
             'tags.categories',
             'userPosts' => fn ($query) => $query
@@ -353,7 +359,6 @@ class PostsController extends Controller
         }
 
         // Fetch user comments (User Reports) — admins can see banned comments
-        $isAdmin = auth()->user()?->role === 'admin';
         $commentsQuery = $posts->comments()
             ->with([
                 'user.settings',
@@ -409,7 +414,6 @@ class PostsController extends Controller
         return view('layout.post-detail', [
             'post' => $posts,
             'isBanned' => false,
-            'isUnsecure' => $isUnsecure,
             'banLog' => null,
             'isUnsecure' => $posts->is_unsecure,
             'averageRating' => $averageRating,

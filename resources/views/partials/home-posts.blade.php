@@ -1,7 +1,6 @@
 @foreach ($posts as $post)
     <x-layout.post-card
         :post-id="$post['id']"
-        :title="$post['title']"
         :url="$post['url']"
         :category="$post['category']"
         :tags="$post['tags']"

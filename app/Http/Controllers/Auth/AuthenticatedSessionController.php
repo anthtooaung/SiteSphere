@@ -11,7 +11,6 @@ use App\Traits\ChecksMailConfiguration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use SweetAlert2\Laravel\Swal;
@@ -126,7 +125,7 @@ class AuthenticatedSessionController extends Controller
 
     private function createAndSendTwoFactorOtp(User $user): void
     {
-        $otpCode = (string) rand(100000, 999999);
+        $otpCode = (string) random_int(100000, 999999);
 
         OtpVerifications::create([
             'user_id' => $user->id,
@@ -135,8 +134,6 @@ class AuthenticatedSessionController extends Controller
             'is_verified' => false,
             'expire_at' => now()->addMinutes(5),
         ]);
-
-        Log::info("Login 2FA OTP verification code for {$user->email}: {$otpCode}");
 
         if (! $this->isMailConfigured()) {
             return;

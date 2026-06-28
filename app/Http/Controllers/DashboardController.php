@@ -117,7 +117,7 @@ class DashboardController extends Controller
         }
 
         $recentReviews = UserPosts::query()
-            ->with(['post:id,title,slug,url'])
+            ->with(['post:id,slug,url'])
             ->where('user_id', $user->id)
             ->latest('id')
             ->take(4)

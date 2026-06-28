@@ -418,7 +418,42 @@
                                         <template x-if="isAdmin && isEditing(category)">
                                             <label class="thread-category-color-row">
                                                 <span>Category color</span>
-                                                <input type="color" x-model="category.color">
+                                                <div class="color-picker-component" x-data="{
+                                                    showPicker: false,
+                                                    textValue: category.color,
+                                                    syncFromText() {
+                                                        let val = this.textValue.trim();
+                                                        if (val && !val.startsWith('#')) val = '#' + val;
+                                                        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                                                            category.color = val;
+                                                        }
+                                                    },
+                                                    syncFromPicker(e) {
+                                                        category.color = e.target.value;
+                                                        this.textValue = e.target.value;
+                                                    }
+                                                }">
+                                                    <div class="color-picker-row">
+                                                        <button type="button" class="color-picker-swatch"
+                                                            :style="{ backgroundColor: category.color }"
+                                                            @click="$refs.catPicker.click()"
+                                                            aria-label="Pick color">
+                                                        </button>
+                                                        <input type="text" class="color-picker-text"
+                                                            x-model="textValue"
+                                                            @input="syncFromText()"
+                                                            @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = category.color"
+                                                            placeholder="#FF5733"
+                                                            maxlength="7"
+                                                            spellcheck="false"
+                                                            autocomplete="off">
+                                                        <input type="color" x-ref="catPicker"
+                                                            :value="category.color"
+                                                            @input="syncFromPicker($event)"
+                                                            class="color-picker-native"
+                                                            tabindex="-1">
+                                                    </div>
+                                                </div>
                                             </label>
                                         </template>
 
@@ -434,7 +469,43 @@
                                                         <span class="thread-tag-name" x-text="tag.name"></span>
                                                     </template>
                                                     <template x-if="isEditing(category)">
-                                                        <input type="color" x-model="tag.color" @input="syncTagColors(tag, 'color')" aria-label="Tag color">
+                                                        <div class="color-picker-component" x-data="{
+                                                            textValue: tag.color,
+                                                            syncFromText() {
+                                                                let val = this.textValue.trim();
+                                                                if (val && !val.startsWith('#')) val = '#' + val;
+                                                                if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                                                                    tag.color = val;
+                                                                    syncTagColors(tag, 'color');
+                                                                }
+                                                            },
+                                                            syncFromPicker(e) {
+                                                                tag.color = e.target.value;
+                                                                this.textValue = e.target.value;
+                                                                syncTagColors(tag, 'color');
+                                                            }
+                                                        }" style="display: inline-flex; align-items: center; gap: 4px;">
+                                                            <button type="button" class="color-picker-swatch"
+                                                                style="width: 24px; height: 24px; border-radius: 4px;"
+                                                                :style="{ backgroundColor: tag.color }"
+                                                                @click="$refs.tagPicker.click()"
+                                                                aria-label="Pick color">
+                                                            </button>
+                                                            <input type="text" class="color-picker-text"
+                                                                style="width: 80px; padding: 4px 6px; font-size: 11px;"
+                                                                x-model="textValue"
+                                                                @input="syncFromText()"
+                                                                @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = tag.color"
+                                                                placeholder="#FF5733"
+                                                                maxlength="7"
+                                                                spellcheck="false"
+                                                                autocomplete="off">
+                                                            <input type="color" x-ref="tagPicker"
+                                                                :value="tag.color"
+                                                                @input="syncFromPicker($event)"
+                                                                class="color-picker-native"
+                                                                tabindex="-1">
+                                                        </div>
                                                     </template>
                                                     <template x-if="isAdmin && isEditing(category)">
                                                         <button type="button" class="thread-chip-remove"
@@ -595,7 +666,7 @@
             document.addEventListener('DOMContentLoaded', function () {
                 window.sitesphereSwal.toast({
                     icon: '{{ session('success') ? 'success' : 'error' }}',
-                    title: `{!! session('success') ?? $errors->first() !!}`,
+                    title: @json(session('success') ?? $errors->first()),
                     position: '{{ $toastPosition ?? "top-end" }}'
                 });
             });

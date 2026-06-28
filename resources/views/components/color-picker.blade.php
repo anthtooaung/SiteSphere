@@ -144,16 +144,38 @@
         this.$dispatch('color-change', { name: '{{ $name }}', value: hex });
     },
 
+    popupStyle: '',
+
     toggle() {
         this.open = !this.open;
         if (this.open) {
             this.showCustom = false;
             this.initPicker();
+            this.positionPopup();
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
         }
     },
     closePanel() {
         this.open = false;
         this.showCustom = false;
+        document.body.style.overflow = '';
+    },
+    positionPopup() {
+        this.$nextTick(() => {
+            const swatch = this.$refs.swatchBtn;
+            if (!swatch) return;
+            const rect = swatch.getBoundingClientRect();
+            const popupWidth = 280;
+            let left = rect.left;
+            if (left + popupWidth > window.innerWidth - 12) {
+                left = window.innerWidth - popupWidth - 12;
+            }
+            if (left < 12) left = 12;
+            let top = rect.bottom + 8;
+            this.popupStyle = 'position:fixed;top:' + top + 'px;left:' + left + 'px;z-index:10000;';
+        });
     }
 }" x-init="$watch('color', val => { $dispatch('color-change', { name: '{{ $name }}', value: val }); })"
 @click.outside="open = false">
@@ -162,7 +184,7 @@
     @endif
     <div class="color-picker-row">
         <input type="hidden" name="{{ $name }}" x-model="color">
-        <button type="button" class="color-picker-swatch"
+        <button type="button" class="color-picker-swatch" x-ref="swatchBtn"
             :style="{ backgroundColor: color }"
             @click="toggle()"
             aria-label="Pick color">
@@ -179,7 +201,7 @@
 
         <!-- Color Picker Popup -->
         <div class="color-picker-backdrop" x-show="open" @click="closePanel()"></div>
-        <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
+        <div class="color-picker-popup" :style="popupStyle" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
             <div class="color-picker-popup-header">
                 <span class="color-picker-popup-title">Select Color</span>
                 <button type="button" class="color-picker-popup-close" @click="closePanel()">&times;</button>

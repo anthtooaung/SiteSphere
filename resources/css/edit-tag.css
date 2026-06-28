@@ -925,10 +925,6 @@
 
 /* Color Picker Popup */
 .color-picker-popup {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    z-index: 1000;
     width: 280px;
     background: var(--background-color, #ffffff);
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);

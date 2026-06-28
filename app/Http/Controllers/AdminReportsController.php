@@ -188,8 +188,8 @@ class AdminReportsController extends Controller
                 ->orWhere('target_id', 'like', "%{$search}%")
                 ->orWhereHas('post', function (Builder $query) use ($search): void {
                     $query
-                        ->where('title', 'like', "%{$search}%")
-                        ->orWhere('url', 'like', "%{$search}%");
+                        ->where('url', 'like', "%{$search}%")
+                        ->orWhere('slug', 'like', "%{$search}%");
                 })
                 ->orWhereHas('reporter', function (Builder $query) use ($search): void {
                     $query

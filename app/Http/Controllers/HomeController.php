@@ -54,8 +54,8 @@ class HomeController extends Controller
                 }
 
                 return $query->where(function ($q) use ($search) {
-                    $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('url', 'like', "%{$search}%");
+                    $q->where('url', 'like', "%{$search}%")
+                        ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
             // Apply category filter

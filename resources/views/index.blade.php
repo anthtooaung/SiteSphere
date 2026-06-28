@@ -9,26 +9,34 @@
         @yield('title', 'SiteSphere')
     </title>
 
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="@yield('description', 'SiteSphere - A modern web community platform for sharing posts, connecting with others, and discovering great content.')">
-    <meta name="keywords" content="@yield('keywords', 'community, social, posts, blog, content sharing, discussion, forums')">
-    <meta name="author" content="SiteSphere">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="@yield('canonical', 'https://sitesphere.xyz')">
+   <!-- Primary Meta Tags -->
+<title>
+            SiteSphere
+    </title>
+<meta name="title" content="
+            SiteSphere
+    " />
+<meta name="description" content="SiteSphere - A modern web community platform for sharing posts, connecting with others, and discovering great content." />
 
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="@yield('og_url', 'https://sitesphere.xyz')">
-    <meta property="og:title" content="@yield('og_title', 'SiteSphere - Share & Connect')">
-    <meta property="og:description" content="@yield('og_description', 'Join SiteSphere to share posts, connect with others, and discover great content.')">
-    <meta property="og:image" content="@yield('og_image', 'https://sitesphere.xyz/og-image.png')">
-    <meta property="og:site_name" content="SiteSphere">
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://sitesphere-production.site/" />
+<meta property="og:title" content="
+            SiteSphere
+    " />
+<meta property="og:description" content="SiteSphere - A modern web community platform for sharing posts, connecting with others, and discovering great content." />
+<meta property="og:image" content="https://metatags.io/images/meta-tags.png" />
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('twitter_title', 'SiteSphere - Share & Connect')">
-    <meta name="twitter:description" content="@yield('twitter_description', 'Join SiteSphere to share posts, connect with others, and discover great content.')">
-    <meta name="twitter:image" content="@yield('twitter_image', 'https://sitesphere.xyz/og-image.png')">
+<!-- X (Twitter) -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://sitesphere-production.site/" />
+<meta property="twitter:title" content="
+            SiteSphere
+    " />
+<meta property="twitter:description" content="SiteSphere - A modern web community platform for sharing posts, connecting with others, and discovering great content." />
+<meta property="twitter:image" content="https://metatags.io/images/meta-tags.png" />
+
+<!-- Meta Tags Generated with https://metatags.io -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <x-google-fonts />
     <script>

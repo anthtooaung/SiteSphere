@@ -1,21 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://sitesphere.xyz/</loc>
-        <lastmod>2026-06-28</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://sitesphere.xyz/home</loc>
-        <lastmod>2026-06-28</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://sitesphere.xyz/about</loc>
-        <lastmod>2026-06-28</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
+<?xml-stylesheet type="text/css" href="https://www.xml-sitemaps.com/css/sitemap.css"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:fo="http://www.w3.org/1999/XSL/Format"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://sitesphere-production.site/</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/food-panda</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/ai-learning</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/reddit</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/home</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/login</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/about</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/register</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/quora</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/linkedin</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/twitch</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/w3schools</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/pinterest</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/discord</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/x-twitter</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/home?page=2</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/home?page=3</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/fashion-2</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/notion</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/forgot-password</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/education</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/monkeytype</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/duolingo</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/khan-academy</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/spotify</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/home?page=1</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/mangadex</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/chatgpt</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/netflix</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/kahoot</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/makeup</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sitesphere-production.site/posts/fashion</loc>
+  <lastmod>2026-06-28T05:10:53+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+
 </urlset>

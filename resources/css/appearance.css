@@ -923,9 +923,10 @@
 }
 
 .color-picker-row {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 .color-picker-swatch {
@@ -944,8 +945,7 @@
 }
 
 .color-picker-text {
-    flex: 1;
-    min-width: 0;
+    width: 90px;
     padding: 8px 10px;
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
     border-radius: 8px;
@@ -955,6 +955,7 @@
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-weight: 600;
     outline: none;
+    flex-shrink: 0;
     transition: border-color 150ms ease;
 }
 

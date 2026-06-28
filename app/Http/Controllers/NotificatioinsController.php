@@ -95,6 +95,6 @@ class NotificatioinsController extends Controller
 
         $notificatioins->delete();
 
-        return redirect()->back()->with('status', 'notification-deleted');
+        return redirect()->route('notifications.index')->with('status', 'notification-deleted');
     }
 }

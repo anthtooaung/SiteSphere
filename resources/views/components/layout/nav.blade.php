@@ -24,7 +24,7 @@
                     <x-home-btn/>
                 </li>
                 <li>
-                    <x-category-btn />
+                    <x-category-btn mobile-mode="none" />
                 </li>
                 @if(request()->routeIs(['welcome', 'about-us']))
                     <li>
@@ -42,7 +42,7 @@
                         <x-create-post-btn />
                     </li>
                     <li class="hidden md:block">
-                        <x-noti-btn />
+                        <x-noti-btn mobile-mode="none" />
                     </li>
                     <li>
                         <x-profile-menu-btn />

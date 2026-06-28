@@ -914,6 +914,7 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    position: relative;
 }
 
 .color-picker-label {
@@ -927,6 +928,7 @@
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    position: relative;
 }
 
 .color-picker-swatch {
@@ -969,4 +971,139 @@
     height: 0;
     opacity: 0;
     pointer-events: none;
+}
+
+/* Color Picker Popup */
+.color-picker-popup {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 1000;
+    width: 240px;
+    background: var(--background-color, #ffffff);
+    border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--text-color) 15%, transparent),
+                0 2px 8px color-mix(in srgb, var(--text-color) 10%, transparent);
+    overflow: hidden;
+}
+
+.color-picker-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+}
+
+.color-picker-popup-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.color-picker-popup-close {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: color-mix(in srgb, var(--text-color) 50%, transparent);
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 18px;
+    line-height: 1;
+    transition: background 150ms ease, color 150ms ease;
+}
+
+.color-picker-popup-close:hover {
+    background: color-mix(in srgb, var(--text-color) 10%, transparent);
+    color: var(--text-color);
+}
+
+.color-picker-popup-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    padding: 14px;
+}
+
+.color-picker-preset {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 150ms ease, border-color 150ms ease;
+}
+
+.color-picker-preset:hover {
+    transform: scale(1.1);
+}
+
+.color-picker-preset.active {
+    border-color: var(--text-color);
+    box-shadow: 0 0 0 2px var(--background-color, #ffffff);
+}
+
+.color-picker-popup-custom {
+    padding: 10px 14px 14px;
+    border-top: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+}
+
+.color-picker-custom-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: color-mix(in srgb, var(--text-color) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease;
+}
+
+.color-picker-custom-btn:hover {
+    background: color-mix(in srgb, var(--text-color) 10%, transparent);
+    border-color: color-mix(in srgb, var(--text-color) 20%, transparent);
+}
+
+.color-picker-custom-btn svg {
+    flex-shrink: 0;
+}
+
+/* Popup Transitions */
+.popup-enter {
+    transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.popup-leave {
+    transition: opacity 100ms ease, transform 100ms ease;
+}
+
+[x-transition\:enter].popup-enter {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+}
+
+[x-transition\:enter-start].popup-enter {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+[x-transition\:leave].popup-leave {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+[x-transition\:leave-end].popup-leave {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
 }

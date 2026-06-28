@@ -3,17 +3,25 @@
     'value' => '#6c5ce7',
     'id' => null,
     'label' => null,
+    'compact' => false,
 ])
 
 @php
     $inputId = $id ?? 'color-picker-' . uniqid();
 @endphp
 
-<div class="color-picker-component" x-data="{
+<div class="color-picker-component {{ $compact ? 'color-picker-compact' : '' }}" x-data="{
     color: '{{ $value }}',
     open: false,
+    showCustom: false,
     h: 210, s: 1, v: 1,
     svDragging: false,
+
+    palette: [
+        '#000000','#434343','#666666','#999999','#B7B7B7','#CCCCCC','#D9D9D9','#EFEFEF','#F3F3F3','#FFFFFF',
+        '#980000','#FF0000','#FF9900','#FFFF00','#00FF00','#00FFFF','#4A86E8','#0000FF','#9900FF','#FF00FF',
+        '#E6B8AF','#FCE5CD','#FFF2CC','#D9EAD3','#D0E0E3','#C9DAF8','#CFE2F3','#D9D2E9','#EAD1DC','#DD7E6B'
+    ],
 
     hexToRgb(hex) {
         hex = hex.replace('#', '');
@@ -77,6 +85,12 @@
         return this.hexToRgb(this.color);
     },
 
+    selectPalette(hex) {
+        this.color = hex;
+        this.$dispatch('color-change', { name: '{{ $name }}', value: hex });
+        this.open = false;
+    },
+
     onSvPointerDown(e) {
         this.svDragging = true;
         this.$refs.svArea.setPointerCapture(e.pointerId);
@@ -130,8 +144,17 @@
         this.$dispatch('color-change', { name: '{{ $name }}', value: hex });
     },
 
-    toggle() { this.open = !this.open; if (this.open) this.initPicker(); },
-    closePanel() { this.open = false; }
+    toggle() {
+        this.open = !this.open;
+        if (this.open) {
+            this.showCustom = false;
+            this.initPicker();
+        }
+    },
+    closePanel() {
+        this.open = false;
+        this.showCustom = false;
+    }
 }" x-init="$watch('color', val => { $dispatch('color-change', { name: '{{ $name }}', value: val }); })"
 @click.outside="open = false">
     @if ($label)
@@ -161,46 +184,73 @@
                 <span class="color-picker-popup-title">Select Color</span>
                 <button type="button" class="color-picker-popup-close" @click="closePanel()">&times;</button>
             </div>
-            <div class="color-picker-sv-area" x-ref="svArea"
-                :style="svStyle"
-                @pointerdown="onSvPointerDown($event)"
-                @pointermove="onSvPointerMove($event)"
-                @pointerup="onSvPointerUp()"
-                @pointercancel="onSvPointerUp()">
-                <span class="color-picker-sv-knob" :style="svKnobStyle"></span>
+
+            <!-- Palette Grid -->
+            <div class="color-picker-palette" x-show="!showCustom">
+                <template x-for="(hex, i) in palette" :key="i">
+                    <button type="button"
+                        class="color-picker-palette-swatch"
+                        :class="{ 'is-selected': color.toUpperCase() === hex.toUpperCase() }"
+                        :style="{ backgroundColor: hex }"
+                        @click="selectPalette(hex)"
+                        :aria-label="'Select ' + hex">
+                    </button>
+                </template>
             </div>
-            <div class="color-picker-hue-row">
-                <div class="color-picker-hue-track"></div>
-                <span class="color-picker-hue-knob" :style="hueKnobStyle"></span>
-                <input type="range" class="color-picker-hue-input"
-                    min="0" max="360" step="1"
-                    :value="Math.round(h)"
-                    @input="onHueInput($event)"
-                    aria-label="Hue">
-            </div>
-            <div class="color-picker-fields">
-                <div class="color-field">
-                    <label>Hex</label>
-                    <input type="text" :value="hexField"
-                        @input="onHexInput($event)"
-                        @blur="onHexInput($event)"
-                        @keydown.enter="onHexInput($event)"
-                        maxlength="7" spellcheck="false" autocomplete="off">
+
+            <!-- Custom Picker Toggle -->
+            <button type="button" class="color-picker-custom-toggle" @click="showCustom = !showCustom" x-show="!showCustom">
+                <span>Custom color</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>
+
+            <!-- Advanced Custom Picker -->
+            <div x-show="showCustom" x-transition>
+                <button type="button" class="color-picker-back-btn" @click="showCustom = false">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                    <span>Back to palette</span>
+                </button>
+                <div class="color-picker-sv-area" x-ref="svArea"
+                    :style="svStyle"
+                    @pointerdown="onSvPointerDown($event)"
+                    @pointermove="onSvPointerMove($event)"
+                    @pointerup="onSvPointerUp()"
+                    @pointercancel="onSvPointerUp()">
+                    <span class="color-picker-sv-knob" :style="svKnobStyle"></span>
                 </div>
-                <div class="color-field">
-                    <label>R</label>
-                    <input type="number" x-ref="rInput" :value="rgbFields.r"
-                        @input="onRgbInput()" min="0" max="255">
+                <div class="color-picker-hue-row">
+                    <div class="color-picker-hue-track"></div>
+                    <span class="color-picker-hue-knob" :style="hueKnobStyle"></span>
+                    <input type="range" class="color-picker-hue-input"
+                        min="0" max="360" step="1"
+                        :value="Math.round(h)"
+                        @input="onHueInput($event)"
+                        aria-label="Hue">
                 </div>
-                <div class="color-field">
-                    <label>G</label>
-                    <input type="number" x-ref="gInput" :value="rgbFields.g"
-                        @input="onRgbInput()" min="0" max="255">
-                </div>
-                <div class="color-field">
-                    <label>B</label>
-                    <input type="number" x-ref="bInput" :value="rgbFields.b"
-                        @input="onRgbInput()" min="0" max="255">
+                <div class="color-picker-fields">
+                    <div class="color-field">
+                        <label>Hex</label>
+                        <input type="text" :value="hexField"
+                            @input="onHexInput($event)"
+                            @blur="onHexInput($event)"
+                            @keydown.enter="onHexInput($event)"
+                            maxlength="7" spellcheck="false" autocomplete="off">
+                    </div>
+                    <div class="color-field">
+                        <label>R</label>
+                        <input type="number" x-ref="rInput" :value="rgbFields.r"
+                            @input="onRgbInput()" min="0" max="255">
+                    </div>
+                    <div class="color-field">
+                        <label>G</label>
+                        <input type="number" x-ref="gInput" :value="rgbFields.g"
+                            @input="onRgbInput()" min="0" max="255">
+                    </div>
+                    <div class="color-field">
+                        <label>B</label>
+                        <input type="number" x-ref="bInput" :value="rgbFields.b"
+                            @input="onRgbInput()" min="0" max="255">
+                    </div>
                 </div>
             </div>
         </div>

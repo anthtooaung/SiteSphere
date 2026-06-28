@@ -965,12 +965,17 @@
     border-color: var(--accent-color);
 }
 
-.color-picker-native {
-    position: absolute;
-    width: 0;
-    height: 0;
-    opacity: 0;
-    pointer-events: none;
+/* Compact variant for tag editor */
+.color-picker-compact .color-picker-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.color-picker-compact .color-picker-text {
+    width: 80px;
+    padding: 4px 6px;
+    font-size: 11px;
 }
 
 /* Color Picker Backdrop */
@@ -987,7 +992,7 @@
     top: calc(100% + 8px);
     left: 0;
     z-index: 1000;
-    width: 300px;
+    width: 280px;
     background: var(--background-color, #ffffff);
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
     border-radius: 12px;
@@ -1000,7 +1005,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .color-picker-popup-title {
@@ -1030,22 +1035,81 @@
     color: var(--text-color);
 }
 
+/* Palette Grid */
+.color-picker-palette {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.color-picker-palette-swatch {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+    padding: 0;
+}
+
+.color-picker-palette-swatch:hover {
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--text-color) 20%, transparent);
+}
+
+.color-picker-palette-swatch.is-selected {
+    border-color: var(--accent-color, #2563EB);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color, #2563EB) 30%, transparent);
+}
+
+/* Custom Toggle & Back Button */
+.color-picker-custom-toggle,
+.color-picker-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--text-color) 4%, transparent);
+    color: color-mix(in srgb, var(--text-color) 70%, transparent);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.color-picker-custom-toggle:hover,
+.color-picker-back-btn:hover {
+    background: color-mix(in srgb, var(--text-color) 8%, transparent);
+    color: var(--text-color);
+    border-color: color-mix(in srgb, var(--text-color) 20%, transparent);
+}
+
+.color-picker-back-btn {
+    margin-bottom: 12px;
+}
+
 /* SV Area */
 .color-picker-sv-area {
     position: relative;
-    height: 180px;
+    height: 160px;
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
     border-radius: 7px;
     overflow: hidden;
     cursor: crosshair;
     touch-action: none;
+    margin-bottom: 14px;
 }
 
 .color-picker-sv-knob {
     position: absolute;
-    width: 22px;
-    height: 22px;
-    border: 4px solid #FFFFFF;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #FFFFFF;
     border-radius: 50%;
     box-sizing: border-box;
     box-shadow: 0 2px 7px rgba(0,0,0,0.22);
@@ -1056,7 +1120,7 @@
 /* Hue Slider */
 .color-picker-hue-row {
     position: relative;
-    margin: 14px 0 12px;
+    margin-bottom: 14px;
     height: 14px;
 }
 
@@ -1092,9 +1156,9 @@
 .color-picker-hue-knob {
     position: absolute;
     top: 50%;
-    width: 20px;
-    height: 20px;
-    border: 4px solid #FFFFFF;
+    width: 18px;
+    height: 18px;
+    border: 3px solid #FFFFFF;
     border-radius: 50%;
     box-sizing: border-box;
     box-shadow: 0 2px 7px rgba(0,0,0,0.22);
@@ -1106,26 +1170,28 @@
 .color-picker-fields {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr 1fr;
-    gap: 10px;
+    gap: 8px;
 }
 
 .color-field label {
     display: block;
-    margin-bottom: 6px;
-    font-size: 12px;
+    margin-bottom: 4px;
+    font-size: 11px;
     font-weight: 700;
-    color: color-mix(in srgb, var(--text-color) 60%, transparent);
+    color: color-mix(in srgb, var(--text-color) 55%, transparent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .color-field input {
     width: 100%;
-    height: 38px;
-    padding: 6px 8px;
+    height: 34px;
+    padding: 4px 6px;
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
     border-radius: 6px;
     background: var(--background-color, #fff);
     color: var(--text-color);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     box-sizing: border-box;
     outline: none;
@@ -1160,17 +1226,7 @@
     transform: translateY(-4px) scale(0.98);
 }
 
-[x-transition\:enter-start].popup-enter {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
 [x-transition\:leave].popup-leave {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-[x-transition\:leave-end].popup-leave {
     opacity: 0;
     transform: translateY(-4px) scale(0.98);
 }

@@ -16,12 +16,14 @@
         if (val && !val.startsWith('#')) val = '#' + val;
         if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
             this.color = val;
+            this.$dispatch('color-change', { name: '{{ $name }}', value: val });
         }
     },
     updateFromPicker(e) {
         this.color = e.target.value;
+        this.$dispatch('color-change', { name: '{{ $name }}', value: e.target.value });
     }
-}" x-init="$watch('color', val => $refs.nativePicker.value = val)">
+}" x-init="$watch('color', val => { $refs.nativePicker.value = val; $dispatch('color-change', { name: '{{ $name }}', value: val }); })">
     @if ($label)
         <label for="{{ $inputId }}" class="color-picker-label">{{ $label }}</label>
     @endif

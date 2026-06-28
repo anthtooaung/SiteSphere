@@ -264,135 +264,23 @@
 
                     <div class="appearance-custom-panel" :class="{ 'is-disabled': ! useCustomTheme }"
                         x-transition.opacity.duration.160ms
+                        @color-change.window="
+                            if ($event.detail.name === 'background_color') customBackground = $event.detail.value;
+                            if ($event.detail.name === 'text_color') customText = $event.detail.value;
+                            if ($event.detail.name === 'accent_color') customAccent = $event.detail.value;
+                        "
                         data-appearance-custom-panel data-appearance-stable-panel>
                         <label>
                             <span>Background</span>
-                            <div class="color-picker-component" x-data="{
-                                textValue: customBackground,
-                                syncFromText() {
-                                    let val = this.textValue.trim();
-                                    if (val && !val.startsWith('#')) val = '#' + val;
-                                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-                                        customBackground = val;
-                                    }
-                                },
-                                syncFromPicker(e) {
-                                    customBackground = e.target.value;
-                                    this.textValue = e.target.value;
-                                }
-                            }">
-                                <div class="color-picker-row">
-                                    <button type="button" class="color-picker-swatch"
-                                        :style="{ backgroundColor: customBackground }"
-                                        @click="$refs.bgPicker.click()"
-                                        :disabled="! useCustomTheme"
-                                        aria-label="Pick background color">
-                                    </button>
-                                    <input type="text" class="color-picker-text"
-                                        x-model="textValue"
-                                        @input="syncFromText()"
-                                        @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = customBackground"
-                                        :disabled="! useCustomTheme"
-                                        placeholder="#FF5733"
-                                        maxlength="7"
-                                        spellcheck="false"
-                                        autocomplete="off">
-                                    <input type="color" x-ref="bgPicker"
-                                        name="background_color"
-                                        :value="customBackground"
-                                        @input="syncFromPicker($event)"
-                                        :disabled="! useCustomTheme"
-                                        class="color-picker-native"
-                                        tabindex="-1"
-                                        data-appearance-background-color>
-                                </div>
-                            </div>
+                            <x-color-picker name="background_color" :value="$customBackground" data-appearance-background-color />
                         </label>
                         <label>
                             <span>Text</span>
-                            <div class="color-picker-component" x-data="{
-                                textValue: customText,
-                                syncFromText() {
-                                    let val = this.textValue.trim();
-                                    if (val && !val.startsWith('#')) val = '#' + val;
-                                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-                                        customText = val;
-                                    }
-                                },
-                                syncFromPicker(e) {
-                                    customText = e.target.value;
-                                    this.textValue = e.target.value;
-                                }
-                            }">
-                                <div class="color-picker-row">
-                                    <button type="button" class="color-picker-swatch"
-                                        :style="{ backgroundColor: customText }"
-                                        @click="$refs.textPicker.click()"
-                                        :disabled="! useCustomTheme"
-                                        aria-label="Pick text color">
-                                    </button>
-                                    <input type="text" class="color-picker-text"
-                                        x-model="textValue"
-                                        @input="syncFromText()"
-                                        @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = customText"
-                                        :disabled="! useCustomTheme"
-                                        placeholder="#FF5733"
-                                        maxlength="7"
-                                        spellcheck="false"
-                                        autocomplete="off">
-                                    <input type="color" x-ref="textPicker"
-                                        name="text_color"
-                                        :value="customText"
-                                        @input="syncFromPicker($event)"
-                                        :disabled="! useCustomTheme"
-                                        class="color-picker-native"
-                                        tabindex="-1"
-                                        data-appearance-text-color>
-                                </div>
-                            </div>
+                            <x-color-picker name="text_color" :value="$customText" data-appearance-text-color />
                         </label>
                         <label>
                             <span>Accent</span>
-                            <div class="color-picker-component" x-data="{
-                                textValue: customAccent,
-                                syncFromText() {
-                                    let val = this.textValue.trim();
-                                    if (val && !val.startsWith('#')) val = '#' + val;
-                                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-                                        customAccent = val;
-                                    }
-                                },
-                                syncFromPicker(e) {
-                                    customAccent = e.target.value;
-                                    this.textValue = e.target.value;
-                                }
-                            }">
-                                <div class="color-picker-row">
-                                    <button type="button" class="color-picker-swatch"
-                                        :style="{ backgroundColor: customAccent }"
-                                        @click="$refs.accentPicker.click()"
-                                        :disabled="! useCustomTheme"
-                                        aria-label="Pick accent color">
-                                    </button>
-                                    <input type="text" class="color-picker-text"
-                                        x-model="textValue"
-                                        @input="syncFromText()"
-                                        @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = customAccent"
-                                        :disabled="! useCustomTheme"
-                                        placeholder="#FF5733"
-                                        maxlength="7"
-                                        spellcheck="false"
-                                        autocomplete="off">
-                                    <input type="color" x-ref="accentPicker"
-                                        name="accent_color"
-                                        :value="customAccent"
-                                        @input="syncFromPicker($event)"
-                                        :disabled="! useCustomTheme"
-                                        class="color-picker-native"
-                                        tabindex="-1"
-                                        data-appearance-accent-color>
-                                </div>
-                            </div>
+                            <x-color-picker name="accent_color" :value="$customAccent" data-appearance-accent-color />
                         </label>
                     </div>
                 </section>

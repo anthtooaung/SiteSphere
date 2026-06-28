@@ -417,7 +417,6 @@ class PostsController extends Controller
         return view('layout.post-detail', [
             'post' => $posts,
             'isBanned' => false,
-            'isUnsecure' => $isUnsecure,
             'banLog' => null,
             'isUnsecure' => $posts->is_unsecure,
             'averageRating' => $averageRating,

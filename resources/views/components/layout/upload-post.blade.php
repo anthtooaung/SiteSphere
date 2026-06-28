@@ -163,7 +163,7 @@
             });
 
             if (result.isConfirmed) {
-                window.location.href = `/post/${unsecurePost.slug}`;
+                window.location.href = `/posts/${unsecurePost.slug}`;
             }
         });
     </script>

@@ -150,11 +150,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function selectDate(ds) {
+  function selectDate(ds, openModal) {
     selectedDate = ds;
     renderCalendar();
     renderDatePanel();
+    if (openModal) openLogModal('date');
   }
+
+  // Expose for inline onclick handlers in Blade templates
+  window.selectDate = selectDate;
 
   function fmtSelectedDate(ds) {
     // Parse the date safely by splitting the string to avoid timezone issues

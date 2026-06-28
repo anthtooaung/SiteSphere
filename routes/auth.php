@@ -20,12 +20,14 @@ Route::middleware('guest')->group(function () {
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::post('register/initiate', [RegisteredUserController::class, 'initiate'])
+        ->middleware('throttle:5,1')
         ->name('register.initiate');
 
     Route::post('register/verify-otp', [RegisteredUserController::class, 'verifyOtp'])
         ->name('register.verify_otp');
 
     Route::post('register/resend-otp', [RegisteredUserController::class, 'resendOtp'])
+        ->middleware('throttle:3,1')
         ->name('register.resend_otp');
 
     Route::post('register/finalize', [RegisteredUserController::class, 'finalize'])
@@ -34,7 +36,9 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('login.store');
 
     Route::get('login/two-factor', [LoginTwoFactorChallengeController::class, 'create'])
         ->name('login.two-factor');
@@ -59,6 +63,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.request');
 
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+        ->middleware('throttle:5,1')
         ->name('password.email');
 
     Route::get('reset-password-otp', [NewPasswordController::class, 'create'])

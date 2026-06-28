@@ -419,8 +419,21 @@
                                             <label class="thread-category-color-row">
                                                 <span>Category color</span>
                                                 <div class="color-picker-component" x-data="{
-                                                    showPicker: false,
+                                                    open: false,
                                                     textValue: category.color,
+                                                    presetColors: [
+                                                        '#FF6B6B', '#EE5A24', '#F79F1F', '#FFC312', '#A3CB38',
+                                                        '#009432', '#0652DD', '#1B1464', '#6C5CE7', '#D980FA',
+                                                        '#FDA7DF', '#E77F67', '#CF6A87', '#574B90', '#303952',
+                                                        '#F8EFBA', '#58B19F', '#1B9CFC', '#3B3B98', '#9B59B6',
+                                                        '#1ABC9C', '#2ECC71', '#3498DB', '#9B59B6', '#E74C3C',
+                                                        '#34495E', '#F39C12', '#1ABC9C', '#2C3E50', '#E67E22'
+                                                    ],
+                                                    selectPreset(c) {
+                                                        category.color = c;
+                                                        this.textValue = c;
+                                                        this.open = false;
+                                                    },
                                                     syncFromText() {
                                                         let val = this.textValue.trim();
                                                         if (val && !val.startsWith('#')) val = '#' + val;
@@ -431,12 +444,13 @@
                                                     syncFromPicker(e) {
                                                         category.color = e.target.value;
                                                         this.textValue = e.target.value;
+                                                        this.open = false;
                                                     }
-                                                }">
+                                                }" @click.outside="open = false">
                                                     <div class="color-picker-row">
                                                         <button type="button" class="color-picker-swatch"
                                                             :style="{ backgroundColor: category.color }"
-                                                            @click="$refs.catPicker.click()"
+                                                            @click="open = !open"
                                                             aria-label="Pick color">
                                                         </button>
                                                         <input type="text" class="color-picker-text"
@@ -452,6 +466,34 @@
                                                             @input="syncFromPicker($event)"
                                                             class="color-picker-native"
                                                             tabindex="-1">
+
+                                                        <!-- Color Picker Popup -->
+                                                        <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave" @click.away="open = false">
+                                                            <div class="color-picker-popup-header">
+                                                                <span class="color-picker-popup-title">Select Color</span>
+                                                                <button type="button" class="color-picker-popup-close" @click="open = false">&times;</button>
+                                                            </div>
+                                                            <div class="color-picker-popup-grid">
+                                                                <template x-for="(preset, index) in presetColors" :key="index">
+                                                                    <button type="button"
+                                                                        class="color-picker-preset"
+                                                                        :style="{ backgroundColor: preset }"
+                                                                        :class="{ 'active': category.color === preset }"
+                                                                        @click="selectPreset(preset)"
+                                                                        :aria-label="'Select color ' + preset">
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                            <div class="color-picker-popup-custom">
+                                                                <button type="button" class="color-picker-custom-btn" @click="$refs.catPicker.click()">
+                                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                                        <circle cx="12" cy="12" r="10"/>
+                                                                        <path d="M12 8v8M8 12h8"/>
+                                                                    </svg>
+                                                                    Custom Color
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </label>
@@ -470,7 +512,22 @@
                                                     </template>
                                                     <template x-if="isEditing(category)">
                                                         <div class="color-picker-component" x-data="{
+                                                            open: false,
                                                             textValue: tag.color,
+                                                            presetColors: [
+                                                                '#FF6B6B', '#EE5A24', '#F79F1F', '#FFC312', '#A3CB38',
+                                                                '#009432', '#0652DD', '#1B1464', '#6C5CE7', '#D980FA',
+                                                                '#FDA7DF', '#E77F67', '#CF6A87', '#574B90', '#303952',
+                                                                '#F8EFBA', '#58B19F', '#1B9CFC', '#3B3B98', '#9B59B6',
+                                                                '#1ABC9C', '#2ECC71', '#3498DB', '#9B59B6', '#E74C3C',
+                                                                '#34495E', '#F39C12', '#1ABC9C', '#2C3E50', '#E67E22'
+                                                            ],
+                                                            selectPreset(c) {
+                                                                tag.color = c;
+                                                                this.textValue = c;
+                                                                this.open = false;
+                                                                syncTagColors(tag, 'color');
+                                                            },
                                                             syncFromText() {
                                                                 let val = this.textValue.trim();
                                                                 if (val && !val.startsWith('#')) val = '#' + val;
@@ -482,13 +539,14 @@
                                                             syncFromPicker(e) {
                                                                 tag.color = e.target.value;
                                                                 this.textValue = e.target.value;
+                                                                this.open = false;
                                                                 syncTagColors(tag, 'color');
                                                             }
-                                                        }" style="display: inline-flex; align-items: center; gap: 4px;">
+                                                        }" style="display: inline-flex; align-items: center; gap: 4px;" @click.outside="open = false">
                                                             <button type="button" class="color-picker-swatch"
                                                                 style="width: 24px; height: 24px; border-radius: 4px;"
                                                                 :style="{ backgroundColor: tag.color }"
-                                                                @click="$refs.tagPicker.click()"
+                                                                @click="open = !open"
                                                                 aria-label="Pick color">
                                                             </button>
                                                             <input type="text" class="color-picker-text"
@@ -505,6 +563,34 @@
                                                                 @input="syncFromPicker($event)"
                                                                 class="color-picker-native"
                                                                 tabindex="-1">
+
+                                                            <!-- Color Picker Popup -->
+                                                            <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave" @click.away="open = false" style="width: 200px;">
+                                                                <div class="color-picker-popup-header">
+                                                                    <span class="color-picker-popup-title">Select Color</span>
+                                                                    <button type="button" class="color-picker-popup-close" @click="open = false">&times;</button>
+                                                                </div>
+                                                                <div class="color-picker-popup-grid" style="gap: 4px; padding: 10px;">
+                                                                    <template x-for="(preset, index) in presetColors" :key="index">
+                                                                        <button type="button"
+                                                                            class="color-picker-preset"
+                                                                            :style="{ backgroundColor: preset }"
+                                                                            :class="{ 'active': tag.color === preset }"
+                                                                            @click="selectPreset(preset)"
+                                                                            :aria-label="'Select color ' + preset">
+                                                                        </button>
+                                                                    </template>
+                                                                </div>
+                                                                <div class="color-picker-popup-custom" style="padding: 8px 10px 10px;">
+                                                                    <button type="button" class="color-picker-custom-btn" @click="$refs.tagPicker.click()" style="padding: 6px 10px; font-size: 11px;">
+                                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                                            <circle cx="12" cy="12" r="10"/>
+                                                                            <path d="M12 8v8M8 12h8"/>
+                                                                        </svg>
+                                                                        Custom Color
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </template>
                                                     <template x-if="isAdmin && isEditing(category)">

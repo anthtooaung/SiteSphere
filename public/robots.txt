@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /menu/
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://sitesphere.xyz/sitemap.xml

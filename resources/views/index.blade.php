@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="8007Dn2OGySnWYZkb4rF7duLmUQKnhLV0lLPd83lvGg" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>
         @yield('title', 'SiteSphere')

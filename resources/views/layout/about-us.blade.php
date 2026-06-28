@@ -242,9 +242,9 @@ About Us
                             <x-fas-user-tie class="icon" aria-hidden="true" />
                         </div>
                         <h3>Ant Htoo Aung</h3>
-                        <p class="role">Team Leader & Backend Developer</p>
-                        <p class="bio">Handled backend integration, navigation, authentication systems, and connected frontend components with backend functionality.</p>
-                        <div class="tags"><span>Backend</span><span>Auth</span><span>Integration</span></div>
+                        <p class="role">Team Leader & Full-Stack Developer</p>
+                        <p class="bio">Backend development, frontend compilation, and project architecture.</p>
+                        <div class="tags"><span>Backend</span><span>Frontend</span><span>Architecture</span></div>
                         <div class="member-email"><a href="mailto:anthtooaung2792005@gmail.com">anthtooaung2792005@gmail.com</a></div>
                     </div>
 
@@ -253,9 +253,9 @@ About Us
                             <x-fas-user-gear class="icon" aria-hidden="true" />
                         </div>
                         <h3>Hein Aung Kyaw</h3>
-                        <p class="role">Co-Leader & Full-Stack Developer</p>
-                        <p class="bio">Created authentication, security features, admin dashboard, post detail page, logo, and loading animations.</p>
-                        <div class="tags"><span>Security</span><span>Dashboard</span><span>Branding</span></div>
+                        <p class="role">Co-Leader & Frontend Developer</p>
+                        <p class="bio">Login/Register page, post detail page, logo and loading, and admin dashboard page.</p>
+                        <div class="tags"><span>Login</span><span>Dashboard</span><span>Branding</span></div>
                         <div class="member-email"><a href="mailto:heinagkyaw123@gmail.com">heinagkyaw123@gmail.com</a></div>
                     </div>
 
@@ -264,9 +264,9 @@ About Us
                             <x-fas-user-pen class="icon" aria-hidden="true" />
                         </div>
                         <h3>Eaint Nadi Kyaw</h3>
-                        <p class="role">Co-Leader & Full-Stack Developer</p>
-                        <p class="bio">Developed the home page, admin users page, and user detail views for smooth user management.</p>
-                        <div class="tags"><span>Home UI</span><span>Admin</span><span>User View</span></div>
+                        <p class="role">Co-Leader & Frontend Developer</p>
+                        <p class="bio">Home page and admin users page.</p>
+                        <div class="tags"><span>Home</span><span>Admin</span><span>Users</span></div>
                         <div class="member-email"><a href="mailto:eainteaint3359@gmail.com">eainteaint3359@gmail.com</a></div>
                     </div>
 
@@ -275,9 +275,9 @@ About Us
                             <x-fas-user-check class="icon" aria-hidden="true" />
                         </div>
                         <h3>Min Hein Ko</h3>
-                        <p class="role">Frontend & Testing Developer</p>
-                        <p class="bio">Built welcome and admin report view pages to support first impressions and organized reporting.</p>
-                        <div class="tags"><span>Welcome</span><span>Reports</span><span>Testing</span></div>
+                        <p class="role">Frontend Developer</p>
+                        <p class="bio">Welcome page, report view page (admin), flow charts, and use-case diagram.</p>
+                        <div class="tags"><span>Welcome</span><span>Reports</span><span>Diagrams</span></div>
                         <div class="member-email"><a href="mailto:minheinko58@gmail.com">minheinko58@gmail.com</a></div>
                     </div>
 
@@ -286,9 +286,9 @@ About Us
                             <x-fas-palette class="icon" aria-hidden="true" />
                         </div>
                         <h3>Lin Thant Aung</h3>
-                        <p class="role">Frontend & UI Tester</p>
-                        <p class="bio">Worked on profile settings, appearance page, and tag design system for better personalization.</p>
-                        <div class="tags"><span>Profile</span><span>Appearance</span><span>Tags</span></div>
+                        <p class="role">Frontend Developer</p>
+                        <p class="bio">Profile settings page, appearance page, AG design, and security page.</p>
+                        <div class="tags"><span>Profile</span><span>Appearance</span><span>Security</span></div>
                         <div class="member-email"><a href="mailto:linthantaung1210@gmail.com">linthantaung1210@gmail.com</a></div>
                     </div>
 
@@ -297,9 +297,9 @@ About Us
                             <x-fas-bookmark class="icon" aria-hidden="true" />
                         </div>
                         <h3>Sa Kyaw Wai Yan Htet</h3>
-                        <p class="role">Frontend & Data Manager</p>
-                        <p class="bio">Implemented the saved post feature so users can store and revisit important resources easily.</p>
-                        <div class="tags"><span>Saved Posts</span><span>Data</span><span>Frontend</span></div>
+                        <p class="role">Frontend Developer</p>
+                        <p class="bio">Saved post page, post card box section, and post upload page.</p>
+                        <div class="tags"><span>Saved Posts</span><span>Cards</span><span>Upload</span></div>
                         <div class="member-email"><a href="mailto:aunglay306699@gmail.com">aunglay306699@gmail.com</a></div>
                     </div>
 
@@ -308,9 +308,9 @@ About Us
                             <x-fas-flag class="icon" aria-hidden="true" />
                         </div>
                         <h3>Han Htoo Lwin</h3>
-                        <p class="role">Frontend & Report Tester</p>
-                        <p class="bio">Improved footer welcome and report information sections for better structure and communication.</p>
-                        <div class="tags"><span>Footer</span><span>Reports</span><span>UX</span></div>
+                        <p class="role">Frontend Developer</p>
+                        <p class="bio">Navigation section, welcome page footer, menu bar (hamburger), and report info section.</p>
+                        <div class="tags"><span>Navigation</span><span>Footer</span><span>Menu</span></div>
                         <div class="member-email"><a href="mailto:hanhtoolwin69@gmail.com">hanhtoolwin69@gmail.com</a></div>
                     </div>
 
@@ -319,33 +319,12 @@ About Us
                             <x-fas-id-card class="icon" aria-hidden="true" />
                         </div>
                         <h3>Zune Myat Noe</h3>
-                        <p class="role">Profile & Frontend Developer</p>
-                        <p class="bio">Developed the about page, profile page, and profile show box for a more engaging experience.</p>
-                        <div class="tags"><span>About</span><span>Profile</span><span>Frontend</span></div>
+                        <p class="role">Frontend Developer</p>
+                        <p class="bio">About us page, profile page, and profile show box.</p>
+                        <div class="tags"><span>About</span><span>Profile</span><span>UI</span></div>
                         <div class="member-email"><a href="mailto:zunez5697@gmail.com">zunez5697@gmail.com</a></div>
                     </div>
 
-                    <div class="carousel-card">
-                        <div class="member-avatar">
-                            <x-fas-upload class="icon" aria-hidden="true" />
-                        </div>
-                        <h3>Zin Wai Yan Htet</h3>
-                        <p class="role">Upload & Testing Developer</p>
-                        <p class="bio">Created post upload, post card box, and hamburger menu sections for smoother content management.</p>
-                        <div class="tags"><span>Upload</span><span>Cards</span><span>Mobile Nav</span></div>
-                        <div class="member-email"><a href="mailto:zinhtetyan69@gmail.com">zinhtetyan69@gmail.com</a></div>
-                    </div>
-
-                    <div class="carousel-card">
-                        <div class="member-avatar">
-                            <x-fas-clipboard-check class="icon" aria-hidden="true" />
-                        </div>
-                        <h3>Thaw Tar Ko</h3>
-                        <p class="role">Testing & Daily Report Manager</p>
-                        <p class="bio">Handled system testing, bug checking, and daily progress reports to keep the project organized.</p>
-                        <div class="tags"><span>Testing</span><span>Reports</span><span>Quality</span></div>
-                        <div class="member-email"><a href="mailto:dizzykitty910@gmail.com">dizzykitty910@gmail.com</a></div>
-                    </div>
                 </div>
 
                 <button class="carousel-btn next-btn" aria-label="Next team member">

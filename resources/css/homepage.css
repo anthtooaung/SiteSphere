@@ -1904,13 +1904,25 @@
         width: 100%;
         max-width: 450px;
         min-height: auto;
-        height: auto;
+        height: 400px;
         padding: 16px;
         border-radius: 8px;
     }
 
     .review-card:hover {
         transform: none;
+    }
+
+    /* Profile section: scrollable area between header and footer */
+    .review-card > section {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+    }
+
+    /* Footer: pinned at bottom */
+    .review-card > footer {
+        flex-shrink: 0;
     }
 
     /* TAG GRID */

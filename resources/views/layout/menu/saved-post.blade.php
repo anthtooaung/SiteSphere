@@ -40,7 +40,7 @@
                         <x-fas-search class="saved-post-search-icon" aria-hidden="true" />
                         <span class="sr-only">Search saved posts</span>
                         <input type="search" name="search" value="{{ $savedPostFilters['search'] }}"
-                            placeholder="Search by title or URL..." data-saved-post-search>
+                            placeholder="Search by domain or URL..." data-saved-post-search>
                     </label>
 
                     <div class="saved-post-control-wrapper relative">

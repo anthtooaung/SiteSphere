@@ -71,11 +71,24 @@
                             <span class="aud-ref ss-mono"></span>
                         </div>
 
-                        <!-- Title + three-dot menu -->
+                        <!-- Domain pill + three-dot menu -->
                         <div class="aud-title-row">
-                            <h1 class="aud-title">
-                                {{ $post->domain }}
-                            </h1>
+                            <div class="aud-mast-row">
+                                <a
+                                    class="aud-domain"
+                                    href="{{ $post->url }}"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span class="aud-domain-chain" aria-hidden="true">
+                                        <x-fas-link class="size-3.5" />
+                                    </span>
+                                    <span class="aud-domain-text">{{ $host }}</span>
+                                    <span class="aud-domain-ext" aria-hidden="true">
+                                        <x-fas-arrow-up-right-from-square class="size-3" />
+                                    </span>
+                                </a>
+                            </div>
 
                             <div class="relative shrink-0" x-data="{
                                 actionsOpen: false,
@@ -168,24 +181,6 @@
                                 </div>
                                 <x-layout.report-modal :post-id="$post->id" />
                             </div>
-                        </div>
-
-                        <!-- Domain pill -->
-                        <div class="aud-mast-row">
-                            <a
-                                class="aud-domain"
-                                href="{{ $post->url }}"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                <span class="aud-domain-chain" aria-hidden="true">
-                                    <x-fas-link class="size-3.5" />
-                                </span>
-                                <span class="aud-domain-text">{{ $host }}</span>
-                                <span class="aud-domain-ext" aria-hidden="true">
-                                    <x-fas-arrow-up-right-from-square class="size-3" />
-                                </span>
-                            </a>
                         </div>
 
                         <!-- Taxonomy tags -->
@@ -397,9 +392,6 @@
                                                     </span>
                                                 @endif
                                                 <div class="aud-depo-id">
-                                                    @if($userPost->title)
-                                                        <p style="font-size: 14px; font-weight: 700; margin: 0 0 4px; color: var(--text-color);">{{ $userPost->title }}</p>
-                                                    @endif
                                                     <div class="aud-depo-name-row" style="display: flex; align-items: center; gap: 8px;">
                                                         <h3>{{ $displayName }}</h3>
                                                         @if($isUserBanned)
@@ -635,6 +627,9 @@
                                             @endif
 
                                             <div class="ss-expandable aud-depo-body" data-clamp="5">
+                                                @if($userPost->title)
+                                                    <h3 class="aud-depo-title" style="font-size: 1.15rem; font-weight: 700; margin: 0 0 8px; color: var(--text-color);">{{ $userPost->title }}</h3>
+                                                @endif
                                                 <p class="ss-expandable-text" style="--clamp-lines: 5">
                                                     {!! nl2br(e($userPost->description)) !!}
                                                 </p>

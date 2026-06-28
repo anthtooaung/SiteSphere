@@ -44,6 +44,11 @@
                 overflow: hidden;
             }
         }
+        @media (max-width: 900px) {
+            body {
+                overflow: visible;
+            }
+        }
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('sweetalert2::index')

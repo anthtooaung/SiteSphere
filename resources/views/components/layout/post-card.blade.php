@@ -260,20 +260,6 @@
             <span class="text-[10px] font-semibold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_58%,transparent)]">(<span x-text="ratingsTotal()">{{ $ratingsCount }}</span> ratings)</span>
         </div>
 
-        {{-- link section --}}
-        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
-            class="group flex items-center gap-2 rounded-xl border px-3 py-2 transition-all [border-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_22%,var(--background-color,#ffffff))] [background:color-mix(in_srgb,var(--background-color,#ffffff)_90%,var(--accent-color,#6c5ce7)_10%)] hover:[border-color:var(--accent-color,#6c5ce7)] hover:[background:color-mix(in_srgb,var(--background-color,#ffffff)_82%,var(--accent-color,#6c5ce7)_18%)]"
-            data-post-card-link>
-            <span
-                class="flex size-6 shrink-0 items-center justify-center rounded-lg [background:color-mix(in_srgb,var(--background-color,#ffffff)_78%,var(--accent-color,#6c5ce7)_22%)] [color:var(--accent-color,#6c5ce7)] shadow-sm">
-                <x-fas-link class="size-2.5" />
-            </span>
-            <span
-                class="min-w-0 flex-1 truncate text-xs font-bold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_82%,transparent)] group-hover:[color:var(--accent-color,#6c5ce7)]"
-                data-post-card-url>{{ parse_url($url, PHP_URL_HOST) ?? $url }}</span>
-            <x-fas-arrow-up-right-from-square class="size-2.5 opacity-70 [color:var(--accent-color,#6c5ce7)]" />
-        </a>
-
         {{-- tag section --}}
         <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-1">
             <button type="button"
@@ -344,6 +330,9 @@
 
             <a x-bind:href="'{{ $slug ? route('posts.show', $slug) : '#' }}' + '#panel-user-' + (currentProfile.user_id ? currentProfile.user_id : 'anonymous-' + activeProfile)"
                 class="block space-y-1.5 px-3 py-2.5 rounded-b-xl transition-all duration-200 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_6%,transparent)] cursor-pointer no-underline">
+                @if($title)
+                    <h3 class="text-[15px] font-bold leading-snug [color:var(--text-color,#0d1b2a)]" data-post-card-title>{{ $title }}</h3>
+                @endif
                 <div class="flex items-center gap-2 text-xs">
                     <span class="font-bold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_52%,transparent)]"
                         x-text="currentProfile.time">{{ $profiles[0]['time'] ?? '' }}</span>

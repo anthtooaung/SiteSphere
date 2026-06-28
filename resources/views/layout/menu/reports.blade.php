@@ -313,7 +313,7 @@ $reportFilters = $reportFilters ?? [
                                 <td data-label="Post">
                                     @if ($report->post?->slug)
                                         <a href="{{ route('reports.open', $report) }}" class="reports-post-title hover:underline">
-                                            {{ $report->post->title }}
+                                            {{ $report->post->domain }}
                                             @if ($report->post->trashed())
                                                 <span class="reports-banned-badge">Banned</span>
                                             @elseif ($report->post->is_unsecure)

@@ -94,7 +94,7 @@
                         <div class="welcome-card-head">
                             <div class="welcome-name-box">
                                 <h3>
-                                    <a href="{{ route('posts.show', $post->slug) }}">{{ $post->title }}</a>
+                                    <a href="{{ route('posts.show', $post->slug) }}">{{ $post->domain }}</a>
                                 </h3>
                                 <span>{{ parse_url($post->url, PHP_URL_HOST) ?: $post->url }}</span>
                             </div>

@@ -12,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('otpVerifications', function (Blueprint $table) {
-            if (! Schema::hasColumn('otpVerifications', 'email')) {
+        Schema::table('otp_verifications', function (Blueprint $table) {
+            if (! Schema::hasColumn('otp_verifications', 'email')) {
                 $table->string('email')->nullable()->after('user_id')->index();
             }
         });
 
         if (DB::getDriverName() === 'mysql') {
-            DB::statement('ALTER TABLE `otpVerifications` MODIFY `user_id` BIGINT UNSIGNED NULL');
+            DB::statement('ALTER TABLE `otp_verifications` MODIFY `user_id` BIGINT UNSIGNED NULL');
         }
     }
 
@@ -28,17 +28,17 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::table('otpVerifications')->whereNull('user_id')->delete();
+        DB::table('otp_verifications')->whereNull('user_id')->delete();
 
-        Schema::table('otpVerifications', function (Blueprint $table) {
-            if (Schema::hasColumn('otpVerifications', 'email')) {
+        Schema::table('otp_verifications', function (Blueprint $table) {
+            if (Schema::hasColumn('otp_verifications', 'email')) {
                 $table->dropIndex(['email']);
                 $table->dropColumn('email');
             }
         });
 
         if (DB::getDriverName() === 'mysql') {
-            DB::statement('ALTER TABLE `otpVerifications` MODIFY `user_id` BIGINT UNSIGNED NOT NULL');
+            DB::statement('ALTER TABLE `otp_verifications` MODIFY `user_id` BIGINT UNSIGNED NOT NULL');
         }
     }
 };

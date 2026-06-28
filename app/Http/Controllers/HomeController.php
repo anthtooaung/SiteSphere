@@ -117,7 +117,6 @@ class HomeController extends Controller
 
                 return [
                     'id' => $post->id,
-                    'title' => $post->title,
                     'url' => $post->url,
                     'slug' => $post->slug,
                     'category' => $primaryCategory?->name ?? 'Uncategorized',

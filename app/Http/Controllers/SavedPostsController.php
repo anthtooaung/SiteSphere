@@ -35,8 +35,8 @@ class SavedPostsController extends Controller
             ->where('user_id', $user->id)
             ->whereHas('post.userPosts')
             ->when($search !== '', fn ($query) => $query->whereHas('post', fn ($query) => $query
-                ->where('title', 'like', "%{$search}%")
-                ->orWhere('url', 'like', "%{$search}%")))
+                ->where('url', 'like', "%{$search}%")
+                ->orWhere('slug', 'like', "%{$search}%")))
             ->when($startDate !== '', fn ($query) => $query->whereDate('created_at', '>=', $startDate))
             ->when($endDate !== '', fn ($query) => $query->whereDate('created_at', '<=', $endDate))
             ->with([

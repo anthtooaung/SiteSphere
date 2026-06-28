@@ -105,14 +105,16 @@ Visit **http://localhost:8000**
 
 ## 🛠 Tech Stack
 
-| Layer    | Technology                        |
-|----------|-----------------------------------|
-| Backend  | PHP 8.3+, Laravel 13              |
-| Frontend | Tailwind CSS 3, Alpine.js, Vite   |
-| Database | SQLite (dev), MySQL (prod)        |
-| Auth     | Laravel Breeze, Socialite         |
-| Email    | Resend                            |
-| UI       | Flowbite, SweetAlert2, FontAwesome|
+| Layer      | Technology                                    |
+|------------|-----------------------------------------------|
+| Backend    | PHP 8.3+, Laravel 13                          |
+| Frontend   | Tailwind CSS 3, Alpine.js, Vite               |
+| Database   | SQLite (dev), MySQL (prod)                    |
+| Auth       | Laravel Breeze, Socialite (Google, GitHub)    |
+| Email      | Resend                                        |
+| Real-time  | Pusher, Laravel Echo                          |
+| UI         | Flowbite, SweetAlert2, FontAwesome            |
+| Detection  | Jenssegers Agent (mobile/desktop)             |
 
 ---
 

@@ -82,7 +82,7 @@ class PostsController extends Controller
                 $post = $existingPost;
             } else {
                 $host = parse_url($validated['url'], PHP_URL_HOST);
-                $slug = $host ? preg_replace('/^www\./', '', $host) : 'post';
+                $slug = $host ? preg_replace('/^www\.|\.[^.]+$/', '', $host) : 'post';
 
                 $post = Posts::query()->create([
                     'slug' => $this->uniqueSlug($slug),

@@ -20,7 +20,7 @@ class PostsFactory extends Factory
     {
         $url = fake()->unique()->url();
         $host = parse_url($url, PHP_URL_HOST);
-        $slug = $host ? preg_replace('/^www\./', '', $host) : Str::slug($url);
+        $slug = $host ? preg_replace('/^www\.|\.[^.]+$/', '', $host) : Str::slug($url);
 
         return [
             'slug' => $slug,

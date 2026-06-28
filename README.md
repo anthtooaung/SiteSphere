@@ -97,12 +97,9 @@ Visit **http://localhost:8000**
 
 ---
 
-## 👥 Default Accounts
+## 🌐 Live Website
 
-| Role  | Email                | Password |
-|-------|----------------------|----------|
-| Admin | admin@sitesphere.com | password |
-| User  | user@sitesphere.com  | password |
+**[https://sitesphere-production.site](https://sitesphere-production.site)**
 
 ---
 
@@ -123,12 +120,14 @@ Visit **http://localhost:8000**
 
 | Name | Role | Contribution |
 |------|------|--------------|
-| <!-- Your Name --> | **Team Leader / Full-Stack** | Backend development, frontend compilation, project architecture |
-| <!-- Member 2 --> | Frontend Developer | UI components, responsive design |
-| <!-- Member 3 --> | Frontend Developer | UI components, styling |
-| <!-- Member 4 --> | Frontend Developer | UI components, interactions |
-
-> 💡 *Fill in your team members' names and specific contributions above.*
+| Ant Htoo Aung | **Team Leader / Full-Stack** | Backend development, frontend compilation, project architecture |
+| Hein Aung Kyaw | Frontend Developer | Login/Register, Post Detail, Logo & Loading, Admin Dashboard |
+| Eaint Nadi Kyaw | Frontend Developer | Home Page, Admin Users Page |
+| Min Hein Ko | Frontend Developer | Welcome Page, Report View, Flow Charts, Use-Case Diagram |
+| Lin Thant Aung | Frontend Developer | Profile Settings, Appearance, AG Design, Security Page |
+| Sa Kyaw Wai Yan Htet | Frontend Developer | Saved Posts, Post Card Box, Post Upload |
+| Han Htoo Lwin | Frontend Developer | Navigation, Footer, Menu Bar, Report Info |
+| Zune Myat Noe | Frontend Developer | About Us, Profile Page, Profile Show Box |
 
 ---
 

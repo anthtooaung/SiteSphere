@@ -617,7 +617,7 @@
   transition: all 0.15s ease;
   text-decoration: none;
   width: fit-content;
-  min-width: 320px;
+  min-width: min(320px, 100%);
 }
 
 .post-detail-page .aud-domain:hover {

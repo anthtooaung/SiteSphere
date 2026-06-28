@@ -20,8 +20,10 @@ class NotiBtn extends Component
 
     public int $unreadCount;
 
-    public function __construct()
-    {
+    public function __construct(
+        public string $trigger = 'bottom',
+        public string $mobileMode = 'both',
+    ) {
         $this->unreadNotifications = new Collection;
         $this->unreadCount = 0;
 

@@ -146,14 +146,6 @@
             <p class="text-sm" x-text="search === '' ? 'You\'re all caught up!' : 'Try a different search term'"></p>
         </div>
 
-        @if ($unreadNotifications->isEmpty())
-            <div class="p-12 text-center opacity-60 flex flex-col items-center justify-center gap-4 w-full h-full">
-                <x-far-bell-slash class="size-16" />
-                <p class="text-xl font-black">No unread notifications</p>
-                <p class="text-sm">You're all caught up!</p>
-            </div>
-        @endif
-
         <div style="padding: 0.75rem 1rem;">
             <a href="{{ route('notifications.index') }}" class="mobile-overlay-link w-full text-center !justify-center" style="text-decoration: none;">
                 <x-fas-eye class="icon size-5"/>

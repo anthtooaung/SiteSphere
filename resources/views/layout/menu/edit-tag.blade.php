@@ -421,36 +421,86 @@
                                                 <div class="color-picker-component" x-data="{
                                                     open: false,
                                                     textValue: category.color,
-                                                    presetColors: [
-                                                        '#FF6B6B', '#EE5A24', '#F79F1F', '#FFC312', '#A3CB38',
-                                                        '#009432', '#0652DD', '#1B1464', '#6C5CE7', '#D980FA',
-                                                        '#FDA7DF', '#E77F67', '#CF6A87', '#574B90', '#303952',
-                                                        '#F8EFBA', '#58B19F', '#1B9CFC', '#3B3B98', '#9B59B6',
-                                                        '#1ABC9C', '#2ECC71', '#3498DB', '#9B59B6', '#E74C3C',
-                                                        '#34495E', '#F39C12', '#1ABC9C', '#2C3E50', '#E67E22'
-                                                    ],
-                                                    selectPreset(c) {
-                                                        category.color = c;
-                                                        this.textValue = c;
-                                                        this.open = false;
+                                                    h: 210, s: 1, v: 1,
+                                                    svDragging: false,
+
+                                                    hexToRgb(hex) {
+                                                        hex = hex.replace('#', '');
+                                                        return { r: parseInt(hex.slice(0, 2), 16), g: parseInt(hex.slice(2, 4), 16), b: parseInt(hex.slice(4, 6), 16) };
+                                                    },
+                                                    rgbToHex(r, g, b) {
+                                                        return '#' + [r, g, b].map(v => Math.min(255, Math.max(0, Math.round(v))).toString(16).padStart(2, '0')).join('');
+                                                    },
+                                                    rgbToHsv(r, g, b) {
+                                                        r /= 255; g /= 255; b /= 255;
+                                                        const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+                                                        let h = 0;
+                                                        if (d !== 0) { if (max === r) h = 60 * (((g - b) / d) % 6); else if (max === g) h = 60 * ((b - r) / d + 2); else h = 60 * ((r - g) / d + 4); }
+                                                        if (h < 0) h += 360;
+                                                        return { h, s: max === 0 ? 0 : d / max, v: max };
+                                                    },
+                                                    hsvToRgb(h, s, v) {
+                                                        h = ((h % 360) + 360) % 360;
+                                                        const c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c;
+                                                        let r = 0, g = 0, b = 0;
+                                                        if (h < 60) { r = c; g = x; } else if (h < 120) { r = x; g = c; } else if (h < 180) { g = c; b = x; } else if (h < 240) { g = x; b = c; } else if (h < 300) { r = x; b = c; } else { r = c; b = x; }
+                                                        return { r: Math.round((r + m) * 255), g: Math.round((g + m) * 255), b: Math.round((b + m) * 255) };
+                                                    },
+                                                    initPicker() {
+                                                        const rgb = this.hexToRgb(category.color);
+                                                        const hsv = this.rgbToHsv(rgb.r, rgb.g, rgb.b);
+                                                        this.h = hsv.h; this.s = hsv.s; this.v = hsv.v;
+                                                    },
+                                                    get hueColor() { const rgb = this.hsvToRgb(this.h, 1, 1); return this.rgbToHex(rgb.r, rgb.g, rgb.b); },
+                                                    get svStyle() { return 'background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, ' + this.hueColor + ')'; },
+                                                    get svKnobStyle() { return 'left:' + (this.s * 100) + '%;top:' + ((1 - this.v) * 100) + '%'; },
+                                                    get hueKnobStyle() { return 'left:' + ((this.h / 360) * 100) + '%;background:' + this.hueColor; },
+                                                    get hexField() { return category.color.toUpperCase(); },
+                                                    get rgbFields() { return this.hexToRgb(category.color); },
+
+                                                    onSvPointerDown(e) { this.svDragging = true; this.$refs.svArea.setPointerCapture(e.pointerId); this.updateSvFromEvent(e); },
+                                                    onSvPointerMove(e) { if (this.svDragging) this.updateSvFromEvent(e); },
+                                                    onSvPointerUp() { this.svDragging = false; },
+                                                    updateSvFromEvent(e) {
+                                                        const rect = this.$refs.svArea.getBoundingClientRect();
+                                                        this.s = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+                                                        this.v = Math.min(1, Math.max(0, 1 - ((e.clientY - rect.top) / rect.height)));
+                                                        this.applyFromHSV();
+                                                    },
+                                                    onHueInput(e) { this.h = Number(e.target.value); this.applyFromHSV(); },
+                                                    onHexInput(e) {
+                                                        let val = String(e.target.value || '').trim();
+                                                        if (!val.startsWith('#')) val = '#' + val;
+                                                        if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+                                                            category.color = val; this.textValue = val;
+                                                            const rgb = this.hexToRgb(val); const hsv = this.rgbToHsv(rgb.r, rgb.g, rgb.b);
+                                                            this.h = hsv.h; this.s = hsv.s; this.v = hsv.v;
+                                                        }
+                                                    },
+                                                    onRgbInput() {
+                                                        const r = Math.min(255, Math.max(0, parseInt(this.$refs.rInput.value) || 0));
+                                                        const g = Math.min(255, Math.max(0, parseInt(this.$refs.gInput.value) || 0));
+                                                        const b = Math.min(255, Math.max(0, parseInt(this.$refs.bInput.value) || 0));
+                                                        const hex = this.rgbToHex(r, g, b);
+                                                        category.color = hex; this.textValue = hex;
+                                                        const hsv = this.rgbToHsv(r, g, b);
+                                                        this.h = hsv.h; this.s = hsv.s; this.v = hsv.v;
+                                                    },
+                                                    applyFromHSV() {
+                                                        const rgb = this.hsvToRgb(this.h, this.s, this.v);
+                                                        const hex = this.rgbToHex(rgb.r, rgb.g, rgb.b);
+                                                        category.color = hex; this.textValue = hex;
                                                     },
                                                     syncFromText() {
                                                         let val = this.textValue.trim();
                                                         if (val && !val.startsWith('#')) val = '#' + val;
-                                                        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-                                                            category.color = val;
-                                                        }
-                                                    },
-                                                    syncFromPicker(e) {
-                                                        category.color = e.target.value;
-                                                        this.textValue = e.target.value;
-                                                        this.open = false;
+                                                        if (/^#[0-9A-Fa-f]{6}$/.test(val)) { category.color = val; }
                                                     }
                                                 }" @click.outside="open = false">
                                                     <div class="color-picker-row">
                                                         <button type="button" class="color-picker-swatch"
                                                             :style="{ backgroundColor: category.color }"
-                                                            @click="open = !open"
+                                                            @click="open = !open; if(open) initPicker()"
                                                             aria-label="Pick color">
                                                         </button>
                                                         <input type="text" class="color-picker-text"
@@ -461,37 +511,32 @@
                                                             maxlength="7"
                                                             spellcheck="false"
                                                             autocomplete="off">
-                                                        <input type="color" x-ref="catPicker"
-                                                            :value="category.color"
-                                                            @input="syncFromPicker($event)"
-                                                            class="color-picker-native"
-                                                            tabindex="-1">
 
                                                         <!-- Color Picker Popup -->
-                                                        <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave" @click.away="open = false">
+                                                        <div class="color-picker-backdrop" x-show="open" @click="open = false"></div>
+                                                        <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
                                                             <div class="color-picker-popup-header">
                                                                 <span class="color-picker-popup-title">Select Color</span>
                                                                 <button type="button" class="color-picker-popup-close" @click="open = false">&times;</button>
                                                             </div>
-                                                            <div class="color-picker-popup-grid">
-                                                                <template x-for="(preset, index) in presetColors" :key="index">
-                                                                    <button type="button"
-                                                                        class="color-picker-preset"
-                                                                        :style="{ backgroundColor: preset }"
-                                                                        :class="{ 'active': category.color === preset }"
-                                                                        @click="selectPreset(preset)"
-                                                                        :aria-label="'Select color ' + preset">
-                                                                    </button>
-                                                                </template>
+                                                            <div class="color-picker-sv-area" x-ref="svArea"
+                                                                :style="svStyle"
+                                                                @pointerdown="onSvPointerDown($event)"
+                                                                @pointermove="onSvPointerMove($event)"
+                                                                @pointerup="onSvPointerUp()"
+                                                                @pointercancel="onSvPointerUp()">
+                                                                <span class="color-picker-sv-knob" :style="svKnobStyle"></span>
                                                             </div>
-                                                            <div class="color-picker-popup-custom">
-                                                                <button type="button" class="color-picker-custom-btn" @click="$refs.catPicker.click()">
-                                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                                        <circle cx="12" cy="12" r="10"/>
-                                                                        <path d="M12 8v8M8 12h8"/>
-                                                                    </svg>
-                                                                    Custom Color
-                                                                </button>
+                                                            <div class="color-picker-hue-row">
+                                                                <div class="color-picker-hue-track"></div>
+                                                                <span class="color-picker-hue-knob" :style="hueKnobStyle"></span>
+                                                                <input type="range" class="color-picker-hue-input" min="0" max="360" step="1" :value="Math.round(h)" @input="onHueInput($event)" aria-label="Hue">
+                                                            </div>
+                                                            <div class="color-picker-fields">
+                                                                <div class="color-field"><label>Hex</label><input type="text" :value="hexField" @input="onHexInput($event)" @blur="onHexInput($event)" @keydown.enter="onHexInput($event)" maxlength="7" spellcheck="false" autocomplete="off"></div>
+                                                                <div class="color-field"><label>R</label><input type="number" x-ref="rInput" :value="rgbFields.r" @input="onRgbInput()" min="0" max="255"></div>
+                                                                <div class="color-field"><label>G</label><input type="number" x-ref="gInput" :value="rgbFields.g" @input="onRgbInput()" min="0" max="255"></div>
+                                                                <div class="color-field"><label>B</label><input type="number" x-ref="bInput" :value="rgbFields.b" @input="onRgbInput()" min="0" max="255"></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -514,39 +559,89 @@
                                                         <div class="color-picker-component" x-data="{
                                                             open: false,
                                                             textValue: tag.color,
-                                                            presetColors: [
-                                                                '#FF6B6B', '#EE5A24', '#F79F1F', '#FFC312', '#A3CB38',
-                                                                '#009432', '#0652DD', '#1B1464', '#6C5CE7', '#D980FA',
-                                                                '#FDA7DF', '#E77F67', '#CF6A87', '#574B90', '#303952',
-                                                                '#F8EFBA', '#58B19F', '#1B9CFC', '#3B3B98', '#9B59B6',
-                                                                '#1ABC9C', '#2ECC71', '#3498DB', '#9B59B6', '#E74C3C',
-                                                                '#34495E', '#F39C12', '#1ABC9C', '#2C3E50', '#E67E22'
-                                                            ],
-                                                            selectPreset(c) {
-                                                                tag.color = c;
-                                                                this.textValue = c;
-                                                                this.open = false;
+                                                            h: 210, s: 1, v: 1,
+                                                            svDragging: false,
+
+                                                            hexToRgb(hex) {
+                                                                hex = hex.replace('#', '');
+                                                                return { r: parseInt(hex.slice(0, 2), 16), g: parseInt(hex.slice(2, 4), 16), b: parseInt(hex.slice(4, 6), 16) };
+                                                            },
+                                                            rgbToHex(r, g, b) {
+                                                                return '#' + [r, g, b].map(v => Math.min(255, Math.max(0, Math.round(v))).toString(16).padStart(2, '0')).join('');
+                                                            },
+                                                            rgbToHsv(r, g, b) {
+                                                                r /= 255; g /= 255; b /= 255;
+                                                                const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+                                                                let h = 0;
+                                                                if (d !== 0) { if (max === r) h = 60 * (((g - b) / d) % 6); else if (max === g) h = 60 * ((b - r) / d + 2); else h = 60 * ((r - g) / d + 4); }
+                                                                if (h < 0) h += 360;
+                                                                return { h, s: max === 0 ? 0 : d / max, v: max };
+                                                            },
+                                                            hsvToRgb(h, s, v) {
+                                                                h = ((h % 360) + 360) % 360;
+                                                                const c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c;
+                                                                let r = 0, g = 0, b = 0;
+                                                                if (h < 60) { r = c; g = x; } else if (h < 120) { r = x; g = c; } else if (h < 180) { g = c; b = x; } else if (h < 240) { g = x; b = c; } else if (h < 300) { r = x; b = c; } else { r = c; b = x; }
+                                                                return { r: Math.round((r + m) * 255), g: Math.round((g + m) * 255), b: Math.round((b + m) * 255) };
+                                                            },
+                                                            initPicker() {
+                                                                const rgb = this.hexToRgb(tag.color);
+                                                                const hsv = this.rgbToHsv(rgb.r, rgb.g, rgb.b);
+                                                                this.h = hsv.h; this.s = hsv.s; this.v = hsv.v;
+                                                            },
+                                                            get hueColor() { const rgb = this.hsvToRgb(this.h, 1, 1); return this.rgbToHex(rgb.r, rgb.g, rgb.b); },
+                                                            get svStyle() { return 'background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, ' + this.hueColor + ')'; },
+                                                            get svKnobStyle() { return 'left:' + (this.s * 100) + '%;top:' + ((1 - this.v) * 100) + '%'; },
+                                                            get hueKnobStyle() { return 'left:' + ((this.h / 360) * 100) + '%;background:' + this.hueColor; },
+                                                            get hexField() { return tag.color.toUpperCase(); },
+                                                            get rgbFields() { return this.hexToRgb(tag.color); },
+
+                                                            onSvPointerDown(e) { this.svDragging = true; this.$refs.svArea.setPointerCapture(e.pointerId); this.updateSvFromEvent(e); },
+                                                            onSvPointerMove(e) { if (this.svDragging) this.updateSvFromEvent(e); },
+                                                            onSvPointerUp() { this.svDragging = false; },
+                                                            updateSvFromEvent(e) {
+                                                                const rect = this.$refs.svArea.getBoundingClientRect();
+                                                                this.s = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+                                                                this.v = Math.min(1, Math.max(0, 1 - ((e.clientY - rect.top) / rect.height)));
+                                                                this.applyFromHSV();
+                                                            },
+                                                            onHueInput(e) { this.h = Number(e.target.value); this.applyFromHSV(); },
+                                                            onHexInput(e) {
+                                                                let val = String(e.target.value || '').trim();
+                                                                if (!val.startsWith('#')) val = '#' + val;
+                                                                if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+                                                                    tag.color = val; this.textValue = val;
+                                                                    const rgb = this.hexToRgb(val); const hsv = this.rgbToHsv(rgb.r, rgb.g, rgb.b);
+                                                                    this.h = hsv.h; this.s = hsv.s; this.v = hsv.v;
+                                                                    syncTagColors(tag, 'color');
+                                                                }
+                                                            },
+                                                            onRgbInput() {
+                                                                const r = Math.min(255, Math.max(0, parseInt(this.$refs.rInput.value) || 0));
+                                                                const g = Math.min(255, Math.max(0, parseInt(this.$refs.gInput.value) || 0));
+                                                                const b = Math.min(255, Math.max(0, parseInt(this.$refs.bInput.value) || 0));
+                                                                const hex = this.rgbToHex(r, g, b);
+                                                                tag.color = hex; this.textValue = hex;
+                                                                const hsv = this.rgbToHsv(r, g, b);
+                                                                this.h = hsv.h; this.s = hsv.s; this.v = hsv.v;
+                                                                syncTagColors(tag, 'color');
+                                                            },
+                                                            applyFromHSV() {
+                                                                const rgb = this.hsvToRgb(this.h, this.s, this.v);
+                                                                const hex = this.rgbToHex(rgb.r, rgb.g, rgb.b);
+                                                                tag.color = hex; this.textValue = hex;
                                                                 syncTagColors(tag, 'color');
                                                             },
                                                             syncFromText() {
                                                                 let val = this.textValue.trim();
                                                                 if (val && !val.startsWith('#')) val = '#' + val;
-                                                                if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-                                                                    tag.color = val;
-                                                                    syncTagColors(tag, 'color');
-                                                                }
-                                                            },
-                                                            syncFromPicker(e) {
-                                                                tag.color = e.target.value;
-                                                                this.textValue = e.target.value;
-                                                                this.open = false;
-                                                                syncTagColors(tag, 'color');
+                                                                if (/^#[0-9A-Fa-f]{6}$/.test(val)) { tag.color = val; syncTagColors(tag, 'color'); }
                                                             }
                                                         }" style="display: inline-flex; align-items: center; gap: 4px;" @click.outside="open = false">
                                                             <button type="button" class="color-picker-swatch"
                                                                 style="width: 24px; height: 24px; border-radius: 4px;"
                                                                 :style="{ backgroundColor: tag.color }"
-                                                                @click="open = !open"
+                                                                @click="open = !open; if(open) initPicker()"
                                                                 aria-label="Pick color">
                                                             </button>
                                                             <input type="text" class="color-picker-text"
@@ -558,37 +653,32 @@
                                                                 maxlength="7"
                                                                 spellcheck="false"
                                                                 autocomplete="off">
-                                                            <input type="color" x-ref="tagPicker"
-                                                                :value="tag.color"
-                                                                @input="syncFromPicker($event)"
-                                                                class="color-picker-native"
-                                                                tabindex="-1">
 
                                                             <!-- Color Picker Popup -->
-                                                            <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave" @click.away="open = false" style="width: 200px;">
+                                                            <div class="color-picker-backdrop" x-show="open" @click="open = false"></div>
+                                                            <div class="color-picker-popup" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
                                                                 <div class="color-picker-popup-header">
                                                                     <span class="color-picker-popup-title">Select Color</span>
                                                                     <button type="button" class="color-picker-popup-close" @click="open = false">&times;</button>
                                                                 </div>
-                                                                <div class="color-picker-popup-grid" style="gap: 4px; padding: 10px;">
-                                                                    <template x-for="(preset, index) in presetColors" :key="index">
-                                                                        <button type="button"
-                                                                            class="color-picker-preset"
-                                                                            :style="{ backgroundColor: preset }"
-                                                                            :class="{ 'active': tag.color === preset }"
-                                                                            @click="selectPreset(preset)"
-                                                                            :aria-label="'Select color ' + preset">
-                                                                        </button>
-                                                                    </template>
+                                                                <div class="color-picker-sv-area" x-ref="svArea"
+                                                                    :style="svStyle"
+                                                                    @pointerdown="onSvPointerDown($event)"
+                                                                    @pointermove="onSvPointerMove($event)"
+                                                                    @pointerup="onSvPointerUp()"
+                                                                    @pointercancel="onSvPointerUp()">
+                                                                    <span class="color-picker-sv-knob" :style="svKnobStyle"></span>
                                                                 </div>
-                                                                <div class="color-picker-popup-custom" style="padding: 8px 10px 10px;">
-                                                                    <button type="button" class="color-picker-custom-btn" @click="$refs.tagPicker.click()" style="padding: 6px 10px; font-size: 11px;">
-                                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                                            <circle cx="12" cy="12" r="10"/>
-                                                                            <path d="M12 8v8M8 12h8"/>
-                                                                        </svg>
-                                                                        Custom Color
-                                                                    </button>
+                                                                <div class="color-picker-hue-row">
+                                                                    <div class="color-picker-hue-track"></div>
+                                                                    <span class="color-picker-hue-knob" :style="hueKnobStyle"></span>
+                                                                    <input type="range" class="color-picker-hue-input" min="0" max="360" step="1" :value="Math.round(h)" @input="onHueInput($event)" aria-label="Hue">
+                                                                </div>
+                                                                <div class="color-picker-fields">
+                                                                    <div class="color-field"><label>Hex</label><input type="text" :value="hexField" @input="onHexInput($event)" @blur="onHexInput($event)" @keydown.enter="onHexInput($event)" maxlength="7" spellcheck="false" autocomplete="off"></div>
+                                                                    <div class="color-field"><label>R</label><input type="number" x-ref="rInput" :value="rgbFields.r" @input="onRgbInput()" min="0" max="255"></div>
+                                                                    <div class="color-field"><label>G</label><input type="number" x-ref="gInput" :value="rgbFields.g" @input="onRgbInput()" min="0" max="255"></div>
+                                                                    <div class="color-field"><label>B</label><input type="number" x-ref="bInput" :value="rgbFields.b" @input="onRgbInput()" min="0" max="255"></div>
                                                                 </div>
                                                             </div>
                                                         </div>

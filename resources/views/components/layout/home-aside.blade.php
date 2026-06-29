@@ -103,10 +103,10 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
 
                         <div class="layout-menu-topbar-dropdown section-content" id="ratingContent" x-show="openSection" x-cloak>
                             <div class="rating-options">
-                                <label class="rating-check"><input type="checkbox" value="all" :checked="filters.rating.length === 0" @change="clearFilters()"><span>All</span></label>
+                                <label class="rating-check"><input type="checkbox" value="all" :checked="filters.rating.length === 0" @change="filters.rating = []; updateResults()"><span>All</span></label>
                                 @foreach ([5, 4, 3, 2, 1] as $rating)
                                     <label class="rating-check">
-                                        <input type="checkbox" value="{{ $rating }}" 
+                                        <input type="checkbox" value="{{ $rating }}"
                                                :checked="filters.rating.includes('{{ $rating }}')"
                                                @change="toggleFilter('rating', '{{ $rating }}')">
                                         <span>{{ $rating }}+ Rating</span>
@@ -215,10 +215,10 @@ class="{{ $isDropdownAside ? 'md:w-full md:flex md:justify-center' : 'md:h-full'
 
                 <div class="section-content" id="ratingContent" x-show="openSection">
                     <div class="rating-options">
-                        <label class="rating-check"><input type="checkbox" value="all" :checked="filters.rating.length === 0" @change="clearFilters()"><span>All</span></label>
+                        <label class="rating-check"><input type="checkbox" value="all" :checked="filters.rating.length === 0" @change="filters.rating = []; updateResults()"><span>All</span></label>
                         @foreach ([5, 4, 3, 2, 1] as $rating)
                             <label class="rating-check">
-                                <input type="checkbox" value="{{ $rating }}" 
+                                <input type="checkbox" value="{{ $rating }}"
                                        :checked="filters.rating.includes('{{ $rating }}')"
                                        @change="toggleFilter('rating', '{{ $rating }}')">
                                 <span>{{ $rating }}+ Rating</span>

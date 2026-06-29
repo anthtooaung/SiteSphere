@@ -211,11 +211,11 @@
                         // Update URL without reloading to reflect current filters
                         window.history.pushState({}, '', url);
 
-                        // Also update the desktop search input if it exists
-                        const searchInput = document.getElementById('search');
-                        if (searchInput) {
-                            searchInput.value = this.filters.search;
-                        }
+                        // Also update the search inputs if they exist
+                        const searchInputs = document.querySelectorAll('input[name="search"]');
+                        searchInputs.forEach(input => {
+                            input.value = this.filters.search;
+                        });
                     } catch (error) {
                         console.error('Error updating results:', error);
                     } finally {
@@ -312,6 +312,26 @@
                     if (params.get('sort')) {
                         this.filters.sort = params.get('sort');
                     }
+
+                    this.$nextTick(() => {
+                        const searchForm = document.getElementById('searchForm');
+                        if (searchForm) {
+                            const searchInputs = searchForm.querySelectorAll('input[name="search"]');
+                            
+                            // Keep filters.search in sync when typing
+                            searchInputs.forEach(input => {
+                                input.addEventListener('input', (e) => {
+                                    this.filters.search = e.target.value;
+                                });
+                            });
+
+                            // Handle form submission via AJAX
+                            searchForm.addEventListener('submit', (e) => {
+                                e.preventDefault();
+                                this.updateResults();
+                            });
+                        }
+                    });
                 }
             }
         }

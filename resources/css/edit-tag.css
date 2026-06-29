@@ -902,11 +902,10 @@
     border-color: var(--accent-color);
 }
 
-/* Compact variant for tag editor */
 .color-picker-compact .color-picker-swatch {
     width: 24px;
     height: 24px;
-    border-radius: 4px;
+    border-radius: 50%;
 }
 
 .color-picker-compact .color-picker-text {
@@ -925,13 +924,16 @@
 
 /* Color Picker Popup */
 .color-picker-popup {
-    width: 280px;
-    background: var(--background-color, #ffffff);
+    width: 360px;
+    background: color-mix(in srgb, var(--background-color, #ffffff) 92%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
     border-radius: 12px;
     box-shadow: 0 22px 50px color-mix(in srgb, var(--text-color) 22%, transparent);
     overflow: hidden;
     padding: 16px;
+    transform-origin: top center;
 }
 
 .color-picker-popup-header {
@@ -941,10 +943,24 @@
     margin-bottom: 14px;
 }
 
+.color-picker-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .color-picker-popup-title {
     font-size: 13px;
     font-weight: 600;
     color: var(--text-color);
+}
+
+.color-picker-current-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--text-color) 20%, transparent);
+    flex-shrink: 0;
 }
 
 .color-picker-popup-close {
@@ -972,13 +988,14 @@
 .color-picker-palette {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: 6px;
+    gap: 4px;
     margin-bottom: 14px;
 }
 
 .color-picker-palette-swatch {
     width: 100%;
     aspect-ratio: 1;
+    min-height: 28px;
     border-radius: 6px;
     border: 2px solid transparent;
     cursor: pointer;

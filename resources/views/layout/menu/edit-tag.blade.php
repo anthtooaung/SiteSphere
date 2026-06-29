@@ -428,7 +428,9 @@
                                                     palette: [
                                                         '#000000','#434343','#666666','#999999','#B7B7B7','#CCCCCC','#D9D9D9','#EFEFEF','#F3F3F3','#FFFFFF',
                                                         '#980000','#FF0000','#FF9900','#FFFF00','#00FF00','#00FFFF','#4A86E8','#0000FF','#9900FF','#FF00FF',
-                                                        '#E6B8AF','#FCE5CD','#FFF2CC','#D9EAD3','#D0E0E3','#C9DAF8','#CFE2F3','#D9D2E9','#EAD1DC','#DD7E6B'
+                                                        '#E6B8AF','#FCE5CD','#FFF2CC','#D9EAD3','#D0E0E3','#C9DAF8','#CFE2F3','#D9D2E9','#EAD1DC','#DD7E6B',
+                                                        '#CC4125','#E06666','#F6B26B','#FFD966','#93C47D','#76A5AF','#6D9EEB','#6FA8DC','#8E7CC3','#C27BA0',
+                                                        '#A61C00','#CC0000','#E69138','#F1C232','#6AA84F','#45818E','#3D85C6','#674EA7','#A64D79','#85200C'
                                                     ],
                                                     hexToRgb(hex) { hex = hex.replace('#', ''); return { r: parseInt(hex.slice(0, 2), 16), g: parseInt(hex.slice(2, 4), 16), b: parseInt(hex.slice(4, 6), 16) }; },
                                                     rgbToHex(r, g, b) { return '#' + [r, g, b].map(v => Math.min(255, Math.max(0, Math.round(v))).toString(16).padStart(2, '0')).join(''); },
@@ -441,8 +443,12 @@
                                                     get hueKnobStyle() { return 'left:' + ((this.h / 360) * 100) + '%;background:' + this.hueColor; },
                                                     get hexField() { return category.color.toUpperCase(); },
                                                     get rgbFields() { return this.hexToRgb(category.color); },
-                                                    selectPalette(hex) { category.color = hex; this.textValue = hex; this.open = false; document.body.style.overflow = ''; },
-                                                    positionPopup() { this.$nextTick(() => { const swatch = this.$refs.swatchBtn; if (!swatch) return; const rect = swatch.getBoundingClientRect(); const popupWidth = 280; let left = rect.left; if (left + popupWidth > window.innerWidth - 12) left = window.innerWidth - popupWidth - 12; if (left < 12) left = 12; let top = rect.bottom + 8; this.popupStyle = 'position:fixed;top:' + top + 'px;left:' + left + 'px;z-index:10000;'; }); },
+                                                    _repositionHandler: null,
+                                                    toggle() { this.open = !this.open; if (this.open) { this.showCustom = false; this.initPicker(); this.positionPopup(); this._repositionHandler = () => { if (this.open) this.positionPopup(); }; window.addEventListener('resize', this._repositionHandler); window.addEventListener('scroll', this._repositionHandler, true); } else { this.cleanupListeners(); } },
+                                                    closePanel() { this.open = false; this.showCustom = false; this.svDragging = false; this.cleanupListeners(); document.body.style.overflow = ''; },
+                                                    cleanupListeners() { if (this._repositionHandler) { window.removeEventListener('resize', this._repositionHandler); window.removeEventListener('scroll', this._repositionHandler, true); this._repositionHandler = null; } },
+                                                    selectPalette(hex) { category.color = hex; this.textValue = hex; this.closePanel(); },
+                                                    positionPopup() { this.$nextTick(() => { const swatch = this.$refs.swatchBtn; if (!swatch) return; const rect = swatch.getBoundingClientRect(); const popupWidth = 360; let left = rect.left; if (left + popupWidth > window.innerWidth - 12) left = window.innerWidth - popupWidth - 12; if (left < 12) left = 12; let top = rect.bottom + 8; this.popupStyle = 'position:fixed;top:' + top + 'px;left:' + left + 'px;z-index:10000;'; }); },
                                                     onSvPointerDown(e) { this.svDragging = true; this.$refs.svArea.setPointerCapture(e.pointerId); this.updateSvFromEvent(e); },
                                                     onSvPointerMove(e) { if (this.svDragging) this.updateSvFromEvent(e); },
                                                     onSvPointerUp() { this.svDragging = false; },
@@ -456,20 +462,23 @@
                                                     <div class="color-picker-row">
                                                         <button type="button" class="color-picker-swatch" x-ref="swatchBtn"
                                                             :style="{ backgroundColor: category.color }"
-                                                            @click="open = !open; if(open) { initPicker(); positionPopup(); }"
+                                                            @click="toggle()"
                                                             aria-label="Pick color">
                                                         </button>
-                                                        <input type="text" class="color-picker-text"
-                                                            x-model="textValue"
-                                                            @input="syncFromText()"
-                                                            @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = category.color"
-                                                            placeholder="#FF5733"
-                                                            maxlength="7">
                                                         <template x-teleport="body">
-                                                            <div class="color-picker-popup" :style="popupStyle" x-show="open" @click.outside="if (! $root.contains($event.target)) open = false;" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
+                                                            <div class="color-picker-popup" :style="popupStyle" x-show="open" @click.outside="if (! $root.contains($event.target)) closePanel();"
+                                                                x-transition:enter="transition ease-out duration-150"
+                                                                x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                                                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                                                x-transition:leave="transition ease-in duration-100"
+                                                                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                                                x-transition:leave-end="opacity-0 scale-95 -translate-y-1">
                                                             <div class="color-picker-popup-header">
-                                                                <span class="color-picker-popup-title">Select Color</span>
-                                                                <button type="button" class="color-picker-popup-close" @click="open = false;">&times;</button>
+                                                                <div class="color-picker-header-left">
+                                                                    <span class="color-picker-popup-title">Select Color</span>
+                                                                    <span class="color-picker-current-preview" :style="{ backgroundColor: category.color }" :title="category.color"></span>
+                                                                </div>
+                                                                <button type="button" class="color-picker-popup-close" @click="closePanel();">&times;</button>
                                                             </div>
                                                             <div class="color-picker-palette" x-show="!showCustom">
                                                                 <template x-for="(hex, i) in palette" :key="i">
@@ -541,8 +550,12 @@
                                                             get hueKnobStyle() { return 'left:' + ((this.h / 360) * 100) + '%;background:' + this.hueColor; },
                                                             get hexField() { return tag.color.toUpperCase(); },
                                                             get rgbFields() { return this.hexToRgb(tag.color); },
-                                                            selectPalette(hex) { tag.color = hex; this.textValue = hex; syncTagColors(tag, 'color'); this.open = false; },
-                                                            positionPopup() { this.$nextTick(() => { const swatch = this.$refs.swatchBtn; if (!swatch) return; const rect = swatch.getBoundingClientRect(); const popupWidth = 280; let left = rect.left; if (left + popupWidth > window.innerWidth - 12) left = window.innerWidth - popupWidth - 12; if (left < 12) left = 12; let top = rect.bottom + 8; this.popupStyle = 'position:fixed;top:' + top + 'px;left:' + left + 'px;z-index:10000;'; }); },
+                                                            _repositionHandler: null,
+                                                            toggle() { this.open = !this.open; if (this.open) { this.showCustom = false; this.initPicker(); this.positionPopup(); this._repositionHandler = () => { if (this.open) this.positionPopup(); }; window.addEventListener('resize', this._repositionHandler); window.addEventListener('scroll', this._repositionHandler, true); } else { this.cleanupListeners(); } },
+                                                            closePanel() { this.open = false; this.showCustom = false; this.svDragging = false; this.cleanupListeners(); },
+                                                            cleanupListeners() { if (this._repositionHandler) { window.removeEventListener('resize', this._repositionHandler); window.removeEventListener('scroll', this._repositionHandler, true); this._repositionHandler = null; } },
+                                                            selectPalette(hex) { tag.color = hex; this.textValue = hex; syncTagColors(tag, 'color'); this.closePanel(); },
+                                                            positionPopup() { this.$nextTick(() => { const swatch = this.$refs.swatchBtn; if (!swatch) return; const rect = swatch.getBoundingClientRect(); const popupWidth = 360; let left = rect.left; if (left + popupWidth > window.innerWidth - 12) left = window.innerWidth - popupWidth - 12; if (left < 12) left = 12; let top = rect.bottom + 8; this.popupStyle = 'position:fixed;top:' + top + 'px;left:' + left + 'px;z-index:10000;'; }); },
                                                             onSvPointerDown(e) { this.svDragging = true; this.$refs.svArea.setPointerCapture(e.pointerId); this.updateSvFromEvent(e); },
                                                             onSvPointerMove(e) { if (this.svDragging) this.updateSvFromEvent(e); },
                                                             onSvPointerUp() { this.svDragging = false; },
@@ -555,20 +568,23 @@
                                                         }" style="display: inline-flex; align-items: center;">
                                                             <button type="button" class="color-picker-swatch" x-ref="swatchBtn"
                                                                 :style="{ backgroundColor: tag.color }"
-                                                                @click="open = !open; if(open) { initPicker(); positionPopup(); }"
+                                                                @click="toggle()"
                                                                 aria-label="Pick color">
                                                             </button>
-                                                            <input type="text" class="color-picker-text"
-                                                                x-model="textValue"
-                                                                @input="syncFromText()"
-                                                                @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = tag.color"
-                                                                placeholder="#FF5733"
-                                                                maxlength="7">
                                                             <template x-teleport="body">
-                                                                <div class="color-picker-popup" :style="popupStyle" x-show="open" @click.outside="if (! $root.contains($event.target)) open = false;" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
+                                                                <div class="color-picker-popup" :style="popupStyle" x-show="open" @click.outside="if (! $root.contains($event.target)) closePanel();"
+                                                                    x-transition:enter="transition ease-out duration-150"
+                                                                    x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                                                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                                                    x-transition:leave="transition ease-in duration-100"
+                                                                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                                                    x-transition:leave-end="opacity-0 scale-95 -translate-y-1">
                                                                 <div class="color-picker-popup-header">
-                                                                    <span class="color-picker-popup-title">Select Color</span>
-                                                                    <button type="button" class="color-picker-popup-close" @click="open = false;">&times;</button>
+                                                                    <div class="color-picker-header-left">
+                                                                        <span class="color-picker-popup-title">Select Color</span>
+                                                                        <span class="color-picker-current-preview" :style="{ backgroundColor: tag.color }" :title="tag.color"></span>
+                                                                    </div>
+                                                                    <button type="button" class="color-picker-popup-close" @click="closePanel();">&times;</button>
                                                                 </div>
                                                                 <div class="color-picker-palette" x-show="!showCustom">
                                                                     <template x-for="(hex, i) in palette" :key="i">

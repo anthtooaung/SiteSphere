@@ -24,11 +24,12 @@
     ],
 
     hexToRgb(hex) {
-        hex = hex.replace('#', '');
+        hex = (hex || '').replace('#', '');
+        if (hex.length < 6) return { r: 0, g: 0, b: 0 };
         return {
-            r: parseInt(hex.slice(0, 2), 16),
-            g: parseInt(hex.slice(2, 4), 16),
-            b: parseInt(hex.slice(4, 6), 16)
+            r: parseInt(hex.slice(0, 2), 16) || 0,
+            g: parseInt(hex.slice(2, 4), 16) || 0,
+            b: parseInt(hex.slice(4, 6), 16) || 0
         };
     },
     rgbToHex(r, g, b) {
@@ -145,6 +146,7 @@
     },
 
     popupStyle: '',
+    _repositionHandler: null,
 
     toggle() {
         this.open = !this.open;
@@ -153,15 +155,31 @@
             this.initPicker();
             this.positionPopup();
             document.body.style.overflow = 'hidden';
+            this._repositionHandler = () => { if (this.open) this.positionPopup(); };
+            window.addEventListener('resize', this._repositionHandler);
+            window.addEventListener('scroll', this._repositionHandler, true);
         } else {
-            document.body.style.overflow = '';
+            this.cleanupListeners();
         }
     },
+
     closePanel() {
         this.open = false;
         this.showCustom = false;
+        this.svDragging = false;
+        document.body.style.overflow = '';
+        this.cleanupListeners();
+    },
+
+    cleanupListeners() {
+        if (this._repositionHandler) {
+            window.removeEventListener('resize', this._repositionHandler);
+            window.removeEventListener('scroll', this._repositionHandler, true);
+            this._repositionHandler = null;
+        }
         document.body.style.overflow = '';
     },
+
     positionPopup() {
         this.$nextTick(() => {
             const swatch = this.$refs.swatchBtn;
@@ -177,8 +195,7 @@
             this.popupStyle = 'position:fixed;top:' + top + 'px;left:' + left + 'px;z-index:10000;';
         });
     }
-}" x-init="$watch('color', val => { $dispatch('color-change', { name: '{{ $name }}', value: val }); })"
-@click.outside="open = false">
+}">
     @if ($label)
         <label for="{{ $inputId }}" class="color-picker-label">{{ $label }}</label>
     @endif
@@ -201,9 +218,19 @@
 
         <!-- Color Picker Popup -->
         <div class="color-picker-backdrop" x-show="open" @click="closePanel()"></div>
-        <div class="color-picker-popup" :style="popupStyle" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
+        <div class="color-picker-popup" :style="popupStyle"
+            x-show="open"
+            x-transition:enter="transition ease-out duration-150"
+            x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-100"
+            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+            x-transition:leave-end="opacity-0 scale-95 -translate-y-1">
             <div class="color-picker-popup-header">
-                <span class="color-picker-popup-title">Select Color</span>
+                <div class="color-picker-header-left">
+                    <span class="color-picker-popup-title">Select Color</span>
+                    <span class="color-picker-current-preview" :style="{ backgroundColor: color }" :title="color"></span>
+                </div>
                 <button type="button" class="color-picker-popup-close" @click="closePanel()">&times;</button>
             </div>
 
@@ -256,6 +283,7 @@
                             @input="onHexInput($event)"
                             @blur="onHexInput($event)"
                             @keydown.enter="onHexInput($event)"
+                            placeholder="#000000"
                             maxlength="7" spellcheck="false" autocomplete="off">
                     </div>
                     <div class="color-field">

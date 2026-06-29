@@ -520,13 +520,13 @@
                                                 <span class="thread-tag-chip"
                                                     :style="{ backgroundColor: tint(tag.color), color: tag.color }"
                                                     data-edit-tag-chip>
-                                                    <template x-if="isAdmin && isEditing(category)">
+                                                    <template x-if="isEditing(category)">
                                                         <input type="text" x-model="tag.name" @input="syncTagColors(tag, 'name')" aria-label="Tag name" class="outline-none" @keydown.space.stop @keyup.space.stop @keypress.space.stop @keydown.enter.prevent>
                                                     </template>
-                                                    <template x-if="! (isAdmin && isEditing(category))">
+                                                    <template x-if="! isEditing(category)">
                                                         <span class="thread-tag-name" x-text="tag.name"></span>
                                                     </template>
-                                                    <template x-if="isAdmin && isEditing(category)">
+                                                    <template x-if="isEditing(category)">
                                                         <div class="color-picker-component color-picker-compact" x-data="{
                                                             open: false,
                                                             showCustom: false,

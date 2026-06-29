@@ -250,7 +250,7 @@ About Us
 
                     <div class="carousel-card">
                         <div class="member-avatar">
-                            <x-fas-user-gear class="icon" aria-hidden="true" />
+                            <img src="{{ asset('images/team/hein-aung-kyaw.jpg') }}" alt="Hein Aung Kyaw" loading="lazy" />
                         </div>
                         <h3>Hein Aung Kyaw</h3>
                         <p class="role">Co-Leader & Frontend Developer</p>

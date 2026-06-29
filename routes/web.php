@@ -100,6 +100,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/menu/dashboard/activity-log', [AdminActivityLogController::class, 'index'])->name('admin.activity-log');
     Route::get('/api/admin/activity/{date}', [AdminActivityLogController::class, 'show'])->name('admin.activity-date');
+    Route::get('/menu/dashboard/stats', [DashboardController::class, 'stats'])->name('admin.dashboard-stats');
 
     Route::get('/notifications', [NotificatioinsController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/open', NotificationOpenController::class)->name('notifications.open');

@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const data = window.AdminDashboardData || {};
-  const categories = data.stats || [];
-  const acts = data.recentActivity || [];
-  const posts = data.topPosts || [];
+  let categories = data.stats || [];
+  let acts = data.recentActivity || [];
+  let posts = data.topPosts || [];
 
   // ══ EXISTING PIE CHART (Admin Overview) ══════════════════════════════════
   const popup = document.getElementById("cat-popup");
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Build pie for layout 9
-  const catSlicePaths9 = buildOvPie("cat-svg-9", 95, 138, 182, false, "total");
+  let catSlicePaths9 = buildOvPie("cat-svg-9", 95, 138, 182, false, "total");
 
   // ══ SPARKLINE BUILDER ════════════════════════════════════════════════════
   function buildSparklines() {
@@ -301,10 +301,73 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ══ RE-RENDER HELPERS ════════════════════════════════════════════════════
+  function renderPieChart9() {
+    const svgEl = document.getElementById("cat-svg-9");
+    if (!svgEl) return;
+    svgEl.innerHTML = '';
+    catSlicePaths9 = buildOvPie("cat-svg-9", 95, 138, 182, false, "total");
+  }
+
+  function updateSparklines() {
+    // Sync data-trend attributes with current categories, then rebuild
+    const wraps = document.querySelectorAll('.ov9-spark-wrap');
+    wraps.forEach(wrap => {
+      const idx = parseInt(wrap.parentElement.parentElement?.dataset?.ov9Idx);
+      if (!isNaN(idx) && categories[idx]) {
+        wrap.dataset.trend = JSON.stringify(categories[idx].trend);
+      }
+    });
+    buildSparklines();
+  }
+
+  function updateKpiValues() {
+    // Update KPI value displays
+    const kpiCards = document.querySelectorAll('.ov9-kpi[data-ov9-idx]');
+    kpiCards.forEach(card => {
+      const idx = parseInt(card.dataset.ov9Idx);
+      if (!isNaN(idx) && categories[idx]) {
+        const valEl = card.querySelector('.kpi-val');
+        if (valEl) {
+          valEl.textContent = categories[idx].value.toLocaleString();
+        }
+      }
+    });
+  }
+
+  function renderTopPosts() {
+    const container = document.getElementById("top-posts");
+    if (!container) return;
+    if (!posts.length) {
+      container.innerHTML = '<div class="rank-item" style="color:var(--muted)">No top posts found.</div>';
+      return;
+    }
+    const numClasses = ["gold", "silver", "bronze", "", ""];
+    const filledStar = '<svg width="11" height="11" viewBox="0 0 576 512" style="color:#f59e0b;fill:currentColor;"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L350.2 329l104.2-103.1c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L293.2 150.3z"/></svg>';
+    const emptyStar = '<svg width="11" height="11" viewBox="0 0 576 512" style="color:#cbd5e1;fill:currentColor;"><path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9.4 1.4 17.2 7.8 20.4 16.5s1.1 18.9-5.9 25.8l-111.1 110 26.3 155.5c1.6 9.5-2.2 19.1-9.9 24.5s-17.8 4.7-25.8-1.7L288 439.6 150.7 507.9c-8 4.3-18 5.3-26.7 2.7s-14.5-9.4-17.9-18.3L79.8 336.8 17.6 275.4c-7-6.9-9.4-17.1-5.9-25.8s11-15.1 20.4-16.5l153.2-22.6L253.9 69.2c4-8.3 12.4-13.5 21.6-13.5z"/></svg>';
+    container.innerHTML = posts.map((p, i) => {
+      const nc = numClasses[i] || "";
+      const stars = Array.from({length: 5}, (_, s) =>
+        s < p.rating ? filledStar : emptyStar
+      ).join('');
+      return `<a class="rank-item" href="/posts/${p.slug}">
+        <div class="rank-num ${nc}">${i + 1}</div>
+        <div style="flex:1;min-width:0">
+          <div class="rank-title">${p.title}</div>
+          <div class="rank-sub" style="display:flex;align-items:center;margin-top:2px;">
+            <div style="display:flex;gap:2px;align-items:center;">${stars}</div>
+            <span style="color:#cbd5e1;margin-left:4px;">·</span>
+            <span style="font-size:12px;color:#94a3b8;margin-left:4px;">${p.comments} comments</span>
+          </div>
+        </div>
+      </a>`;
+    }).join("");
+  }
+
   // ══ ACTIVITY FEED ═══════════════════════════════════════════════════════
-  const postSlugs = data.postSlugs || {};
-  const userSlugs = data.userSlugs || {};
-  const commentPostSlugs = data.commentPostSlugs || {};
+  let postSlugs = data.postSlugs || {};
+  let userSlugs = data.userSlugs || {};
+  let commentPostSlugs = data.commentPostSlugs || {};
 
   function getTargetUrl(a) {
     if (a.targetType === 'App\\Models\\Posts') {
@@ -322,10 +385,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return null;
   }
 
-  const activityList = document.getElementById("activity-list");
-  if(activityList) {
-    if(acts.length === 0) {
-        activityList.innerHTML = `<div class="tl-item"><div class="tl-content"><div class="tl-txt" style="color:var(--muted)">No recent activity found.</div></div></div>`;
+  function renderActivityFeed() {
+    const container = document.getElementById("activity-list");
+    if (!container) return;
+    if (acts.length === 0) {
+        container.innerHTML = `<div class="tl-item"><div class="tl-content"><div class="tl-txt" style="color:var(--muted)">No recent activity found.</div></div></div>`;
     } else {
         const categoryLabels = {
           moderation: 'Moderation',
@@ -334,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
           system: 'System'
         };
         const defaultCategoryLabel = 'Check';
-        activityList.innerHTML = acts.map(a => {
+        container.innerHTML = acts.map(a => {
           const catLabel = categoryLabels[a.category] || defaultCategoryLabel;
           const targetUrl = getTargetUrl(a);
           const targetInfo = a.target
@@ -368,10 +432,11 @@ document.addEventListener('DOMContentLoaded', () => {
               </a>
             </div>
           `;
-          activityList.insertAdjacentHTML('beforeend', seeMoreHtml);
+          container.insertAdjacentHTML('beforeend', seeMoreHtml);
         }
     }
   }
+  renderActivityFeed();
 
 
 
@@ -412,42 +477,57 @@ document.addEventListener('DOMContentLoaded', () => {
           return `<div class="${cls}" data-month-idx="${i}">${m}</div>`;
         }).join("");
 
-        grid.querySelectorAll('.cmp-month:not(.disabled)').forEach(monthEl => {
-            monthEl.addEventListener('click', (evt) => {
-                evt.stopPropagation();
-                selectOverviewMonth(parseInt(monthEl.getAttribute('data-month-idx')));
+        grid.querySelectorAll('.cmp-month:not(.disabled)').forEach(el => {
+            el.addEventListener('click', (e) => {
+                selectOverviewMonth(parseInt(e.target.getAttribute('data-month-idx')));
             });
         });
     }
   }
 
   // Bind prev/next year buttons by ID (fix #3)
-  document.getElementById('overview-prev-year')?.addEventListener('click', (e) => { e.stopPropagation(); ovPickerYear--; renderOverviewPicker(); });
-  document.getElementById('overview-next-year')?.addEventListener('click', (e) => { e.stopPropagation(); ovPickerYear++; renderOverviewPicker(); });
+  document.getElementById('overview-prev-year')?.addEventListener('click', () => { ovPickerYear--; renderOverviewPicker(); });
+  document.getElementById('overview-next-year')?.addEventListener('click', () => { ovPickerYear++; renderOverviewPicker(); });
 
   function selectOverviewMonth(idx) {
     ovYear = ovPickerYear;
     ovMonth = idx;
     const abbr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const label = document.getElementById("overview-month-label");
-    if(label) label.textContent = `${abbr[idx]} ${ovPickerYear}`;
+    const monthLabel = document.getElementById("overview-month-label");
+    if (monthLabel) monthLabel.textContent = `${abbr[idx]} ${ovPickerYear}`;
 
     document.getElementById("overview-month-picker")?.classList.remove("open");
     document.getElementById("overview-month-btn")?.classList.remove("open");
 
-    // Re-fetch stats for the selected month
+    // Reset KPI filter state
+    document.querySelectorAll(".ov9-kpi[data-ov9-idx]").forEach(c => {
+      c.classList.remove("kpi-active", "kpi-dimmed");
+      c.setAttribute('aria-pressed', 'false');
+    });
+
     const monthParam = String(idx + 1).padStart(2, '0');
     const url = `/menu/dashboard/stats?year=${ovPickerYear}&month=${monthParam}`;
 
     fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(newData => {
-        // TODO: re-render pie + sparklines with newData when backend is ready
-        console.info('[Dashboard] Stats loaded for', abbr[idx], ovPickerYear, newData);
+        // Update mutable globals
+        categories = newData.stats || [];
+        acts = newData.recentActivity || [];
+        posts = newData.topPosts || [];
+        postSlugs = newData.postSlugs || {};
+        userSlugs = newData.userSlugs || {};
+        commentPostSlugs = newData.commentPostSlugs || {};
+
+        // Rebuild all visual components
+        renderPieChart9();
+        updateSparklines();
+        updateKpiValues();
+        renderActivityFeed();
+        renderTopPosts();
       })
       .catch(err => {
-        // Silently ignore until endpoint is implemented
-        console.warn('[Dashboard] Stats endpoint not yet available:', err);
+        console.warn('[Dashboard] Stats endpoint error:', err);
       });
   }
 

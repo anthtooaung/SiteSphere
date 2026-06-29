@@ -239,7 +239,7 @@ About Us
                 <div class="carousel-track">
                     <div class="carousel-card">
                         <div class="member-avatar">
-                            <x-fas-user-tie class="icon" aria-hidden="true" />
+                            <img src="{{ asset('images/team/ant-htoo-aung.jpg') }}" alt="Ant Htoo Aung" loading="lazy" />
                         </div>
                         <h3>Ant Htoo Aung</h3>
                         <p class="role">Team Leader & Full-Stack Developer</p>
@@ -261,7 +261,7 @@ About Us
 
                     <div class="carousel-card">
                         <div class="member-avatar">
-                            <x-fas-user-pen class="icon" aria-hidden="true" />
+                            <img src="{{ asset('images/team/eait-nadi-kyaw.jpg') }}" alt="Eaint Nadi Kyaw" loading="lazy" />
                         </div>
                         <h3>Eaint Nadi Kyaw</h3>
                         <p class="role">Co-Leader & Frontend Developer</p>
@@ -272,7 +272,7 @@ About Us
 
                     <div class="carousel-card">
                         <div class="member-avatar">
-                            <x-fas-user-check class="icon" aria-hidden="true" />
+                            <img src="{{ asset('images/team/min-hein-ko.jpg') }}" alt="Min Hein Ko" loading="lazy" />
                         </div>
                         <h3>Min Hein Ko</h3>
                         <p class="role">Frontend Developer</p>
@@ -283,7 +283,7 @@ About Us
 
                     <div class="carousel-card">
                         <div class="member-avatar">
-                            <x-fas-palette class="icon" aria-hidden="true" />
+                            <img src="{{ asset('images/team/lin-thant-aung.jpg') }}" alt="Lin Thant Aung" loading="lazy" />
                         </div>
                         <h3>Lin Thant Aung</h3>
                         <p class="role">Frontend Developer</p>
@@ -294,7 +294,7 @@ About Us
 
                     <div class="carousel-card">
                         <div class="member-avatar">
-                            <x-fas-bookmark class="icon" aria-hidden="true" />
+                            <img src="{{ asset('images/team/sa-kyaw-wai-yan-htet.jpg') }}" alt="Sa Kyaw Wai Yan Htet" loading="lazy" />
                         </div>
                         <h3>Sa Kyaw Wai Yan Htet</h3>
                         <p class="role">Frontend Developer</p>
@@ -305,7 +305,7 @@ About Us
 
                     <div class="carousel-card">
                         <div class="member-avatar">
-                            <x-fas-flag class="icon" aria-hidden="true" />
+                            <img src="{{ asset('images/team/han-htoo-lwin.jpg') }}" alt="Han Htoo Lwin" loading="lazy" />
                         </div>
                         <h3>Han Htoo Lwin</h3>
                         <p class="role">Frontend Developer</p>
@@ -316,7 +316,7 @@ About Us
 
                     <div class="carousel-card">
                         <div class="member-avatar">
-                            <x-fas-id-card class="icon" aria-hidden="true" />
+                            <img src="{{ asset('images/team/su-wati-myat-noe.jpg') }}" alt="Zune Myat Noe" loading="lazy" />
                         </div>
                         <h3>Zune Myat Noe</h3>
                         <p class="role">Frontend Developer</p>

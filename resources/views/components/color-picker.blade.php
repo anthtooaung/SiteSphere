@@ -20,7 +20,9 @@
     palette: [
         '#000000','#434343','#666666','#999999','#B7B7B7','#CCCCCC','#D9D9D9','#EFEFEF','#F3F3F3','#FFFFFF',
         '#980000','#FF0000','#FF9900','#FFFF00','#00FF00','#00FFFF','#4A86E8','#0000FF','#9900FF','#FF00FF',
-        '#E6B8AF','#FCE5CD','#FFF2CC','#D9EAD3','#D0E0E3','#C9DAF8','#CFE2F3','#D9D2E9','#EAD1DC','#DD7E6B'
+        '#E6B8AF','#FCE5CD','#FFF2CC','#D9EAD3','#D0E0E3','#C9DAF8','#CFE2F3','#D9D2E9','#EAD1DC','#DD7E6B',
+        '#CC4125','#E06666','#F6B26B','#FFD966','#93C47D','#76A5AF','#6D9EEB','#6FA8DC','#8E7CC3','#C27BA0',
+        '#A61C00','#CC0000','#E69138','#F1C232','#6AA84F','#45818E','#3D85C6','#674EA7','#A64D79','#85200C'
     ],
 
     hexToRgb(hex) {
@@ -182,7 +184,7 @@
             const swatch = this.$refs.swatchBtn;
             if (!swatch) return;
             const rect = swatch.getBoundingClientRect();
-            const popupWidth = 280;
+            const popupWidth = 360;
             let left = rect.left;
             if (left + popupWidth > window.innerWidth - 12) {
                 left = window.innerWidth - popupWidth - 12;
@@ -203,15 +205,6 @@
             @click="toggle()"
             aria-label="Pick color">
         </button>
-        <input type="text" class="color-picker-text"
-            id="{{ $inputId }}"
-            :value="color"
-            @input="onHexInput($event)"
-            @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(color)) color = '{{ $value }}'"
-            placeholder="#FF5733"
-            maxlength="7"
-            spellcheck="false"
-            autocomplete="off">
 
         <!-- Color Picker Popup -->
         <template x-teleport="body">

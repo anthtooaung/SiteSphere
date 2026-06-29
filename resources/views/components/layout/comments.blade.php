@@ -4,6 +4,7 @@
     'commentUserRatings' => collect(),
     'userRating' => 0,
     'userHasCommented' => false,
+    'userHasDescription' => false,
 ])
 
 <section class="aud-reviews" aria-label="User Reports">
@@ -16,7 +17,7 @@
 
     <!-- Review composer -->
     @auth
-        @unless($userHasCommented)
+        @unless($userHasCommented || $userHasDescription)
             <form class="aud-composer" id="reviewForm" method="POST" action="{{ route('posts.comments.store', $post->slug) }}">
                 @csrf
                 <input type="hidden" name="rating" id="ratingInput" value="{{ $userRating }}">

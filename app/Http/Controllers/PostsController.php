@@ -293,7 +293,7 @@ class PostsController extends Controller
                 ->latest()
                 ->first();
 
-            $posts->load(['tags.categories', 'userPosts' => fn ($q) => $q->with('user.settings')->latest()]);
+            $posts->load(['tags.categories', 'userPosts' => fn ($q) => $q->with('user.settings')->oldest()]);
             $posts->loadCount(['ratings', 'comments', 'userPosts as audits_count']);
             $posts->loadAvg('ratings as average_rating', 'rating');
 
@@ -324,7 +324,7 @@ class PostsController extends Controller
             'userPosts' => fn ($query) => $query
                 ->with('user.settings')
                 ->when($isAdmin, fn ($q) => $q->withTrashed())
-                ->latest(),
+                ->oldest(),
         ]);
         $posts->loadCount([
             'ratings',
@@ -409,6 +409,7 @@ class PostsController extends Controller
 
         $userRating = $userId ? (Ratings::where('post_id', $posts->id)->where('user_id', $userId)->value('rating') ?? 0) : 0;
         $userHasCommented = $userId ? Comments::where('post_id', $posts->id)->where('user_id', $userId)->exists() : false;
+        $userHasDescription = $userId ? $posts->userPosts->contains('user_id', $userId) : false;
         $saved = $userId ? $posts->bookmarks()->where('user_id', $userId)->exists() : false;
 
         return view('layout.post-detail', [
@@ -426,6 +427,7 @@ class PostsController extends Controller
             'relatedPosts' => $relatedPosts,
             'userRating' => $userRating,
             'userHasCommented' => $userHasCommented,
+            'userHasDescription' => $userHasDescription,
             'saved' => $saved,
         ]);
     }

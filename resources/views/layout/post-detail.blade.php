@@ -72,8 +72,7 @@
                         </div>
 
                         <!-- Domain pill + three-dot menu -->
-                        <div class="aud-title-row">
-                            <div class="aud-mast-row">
+                        <div class="aud-title-row flex w-full items-center justify-between">
                                 <a
                                     class="aud-domain"
                                     href="{{ $post->url }}"
@@ -88,8 +87,6 @@
                                         <x-fas-arrow-up-right-from-square class="size-3" />
                                     </span>
                                 </a>
-                            </div>
-
                             <div class="relative shrink-0" x-data="{
                                 actionsOpen: false,
                                 reportOpen: false,
@@ -523,40 +520,42 @@
                                                                             </button>
                                                                         </form>
                                                                     @else
-                                                                        {{-- Delete Description (permanent) --}}
-                                                                        <form method="POST" action="{{ route('audits.delete', $userPost->id) }}"
-                                                                            class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
-                                                                            x-on:submit.prevent="window.sitesphereSwal.confirm({
-                                                                                title: 'Delete this description?',
-                                                                                text: 'This will permanently delete this description. This action cannot be undone.',
-                                                                                icon: 'warning',
-                                                                                input: 'text',
-                                                                                inputPlaceholder: 'Enter reason for deletion...',
-                                                                                confirmButtonColor: '#ef4444',
-                                                                                cancelButtonColor: '#6c757d',
-                                                                                confirmButtonText: 'Yes, delete it!',
-                                                                                inputValidator: (value) => {
-                                                                                    if (!value) return 'You need to provide a reason!'
-                                                                                }
-                                                                            }).then((result) => {
-                                                                                if (result.isConfirmed) {
-                                                                                    const input = document.createElement('input');
-                                                                                    input.type = 'hidden';
-                                                                                    input.name = 'reason';
-                                                                                    input.value = result.value;
-                                                                                    $el.appendChild(input);
-                                                                                    $el.submit();
-                                                                                }
-                                                                            })">
-                                                                            @csrf
-                                                                            @method('DELETE')
-                                                                            <button type="submit"
-                                                                                class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
-                                                                                role="menuitem">
-                                                                                <x-fas-trash class="size-3" aria-hidden="true" />
-                                                                                <span>Delete</span>
-                                                                            </button>
-                                                                        </form>
+                                                                        @if(Auth::id() !== $userPost->user_id)
+                                                                            {{-- Delete Description (permanent) --}}
+                                                                            <form method="POST" action="{{ route('audits.delete', $userPost->id) }}"
+                                                                                class="mt-1 border-t pt-1 [border-color:color-mix(in_srgb,var(--text-color,#0d1b2a)_10%,transparent)]"
+                                                                                x-on:submit.prevent="window.sitesphereSwal.confirm({
+                                                                                    title: 'Delete this description?',
+                                                                                    text: 'This will permanently delete this description. This action cannot be undone.',
+                                                                                    icon: 'warning',
+                                                                                    input: 'text',
+                                                                                    inputPlaceholder: 'Enter reason for deletion...',
+                                                                                    confirmButtonColor: '#ef4444',
+                                                                                    cancelButtonColor: '#6c757d',
+                                                                                    confirmButtonText: 'Yes, delete it!',
+                                                                                    inputValidator: (value) => {
+                                                                                        if (!value) return 'You need to provide a reason!'
+                                                                                    }
+                                                                                }).then((result) => {
+                                                                                    if (result.isConfirmed) {
+                                                                                        const input = document.createElement('input');
+                                                                                        input.type = 'hidden';
+                                                                                        input.name = 'reason';
+                                                                                        input.value = result.value;
+                                                                                        $el.appendChild(input);
+                                                                                        $el.submit();
+                                                                                    }
+                                                                                })">
+                                                                                @csrf
+                                                                                @method('DELETE')
+                                                                                <button type="submit"
+                                                                                    class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:#ef4444] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,#ef4444_12%,transparent)] focus:outline-none"
+                                                                                    role="menuitem">
+                                                                                    <x-fas-trash class="size-3" aria-hidden="true" />
+                                                                                    <span>Delete</span>
+                                                                                </button>
+                                                                            </form>
+                                                                        @endif
                                                                     @endif
                                                                 @endif
                                                             @endif
@@ -628,7 +627,7 @@
 
                                             <div class="ss-expandable aud-depo-body" data-clamp="5">
                                                 @if($userPost->title)
-                                                    <h3 class="aud-depo-title" style="font-size: 1.15rem; font-weight: 700; margin: 0 0 8px; color: var(--text-color);">{{ $userPost->title }}</h3>
+                                                    <h3 class="aud-depo-title" style="font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 8px; color: var(--text-color);">{{ $userPost->title }}</h3>
                                                 @endif
                                                 <p class="ss-expandable-text" style="--clamp-lines: 5">
                                                     {!! nl2br(e($userPost->description)) !!}
@@ -655,6 +654,7 @@
                         :comment-user-ratings="$commentUserRatings"
                         :user-rating="$userRating"
                         :user-has-commented="$userHasCommented"
+                        :user-has-description="$userHasDescription ?? false"
                     />
 
                     <!-- =================================================================

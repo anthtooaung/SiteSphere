@@ -118,7 +118,7 @@
         </div>
 
         <div class="flex flex-col items-center justify-between pt-8 text-xs sm:flex-row">
-            <p class="text-center text-slate-500 sm:text-left">&copy; {{ date('Y') }} SiteSphere. All Rights Reserved.</p>
+            <p class="text-center mx-auto text-slate-500 sm:text-left">&copy; {{ date('Y') }} SiteSphere. All Rights Reserved.</p>
         </div>
     </div>
 </footer>

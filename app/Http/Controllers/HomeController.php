@@ -29,7 +29,7 @@ class HomeController extends Controller
             ->with([
                 'userPosts' => fn ($query) => $query
                     ->with('user.settings')
-                    ->latest(),
+                    ->oldest(),
                 'tags.categories',
                 'reports' => fn ($query) => $query
                     ->where('user_id', $userId)
@@ -144,6 +144,7 @@ class HomeController extends Controller
                                 'username' => $isProfileVisible ? '@'.Str::slug($name, '_') : 'Anonymous',
                                 'initial' => $isProfileVisible ? Str::of($name)->substr(0, 1)->upper()->toString() : '?',
                                 'time' => 'Published '.$userPost->created_at->diffForHumans(),
+                                'title' => $userPost->title,
                                 'description' => $userPost->description,
                                 'avatar' => $isProfileVisible ? $user?->getAvatarUrl() ?? '' : '',
                             ];

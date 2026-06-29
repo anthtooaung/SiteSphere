@@ -412,17 +412,18 @@ document.addEventListener('DOMContentLoaded', () => {
           return `<div class="${cls}" data-month-idx="${i}">${m}</div>`;
         }).join("");
 
-        grid.querySelectorAll('.cmp-month:not(.disabled)').forEach(el => {
-            el.addEventListener('click', (e) => {
-                selectOverviewMonth(parseInt(e.target.getAttribute('data-month-idx')));
+        grid.querySelectorAll('.cmp-month:not(.disabled)').forEach(monthEl => {
+            monthEl.addEventListener('click', (evt) => {
+                evt.stopPropagation();
+                selectOverviewMonth(parseInt(monthEl.getAttribute('data-month-idx')));
             });
         });
     }
   }
 
   // Bind prev/next year buttons by ID (fix #3)
-  document.getElementById('overview-prev-year')?.addEventListener('click', () => { ovPickerYear--; renderOverviewPicker(); });
-  document.getElementById('overview-next-year')?.addEventListener('click', () => { ovPickerYear++; renderOverviewPicker(); });
+  document.getElementById('overview-prev-year')?.addEventListener('click', (e) => { e.stopPropagation(); ovPickerYear--; renderOverviewPicker(); });
+  document.getElementById('overview-next-year')?.addEventListener('click', (e) => { e.stopPropagation(); ovPickerYear++; renderOverviewPicker(); });
 
   function selectOverviewMonth(idx) {
     ovYear = ovPickerYear;

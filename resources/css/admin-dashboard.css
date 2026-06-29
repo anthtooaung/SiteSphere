@@ -124,12 +124,13 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
 }
-.overview-month-btn i.omc {
+.overview-month-btn .omc {
   font-size: 11px;
   color: var(--muted);
   transition: transform 0.2s ease;
+  display: inline-block;
 }
-.overview-month-btn.open i.omc {
+.overview-month-btn.open .omc {
   transform: rotate(180deg);
 }
 .overview-month-picker {
@@ -138,15 +139,87 @@
   right: 0;
   background: var(--ui-surface);
   border: 1px solid var(--ui-border);
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: var(--ui-shadow);
-  z-index: 100;
-  display: none;
-  width: 200px;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 200;
+  width: 220px;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .overview-month-picker.open {
-  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ── YEAR ROW ── */
+.cmp-year-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.cmp-year-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: -0.01em;
+}
+.cmp-ynav {
+  background: none;
+  border: 1px solid var(--ui-border);
+  border-radius: 6px;
+  padding: 3px 9px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.cmp-ynav:hover {
+  background: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+/* ── MONTH GRID ── */
+.cmp-month-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.cmp-month {
+  padding: 7px 4px;
+  border-radius: 7px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: background 0.14s ease, color 0.14s ease, transform 0.12s ease;
+  user-select: none;
+}
+.cmp-month:hover:not(.disabled) {
+  background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  color: var(--accent-color);
+  transform: scale(1.04);
+}
+.cmp-month.active {
+  background: var(--accent-color);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-color) 35%, transparent);
+}
+.cmp-month.disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* ── INFOGRAPHIC SECTION ── */

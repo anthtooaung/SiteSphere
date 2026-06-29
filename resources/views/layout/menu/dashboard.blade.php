@@ -116,9 +116,9 @@
                           </button>
                           <div class="overview-month-picker" id="overview-month-picker">
                             <div class="cmp-year-row">
-                              <button class="cmp-ynav" type="button">&#9664;</button>
+                              <button class="cmp-ynav" id="overview-prev-year" type="button">&#9664;</button>
                               <span class="cmp-year-label" id="overview-picker-year">{{ now()->year }}</span>
-                              <button class="cmp-ynav" type="button">&#9654;</button>
+                              <button class="cmp-ynav" id="overview-next-year" type="button">&#9654;</button>
                             </div>
                             <div class="cmp-month-grid" id="overview-picker-month-grid"></div>
                           </div>

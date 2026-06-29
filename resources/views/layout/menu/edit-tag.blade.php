@@ -452,11 +452,11 @@
                                                     onRgbInput() { const r = Math.min(255, Math.max(0, parseInt(this.$refs.rInput.value) || 0)); const g = Math.min(255, Math.max(0, parseInt(this.$refs.gInput.value) || 0)); const b = Math.min(255, Math.max(0, parseInt(this.$refs.bInput.value) || 0)); const hex = this.rgbToHex(r, g, b); category.color = hex; this.textValue = hex; const hsv = this.rgbToHsv(r, g, b); this.h = hsv.h; this.s = hsv.s; this.v = hsv.v; },
                                                     applyFromHSV() { const rgb = this.hsvToRgb(this.h, this.s, this.v); const hex = this.rgbToHex(rgb.r, rgb.g, rgb.b); category.color = hex; this.textValue = hex; },
                                                     syncFromText() { let val = this.textValue.trim(); if (val && !val.startsWith('#')) val = '#' + val; if (/^#[0-9A-Fa-f]{6}$/.test(val)) { category.color = val; } }
-                                                }" @click.outside="open = false; document.body.style.overflow = '';">
+                                                }">
                                                     <div class="color-picker-row">
                                                         <button type="button" class="color-picker-swatch" x-ref="swatchBtn"
                                                             :style="{ backgroundColor: category.color }"
-                                                            @click="open = !open; if(open) { initPicker(); positionPopup(); document.body.style.overflow = 'hidden'; } else { document.body.style.overflow = ''; }"
+                                                            @click="open = !open; if(open) { initPicker(); positionPopup(); }"
                                                             aria-label="Pick color">
                                                         </button>
                                                         <input type="text" class="color-picker-text"
@@ -465,13 +465,11 @@
                                                             @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = category.color"
                                                             placeholder="#FF5733"
                                                             maxlength="7"
-                                                            spellcheck="false"
-                                                            autocomplete="off">
-                                                        <div class="color-picker-backdrop" x-show="open" @click="open = false; document.body.style.overflow = '';"></div>
-                                                        <div class="color-picker-popup" :style="popupStyle" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
+                                                        <template x-teleport="body">
+                                                            <div class="color-picker-popup" :style="popupStyle" x-show="open" @click.outside="if (! $root.contains($event.target)) open = false;" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
                                                             <div class="color-picker-popup-header">
                                                                 <span class="color-picker-popup-title">Select Color</span>
-                                                                <button type="button" class="color-picker-popup-close" @click="open = false; document.body.style.overflow = '';">&times;</button>
+                                                                <button type="button" class="color-picker-popup-close" @click="open = false;">&times;</button>
                                                             </div>
                                                             <div class="color-picker-palette" x-show="!showCustom">
                                                                 <template x-for="(hex, i) in palette" :key="i">
@@ -502,7 +500,7 @@
                                                                     <div class="color-field"><label>B</label><input type="number" x-ref="bInput" :value="rgbFields.b" @input="onRgbInput()" min="0" max="255"></div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </template>
                                                     </div>
                                                 </div>
                                             </label>
@@ -543,7 +541,7 @@
                                                             get hueKnobStyle() { return 'left:' + ((this.h / 360) * 100) + '%;background:' + this.hueColor; },
                                                             get hexField() { return tag.color.toUpperCase(); },
                                                             get rgbFields() { return this.hexToRgb(tag.color); },
-                                                            selectPalette(hex) { tag.color = hex; this.textValue = hex; syncTagColors(tag, 'color'); this.open = false; document.body.style.overflow = ''; },
+                                                            selectPalette(hex) { tag.color = hex; this.textValue = hex; syncTagColors(tag, 'color'); this.open = false; },
                                                             positionPopup() { this.$nextTick(() => { const swatch = this.$refs.swatchBtn; if (!swatch) return; const rect = swatch.getBoundingClientRect(); const popupWidth = 280; let left = rect.left; if (left + popupWidth > window.innerWidth - 12) left = window.innerWidth - popupWidth - 12; if (left < 12) left = 12; let top = rect.bottom + 8; this.popupStyle = 'position:fixed;top:' + top + 'px;left:' + left + 'px;z-index:10000;'; }); },
                                                             onSvPointerDown(e) { this.svDragging = true; this.$refs.svArea.setPointerCapture(e.pointerId); this.updateSvFromEvent(e); },
                                                             onSvPointerMove(e) { if (this.svDragging) this.updateSvFromEvent(e); },
@@ -554,10 +552,10 @@
                                                             onRgbInput() { const r = Math.min(255, Math.max(0, parseInt(this.$refs.rInput.value) || 0)); const g = Math.min(255, Math.max(0, parseInt(this.$refs.gInput.value) || 0)); const b = Math.min(255, Math.max(0, parseInt(this.$refs.bInput.value) || 0)); const hex = this.rgbToHex(r, g, b); tag.color = hex; this.textValue = hex; const hsv = this.rgbToHsv(r, g, b); this.h = hsv.h; this.s = hsv.s; this.v = hsv.v; syncTagColors(tag, 'color'); },
                                                             applyFromHSV() { const rgb = this.hsvToRgb(this.h, this.s, this.v); const hex = this.rgbToHex(rgb.r, rgb.g, rgb.b); tag.color = hex; this.textValue = hex; syncTagColors(tag, 'color'); },
                                                             syncFromText() { let val = this.textValue.trim(); if (val && !val.startsWith('#')) val = '#' + val; if (/^#[0-9A-Fa-f]{6}$/.test(val)) { tag.color = val; syncTagColors(tag, 'color'); } }
-                                                        }" style="display: inline-flex; align-items: center;" @click.outside="open = false; document.body.style.overflow = '';">
+                                                        }" style="display: inline-flex; align-items: center;">
                                                             <button type="button" class="color-picker-swatch" x-ref="swatchBtn"
                                                                 :style="{ backgroundColor: tag.color }"
-                                                                @click="open = !open; if(open) { initPicker(); positionPopup(); document.body.style.overflow = 'hidden'; } else { document.body.style.overflow = ''; }"
+                                                                @click="open = !open; if(open) { initPicker(); positionPopup(); }"
                                                                 aria-label="Pick color">
                                                             </button>
                                                             <input type="text" class="color-picker-text"
@@ -566,13 +564,11 @@
                                                                 @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = tag.color"
                                                                 placeholder="#FF5733"
                                                                 maxlength="7"
-                                                                spellcheck="false"
-                                                                autocomplete="off">
-                                                            <div class="color-picker-backdrop" x-show="open" @click="open = false; document.body.style.overflow = '';"></div>
-                                                            <div class="color-picker-popup" :style="popupStyle" x-show="open" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
+                                                            <template x-teleport="body">
+                                                                <div class="color-picker-popup" :style="popupStyle" x-show="open" @click.outside="if (! $root.contains($event.target)) open = false;" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
                                                                 <div class="color-picker-popup-header">
                                                                     <span class="color-picker-popup-title">Select Color</span>
-                                                                    <button type="button" class="color-picker-popup-close" @click="open = false; document.body.style.overflow = '';">&times;</button>
+                                                                    <button type="button" class="color-picker-popup-close" @click="open = false;">&times;</button>
                                                                 </div>
                                                                 <div class="color-picker-palette" x-show="!showCustom">
                                                                     <template x-for="(hex, i) in palette" :key="i">
@@ -604,7 +600,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </template>
                                                     </template>
                                                     <template x-if="isAdmin && isEditing(category)">
                                                         <button type="button" class="thread-chip-remove"

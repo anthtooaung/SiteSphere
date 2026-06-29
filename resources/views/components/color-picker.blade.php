@@ -154,7 +154,6 @@
             this.showCustom = false;
             this.initPicker();
             this.positionPopup();
-            document.body.style.overflow = 'hidden';
             this._repositionHandler = () => { if (this.open) this.positionPopup(); };
             window.addEventListener('resize', this._repositionHandler);
             window.addEventListener('scroll', this._repositionHandler, true);
@@ -167,7 +166,6 @@
         this.open = false;
         this.showCustom = false;
         this.svDragging = false;
-        document.body.style.overflow = '';
         this.cleanupListeners();
     },
 
@@ -177,7 +175,6 @@
             window.removeEventListener('scroll', this._repositionHandler, true);
             this._repositionHandler = null;
         }
-        document.body.style.overflow = '';
     },
 
     positionPopup() {
@@ -217,9 +214,10 @@
             autocomplete="off">
 
         <!-- Color Picker Popup -->
-        <div class="color-picker-backdrop" x-show="open" @click="closePanel()"></div>
-        <div class="color-picker-popup" :style="popupStyle"
+        <template x-teleport="body">
+            <div class="color-picker-popup" :style="popupStyle"
             x-show="open"
+            @click.outside="if (! $root.contains($event.target)) closePanel()"
             x-transition:enter="transition ease-out duration-150"
             x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
@@ -303,6 +301,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
 </div>

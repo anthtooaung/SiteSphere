@@ -503,7 +503,7 @@
                                                                     <input type="range" class="color-picker-hue-input" min="0" max="360" step="1" :value="Math.round(h)" @input="onHueInput($event)" aria-label="Hue">
                                                                 </div>
                                                                 <div class="color-picker-fields">
-                                                                    <div class="color-field"><label>Hex</label><input type="text" :value="hexField" @input="onHexInput($event)" @blur="onHexInput($event)" @keydown.enter="onHexInput($event)" maxlength="7" spellcheck="false" autocomplete="off"></div>
+                                                                    <div class="color-field"><label>Hex</label><input type="text" :value="hexField" @input="onHexInput($event)" @blur="onHexInput($event)" @keydown.enter="onHexInput($event)" placeholder="#000000" maxlength="7" spellcheck="false" autocomplete="off"></div>
                                                                     <div class="color-field"><label>R</label><input type="number" x-ref="rInput" :value="rgbFields.r" @input="onRgbInput()" min="0" max="255"></div>
                                                                     <div class="color-field"><label>G</label><input type="number" x-ref="gInput" :value="rgbFields.g" @input="onRgbInput()" min="0" max="255"></div>
                                                                     <div class="color-field"><label>B</label><input type="number" x-ref="bInput" :value="rgbFields.b" @input="onRgbInput()" min="0" max="255"></div>
@@ -537,7 +537,9 @@
                                                             palette: [
                                                                 '#000000','#434343','#666666','#999999','#B7B7B7','#CCCCCC','#D9D9D9','#EFEFEF','#F3F3F3','#FFFFFF',
                                                                 '#980000','#FF0000','#FF9900','#FFFF00','#00FF00','#00FFFF','#4A86E8','#0000FF','#9900FF','#FF00FF',
-                                                                '#E6B8AF','#FCE5CD','#FFF2CC','#D9EAD3','#D0E0E3','#C9DAF8','#CFE2F3','#D9D2E9','#EAD1DC','#DD7E6B'
+                                                                '#E6B8AF','#FCE5CD','#FFF2CC','#D9EAD3','#D0E0E3','#C9DAF8','#CFE2F3','#D9D2E9','#EAD1DC','#DD7E6B',
+                                                                '#CC4125','#E06666','#F6B26B','#FFD966','#93C47D','#76A5AF','#6D9EEB','#6FA8DC','#8E7CC3','#C27BA0',
+                                                                '#A61C00','#CC0000','#E69138','#F1C232','#6AA84F','#45818E','#3D85C6','#674EA7','#A64D79','#85200C'
                                                             ],
                                                             hexToRgb(hex) { hex = hex.replace('#', ''); return { r: parseInt(hex.slice(0, 2), 16), g: parseInt(hex.slice(2, 4), 16), b: parseInt(hex.slice(4, 6), 16) }; },
                                                             rgbToHex(r, g, b) { return '#' + [r, g, b].map(v => Math.min(255, Math.max(0, Math.round(v))).toString(16).padStart(2, '0')).join(''); },
@@ -609,7 +611,7 @@
                                                                         <input type="range" class="color-picker-hue-input" min="0" max="360" step="1" :value="Math.round(h)" @input="onHueInput($event)" aria-label="Hue">
                                                                     </div>
                                                                     <div class="color-picker-fields">
-                                                                        <div class="color-field"><label>Hex</label><input type="text" :value="hexField" @input="onHexInput($event)" @blur="onHexInput($event)" @keydown.enter="onHexInput($event)" maxlength="7" spellcheck="false" autocomplete="off"></div>
+                                                                        <div class="color-field"><label>Hex</label><input type="text" :value="hexField" @input="onHexInput($event)" @blur="onHexInput($event)" @keydown.enter="onHexInput($event)" placeholder="#000000" maxlength="7" spellcheck="false" autocomplete="off"></div>
                                                                         <div class="color-field"><label>R</label><input type="number" x-ref="rInput" :value="rgbFields.r" @input="onRgbInput()" min="0" max="255"></div>
                                                                         <div class="color-field"><label>G</label><input type="number" x-ref="gInput" :value="rgbFields.g" @input="onRgbInput()" min="0" max="255"></div>
                                                                         <div class="color-field"><label>B</label><input type="number" x-ref="bInput" :value="rgbFields.b" @input="onRgbInput()" min="0" max="255"></div>

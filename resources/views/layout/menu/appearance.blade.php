@@ -262,9 +262,10 @@
                         @endforeach
                     </div>
 
-                    <div class="appearance-custom-panel" :class="{ 'is-disabled': ! useCustomTheme }"
+                    <div class="appearance-custom-panel" :class="{ 'is-disabled': ! useCustomTheme }" :style="!useCustomTheme ? 'pointer-events: none' : ''"
                         x-transition.opacity.duration.160ms
                         @color-change.window="
+                            if (!useCustomTheme) return;
                             if ($event.detail.name === 'background_color') customBackground = $event.detail.value;
                             if ($event.detail.name === 'text_color') customText = $event.detail.value;
                             if ($event.detail.name === 'accent_color') customAccent = $event.detail.value;

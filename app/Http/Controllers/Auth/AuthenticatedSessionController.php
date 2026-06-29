@@ -49,11 +49,10 @@ class AuthenticatedSessionController extends Controller
         $user = $request->authenticate();
 
         if ($user->isBanned()) {
-            Auth::guard('web')->logout();
+            Auth::guard('web')->login($user, $request->boolean('remember'));
+            $request->session()->regenerate();
 
-            return back()->withErrors([
-                'email' => 'Your account has been banned. Reason: '.($user->ban_reason ?? 'No reason provided'),
-            ]);
+            return redirect()->route('appeal.create');
         }
 
         if ($user->two_factor_enabled) {

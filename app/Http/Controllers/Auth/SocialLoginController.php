@@ -52,12 +52,18 @@ class SocialLoginController extends Controller
             ->first();
 
         if ($socialAccount) {
-            $user = $socialAccount->user;
+            $user = $socialAccount->user()->withTrashed()->first();
 
-            if ($user->isBanned()) {
+            if (! $user) {
                 return redirect()
                     ->route('login')
-                    ->withErrors(['social' => 'Your account has been banned. Reason: '.($user->ban_reason ?? 'No reason provided')]);
+                    ->withErrors(['social' => 'This account is no longer active.']);
+            }
+
+            if ($user->isBanned()) {
+                Auth::login($user);
+
+                return redirect()->route('appeal.create');
             }
 
             $this->fillMissingAvatar($user, $socialiteUser);
@@ -77,7 +83,7 @@ class SocialLoginController extends Controller
                 ->withErrors(['social' => 'Your social account did not provide an email address.']);
         }
 
-        $user = User::query()->firstOrCreate(
+        $user = User::query()->withTrashed()->firstOrCreate(
             ['email' => $email],
             [
                 'name' => $this->nameFor($socialiteUser, $email),
@@ -89,9 +95,9 @@ class SocialLoginController extends Controller
         );
 
         if ($user->isBanned()) {
-            return redirect()
-                ->route('login')
-                ->withErrors(['social' => 'Your account has been banned. Reason: '.($user->ban_reason ?? 'No reason provided')]);
+            Auth::login($user);
+
+            return redirect()->route('appeal.create');
         }
 
         $this->fillMissingAvatar($user, $socialiteUser);

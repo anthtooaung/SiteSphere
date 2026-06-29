@@ -63,6 +63,7 @@ class Posts extends Model
     public function getDomainAttribute(): string
     {
         $host = parse_url($this->url, PHP_URL_HOST);
+
         return $host ? preg_replace('/^www\./', '', $host) : $this->url;
     }
 }

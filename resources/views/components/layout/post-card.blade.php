@@ -337,11 +337,11 @@
                 class="block space-y-1.5 px-3 py-2.5 rounded-b-xl transition-all duration-200 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_6%,transparent)] cursor-pointer no-underline">
                 <div class="flex items-start justify-between gap-3">
                     <template x-if="currentProfile.title || @js($title)">
-                        <h3 class="text-base font-extrabold tracking-tight leading-snug [color:var(--text-color,#0d1b2a)]" data-post-card-title x-text="currentProfile.title || @js($title)"></h3>
+                        <h3 class="min-w-0 flex-1 truncate text-base font-extrabold tracking-tight leading-snug [color:var(--text-color,#0d1b2a)]" data-post-card-title x-text="currentProfile.title || @js($title)"></h3>
                     </template>
                     <div class="flex shrink-0 items-center gap-2 text-xs pt-0.5">
                         <span class="font-bold [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_52%,transparent)]"
-                            x-text="currentProfile.time">{{ $profiles[0]['time'] ?? '' }}</span>
+                            x-text="(currentProfile.time || '').replace('Published ', '')">{{ str_replace('Published ', '', $profiles[0]['time'] ?? '') }}</span>
                     </div>
                 </div>
                 <p class="line-clamp-3 min-h-[60px] whitespace-pre-wrap break-words text-[13px] leading-5 [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)]"

@@ -6,6 +6,7 @@ use App\Models\Posts;
 use App\Models\User;
 use App\Models\UserPosts;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<UserPosts>
@@ -25,7 +26,7 @@ class UserPostsFactory extends Factory
             'post_id' => Posts::factory(),
             'user_id' => User::factory(),
             'title' => $title,
-            'slug' => \Illuminate\Support\Str::slug($title),
+            'slug' => Str::slug($title),
             'description' => fake()->paragraph(),
             'user_hidden' => false,
         ];

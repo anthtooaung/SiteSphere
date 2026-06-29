@@ -6,6 +6,7 @@ use App\Models\Comments;
 use App\Models\Notificatioins;
 use App\Models\Posts;
 use App\Models\User;
+use App\Models\UserPosts;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -49,16 +50,16 @@ class NotificationOpenController extends Controller
         $comment = Comments::find($commentId);
 
         return $comment && $comment->post
-            ? redirect(route('posts.show', ['posts' => $comment->post->slug]) . '#comment-' . $comment->id)
+            ? redirect(route('posts.show', ['posts' => $comment->post->slug]).'#comment-'.$comment->id)
             : redirect()->route('home');
     }
 
     private function redirectToUserPost(int $userPostId): RedirectResponse
     {
-        $userPost = \App\Models\UserPosts::find($userPostId);
+        $userPost = UserPosts::find($userPostId);
 
         return $userPost && $userPost->post
-            ? redirect(route('posts.show', ['posts' => $userPost->post->slug]) . '#panel-user-' . $userPost->user_id)
+            ? redirect(route('posts.show', ['posts' => $userPost->post->slug]).'#panel-user-'.$userPost->user_id)
             : redirect()->route('home');
     }
 
@@ -83,7 +84,7 @@ class NotificationOpenController extends Controller
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        Cache::forget('notifications.unread.' . $user->id);
+        Cache::forget('notifications.unread.'.$user->id);
 
         return back()->with('success', 'All notifications marked as read.');
     }

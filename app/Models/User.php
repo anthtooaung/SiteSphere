@@ -15,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'slug', 'password', 'password_set', 'user_dob', 'user_phone', 'user_bio', 'user_image', 'two_factor_enabled', 'is_verified', 'status', 'banned_by', 'banned_at', 'ban_reason'])]
+#[Fillable(['name', 'email', 'slug', 'password', 'password_set', 'user_dob', 'user_phone', 'user_bio', 'user_image', 'two_factor_enabled', 'is_verified', 'status', 'is_permanently_banned', 'banned_by', 'banned_at', 'ban_reason', 'appeal_submitted_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -131,7 +131,9 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'two_factor_enabled' => 'boolean',
+            'is_permanently_banned' => 'boolean',
             'banned_at' => 'datetime',
+            'appeal_submitted_at' => 'datetime',
         ];
     }
 

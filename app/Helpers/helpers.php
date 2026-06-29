@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('maskEmail')) {
+if (! function_exists('maskEmail')) {
     /**
      * Mask an email address for privacy.
      *
@@ -20,9 +20,9 @@ if (!function_exists('maskEmail')) {
         $domain = $parts[1];
 
         if (strlen($local) <= 4) {
-            return str_repeat('*', strlen($local) - 1) . substr($local, -1) . '@' . $domain;
+            return str_repeat('*', strlen($local) - 1).substr($local, -1).'@'.$domain;
         }
 
-        return substr($local, 0, 2) . str_repeat('*', strlen($local) - 4) . substr($local, -2) . '@' . $domain;
+        return substr($local, 0, 2).str_repeat('*', strlen($local) - 4).substr($local, -2).'@'.$domain;
     }
 }

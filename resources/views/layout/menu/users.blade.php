@@ -368,7 +368,7 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                 <td data-label="Joined On">{{ $listedUser->created_at?->format('M d, Y') }}</td>
                                 <td data-label="Actions">
                                     <div class="admin-users-action-group">
-                                        @if ($listedUser->trashed())
+                                        @if ($listedUser->trashed() && !$listedUser->is_permanently_banned)
                                         <form method="POST" action="{{ route('users.restore', $listedUser->id) }}"
                                             @submit="confirmAction($event, 'Restore {{ addslashes($listedUser->name) }} account?', 'Yes, restore')">
                                             @csrf
@@ -378,6 +378,8 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                                 <x-fas-rotate-left aria-hidden="true" />
                                             </button>
                                         </form>
+                                        @elseif ($listedUser->is_permanently_banned)
+                                        <span class="admin-users-status restricted" style="font-size: 0.7rem; padding: 2px 6px;">Perm. Banned</span>
                                         @else
                                         <form method="POST" action="{{ route('users.toggle-unsecure', $listedUser->id) }}"
                                             @submit="confirmAction($event, '{{ $listedUser->isUnsecure() ? 'Mark ' . addslashes($listedUser->name) . ' as secure?' : 'Mark ' . addslashes($listedUser->name) . ' as unsecure?' }}', '{{ $listedUser->isUnsecure() ? 'Yes, mark secure' : 'Yes, mark unsecure' }}')">

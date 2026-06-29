@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Auth\SoftDeletableUserProvider;
 use App\ThemePreferences;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -28,6 +29,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register a custom user provider that includes soft-deleted users
+        // so banned (soft-deleted) users can authenticate and access the appeal page.
+        Auth::provider('softdeletable', function ($app, array $config) {
+            return new SoftDeletableUserProvider($app['hash'], $config['model']);
+        });
+
         Password::defaults(function () {
             $rule = Password::min(8)
                 ->letters()

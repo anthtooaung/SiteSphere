@@ -61,6 +61,7 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $user = User::query()
+            ->withTrashed()
             ->where('email', $this->string('email')->toString())
             ->first();
 

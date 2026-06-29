@@ -30,7 +30,7 @@ class NotificatioinsController extends Controller
         }
 
         if ($search !== '') {
-            $query->where('message', 'like', '%' . $search . '%');
+            $query->where('message', 'like', '%'.$search.'%');
         }
 
         $notifications = $query->latest()->paginate(20)->withQueryString();

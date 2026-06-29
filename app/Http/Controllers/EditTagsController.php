@@ -154,6 +154,7 @@ class EditTagsController extends Controller
 
                 if ($name === $tag->name && $color === $this->normalizeColor($tag->tag_color)) {
                     $tagIdsToDelete[] = $tag->id;
+
                     continue;
                 }
 
@@ -167,7 +168,7 @@ class EditTagsController extends Controller
         }
 
         // Batch delete tags that match defaults
-        if (!empty($tagIdsToDelete)) {
+        if (! empty($tagIdsToDelete)) {
             CustomTags::query()
                 ->where('user_id', $user->id)
                 ->whereIn('tag_id', $tagIdsToDelete)
@@ -175,7 +176,7 @@ class EditTagsController extends Controller
         }
 
         // Batch upsert custom tags
-        if (!empty($tagsToUpdate)) {
+        if (! empty($tagsToUpdate)) {
             foreach ($tagsToUpdate as $data) {
                 CustomTags::query()->updateOrCreate(
                     [
@@ -232,7 +233,7 @@ class EditTagsController extends Controller
                         ->pluck('id')
                         ->toArray();
 
-                    if (!empty($orphanedTagIds)) {
+                    if (! empty($orphanedTagIds)) {
                         Tags::query()->whereIn('id', $orphanedTagIds)->delete();
                     }
                 }
@@ -298,7 +299,7 @@ class EditTagsController extends Controller
 
         $tagIds = $category->tags->pluck('id')->toArray();
 
-        if (!empty($tagIds)) {
+        if (! empty($tagIds)) {
             // Batch detach all tags from this category
             $category->tags()->detach();
 
@@ -309,7 +310,7 @@ class EditTagsController extends Controller
                 ->pluck('id')
                 ->toArray();
 
-            if (!empty($orphanedTagIds)) {
+            if (! empty($orphanedTagIds)) {
                 Tags::query()->whereIn('id', $orphanedTagIds)->delete();
             }
         }

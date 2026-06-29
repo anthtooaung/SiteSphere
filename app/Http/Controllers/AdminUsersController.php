@@ -81,6 +81,7 @@ class AdminUsersController extends Controller
         $this->abortIfSelfAction($admin, $user);
 
         abort_unless($user->trashed(), 404);
+        abort_if($user->is_permanently_banned, 403, 'This user is permanently banned and cannot be restored.');
 
         DB::transaction(function () use ($admin, $user): void {
             $user->status = 'verified';
@@ -126,7 +127,8 @@ class AdminUsersController extends Controller
 
             $this->audit($admin, 'force_delete_user', $user, 'User permanently deleted by admin.');
 
-            $user->forceDelete();
+            $user->is_permanently_banned = true;
+            $user->save();
         });
 
         return redirect()

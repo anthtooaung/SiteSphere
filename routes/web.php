@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\AdminActivityLogController;
 use App\Http\Controllers\AdminReportsController;
 use App\Http\Controllers\AdminUsersController;
+use App\Http\Controllers\AppealsController;
 use App\Http\Controllers\AppearanceController;
 use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CommentReactionsController;
@@ -14,8 +15,8 @@ use App\Http\Controllers\EditProfileController;
 use App\Http\Controllers\EditTagsController;
 use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\NotificationOpenController;
 use App\Http\Controllers\NotificatioinsController;
+use App\Http\Controllers\NotificationOpenController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\ProfileDetailController;
 use App\Http\Controllers\ReportsController;
@@ -106,6 +107,12 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/notifications/{notification}/open', NotificationOpenController::class)->name('notifications.open');
     Route::post('/notifications/mark-all-read', [NotificationOpenController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
     Route::delete('/notifications/{notification}', [NotificatioinsController::class, 'destroy'])->name('notifications.destroy');
+});
+
+// Appeal routes (banned users only)
+Route::middleware('auth')->group(function (): void {
+    Route::get('/appeal', [AppealsController::class, 'create'])->name('appeal.create');
+    Route::post('/appeal', [AppealsController::class, 'store'])->name('appeal.store');
 });
 
 require __DIR__.'/auth.php';

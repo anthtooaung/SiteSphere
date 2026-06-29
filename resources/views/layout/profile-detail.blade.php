@@ -61,6 +61,7 @@
                             @endif
                         </div>
                         <div class="banned-banner-actions">
+                            @if(!$user->is_permanently_banned)
                             <form method="POST" action="{{ route('users.restore', $user->id) }}" style="display:inline;">
                                 @csrf
                                 @method('PATCH')
@@ -83,6 +84,9 @@
                                     <x-fas-trash class="size-4" /> Delete Permanently
                                 </button>
                             </form>
+                            @else
+                            <span style="color: var(--ui-danger); font-weight: bold; padding: 8px 12px;">This account is permanently banned and cannot be restored.</span>
+                            @endif
                         </div>
                     </div>
                 </div>

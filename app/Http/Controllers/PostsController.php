@@ -190,7 +190,6 @@ class PostsController extends Controller
             ->with('success', 'Post permanently deleted.');
     }
 
-
     public function deleteAudit(Request $request, UserPosts $userPost): RedirectResponse
     {
         $user = $request->user();

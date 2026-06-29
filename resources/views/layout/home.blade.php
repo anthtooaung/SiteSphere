@@ -248,7 +248,7 @@
                         url.searchParams.set('tags', this.filters.tags.join(','));
                     }
                     if (this.filters.rating.length > 0) {
-                        url.searchParams.set('rating', Math.min(...this.filters.rating));
+                        url.searchParams.set('rating', this.filters.rating[0]);
                     }
                     if (this.filters.search) {
                         url.searchParams.set('search', this.filters.search);
@@ -260,6 +260,9 @@
                 toggleFilter(type, value) {
                     if (value === 'all' || value === 'All') {
                         this.filters[type] = [];
+                    } else if (type === 'rating') {
+                        // Rating is single-select: replace instead of append
+                        this.filters.rating = this.filters.rating.includes(value) ? [] : [value];
                     } else {
                         const index = this.filters[type].indexOf(value);
                         if (index > -1) {
@@ -301,7 +304,7 @@
                         this.filters.tags = params.get('tags').split(',');
                     }
                     if (params.get('rating')) {
-                        this.filters.rating = params.get('rating').split(',');
+                        this.filters.rating = [params.get('rating')];
                     }
                     if (params.get('search')) {
                         this.filters.search = params.get('search');

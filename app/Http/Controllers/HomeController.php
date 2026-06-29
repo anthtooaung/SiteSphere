@@ -86,18 +86,14 @@ class HomeController extends Controller
             })
             // Apply rating filter
             ->when($request->query('rating'), function ($query) use ($request) {
-                $ratings = is_string($request->query('rating')) ? explode(',', $request->query('rating')) : $request->query('rating');
-                $ratings = array_filter((array) $ratings, fn ($r) => ! empty($r) && strtolower($r) !== 'all');
-
-                if (empty($ratings)) {
+                $rating = $request->query('rating');
+                if (empty($rating) || strtolower((string) $rating) === 'all') {
                     return $query;
                 }
 
-                $minRating = (int) min($ratings);
+                $minRating = (int) $rating;
 
-                return $query->whereHas('ratings', function ($q) use ($minRating) {
-                    $q->selectRaw('avg(rating)')->havingRaw('avg(rating) >= ?', [$minRating]);
-                });
+                return $query->having('average_rating', '>=', $minRating);
             })
             // Apply sorting
             ->when($request->query('sort'), function ($query) use ($request) {

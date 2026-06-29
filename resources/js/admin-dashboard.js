@@ -376,7 +376,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ══ MONTH PICKER ════════════════════════════════════════════════════════
-  let ovYear = 2026, ovMonth = 5, ovPickerYear = 2026;
+  const now = new Date();
+  let ovYear = now.getFullYear(), ovMonth = now.getMonth(), ovPickerYear = now.getFullYear();
   
   const monthBtn = document.getElementById("overview-month-btn");
   if(monthBtn) {
@@ -394,15 +395,24 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderOverviewPicker() {
     const yrEl = document.getElementById("overview-picker-year");
     if(yrEl) yrEl.textContent = ovPickerYear;
-    
+
     const grid = document.getElementById("overview-picker-month-grid");
     if(grid) {
         const abbr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        grid.innerHTML = abbr.map((m, i) =>
-          `<div class="cmp-month${ovPickerYear === ovYear && i === ovMonth ? " active" : ""}" data-month-idx="${i}">${m}</div>`
-        ).join("");
-        
-        grid.querySelectorAll('.cmp-month').forEach(el => {
+        const nowDate = new Date();
+        grid.innerHTML = abbr.map((m, i) => {
+          const isActive = ovPickerYear === ovYear && i === ovMonth;
+          // Disable months that are in the future
+          const isFuture =
+            ovPickerYear > nowDate.getFullYear() ||
+            (ovPickerYear === nowDate.getFullYear() && i > nowDate.getMonth());
+          let cls = "cmp-month";
+          if (isActive) cls += " active";
+          if (isFuture) cls += " disabled";
+          return `<div class="${cls}" data-month-idx="${i}">${m}</div>`;
+        }).join("");
+
+        grid.querySelectorAll('.cmp-month:not(.disabled)').forEach(el => {
             el.addEventListener('click', (e) => {
                 selectOverviewMonth(parseInt(e.target.getAttribute('data-month-idx')));
             });
@@ -410,12 +420,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Bind prev/next year buttons
-  const ynavBtns = document.querySelectorAll('.cmp-ynav');
-  if (ynavBtns.length >= 2) {
-      ynavBtns[0].addEventListener('click', () => { ovPickerYear--; renderOverviewPicker(); });
-      ynavBtns[1].addEventListener('click', () => { ovPickerYear++; renderOverviewPicker(); });
-  }
+  // Bind prev/next year buttons by ID (fix #3)
+  document.getElementById('overview-prev-year')?.addEventListener('click', () => { ovPickerYear--; renderOverviewPicker(); });
+  document.getElementById('overview-next-year')?.addEventListener('click', () => { ovPickerYear++; renderOverviewPicker(); });
 
   function selectOverviewMonth(idx) {
     ovYear = ovPickerYear;
@@ -423,9 +430,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const abbr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const label = document.getElementById("overview-month-label");
     if(label) label.textContent = `${abbr[idx]} ${ovPickerYear}`;
-    
+
     document.getElementById("overview-month-picker")?.classList.remove("open");
     document.getElementById("overview-month-btn")?.classList.remove("open");
+
+    // Re-fetch stats for the selected month
+    const monthParam = String(idx + 1).padStart(2, '0');
+    const url = `/menu/dashboard/stats?year=${ovPickerYear}&month=${monthParam}`;
+
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(newData => {
+        // TODO: re-render pie + sparklines with newData when backend is ready
+        console.info('[Dashboard] Stats loaded for', abbr[idx], ovPickerYear, newData);
+      })
+      .catch(err => {
+        // Silently ignore until endpoint is implemented
+        console.warn('[Dashboard] Stats endpoint not yet available:', err);
+      });
   }
 
   document.addEventListener("click", (e) => {

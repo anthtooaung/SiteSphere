@@ -222,23 +222,15 @@ class EditTagsController extends Controller
                 $tagsToRemove = $currentTagIds->diff($incomingTagIds);
 
                 if ($tagsToRemove->isNotEmpty()) {
-                    // Batch load tags with post counts and category counts
-                    $tags = Tags::query()
-                        ->withCount('posts')
-                        ->whereIn('id', $tagsToRemove)
-                        ->get()
-                        ->keyBy('id');
-
                     // Batch detach all tags from this category
                     $category->tags()->detach($tagsToRemove);
 
-                    // Find orphaned tags (no categories) and delete them
-                    $orphanedTagIds = [];
-                    foreach ($tags as $tag) {
-                        if ($tag->categories()->count() === 0) {
-                            $orphanedTagIds[] = $tag->id;
-                        }
-                    }
+                    // Find orphaned tags (no categories) using a single batch query
+                    $orphanedTagIds = Tags::query()
+                        ->whereIn('id', $tagsToRemove)
+                        ->whereDoesntHave('categories')
+                        ->pluck('id')
+                        ->toArray();
 
                     if (!empty($orphanedTagIds)) {
                         Tags::query()->whereIn('id', $orphanedTagIds)->delete();
@@ -310,13 +302,12 @@ class EditTagsController extends Controller
             // Batch detach all tags from this category
             $category->tags()->detach();
 
-            // Find orphaned tags (no categories) and delete them in batch
-            $orphanedTagIds = [];
-            foreach ($category->tags as $tag) {
-                if ($tag->categories()->count() === 0) {
-                    $orphanedTagIds[] = $tag->id;
-                }
-            }
+            // Find orphaned tags (no categories) using a single batch query
+            $orphanedTagIds = Tags::query()
+                ->whereIn('id', $tagIds)
+                ->whereDoesntHave('categories')
+                ->pluck('id')
+                ->toArray();
 
             if (!empty($orphanedTagIds)) {
                 Tags::query()->whereIn('id', $orphanedTagIds)->delete();

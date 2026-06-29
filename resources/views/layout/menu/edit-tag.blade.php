@@ -368,7 +368,7 @@
                                 <article class="thread-category" :class="{ 'is-open': openCategory === category.uid }"
                                     data-edit-tag-category>
                                     <div class="thread-category-toggle-wrapper">
-                                        <template x-if="isAdmin && isEditing(category)">
+                                        <template x-if="isAdmin && isEditing(category) && openCategory === category.uid">
                                             <div class="thread-category-toggle thread-category-toggle--editing">
                                                 <span class="thread-category-head">
                                                     <span class="thread-category-color" :style="{ backgroundColor: category.color }"></span>
@@ -382,7 +382,7 @@
                                                 </button>
                                             </div>
                                         </template>
-                                        <template x-if="! (isAdmin && isEditing(category))">
+                                        <template x-if="! (isAdmin && isEditing(category) && openCategory === category.uid)">
                                             <button type="button" class="thread-category-toggle" @click="toggleCategory(category)"
                                                 :aria-expanded="(openCategory === category.uid).toString()">
                                                 <span class="thread-category-head">
@@ -464,7 +464,7 @@
                                                             @input="syncFromText()"
                                                             @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = category.color"
                                                             placeholder="#FF5733"
-                                                            maxlength="7"
+                                                            maxlength="7">
                                                         <template x-teleport="body">
                                                             <div class="color-picker-popup" :style="popupStyle" x-show="open" @click.outside="if (! $root.contains($event.target)) open = false;" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
                                                             <div class="color-picker-popup-header">
@@ -511,13 +511,13 @@
                                                 <span class="thread-tag-chip"
                                                     :style="{ backgroundColor: tint(tag.color), color: tag.color }"
                                                     data-edit-tag-chip>
-                                                    <template x-if="isEditing(category)">
+                                                    <template x-if="isAdmin && isEditing(category)">
                                                         <input type="text" x-model="tag.name" @input="syncTagColors(tag, 'name')" aria-label="Tag name" class="outline-none" @keydown.space.stop @keyup.space.stop @keypress.space.stop @keydown.enter.prevent>
                                                     </template>
-                                                    <template x-if="! isEditing(category)">
+                                                    <template x-if="! (isAdmin && isEditing(category))">
                                                         <span class="thread-tag-name" x-text="tag.name"></span>
                                                     </template>
-                                                    <template x-if="isEditing(category)">
+                                                    <template x-if="isAdmin && isEditing(category)">
                                                         <div class="color-picker-component color-picker-compact" x-data="{
                                                             open: false,
                                                             showCustom: false,
@@ -563,7 +563,7 @@
                                                                 @input="syncFromText()"
                                                                 @blur="if (!/^#[0-9A-Fa-f]{6}$/.test(textValue)) textValue = tag.color"
                                                                 placeholder="#FF5733"
-                                                                maxlength="7"
+                                                                maxlength="7">
                                                             <template x-teleport="body">
                                                                 <div class="color-picker-popup" :style="popupStyle" x-show="open" @click.outside="if (! $root.contains($event.target)) open = false;" x-transition:enter="popup-enter" x-transition:leave="popup-leave">
                                                                 <div class="color-picker-popup-header">

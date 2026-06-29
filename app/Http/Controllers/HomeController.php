@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
-    private const SERVER_POST_LIMIT = 9;
+    private const SERVER_POST_LIMIT = 12;
 
     public function __invoke(Request $request): View|JsonResponse
     {

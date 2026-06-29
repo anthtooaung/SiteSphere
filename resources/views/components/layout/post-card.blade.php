@@ -99,7 +99,11 @@
                 }
             });
         }
-    }" x-on:click.outside="if (! reportOpen) { reviewOpen = false; actionsOpen = false }">
+    }"
+    x-on:click.outside="if (! reportOpen) { reviewOpen = false; actionsOpen = false }"
+    @if($slug) x-on:dblclick="if (!$event.target.closest('a, button, input, textarea, select, [role=menu], [data-post-card-actions-menu], [data-post-card-report-modal]')) window.location.href = '{{ route('posts.show', $slug) }}'" @endif
+    style="cursor: pointer; user-select: none;"
+    >
     <header class="space-y-3 px-4 pb-3 pt-4 sm:px-5">
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0 flex-1" x-data="{ domainOpen: false }">

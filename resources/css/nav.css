@@ -2539,6 +2539,10 @@ button.saved-post-control {
     footer {
         padding-bottom: max(64px, 100px) !important;
     }
+    /* Override: post card internal footer should not get the mobile nav spacing */
+    .review-card footer {
+        padding-bottom: 0 !important;
+    }
     body:not(:has(footer)):not(:has(.dashboard-page)):not(:has(.upload-post-page)) {
         padding-bottom: 100px !important;
     }

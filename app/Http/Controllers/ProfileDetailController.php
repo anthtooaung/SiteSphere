@@ -53,6 +53,7 @@ class ProfileDetailController extends Controller
                 'allReviews' => collect(),
                 'allUploads' => collect(),
                 'allRatings' => collect(),
+                'receivedRatings' => collect(),
                 'recentReviewRatings' => collect(),
             ]);
         }
@@ -96,11 +97,25 @@ class ProfileDetailController extends Controller
         $allUploads = (clone $userPostsQuery)
             ->with(['post.tags', 'post.ratings'])
             ->latest()
-            ->get();
+            ->get()
+            ->each(function ($upload) {
+                if ($upload->post && $upload->post->ratings->isNotEmpty()) {
+                    $upload->average_rating = $upload->post->ratings->avg('rating');
+                } else {
+                    $upload->average_rating = 0;
+                }
+            });
 
         $allRatings = Ratings::query()
             ->where('user_id', $user->id)
             ->with(['post'])
+            ->latest()
+            ->get();
+
+        $receivedRatings = Ratings::query()
+            ->whereIn('post_id', $postIds)
+            ->where('user_id', '!=', $user->id)
+            ->with(['post', 'user'])
             ->latest()
             ->get();
 
@@ -123,6 +138,7 @@ class ProfileDetailController extends Controller
             'allReviews' => $allReviews,
             'allUploads' => $allUploads,
             'allRatings' => $allRatings,
+            'receivedRatings' => $receivedRatings,
             'recentReviewRatings' => $recentReviewRatings,
             'maskedEmail' => \maskEmail($user->email),
         ]);

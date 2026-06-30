@@ -390,7 +390,7 @@
                                                         </div>
                                                         <div class="list-info">
                                                             <a href="{{ $upload->post ? route('posts.show', $upload->post->slug) . '#panel-user-' . $user->id : '#' }}" class="list-title">{{ $upload->post ? parse_url($upload->post->url, PHP_URL_HOST) : 'Deleted Post' }}</a>
-                                                            <span class="list-subtitle">{{ $upload->post ? number_format($upload->post->average_rating ?? 0, 1) . ' ★ rating' : 'Contributed Resource' }}</span>
+                                                            <span class="list-subtitle">{{ $upload->post ? number_format($upload->average_rating ?? 0, 1) . ' ★ rating' : 'Contributed Resource' }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="list-right">
@@ -440,10 +440,10 @@
                     <div x-show="expandedSection === 'received'" class="expansion-panel">
                         <div class="panel-header">
                             <h3>Ratings Received</h3>
-                            <span class="count-pill">{{ $ratingsCount }} Items</span>
+                            <span class="count-pill">{{ $receivedRatings->count() }} Items</span>
                         </div>
                         <div class="dense-list">
-                            @forelse($allRatings as $rating)
+                            @forelse($receivedRatings as $rating)
                                 <div class="list-row">
                                     <div class="list-left">
                                         <div class="list-icon-bg purple-bg">
@@ -453,7 +453,7 @@
                                             <a href="{{ $rating->post ? route('posts.show', $rating->post->slug) : '#' }}" class="list-title">
                                                 {{ $rating->post ? parse_url($rating->post->url, PHP_URL_HOST) : 'Deleted Post' }}
                                             </a>
-                                            <span class="list-subtitle">Rated {{ number_format($rating->rating, 1) }} ★</span>
+                                            <span class="list-subtitle">Rated {{ number_format($rating->rating, 1) }} ★ by {{ $rating->user?->name ?? 'Unknown' }}</span>
                                         </div>
                                     </div>
                                     <div class="list-right">

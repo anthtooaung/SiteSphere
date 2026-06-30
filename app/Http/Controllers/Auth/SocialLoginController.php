@@ -67,14 +67,14 @@ class SocialLoginController extends Controller
                         ->withErrors(['social' => 'Your appeal is under review. You will receive an email once a decision has been made.']);
                 }
 
-                Auth::login($user);
+                Auth::login($user, true);
 
                 return redirect()->route('appeal.create');
             }
 
             $this->fillMissingAvatar($user, $socialiteUser);
 
-            Auth::login($user);
+            Auth::login($user, true);
 
             $this->flashSuccessToast($user);
 
@@ -107,7 +107,7 @@ class SocialLoginController extends Controller
                     ->withErrors(['social' => 'Your appeal is under review. You will receive an email once a decision has been made.']);
             }
 
-            Auth::login($user);
+            Auth::login($user, true);
 
             return redirect()->route('appeal.create');
         }
@@ -120,7 +120,7 @@ class SocialLoginController extends Controller
             'token' => $socialiteUser->token ?? null,
         ]);
 
-        Auth::login($user);
+        Auth::login($user, true);
 
         $this->flashSuccessToast($user);
 

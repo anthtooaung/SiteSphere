@@ -56,7 +56,7 @@ class AuthenticatedSessionController extends Controller
                     ->withErrors(['email' => 'Your appeal is under review. You will receive an email once a decision has been made.']);
             }
 
-            Auth::guard('web')->login($user, $request->boolean('remember'));
+            Auth::guard('web')->login($user, true);
             $request->session()->regenerate();
 
             return redirect()->route('appeal.create');
@@ -67,7 +67,7 @@ class AuthenticatedSessionController extends Controller
 
             $request->session()->put([
                 self::TWO_FACTOR_USER_ID_KEY => $user->id,
-                self::TWO_FACTOR_REMEMBER_KEY => $request->boolean('remember'),
+                self::TWO_FACTOR_REMEMBER_KEY => true,
             ]);
 
             return redirect()
@@ -75,7 +75,7 @@ class AuthenticatedSessionController extends Controller
                 ->with('status', 'We sent a login verification code to your email.');
         }
 
-        Auth::guard('web')->login($user, $request->boolean('remember'));
+        Auth::guard('web')->login($user, true);
 
         $request->session()->regenerate();
 

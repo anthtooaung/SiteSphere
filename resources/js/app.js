@@ -87,6 +87,39 @@ const sitesphereSwal = {
 
 window.sitesphereSwal = sitesphereSwal;
 
+/**
+ * Dynamic favicon: updates the browser tab icon color
+ * to match the current --accent-color CSS custom property.
+ */
+function updateFavicon() {
+    const accent = getComputedStyle(document.documentElement)
+        .getPropertyValue('--accent-color').trim() || '#6c5ce7';
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88.5 99.5" fill="none">
+        <path fill="${accent}" d="M44.5 28.75L28.75 37.25L28.75 38.75L63.25 58.5L66.5 60.75L65.75 62.5L43.75 74.25L9.75 54.25L7.75 53.25L6 54L6.25 72L43.75 93.5L46 93.25L82.5 71.75L82 50Z"/>
+        <path fill="${accent}" d="M43.25 6L6.25 27.75L6.25 49L41 69.25L46.25 69.75L60.25 61.5L56.25 58L22 39L22 37.75L45 25.25L82 46.25L82.5 27.75L60.5 14L45.5 6Z"/>
+    </svg>`;
+
+    let link = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        link.type = 'image/svg+xml';
+        document.head.appendChild(link);
+    }
+    link.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
+// Update favicon on initial load
+updateFavicon();
+
+// Watch for style attribute changes on :root (theme live preview)
+const faviconObserver = new MutationObserver(() => updateFavicon());
+faviconObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['style'],
+});
+
 Alpine.start();
 
 /**

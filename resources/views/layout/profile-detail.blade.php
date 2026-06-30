@@ -122,6 +122,7 @@
                         </a>
                     @else
                         @auth
+                            @if(!$user->is_permanently_banned)
                             <div class="relative shrink-0" x-data="{ actionsOpen: false }" x-on:click.outside="actionsOpen = false" style="position: absolute; right: 20px; top: 20px; z-index: 20;">
                                 <button type="button"
                                     class="flex size-9 shrink-0 items-center justify-center rounded-full border [border-color:var(--border)] [background:var(--card)] [color:var(--muted)] transition-all hover:[border-color:var(--accent-1)] hover:[background:color-mix(in_srgb,var(--accent-1)_10%,transparent)] hover:[color:var(--accent-1)]"
@@ -196,6 +197,7 @@
                                     @endif
                                 </div>
                             </div>
+                            @endif
                         @endauth
                     @endif
 

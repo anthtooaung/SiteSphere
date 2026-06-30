@@ -284,6 +284,8 @@
                                         @php
                                             $isProfileVisible = ! $userPost->user_hidden;
                                             $isUserBanned = $userPost->user->trashed();
+                                            // Hide banned users' descriptions from non-admin viewers
+                                            if ($isUserBanned && Auth::user()?->role !== 'admin') continue;
                                             $displayName = $isUserBanned ? 'Banned' : ($isProfileVisible ? $userPost->user->name : 'Anonymous');
                                             $initials = $isUserBanned ? 'B' : ($isProfileVisible
                                                 ? collect(explode(' ', $userPost->user->name))->map(fn($n) => Str::substr($n, 0, 1))->join('')
@@ -337,6 +339,8 @@
                                         @php
                                             $isProfileVisible = ! $userPost->user_hidden;
                                             $isUserBanned = $userPost->user->trashed();
+                                            // Hide banned users' descriptions from non-admin viewers
+                                            if ($isUserBanned && Auth::user()?->role !== 'admin') continue;
                                             $displayName = $isUserBanned ? 'Banned' : ($isProfileVisible ? $userPost->user->name : 'Anonymous');
                                             $initials = $isUserBanned ? 'B' : ($isProfileVisible
                                                 ? collect(explode(' ', $userPost->user->name))->map(fn($n) => Str::substr($n, 0, 1))->join('')

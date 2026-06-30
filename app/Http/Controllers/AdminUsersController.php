@@ -80,7 +80,11 @@ class AdminUsersController extends Controller
             $this->audit($admin, 'ban_user', $user, 'User account was banned by an admin. Reason: '.$user->ban_reason);
         });
 
-        Mail::to($user->email)->send(new UserAccountDeletedMail($user, $admin, $user->ban_reason));
+        try {
+            Mail::to($user->email)->send(new UserAccountDeletedMail($user, $admin, $user->ban_reason));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Failed to send account deleted email to ' . $user->email . ': ' . $e->getMessage());
+        }
 
         // Force logout the banned user by deleting their sessions
         DB::table('sessions')->where('user_id', $user->id)->delete();
@@ -116,7 +120,11 @@ class AdminUsersController extends Controller
         });
 
         // Notify user their account has been restored
-        Mail::to($user->email)->queue(new AccountRestoredMail($user));
+        try {
+            Mail::to($user->email)->queue(new AccountRestoredMail($user));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Failed to send account restored email to ' . $user->email . ': ' . $e->getMessage());
+        }
 
         return back()->with('success', "{$user->name}'s account was restored.");
     }
@@ -169,7 +177,11 @@ class AdminUsersController extends Controller
         });
 
         // Notify user their account has been permanently banned
-        Mail::to($user->email)->send(new PermanentlyBannedMail($user, $admin, $reason));
+        try {
+            Mail::to($user->email)->send(new PermanentlyBannedMail($user, $admin, $reason));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Failed to send permanently banned email to ' . $user->email . ': ' . $e->getMessage());
+        }
 
         // Force logout the permanently banned user by deleting their sessions
         DB::table('sessions')->where('user_id', $user->id)->delete();

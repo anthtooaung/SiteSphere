@@ -6,12 +6,15 @@ use App\Mail\AccountRestoredMail;
 use App\Mail\PermanentlyBannedMail;
 use App\Mail\UserAccountDeletedMail;
 use App\Models\AuditLogs;
+use App\Models\Comments;
+use App\Models\Posts;
 use App\Models\User;
 use App\Models\UserPosts;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -68,10 +71,19 @@ class AdminUsersController extends Controller
             $user->save();
             $user->delete(); // soft-delete (sets deleted_at)
 
+            // Soft-delete user's posts associations (posts stay visible, user_posts hidden)
+            UserPosts::where('user_id', $user->id)->delete();
+
+            // Soft-delete user's comments
+            Comments::where('user_id', $user->id)->delete();
+
             $this->audit($admin, 'ban_user', $user, 'User account was banned by an admin. Reason: '.$user->ban_reason);
         });
 
         Mail::to($user->email)->send(new UserAccountDeletedMail($user, $admin, $user->ban_reason));
+
+        // Force logout the banned user by deleting their sessions
+        DB::table('sessions')->where('user_id', $user->id)->delete();
 
         return back()->with('success', "{$user->name}'s account was banned.");
     }
@@ -93,6 +105,12 @@ class AdminUsersController extends Controller
             $user->appeal_submitted_at = null;
             $user->save();
             $user->restore(); // clears deleted_at
+
+            // Restore user's soft-deleted posts associations
+            UserPosts::where('user_id', $user->id)->restore();
+
+            // Restore user's soft-deleted comments
+            Comments::where('user_id', $user->id)->restore();
 
             $this->audit($admin, 'restore_user', $user, 'User account was restored by an admin.', category: 'resolved');
         });
@@ -130,8 +148,19 @@ class AdminUsersController extends Controller
         $reason = $user->ban_reason ?? 'No reason provided';
 
         DB::transaction(function () use ($admin, $user): void {
-            // Delete user's uploaded content
+            // Get post IDs associated with this user before deleting user_posts
+            $postIds = UserPosts::where('user_id', $user->id)->pluck('post_id')->toArray();
+
+            // Delete user's comments
+            Comments::where('user_id', $user->id)->forceDelete();
+
+            // Delete user's post associations
             UserPosts::where('user_id', $user->id)->forceDelete();
+
+            // Mark associated posts as unsecure
+            if (! empty($postIds)) {
+                Posts::whereIn('id', $postIds)->update(['is_unsecure' => true]);
+            }
 
             $this->audit($admin, 'force_delete_user', $user, 'User permanently deleted by admin.');
 
@@ -141,6 +170,9 @@ class AdminUsersController extends Controller
 
         // Notify user their account has been permanently banned
         Mail::to($user->email)->send(new PermanentlyBannedMail($user, $admin, $reason));
+
+        // Force logout the permanently banned user by deleting their sessions
+        DB::table('sessions')->where('user_id', $user->id)->delete();
 
         return redirect()
             ->route('users')

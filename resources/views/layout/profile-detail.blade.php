@@ -40,7 +40,22 @@
                 this.reportReason = '';
                 this.reportDetails = '';
             },
-            reportDetailsCount() { return this.reportDetails.length; }
+            reportDetailsCount() { return this.reportDetails.length; },
+            scrollToExpansion() {
+                this.$nextTick(() => {
+                    const el = document.querySelector('.expansion-container');
+                    if (!el) return;
+                    const navHeight = document.querySelector('.mobile-header')?.offsetHeight || 72;
+                    const scrollContainer = el.closest('.dashboard-content');
+                    if (scrollContainer) {
+                        const elTop = el.offsetTop - scrollContainer.offsetTop;
+                        scrollContainer.scrollTo({ top: elTop - navHeight - 16, behavior: 'smooth' });
+                    } else {
+                        const elTop = el.getBoundingClientRect().top + window.scrollY;
+                        window.scrollTo({ top: elTop - navHeight - 16, behavior: 'smooth' });
+                    }
+                });
+            }
         }">
             @if ($isBanned)
                 <div class="banned-banner" style="position: sticky; top: -24px; margin: -24px -24px 24px -24px; z-index: 40;">
@@ -281,7 +296,7 @@
                         <div>
                             <h2>{{ $reviewsCount }}</h2>
                             <p>My Reviews</p>
-                            <button @click="expandedSection = expandedSection === 'reviews' ? null : 'reviews'; $nextTick(() => { if(expandedSection) document.querySelector('.expansion-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="bottom-link">
+                            <button @click="expandedSection = expandedSection === 'reviews' ? null : 'reviews'; if(expandedSection) scrollToExpansion()" class="bottom-link">
                                 <span x-text="expandedSection === 'reviews' ? 'Collapse ↑' : 'View all reviews &rarr;'"></span>
                             </button>
                         </div>
@@ -294,7 +309,7 @@
                         <div>
                             <h2>{{ $ratingsCount }}</h2>
                             <p>Rate Items</p>
-                            <button @click="expandedSection = expandedSection === 'rated' ? null : 'rated'; $nextTick(() => { if(expandedSection) document.querySelector('.expansion-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="bottom-link">
+                            <button @click="expandedSection = expandedSection === 'rated' ? null : 'rated'; if(expandedSection) scrollToExpansion()" class="bottom-link">
                                 <span x-text="expandedSection === 'rated' ? 'Collapse ↑' : 'View all rated →'"></span>
                             </button>
                         </div>
@@ -307,7 +322,7 @@
                         <div>
                             <h2>{{ $uploadsCount }}</h2>
                             <p>My Uploads</p>
-                            <button @click="expandedSection = expandedSection === 'uploads' ? null : 'uploads'; $nextTick(() => { if(expandedSection) document.querySelector('.expansion-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="bottom-link">
+                            <button @click="expandedSection = expandedSection === 'uploads' ? null : 'uploads'; if(expandedSection) scrollToExpansion()" class="bottom-link">
                                 <span x-text="expandedSection === 'uploads' ? 'Collapse ↑' : 'View all uploads &rarr;'"></span>
                             </button>
                         </div>
@@ -320,7 +335,7 @@
                         <div>
                             <h2>{{ number_format($averageRating, 1) }}</h2>
                             <p>Rating Received</p>
-                            <button @click="expandedSection = expandedSection === 'received' ? null : 'received'; $nextTick(() => { if(expandedSection) document.querySelector('.expansion-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) })" class="bottom-link">
+                            <button @click="expandedSection = expandedSection === 'received' ? null : 'received'; if(expandedSection) scrollToExpansion()" class="bottom-link">
                                 <span x-text="expandedSection === 'received' ? 'Collapse ↑' : 'View details →'"></span>
                             </button>
                         </div>

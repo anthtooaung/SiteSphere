@@ -446,6 +446,7 @@
     align-items: center;
     gap: 16px;
     flex: 1;
+    min-width: 0;
 }
 
 .list-icon-bg {
@@ -460,6 +461,7 @@
 .list-info {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .list-title {
@@ -467,6 +469,10 @@
     font-weight: 700;
     color: var(--text);
     text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 .list-title:hover {
@@ -477,17 +483,23 @@
 .list-subtitle {
     font-size: 12px;
     color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 .list-right {
     display: flex;
     align-items: center;
     gap: 20px;
+    flex-shrink: 0;
 }
 
 .list-meta {
     font-size: 12px;
     color: var(--muted);
+    white-space: nowrap;
 }
 
 .list-rating {

@@ -5,53 +5,64 @@
 ![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?logo=php&logoColor=white)
 ![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38BDF8?logo=tailwind-css&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+## 📑 Table of Contents
+
+- [📸 Screenshots](#-screenshots)
+- [✨ Features](#-features)
+- [📋 Prerequisites](#-prerequisites)
+- [🚀 Quick Start](#-quick-start)
+- [⚙️ Environment Variables](#️-environment-variables)
+- [🧪 Testing](#-testing)
+- [🌐 Live Website](#-live-website)
+- [🛠 Tech Stack](#-tech-stack)
+- [👥 Team](#-team)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
 ---
 
 ## 📸 Screenshots
 
+### Desktop
 <table>
   <tr>
     <td align="center"><b>Homepage</b></td>
-    <td align="center"><b>Login</b></td>
-    <td align="center"><b>Register</b></td>
+    <td align="center"><b>Registration</b></td>
+    <td align="center"><b>OTP</b></td>
   </tr>
   <tr>
-    <td><img src="screenshots/homepage.png" width="300"></td>
-    <td><img src="screenshots/login.png" width="300"></td>
-    <td><img src="screenshots/register.png" width="300"></td>
+    <td><img src="screenshots/desktop/user_homepage.png" width="300"></td>
+    <td><img src="screenshots/desktop/Registration.png" width="300"></td>
+    <td><img src="screenshots/desktop/OTP.png" width="300"></td>
   </tr>
   <tr>
-    <td align="center"><b>Home Feed</b></td>
     <td align="center"><b>Admin Dashboard</b></td>
-    <td align="center"><b>Admin Users</b></td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/home-feed.png" width="300"></td>
-    <td><img src="screenshots/admin-dashboard.png" width="300"></td>
-    <td><img src="screenshots/admin-users.png" width="300"></td>
-  </tr>
-  <tr>
+    <td align="center"><b>Admin Reports</b></td>
     <td align="center"><b>Create Post</b></td>
-    <td align="center"><b>Edit Profile</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/desktop/Admin_Dashboard.png" width="300"></td>
+    <td><img src="screenshots/desktop/Admin_Reports.png" width="300"></td>
+    <td><img src="screenshots/desktop/create_post.png" width="300"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Security Profile</b></td>
     <td align="center"><b>Appearance</b></td>
+    <td align="center"><b>Saved Posts</b></td>
   </tr>
   <tr>
-    <td><img src="screenshots/create-post.png" width="300"></td>
-    <td><img src="screenshots/edit-profile.png" width="300"></td>
-    <td><img src="screenshots/appearance.png" width="300"></td>
-  </tr>
-  <tr>
-    <td align="center"><b>About Page</b></td>
-    <td align="center"><b>Mobile View</b></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/about.png" width="300"></td>
-    <td><img src="screenshots/mobile-home.png" width="300"></td>
-    <td></td>
+    <td><img src="screenshots/desktop/user_security.png" width="300"></td>
+    <td><img src="screenshots/desktop/user_appearance.png" width="300"></td>
+    <td><img src="screenshots/desktop/user_saved_post.png" width="300"></td>
   </tr>
 </table>
+
+### Mobile
+*(Mobile screenshots coming soon)*
 
 ---
 
@@ -66,6 +77,16 @@
 - 📧 **Email Notifications** — Stay updated on activity
 - 👑 **Admin Dashboard** — Manage users, content, and categories
 - 📱 **Responsive Design** — Works on desktop, tablet, and mobile
+
+---
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+- **PHP** 8.3 or higher
+- **Composer** (Dependency Manager for PHP)
+- **Node.js** & **npm**
+- **SQLite** (default for development) or **MySQL**
 
 ---
 
@@ -94,6 +115,30 @@ php artisan serve
 ```
 
 Visit **http://localhost:8000**
+
+---
+
+## ⚙️ Environment Variables
+
+To run this project, you will need to add the following key environment variables to your `.env` file (especially for OAuth and Emails):
+
+- `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`
+- `RESEND_KEY`
+
+---
+
+## 🧪 Testing
+
+To run the automated test suite and ensure code quality:
+
+```bash
+# Run tests
+composer run test
+
+# Run code style checks (Laravel Pint)
+./vendor/bin/pint
+```
 
 ---
 
@@ -130,6 +175,20 @@ Visit **http://localhost:8000**
 | Sa Kyaw Wai Yan Htet | Frontend Developer | Saved Posts, Post Card Box, Post Upload |
 | Han Htoo Lwin | Frontend Developer | Navigation, Footer, Menu Bar, Report Info |
 | Zune Myat Noe | Frontend Developer | About Us, Profile Page, Profile Show Box |
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+Feel free to open an issue if you find any bugs or have feature requests.
+Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) for details on the process for submitting pull requests to us.
+
+---
+
+## 🆘 Support
+
+If you need help or have any questions, feel free to open an issue or reach out to the maintainers.
 
 ---
 

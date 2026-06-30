@@ -1,0 +1,375 @@
+// SiteSphere — Database Schema for dbdiagram.io
+// Copy and paste this entire file into https://dbdiagram.io/d
+
+Table users {
+  id integer [primary key, increment]
+  name varchar
+  slug varchar [unique]
+  role enum('admin', 'user') [default: 'user']
+  email varchar [unique]
+  user_dob date [null]
+  user_phone varchar [null]
+  user_bio text [null]
+  user_image varchar [null]
+  two_factor_enabled boolean [default: false]
+  is_verified boolean [default: false]
+  report_count integer [default: 0]
+  password varchar [null]
+  remember_token varchar [null]
+  status enum('safe', 'unsecure', 'banned', 'verified') [default: 'safe']
+  is_permanently_banned boolean [default: false]
+  banned_by integer [null]
+  banned_at timestamp [null]
+  ban_reason text [null]
+  appeal_submitted_at timestamp [null]
+  password_set boolean [default: true]
+  deleted_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    email [unique]
+    slug [unique]
+    role
+    status
+    deleted_at
+  }
+}
+
+Table sessions {
+  id varchar [primary key]
+  user_id integer [ref: > users.id]
+  ip_address varchar [null]
+  user_agent text [null]
+  payload text
+  last_activity integer
+
+  indexes {
+    user_id
+    last_activity
+  }
+}
+
+Table password_reset_tokens {
+  email varchar [primary key]
+  token varchar
+  created_at timestamp [null]
+}
+
+Table otp_verifications {
+  id integer [primary key, increment]
+  user_id integer [null, ref: > users.id]
+  email varchar
+  otp varchar
+  is_verified boolean [default: false]
+  expire_at timestamp
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    email
+    otp
+  }
+}
+
+Table social_accounts {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id]
+  provider varchar
+  provider_id varchar
+  token varchar [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (user_id, provider, provider_id) [unique]
+  }
+}
+
+Table posts {
+  id integer [primary key, increment]
+  slug varchar [unique]
+  url varchar [unique]
+  is_unsecure boolean [default: false]
+  deleted_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    url [unique]
+    slug [unique]
+    deleted_at
+  }
+}
+
+Table user_posts {
+  id integer [primary key, increment]
+  post_id integer [ref: > posts.id]
+  user_id integer [ref: > users.id]
+  title varchar
+  slug varchar
+  description text
+  user_hidden boolean [default: false]
+  is_unsecure boolean [default: false]
+  deleted_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (post_id, user_id) [unique]
+    slug [unique]
+    deleted_at
+  }
+}
+
+Table categories {
+  id integer [primary key, increment]
+  name varchar
+  slug varchar [unique]
+  color varchar [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    slug [unique]
+  }
+}
+
+Table tags {
+  id integer [primary key, increment]
+  name varchar
+  slug varchar [unique]
+  tag_color varchar [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    slug [unique]
+  }
+}
+
+Table category_tags {
+  id integer [primary key, increment]
+  category_id integer [ref: > categories.id]
+  tag_id integer [ref: > tags.id]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (category_id, tag_id) [unique]
+  }
+}
+
+Table post_tags {
+  id integer [primary key, increment]
+  post_id integer [ref: > posts.id]
+  tag_id integer [ref: > tags.id]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (post_id, tag_id) [unique]
+  }
+}
+
+Table custom_tags {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id]
+  tag_id integer [ref: > tags.id]
+  name varchar
+  color varchar [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (user_id, tag_id) [unique]
+  }
+}
+
+Table ratings {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id]
+  post_id integer [ref: > posts.id]
+  rating integer
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (user_id, post_id) [unique]
+  }
+}
+
+Table comments {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id]
+  post_id integer [ref: > posts.id]
+  content text
+  deleted_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    post_id
+    user_id
+    deleted_at
+  }
+}
+
+Table comment_reactions {
+  id integer [primary key, increment]
+  comment_id integer [ref: > comments.id]
+  user_id integer [ref: > users.id]
+  helpful boolean [default: false]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (comment_id, user_id) [unique]
+  }
+}
+
+Table bookmarks {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id]
+  post_id integer [ref: > posts.id]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (user_id, post_id) [unique]
+  }
+}
+
+Table reports {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id]
+  target_name enum('users', 'posts', 'comments', 'user_posts')
+  target_id integer
+  reason text
+  admin_read boolean [default: false]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (target_name, target_id) [unique]
+    admin_read
+  }
+}
+
+Table notificatioins {
+  id integer [primary key, increment]
+  to_user_id integer [ref: > users.id]
+  from_user_id integer [null, ref: > users.id]
+  target_type varchar [null]
+  target_id integer [null]
+  message text
+  is_read boolean [default: false]
+  is_unsecure boolean [default: false]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    to_user_id
+    is_read
+  }
+}
+
+Table audit_logs {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id]
+  action varchar
+  category enum('moderation', 'check', 'announcement', 'resolved')
+  target_type varchar [null]
+  target_id integer [null]
+  reason text [null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    user_id
+    category
+    (target_type, target_id)
+  }
+}
+
+Table settings {
+  id integer [primary key, increment]
+  user_id integer [unique, ref: > users.id]
+  menuBar_location enum('left', 'right', 'top', 'bottom') [default: 'left']
+  noti_location enum('top-start', 'top-end', 'bottom-end', 'bottom-start') [default: 'top-end']
+  dark_mode boolean [default: false]
+  user_post_visible boolean [default: true]
+  theme_id integer [ref: > themes.id]
+  custom_theme_id integer [null, ref: > custom_themes.id]
+  use_custom_theme boolean [default: false]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table themes {
+  id integer [primary key, increment]
+  accent_color varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table custom_themes {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id]
+  background_color varchar
+  text_color varchar
+  accent_color varchar
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    user_id
+  }
+}
+
+Table fonts {
+  id integer [primary key, increment]
+  font_family varchar
+  google_family varchar [null]
+  is_default boolean [default: false]
+  sort_order integer [default: 0]
+  metadata json [null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table model_has_fonts {
+  id integer [primary key, increment]
+  fontable_type varchar
+  fontable_id integer
+  font_id integer [ref: > fonts.id]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (fontable_type, fontable_id, font_id) [unique]
+  }
+}
+
+Table password_reset_otps {
+  id integer [primary key, increment]
+  email varchar
+  otp varchar
+  expires_at timestamp
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    email
+  }
+}
+
+Table contact_messages {
+  id integer [primary key, increment]
+  name varchar
+  email varchar
+  subject varchar [null]
+  message text
+  created_at timestamp
+  updated_at timestamp
+}

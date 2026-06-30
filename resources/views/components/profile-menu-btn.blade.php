@@ -95,9 +95,9 @@
             </ul>
         </div>
 
-        <form method="POST" action="{{ route('logout') }}" class="account-menu-logout">
+        <form id="desktop-logout-form" method="POST" action="{{ route('logout') }}" class="account-menu-logout">
             @csrf
-            <button type="submit" class="account-menu-link account-menu-action">Logout</button>
+            <button type="button" onclick="confirmLogout('desktop-logout-form')" class="account-menu-link account-menu-action">Logout</button>
         </form>
     </div>
 </div>
@@ -216,13 +216,31 @@ class="mobile-account-menu-wrap relative">
             </ul>
         </div>
 
-        <form method="POST" action="{{ route('logout') }}" class="account-menu-logout">
+        <form id="mobile-logout-form" method="POST" action="{{ route('logout') }}" class="account-menu-logout">
             @csrf
-            <button type="submit" class="account-menu-link account-menu-action" style="color: #ef4444">
+            <button type="button" onclick="confirmLogout('mobile-logout-form')" class="account-menu-link account-menu-action" style="color: #ef4444">
                 Logout
             </button>
         </form>
     </div>
     @endif
 </div>
+
+<script>
+    function confirmLogout(formId) {
+        window.sitesphereSwal.fire({
+            title: 'Log out?',
+            text: 'You will be signed out of your account.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Log out',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#d33',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
+    }
+</script>
 @endmobile

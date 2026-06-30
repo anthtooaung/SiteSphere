@@ -49,6 +49,13 @@ class AuthenticatedSessionController extends Controller
         $user = $request->authenticate();
 
         if ($user->isBanned()) {
+            // If appeal already submitted, deny login entirely
+            if ($user->appeal_submitted_at) {
+                return back()
+                    ->withInput($request->only('email'))
+                    ->withErrors(['email' => 'Your appeal is under review. You will receive an email once a decision has been made.']);
+            }
+
             Auth::guard('web')->login($user, $request->boolean('remember'));
             $request->session()->regenerate();
 

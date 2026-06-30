@@ -61,6 +61,12 @@ class SocialLoginController extends Controller
             }
 
             if ($user->isBanned()) {
+                if ($user->appeal_submitted_at) {
+                    return redirect()
+                        ->route('login')
+                        ->withErrors(['social' => 'Your appeal is under review. You will receive an email once a decision has been made.']);
+                }
+
                 Auth::login($user);
 
                 return redirect()->route('appeal.create');
@@ -95,6 +101,12 @@ class SocialLoginController extends Controller
         );
 
         if ($user->isBanned()) {
+            if ($user->appeal_submitted_at) {
+                return redirect()
+                    ->route('login')
+                    ->withErrors(['social' => 'Your appeal is under review. You will receive an email once a decision has been made.']);
+            }
+
             Auth::login($user);
 
             return redirect()->route('appeal.create');

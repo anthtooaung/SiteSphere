@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AccountRestoredMail;
+use App\Mail\PermanentlyBannedMail;
 use App\Mail\UserAccountDeletedMail;
 use App\Models\AuditLogs;
 use App\Models\User;
@@ -88,11 +90,15 @@ class AdminUsersController extends Controller
             $user->banned_by = null;
             $user->banned_at = null;
             $user->ban_reason = null;
+            $user->appeal_submitted_at = null;
             $user->save();
             $user->restore(); // clears deleted_at
 
             $this->audit($admin, 'restore_user', $user, 'User account was restored by an admin.', category: 'resolved');
         });
+
+        // Notify user their account has been restored
+        Mail::to($user->email)->queue(new AccountRestoredMail($user));
 
         return back()->with('success', "{$user->name}'s account was restored.");
     }
@@ -121,6 +127,8 @@ class AdminUsersController extends Controller
 
         abort_unless($user->trashed(), 404);
 
+        $reason = $user->ban_reason ?? 'No reason provided';
+
         DB::transaction(function () use ($admin, $user): void {
             // Delete user's uploaded content
             UserPosts::where('user_id', $user->id)->forceDelete();
@@ -130,6 +138,9 @@ class AdminUsersController extends Controller
             $user->is_permanently_banned = true;
             $user->save();
         });
+
+        // Notify user their account has been permanently banned
+        Mail::to($user->email)->send(new PermanentlyBannedMail($user, $admin, $reason));
 
         return redirect()
             ->route('users')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\AppealMail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class AppealsController extends Controller
@@ -57,6 +58,11 @@ class AppealsController extends Controller
             Mail::to($admin->email)->queue(new AppealMail($user, $validated['reason']));
         }
 
-        return back()->with('appeal_submitted', true);
+        // Log the user out so they cannot navigate freely
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('welcome')->with('appeal_submitted', true);
     }
 }

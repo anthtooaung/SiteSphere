@@ -42,6 +42,18 @@
 
                 <!-- Login Panel -->
                 <section class="form-panel login-panel" aria-labelledby="login-title">
+                    @if (session('appeal_submitted'))
+                        <div class="appeal-success-banner" role="alert">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                                <path d="M9 12l2 2 4-4"/>
+                            </svg>
+                            <div>
+                                <strong>Appeal Submitted</strong>
+                                <p>Thank you for sharing your side. Our team will review your appeal and get back to you via email within 24-48 hours.</p>
+                            </div>
+                        </div>
+                    @endif
                     <form id="loginForm" class="auth-form" method="POST" action="{{ route('login.store') }}">
                         @csrf
                         <div class="form-heading">

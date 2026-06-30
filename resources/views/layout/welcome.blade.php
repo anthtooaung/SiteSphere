@@ -210,4 +210,17 @@
 
     <x-layout.footer class="mt-auto" />
 
+    @if (session('appeal_submitted'))
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                window.sitesphereSwal.fire({
+                    icon: 'success',
+                    title: 'Appeal Submitted',
+                    text: 'Thank you for sharing your side. Our team will review your appeal and get back to you via email within 24-48 hours.',
+                    confirmButtonColor: '#22c55e',
+                });
+            });
+        </script>
+    @endif
+
 @endsection

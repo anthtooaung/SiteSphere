@@ -102,6 +102,26 @@
                                 },
                                 reportDetailsCount() {
                                     return this.reportDetails.length;
+                                },
+                                confirmBookmarkUnsecure() {
+                                    if (!window.sitesphereSwal) {
+                                        document.getElementById('bookmark-form-post-detail').submit();
+                                        return;
+                                    }
+
+                                    window.sitesphereSwal.fire({
+                                        title: 'Unsecure Post',
+                                        text: 'This post is marked as unsecure. Are you sure you want to save it?',
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Yes, save it',
+                                        cancelButtonText: 'Cancel',
+                                        confirmButtonColor: '#6c5ce7',
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            document.getElementById('bookmark-form-post-detail').submit();
+                                        }
+                                    });
                                 }
                             }" x-on:click.outside="actionsOpen = false">
                                 <button type="button"
@@ -121,11 +141,12 @@
                                     role="menu">
                                     @auth
                                         @if ($post->id)
-                                            <form method="POST" action="{{ route('posts.bookmark', $post->id) }}">
+                                            <form method="POST" action="{{ route('posts.bookmark', $post->id) }}" id="bookmark-form-post-detail">
                                                 @csrf
-                                                <button type="submit"
+                                                <button type="button"
                                                     class="flex min-h-9 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-all duration-[180ms] [color:color-mix(in_srgb,var(--text-color,#0d1b2a)_78%,transparent)] hover:translate-x-0.5 hover:[background:color-mix(in_srgb,var(--accent-color,#6c5ce7)_12%,transparent)] hover:[color:var(--accent-color,#6c5ce7)] focus:outline-none focus-visible:translate-x-0.5 focus-visible:ring-2 focus-visible:[--tw-ring-color:color-mix(in_srgb,var(--accent-color,#6c5ce7)_35%,transparent)]"
-                                                    role="menuitem">
+                                                    role="menuitem"
+                                                    @if($isUnsecure) x-on:click="confirmBookmarkUnsecure()" @else x-on:click="$el.closest('form').submit()" @endif>
                                                     <x-fas-bookmark class="size-3" aria-hidden="true" x-show="saved" style="color: var(--accent-color, #6c5ce7);" />
                                                     <x-far-bookmark class="size-3" aria-hidden="true" x-show="!saved" />
                                                     <span

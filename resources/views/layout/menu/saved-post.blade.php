@@ -74,25 +74,28 @@
                         <input type="hidden" name="sort" value="{{ $savedPostFilters['sort'] }}" data-saved-post-sort>
                     </div>
 
-                    <label class="saved-post-date">
-                        <span>Start date</span>
-                        <input type="date" name="start_date" value="{{ $savedPostFilters['start_date'] }}"
-                            data-saved-post-start-date>
-                    </label>
-
-                    <label class="saved-post-date">
-                        <span>End date</span>
-                        <input type="date" name="end_date" value="{{ $savedPostFilters['end_date'] }}"
-                            data-saved-post-end-date>
-                    </label>
-
-                    <div class="saved-post-toolbar-actions">
-                        <button type="submit" class="saved-post-filter-button">
-                            Apply
+                    <div class="saved-post-control-wrapper relative">
+                        <button type="button" class="saved-post-control" id="savedPostDateBtn"
+                            data-dropdown-toggle="savedPostDateDropdown" data-dropdown-placement="bottom-start"
+                            aria-expanded="false">
+                            <x-fas-calendar class="saved-post-control-icon" aria-hidden="true" />
+                            <span class="saved-post-control-label" id="savedPostDateLabel">{{ $savedPostFilters['start_date'] ? \Carbon\Carbon::parse($savedPostFilters['start_date'])->format('M Y') : 'All dates' }}</span>
+                            <x-fas-chevron-down class="saved-post-control-icon" aria-hidden="true" />
                         </button>
-                        <a href="{{ route('saved-post') }}" class="saved-post-clear-button">
-                            Clear
-                        </a>
+                        <div id="savedPostDateDropdown" class="account-menu-dropdown hidden saved-post-date-dropdown"
+                            aria-labelledby="savedPostDateBtn">
+                            <div class="saved-post-date-picker">
+                                <div class="saved-post-date-year-row">
+                                    <button type="button" class="saved-post-date-nav" id="savedPostPrevYear">&#9664;</button>
+                                    <span class="saved-post-date-year-label" id="savedPostYearLabel">{{ now()->year }}</span>
+                                    <button type="button" class="saved-post-date-nav" id="savedPostNextYear">&#9654;</button>
+                                </div>
+                                <div class="saved-post-date-month-grid" id="savedPostMonthGrid"></div>
+                                <button type="button" class="saved-post-date-clear" id="savedPostDateClear">All dates</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="start_date" value="{{ $savedPostFilters['start_date'] }}" data-saved-post-start-date>
+                        <input type="hidden" name="end_date" value="{{ $savedPostFilters['end_date'] }}" data-saved-post-end-date>
                     </div>
                 </form>
 
@@ -105,9 +108,8 @@
                     </span>
                 </div>
 
-                <div class="saved-post-loading" data-saved-post-loading hidden aria-live="polite">
-                    <span class="saved-post-loading-spinner" aria-hidden="true"></span>
-                    <span>Loading saved posts...</span>
+                <div class="saved-post-grid" data-saved-post-loading hidden aria-live="polite">
+                    <x-layout.post-card-skeleton :count="3" />
                 </div>
 
                 @if ($savedPosts->isEmpty())
@@ -199,6 +201,95 @@
                 });
             }
 
+            function initSavedPostDatePicker(form) {
+                const yearLabel = document.getElementById('savedPostYearLabel');
+                const monthGrid = document.getElementById('savedPostMonthGrid');
+                const prevYearBtn = document.getElementById('savedPostPrevYear');
+                const nextYearBtn = document.getElementById('savedPostNextYear');
+                const dateLabel = document.getElementById('savedPostDateLabel');
+                const dateClearBtn = document.getElementById('savedPostDateClear');
+                const startInput = form.querySelector('[data-saved-post-start-date]');
+                const endInput = form.querySelector('[data-saved-post-end-date]');
+
+                if (!yearLabel || !monthGrid) return;
+
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                let currentYear = parseInt(yearLabel.textContent) || new Date().getFullYear();
+
+                function renderMonths() {
+                    yearLabel.textContent = currentYear;
+                    monthGrid.innerHTML = '';
+                    months.forEach((month, idx) => {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'saved-post-date-month-btn';
+                        btn.textContent = month;
+                        btn.dataset.month = idx;
+
+                        // Highlight if this month is currently selected
+                        if (startInput.value) {
+                            const selectedDate = new Date(startInput.value);
+                            if (selectedDate.getFullYear() === currentYear && selectedDate.getMonth() === idx) {
+                                btn.classList.add('active');
+                            }
+                        }
+
+                        btn.addEventListener('click', () => {
+                            const formatDate = (date) => {
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                return `${year}-${month}-${day}`;
+                            };
+                            const startDate = new Date(currentYear, idx, 1);
+                            const endDate = new Date(currentYear, idx + 1, 0);
+                            startInput.value = formatDate(startDate);
+                            endInput.value = formatDate(endDate);
+                            dateLabel.textContent = `${months[idx]} ${currentYear}`;
+
+                            // Close dropdown and submit
+                            const dropdown = document.getElementById('savedPostDateDropdown');
+                            if (dropdown) dropdown.classList.add('hidden');
+
+                            if (typeof form.requestSubmit === 'function') {
+                                form.requestSubmit();
+                            } else {
+                                form.dispatchEvent(new Event('submit', { cancelable: true }));
+                            }
+                        });
+
+                        monthGrid.appendChild(btn);
+                    });
+                }
+
+                prevYearBtn.addEventListener('click', () => {
+                    currentYear--;
+                    renderMonths();
+                });
+
+                nextYearBtn.addEventListener('click', () => {
+                    currentYear++;
+                    renderMonths();
+                });
+
+                dateClearBtn.addEventListener('click', () => {
+                    startInput.value = '';
+                    endInput.value = '';
+                    dateLabel.textContent = 'All dates';
+
+                    const dropdown = document.getElementById('savedPostDateDropdown');
+                    if (dropdown) dropdown.classList.add('hidden');
+
+                    if (typeof form.requestSubmit === 'function') {
+                        form.requestSubmit();
+                    } else {
+                        form.dispatchEvent(new Event('submit', { cancelable: true }));
+                    }
+                });
+
+                renderMonths();
+            }
+
             function bindSavedPostEvents() {
                 const form = mainApp.querySelector('[data-saved-post-filter-form]');
                 if (form) {
@@ -234,17 +325,20 @@
                         });
                     });
 
-                    // Auto-submit form when sort dropdown or date pickers change
-                    const autoFields = form.querySelectorAll('[data-saved-post-sort], [data-saved-post-start-date], [data-saved-post-end-date]');
-                    autoFields.forEach(field => {
-                        field.addEventListener('change', () => {
+                    // Auto-submit form when sort dropdown changes
+                    const sortField = form.querySelector('[data-saved-post-sort]');
+                    if (sortField) {
+                        sortField.addEventListener('change', () => {
                             if (typeof form.requestSubmit === 'function') {
                                 form.requestSubmit();
                             } else {
                                 form.dispatchEvent(new Event('submit', { cancelable: true }));
                             }
                         });
-                    });
+                    }
+
+                    // Initialize month date picker
+                    initSavedPostDatePicker(form);
                 }
                 const links = mainApp.querySelectorAll('a');
                 links.forEach(link => {

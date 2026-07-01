@@ -52,7 +52,6 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                         const form = document.querySelector('[data-users-filter-form]');
                         form.reset();
                         form.querySelector('[name=search]').value = '';
-                        form.querySelector('[name=joined_date]').value = '';
                         await this.$nextTick();
                         await this.fetchData(new FormData(form));
                         this.isClearing = false;
@@ -261,25 +260,27 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                             <input type="hidden" name="status" x-model="status" data-users-status-filter>
                         </div>
 
-                        <label class="admin-users-date">
-                            <span>Joined date</span>
-                            <input type="date" name="joined_date" value="{{ $userFilters['joined_date'] }}"
-                                placeholder="mm/dd/yyyy" data-users-joined-date>
-                        </label>
-
-                        <div class="admin-users-filter-actions">
-                            <button type="submit" class="admin-users-primary-button save-btn" :class="{ 'is-loading': isFiltering }" :disabled="isFiltering || isClearing">
-                                <span class="button-label">Apply</span>
-                                <span class="button-loader" aria-hidden="true">
-                                    <i></i><i></i><i></i>
-                                </span>
+                        <div class="admin-users-control-wrapper relative">
+                            <button type="button" class="admin-users-select justify-between w-full" id="usersDateBtn"
+                                data-dropdown-toggle="usersDateDropdown" data-dropdown-placement="bottom-start"
+                                aria-expanded="false" style="min-width: 140px; outline: none !important; cursor: pointer;">
+                                <x-fas-calendar class="admin-users-search-icon" aria-hidden="true" />
+                                <span class="admin-users-control-label truncate" id="usersDateLabel">{{ $userFilters['joined_date'] ? \Carbon\Carbon::parse($userFilters['joined_date'])->format('M Y') : 'All dates' }}</span>
+                                <x-fas-chevron-down class="admin-users-search-icon ml-2" aria-hidden="true" />
                             </button>
-                            <button type="button" class="admin-users-secondary-button save-btn" @click="clearForm" :class="{ 'is-loading': isClearing }" :disabled="isFiltering || isClearing">
-                                <span class="button-label">Clear</span>
-                                <span class="button-loader" aria-hidden="true">
-                                    <i></i><i></i><i></i>
-                                </span>
-                            </button>
+                            <div id="usersDateDropdown" class="account-menu-dropdown hidden saved-post-date-dropdown"
+                                aria-labelledby="usersDateBtn">
+                                <div class="saved-post-date-picker">
+                                    <div class="saved-post-date-year-row">
+                                        <button type="button" class="saved-post-date-nav" id="usersPrevYear">&#9664;</button>
+                                        <span class="saved-post-date-year-label" id="usersYearLabel">{{ now()->year }}</span>
+                                        <button type="button" class="saved-post-date-nav" id="usersNextYear">&#9654;</button>
+                                    </div>
+                                    <div class="saved-post-date-month-grid" id="usersMonthGrid"></div>
+                                    <button type="button" class="saved-post-date-clear" id="usersDateClear">All dates</button>
+                                </div>
+                            </div>
+                            <input type="hidden" name="joined_date" value="{{ $userFilters['joined_date'] }}" data-users-joined-date>
                         </div>
                     </form>
                 </div>
@@ -457,3 +458,100 @@ return $user->report_count > 0 ? 'warning' : 'safe';
     </main>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    function initUsersDatePicker() {
+        const yearLabel = document.getElementById('usersYearLabel');
+        const monthGrid = document.getElementById('usersMonthGrid');
+        const prevYearBtn = document.getElementById('usersPrevYear');
+        const nextYearBtn = document.getElementById('usersNextYear');
+        const dateLabel = document.getElementById('usersDateLabel');
+        const dateClearBtn = document.getElementById('usersDateClear');
+        const joinedDateInput = document.querySelector('[data-users-joined-date]');
+
+        if (!yearLabel || !monthGrid) return;
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let currentYear = parseInt(yearLabel.textContent) || new Date().getFullYear();
+
+        function renderMonths() {
+            yearLabel.textContent = currentYear;
+            monthGrid.innerHTML = '';
+            months.forEach((month, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'saved-post-date-month-btn';
+                btn.textContent = month;
+                btn.dataset.month = idx;
+
+                if (joinedDateInput.value) {
+                    const selectedDate = new Date(joinedDateInput.value);
+                    if (selectedDate.getFullYear() === currentYear && selectedDate.getMonth() === idx) {
+                        btn.classList.add('active');
+                    }
+                }
+
+                btn.addEventListener('click', () => {
+                    const formatDate = (date) => {
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    };
+                    const selectedDate = new Date(currentYear, idx, 1);
+                    joinedDateInput.value = formatDate(selectedDate);
+                    dateLabel.textContent = `${months[idx]} ${currentYear}`;
+
+                    const dropdown = document.getElementById('usersDateDropdown');
+                    if (dropdown) dropdown.classList.add('hidden');
+
+                    const form = joinedDateInput.closest('form');
+                    if (form) {
+                        if (typeof form.requestSubmit === 'function') {
+                            form.requestSubmit();
+                        } else {
+                            form.dispatchEvent(new Event('submit', { cancelable: true }));
+                        }
+                    }
+                });
+
+                monthGrid.appendChild(btn);
+            });
+        }
+
+        prevYearBtn.addEventListener('click', () => {
+            currentYear--;
+            renderMonths();
+        });
+
+        nextYearBtn.addEventListener('click', () => {
+            currentYear++;
+            renderMonths();
+        });
+
+        dateClearBtn.addEventListener('click', () => {
+            joinedDateInput.value = '';
+            dateLabel.textContent = 'All dates';
+
+            const dropdown = document.getElementById('usersDateDropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+
+            const form = joinedDateInput.closest('form');
+            if (form) {
+                if (typeof form.requestSubmit === 'function') {
+                    form.requestSubmit();
+                } else {
+                    form.dispatchEvent(new Event('submit', { cancelable: true }));
+                }
+            }
+        });
+
+        renderMonths();
+    }
+
+    initUsersDatePicker();
+});
+</script>
+@endpush

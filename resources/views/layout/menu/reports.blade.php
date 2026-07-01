@@ -60,7 +60,6 @@ $reportFilters = $reportFilters ?? [
                     const form = document.querySelector('[data-report-filter-form]');
                     form.reset();
                     form.querySelector('[name=search]').value = '';
-                    form.querySelector('[name=reported_date]').value = '';
                     await this.$nextTick();
                     await this.fetchData(new FormData(form));
                     this.isClearing = false;
@@ -242,25 +241,27 @@ $reportFilters = $reportFilters ?? [
                             <input type="hidden" name="status" x-model="status" data-report-status-filter>
                         </div>
 
-                        <label class="reports-date">
-                            <span>Reported date</span>
-                            <input type="date" name="reported_date" value="{{ $reportFilters['reported_date'] }}"
-                                placeholder="mm/dd/yyyy" data-report-date-filter>
-                        </label>
-
-                        <div class="reports-filter-actions">
-                            <button type="submit" class="reports-primary-button save-btn" :class="{ 'is-loading': isFiltering }" :disabled="isFiltering || isClearing">
-                                <span class="button-label">Apply</span>
-                                <span class="button-loader" aria-hidden="true">
-                                    <i></i><i></i><i></i>
-                                </span>
+                        <div class="reports-control-wrapper relative">
+                            <button type="button" class="reports-select justify-between w-full" id="reportsDateBtn"
+                                data-dropdown-toggle="reportsDateDropdown" data-dropdown-placement="bottom-start"
+                                aria-expanded="false" style="min-width: 140px; outline: none !important; cursor: pointer;">
+                                <x-fas-calendar class="reports-search-icon" aria-hidden="true" />
+                                <span class="reports-control-label truncate" id="reportsDateLabel">{{ $reportFilters['reported_date'] ? \Carbon\Carbon::parse($reportFilters['reported_date'])->format('M Y') : 'All dates' }}</span>
+                                <x-fas-chevron-down class="reports-search-icon ml-2" aria-hidden="true" />
                             </button>
-                            <button type="button" class="reports-secondary-button save-btn" @click="clearForm" :class="{ 'is-loading': isClearing }" :disabled="isFiltering || isClearing">
-                                <span class="button-label">Clear</span>
-                                <span class="button-loader" aria-hidden="true">
-                                    <i></i><i></i><i></i>
-                                </span>
-                            </button>
+                            <div id="reportsDateDropdown" class="account-menu-dropdown hidden saved-post-date-dropdown"
+                                aria-labelledby="reportsDateBtn">
+                                <div class="saved-post-date-picker">
+                                    <div class="saved-post-date-year-row">
+                                        <button type="button" class="saved-post-date-nav" id="reportsPrevYear">&#9664;</button>
+                                        <span class="saved-post-date-year-label" id="reportsYearLabel">{{ now()->year }}</span>
+                                        <button type="button" class="saved-post-date-nav" id="reportsNextYear">&#9654;</button>
+                                    </div>
+                                    <div class="saved-post-date-month-grid" id="reportsMonthGrid"></div>
+                                    <button type="button" class="saved-post-date-clear" id="reportsDateClear">All dates</button>
+                                </div>
+                            </div>
+                            <input type="hidden" name="reported_date" value="{{ $reportFilters['reported_date'] }}" data-report-date-filter>
                         </div>
                     </form>
                 </div>
@@ -922,6 +923,99 @@ $reportFilters = $reportFilters ?? [
             width: '600px'
         });
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        function initReportsDatePicker() {
+            const yearLabel = document.getElementById('reportsYearLabel');
+            const monthGrid = document.getElementById('reportsMonthGrid');
+            const prevYearBtn = document.getElementById('reportsPrevYear');
+            const nextYearBtn = document.getElementById('reportsNextYear');
+            const dateLabel = document.getElementById('reportsDateLabel');
+            const dateClearBtn = document.getElementById('reportsDateClear');
+            const reportedDateInput = document.querySelector('[data-report-date-filter]');
+
+            if (!yearLabel || !monthGrid) return;
+
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            let currentYear = parseInt(yearLabel.textContent) || new Date().getFullYear();
+
+            function renderMonths() {
+                yearLabel.textContent = currentYear;
+                monthGrid.innerHTML = '';
+                months.forEach((month, idx) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'saved-post-date-month-btn';
+                    btn.textContent = month;
+                    btn.dataset.month = idx;
+
+                    if (reportedDateInput.value) {
+                        const selectedDate = new Date(reportedDateInput.value);
+                        if (selectedDate.getFullYear() === currentYear && selectedDate.getMonth() === idx) {
+                            btn.classList.add('active');
+                        }
+                    }
+
+                    btn.addEventListener('click', () => {
+                        const formatDate = (date) => {
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            return `${year}-${month}-${day}`;
+                        };
+                        const selectedDate = new Date(currentYear, idx, 1);
+                        reportedDateInput.value = formatDate(selectedDate);
+                        dateLabel.textContent = `${months[idx]} ${currentYear}`;
+
+                        const dropdown = document.getElementById('reportsDateDropdown');
+                        if (dropdown) dropdown.classList.add('hidden');
+
+                        const form = reportedDateInput.closest('form');
+                        if (form) {
+                            if (typeof form.requestSubmit === 'function') {
+                                form.requestSubmit();
+                            } else {
+                                form.dispatchEvent(new Event('submit', { cancelable: true }));
+                            }
+                        }
+                    });
+
+                    monthGrid.appendChild(btn);
+                });
+            }
+
+            prevYearBtn.addEventListener('click', () => {
+                currentYear--;
+                renderMonths();
+            });
+
+            nextYearBtn.addEventListener('click', () => {
+                currentYear++;
+                renderMonths();
+            });
+
+            dateClearBtn.addEventListener('click', () => {
+                reportedDateInput.value = '';
+                dateLabel.textContent = 'All dates';
+
+                const dropdown = document.getElementById('reportsDateDropdown');
+                if (dropdown) dropdown.classList.add('hidden');
+
+                const form = reportedDateInput.closest('form');
+                if (form) {
+                    if (typeof form.requestSubmit === 'function') {
+                        form.requestSubmit();
+                    } else {
+                        form.dispatchEvent(new Event('submit', { cancelable: true }));
+                    }
+                }
+            });
+
+            renderMonths();
+        }
+
+        initReportsDatePicker();
+    });
 </script>
 @endpush
 @endsection

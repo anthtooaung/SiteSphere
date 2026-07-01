@@ -50,7 +50,8 @@ $reportFilters = $reportFilters ?? [
                 async submitForm(e) {
                     this.isFiltering = true;
                     this.isLoading = true;
-                    await this.fetchData(new FormData(e.target));
+                    const form = this.$refs.filterForm || document.querySelector('[data-report-filter-form]');
+                    await this.fetchData(new FormData(form));
                     this.isFiltering = false;
                 },
                 async clearForm() {
@@ -202,11 +203,12 @@ $reportFilters = $reportFilters ?? [
 
                 <div class="reports-filter-container">
                     <form method="GET" action="{{ route('reports') }}" class="reports-controls"
-                        data-report-filter-form @submit.prevent="submitForm">
+                        data-report-filter-form x-ref="filterForm" @submit.prevent="submitForm">
                         <label class="reports-search">
                             <x-fas-search class="reports-search-icon" aria-hidden="true" />
                             <span class="sr-only">Search reports</span>
                             <input type="search" name="search" value="{{ $reportFilters['search'] }}"
+                                @input.debounce.500ms="submitForm()"
                                 placeholder="Search post, reporter, reason..." data-report-search class="focus:outline-none outline-none focus:ring-0">
                         </label>
 
@@ -226,15 +228,15 @@ $reportFilters = $reportFilters ?? [
                                 <ul class="account-menu-list">
                                     <li>
                                         <button type="button" class="account-menu-link" :class="status === 'all' ? 'active' : ''"
-                                            @click="status = 'all'; document.getElementById('reportsStatusButton').click();">All Reports</button>
+                                            @click="status = 'all'; document.getElementById('reportsStatusButton').click(); $nextTick(() => submitForm());">All Reports</button>
                                     </li>
                                     <li>
                                         <button type="button" class="account-menu-link" :class="status === 'unread' ? 'active' : ''"
-                                            @click="status = 'unread'; document.getElementById('reportsStatusButton').click();">Unread </button>
+                                            @click="status = 'unread'; document.getElementById('reportsStatusButton').click(); $nextTick(() => submitForm());">Unread </button>
                                     </li>
                                     <li>
                                         <button type="button" class="account-menu-link" :class="status === 'read' ? 'active' : ''"
-                                            @click="status = 'read'; document.getElementById('reportsStatusButton').click();">Read </button>
+                                            @click="status = 'read'; document.getElementById('reportsStatusButton').click(); $nextTick(() => submitForm());">Read </button>
                                     </li>
                                 </ul>
                             </div>

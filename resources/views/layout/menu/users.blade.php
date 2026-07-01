@@ -41,7 +41,8 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                     async submitForm(e) {
                         this.isFiltering = true;
                         this.isLoading = true;
-                        await this.fetchData(new FormData(e.target));
+                        const form = this.$refs.filterForm || document.querySelector('[data-users-filter-form]');
+                        await this.fetchData(new FormData(form));
                         this.isFiltering = false;
                     },
                     async clearForm() {
@@ -186,11 +187,12 @@ return $user->report_count > 0 ? 'warning' : 'safe';
 
                 <div class="admin-users-filter-container">
                     <form method="GET" action="{{ route('users') }}" class="admin-users-controls"
-                        data-users-filter-form @submit.prevent="submitForm">
+                        data-users-filter-form x-ref="filterForm" @submit.prevent="submitForm">
                         <label class="admin-users-search">
                             <x-fas-search class="admin-users-search-icon" aria-hidden="true" />
                             <span class="sr-only">Search users</span>
                             <input type="search" name="search" value="{{ $userFilters['search'] }}"
+                                @input.debounce.500ms="submitForm()"
                                 placeholder="Search name, email, phone" data-users-search>
                         </label>
 
@@ -210,15 +212,15 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                 <ul class="account-menu-list">
                                     <li>
                                         <button type="button" class="account-menu-link" :class="role === 'all' ? 'active' : ''"
-                                            @click="role = 'all'; document.getElementById('adminUsersRoleButton').click();">All roles</button>
+                                            @click="role = 'all'; document.getElementById('adminUsersRoleButton').click(); $nextTick(() => submitForm());">All roles</button>
                                     </li>
                                     <li>
                                         <button type="button" class="account-menu-link" :class="role === 'admin' ? 'active' : ''"
-                                            @click="role = 'admin'; document.getElementById('adminUsersRoleButton').click();">Admin</button>
+                                            @click="role = 'admin'; document.getElementById('adminUsersRoleButton').click(); $nextTick(() => submitForm());">Admin</button>
                                     </li>
                                     <li>
                                         <button type="button" class="account-menu-link" :class="role === 'user' ? 'active' : ''"
-                                            @click="role = 'user'; document.getElementById('adminUsersRoleButton').click();">User</button>
+                                            @click="role = 'user'; document.getElementById('adminUsersRoleButton').click(); $nextTick(() => submitForm());">User</button>
                                     </li>
                                 </ul>
                             </div>
@@ -241,19 +243,19 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                 <ul class="account-menu-list">
                                     <li>
                                         <button type="button" class="account-menu-link" :class="status === 'all' ? 'active' : ''"
-                                            @click="status = 'all'; document.getElementById('adminUsersStatusButton').click();">All status</button>
+                                            @click="status = 'all'; document.getElementById('adminUsersStatusButton').click(); $nextTick(() => submitForm());">All status</button>
                                     </li>
                                     <li>
                                         <button type="button" class="account-menu-link" :class="status === 'safe' ? 'active' : ''"
-                                            @click="status = 'safe'; document.getElementById('adminUsersStatusButton').click();">Safe</button>
+                                            @click="status = 'safe'; document.getElementById('adminUsersStatusButton').click(); $nextTick(() => submitForm());">Safe</button>
                                     </li>
                                     <li>
                                         <button type="button" class="account-menu-link" :class="status === 'warning' ? 'active' : ''"
-                                            @click="status = 'warning'; document.getElementById('adminUsersStatusButton').click();">Warning</button>
+                                            @click="status = 'warning'; document.getElementById('adminUsersStatusButton').click(); $nextTick(() => submitForm());">Warning</button>
                                     </li>
                                     <li>
                                         <button type="button" class="account-menu-link" :class="status === 'restricted' ? 'active' : ''"
-                                            @click="status = 'restricted'; document.getElementById('adminUsersStatusButton').click();">Restricted</button>
+                                            @click="status = 'restricted'; document.getElementById('adminUsersStatusButton').click(); $nextTick(() => submitForm());">Restricted</button>
                                     </li>
                                 </ul>
                             </div>

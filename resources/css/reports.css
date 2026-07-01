@@ -196,12 +196,12 @@
 }
 
 .reports-search,
-.reports-control-wrapper {
+.reports-select {
     min-width: 0;
 }
 
 .reports-search,
-.reports-control-wrapper {
+.reports-select {
     display: flex;
     min-height: 42px;
     align-items: center;
@@ -222,14 +222,7 @@
     gap: 10px;
 }
 
-.reports-select {
-    display: flex;
-    height: 100%;
-    align-items: center;
-    gap: 8px;
-    padding: 0 14px;
-    border-radius: 8px;
-}
+
 
 .reports-search-icon {
     width: 15px;
@@ -307,13 +300,13 @@
 }
 
 .reports-search:hover,
-.reports-control-wrapper:hover {
+.reports-select:hover {
     border-color: color-mix(in srgb, var(--accent-color, #6c5ce7) 32%, transparent);
     background: var(--background-color, #ffffff);
 }
 
 .reports-search:focus-within,
-.reports-control-wrapper:focus-within,
+.reports-select:focus-within,
 .reports-date input:focus {
     border-color: var(--accent-color, #6c5ce7);
     background: var(--background-color, #ffffff);

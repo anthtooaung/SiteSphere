@@ -177,9 +177,9 @@
                     <li class="layout-menu-topbar-divider" aria-hidden="true"></li>
 
                     <li class="layout-menu-topbar-item">
-                        <form method="POST" action="{{ route('logout') }}" class="layout-menu-topbar-logout">
+                        <form id="topbar-logout-form" method="POST" action="{{ route('logout') }}" class="layout-menu-topbar-logout">
                             @csrf
-                            <button type="submit" class="layout-menu-topbar-link">
+                            <button type="button" onclick="confirmLogout('topbar-logout-form')" class="layout-menu-topbar-link">
                                 <x-fas-right-to-bracket class="icon" aria-hidden="true" />
                                 <span>Logout</span>
                             </button>
@@ -282,9 +282,9 @@
                 </div>
             </nav>
 
-            <form method="POST" action="{{ route('logout') }}" class="layout-menu-logout ">
+            <form id="sidebar-logout-form" method="POST" action="{{ route('logout') }}" class="layout-menu-logout ">
                 @csrf
-                <button type="submit" class="layout-menu-link layout-menu-action">
+                <button type="button" onclick="confirmLogout('sidebar-logout-form')" class="layout-menu-link layout-menu-action">
                     <x-fas-right-to-bracket class="icon" aria-hidden="true" />
                     <span>Logout</span>
                 </button>
@@ -292,3 +292,25 @@
         @endif
     </aside>
 @endauth
+
+@if(auth()->check())
+<script>
+    if (typeof confirmLogout !== 'function') {
+        function confirmLogout(formId) {
+            window.sitesphereSwal.fire({
+                title: 'Log out?',
+                text: 'You will be signed out of your account.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Log out',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#d33',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+    }
+</script>
+@endif

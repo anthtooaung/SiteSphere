@@ -225,6 +225,7 @@ class="mobile-account-menu-wrap relative">
     </div>
     @endif
 </div>
+@endmobile
 
 <script>
     function confirmLogout(formId) {
@@ -243,4 +244,3 @@ class="mobile-account-menu-wrap relative">
         });
     }
 </script>
-@endmobile

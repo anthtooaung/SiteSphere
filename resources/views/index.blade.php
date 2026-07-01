@@ -25,7 +25,7 @@
             SiteSphere
     " />
 <meta property="og:description" content="SiteSphere - A modern web community platform for sharing posts, connecting with others, and discovering great content." />
-<meta property="og:image" content="https://metatags.io/images/meta-tags.png" />
+<meta property="og:image" content="{{ url('images/welcome.png') }}" />
 
 <!-- X (Twitter) -->
 <meta property="twitter:card" content="summary_large_image" />
@@ -34,7 +34,7 @@
             SiteSphere
     " />
 <meta property="twitter:description" content="SiteSphere - A modern web community platform for sharing posts, connecting with others, and discovering great content." />
-<meta property="twitter:image" content="https://metatags.io/images/meta-tags.png" />
+<meta property="twitter:image" content="{{ url('images/welcome.png') }}" />
 
 <!-- Meta Tags Generated with https://metatags.io -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">

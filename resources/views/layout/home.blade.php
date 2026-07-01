@@ -118,7 +118,7 @@
                 <x-layout.post-card-skeleton :count="3" />
             </section>
 
-            <section class="home-empty-state" id="homeEmptyState" x-show="totalResults === 0" x-cloak>
+            <section class="home-empty-state" id="homeEmptyState" x-show="totalResults === 0 && !isLoading" x-cloak>
                 <div id="emptyStateSearchIcon">
                     <x-fas-search class="home-empty-icon" aria-hidden="true" />
                 </div>

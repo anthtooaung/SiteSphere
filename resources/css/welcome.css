@@ -30,9 +30,15 @@
     color: var(--nav-text-color) !important;
 }
 
-.desktop-nav:not(.scrolled) .desktop-search-container {
+.desktop-nav:not(.scrolled) .desktop-search-container,
+.desktop-nav:not(.scrolled) .account-button,
+.desktop-nav:not(.scrolled) .auth-menu-button,
+.desktop-nav:not(.scrolled) .noti-button {
     border-color: color-mix(in srgb, #ffffff 30%, transparent) !important;
     background: color-mix(in srgb, #ffffff 10%, transparent) !important;
+}
+
+.desktop-nav:not(.scrolled) .desktop-search-container {
     color: #ffffff !important;
 }
 
@@ -42,6 +48,12 @@
 
 .desktop-nav:not(.scrolled) .desktop-search-container input::placeholder {
     color: color-mix(in srgb, #ffffff 70%, transparent) !important;
+}
+
+.desktop-nav:not(.scrolled) .account-button:hover,
+.desktop-nav:not(.scrolled) .auth-menu-button:hover,
+.desktop-nav:not(.scrolled) .noti-button:hover {
+    background: color-mix(in srgb, #ffffff 20%, transparent) !important;
 }
 
 .welcome-main {

@@ -25,6 +25,259 @@
                 height: '100px',
             });
         };
+
+        function editProfilePage(config) {
+            return {
+                avatarPreview: config.avatarUrl || '',
+                initial: config.initial || '?',
+                croppedAvatar: '',
+                bio: config.bio || '',
+                formMessage: '',
+                formMessageType: 'success',
+                init() {
+                    if (this.$refs.phoneInput) {
+                        let value = this.$refs.phoneInput.value;
+                        let digits = value.replace(/\D/g, "");
+
+                        if (digits.startsWith("0095")) {
+                            digits = digits.slice(4);
+                        } else if (digits.startsWith("95")) {
+                            digits = digits.slice(2);
+                        } else if (digits.startsWith("0")) {
+                            digits = digits.slice(1);
+                        }
+
+                        digits = digits.slice(0, 10);
+
+                        if (digits) {
+                            const groups = [digits.slice(0, 1), digits.slice(1, 4), digits.slice(4, 7), digits.slice(7, 10)]
+                                .filter(Boolean);
+                            this.$refs.phoneInput.value = groups.join(" ");
+                        } else {
+                            this.$refs.phoneInput.value = "";
+                        }
+                    }
+                },
+                formatPhoneInput(event) {
+                    let value = event.target.value;
+                    let digits = value.replace(/\D/g, "");
+
+                    if (digits.startsWith("0095")) {
+                        digits = digits.slice(4);
+                    } else if (digits.startsWith("95")) {
+                        digits = digits.slice(2);
+                    } else if (digits.startsWith("0")) {
+                        digits = digits.slice(1);
+                    }
+
+                    digits = digits.slice(0, 10);
+
+                    if (!digits) {
+                        event.target.value = "";
+                        return;
+                    }
+
+                    const groups = [digits.slice(0, 1), digits.slice(1, 4), digits.slice(4, 7), digits.slice(7, 10)]
+                        .filter(Boolean);
+
+                    event.target.value = groups.join(" ");
+                },
+                cropOpen: false,
+                cropImageSrc: '',
+                cropImageType: '',
+                cropZoom: 1,
+                cropBaseScale: 1,
+                cropX: 0,
+                cropY: 0,
+                cropImageWidth: 0,
+                cropImageHeight: 0,
+                dragging: false,
+                dragStartX: 0,
+                dragStartY: 0,
+                dragBaseX: 0,
+                dragBaseY: 0,
+
+                choosePhoto() {
+                    this.$refs.photoInput.click();
+                },
+
+                handlePhoto(event) {
+                    const file = event.target.files[0];
+
+                    if (! file) {
+                        return;
+                    }
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    const maxPhotoSize = 1 * 1024 * 1024; // 1MB
+
+                    if (! allowedTypes.includes(file.type)) {
+                        this.showMessage('Please choose a JPG, GIF, or PNG image.', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    if (file.size > maxPhotoSize) {
+                        this.showMessage('Please choose an image smaller than 1MB.', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.addEventListener('load', (readerEvent) => {
+                        this.openCrop(readerEvent.target.result, file.type);
+                    });
+                    reader.readAsDataURL(file);
+                },
+
+                openCrop(source, type) {
+                    this.cropImageSrc = source;
+                    this.cropImageType = type;
+                    this.cropZoom = 1;
+                    this.cropX = 0;
+                    this.cropY = 0;
+                    this.cropOpen = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeCrop() {
+                    this.cropOpen = false;
+                    this.cropImageSrc = '';
+                    this.cropImageType = '';
+                    this.dragging = false;
+                    document.body.style.overflow = '';
+
+                    if (this.$refs.photoInput) {
+                        this.$refs.photoInput.value = '';
+                    }
+                },
+
+                prepareCropImage() {
+                    const image = this.$refs.cropImage;
+                    const stage = image.closest('.crop-stage');
+
+                    if (! image.naturalWidth || ! stage) {
+                        return;
+                    }
+
+                    const stageSize = stage.getBoundingClientRect().width;
+                    const smallestSide = Math.min(image.naturalWidth, image.naturalHeight);
+
+                    this.cropBaseScale = stageSize / smallestSide;
+                    this.constrainCropPosition();
+                    this.syncCropImage();
+                },
+
+                syncCropImage() {
+                    const image = this.$refs.cropImage;
+
+                    if (! image || ! image.naturalWidth) {
+                        return;
+                    }
+
+                    this.constrainCropPosition();
+                    this.cropImageWidth = image.naturalWidth * this.cropBaseScale * this.cropZoom;
+                    this.cropImageHeight = image.naturalHeight * this.cropBaseScale * this.cropZoom;
+                },
+
+                constrainCropPosition() {
+                    const image = this.$refs.cropImage;
+                    const stage = image?.closest('.crop-stage');
+
+                    if (! image || ! image.naturalWidth || ! stage) {
+                        return;
+                    }
+
+                    const stageSize = stage.getBoundingClientRect().width;
+                    const imageWidth = image.naturalWidth * this.cropBaseScale * this.cropZoom;
+                    const imageHeight = image.naturalHeight * this.cropBaseScale * this.cropZoom;
+                    const maxX = Math.max(0, (imageWidth - stageSize) / 2);
+                    const maxY = Math.max(0, (imageHeight - stageSize) / 2);
+
+                    this.cropX = Math.min(maxX, Math.max(-maxX, this.cropX));
+                    this.cropY = Math.min(maxY, Math.max(-maxY, this.cropY));
+                },
+
+                startDrag(event) {
+                    this.dragging = true;
+                    this.dragStartX = event.clientX;
+                    this.dragStartY = event.clientY;
+                    this.dragBaseX = this.cropX;
+                    this.dragBaseY = this.cropY;
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                },
+
+                dragCrop(event) {
+                    if (! this.dragging) {
+                        return;
+                    }
+
+                    this.cropX = this.dragBaseX + event.clientX - this.dragStartX;
+                    this.cropY = this.dragBaseY + event.clientY - this.dragStartY;
+                    this.syncCropImage();
+                },
+
+                stopDrag(event) {
+                    this.dragging = false;
+
+                    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                        event.currentTarget.releasePointerCapture(event.pointerId);
+                    }
+                },
+
+                applyCrop() {
+                    const image = this.$refs.cropImage;
+                    const stage = image?.closest('.crop-stage');
+
+                    if (! image || ! image.naturalWidth || ! stage) {
+                        return;
+                    }
+
+                    const outputSize = 400;
+                    const stageSize = stage.getBoundingClientRect().width;
+                    const imageWidth = image.naturalWidth * this.cropBaseScale * this.cropZoom;
+                    const imageHeight = image.naturalHeight * this.cropBaseScale * this.cropZoom;
+                    const imageLeft = (stageSize - imageWidth) / 2 + this.cropX;
+                    const imageTop = (stageSize - imageHeight) / 2 + this.cropY;
+                    const sourceX = Math.max(0, -imageLeft / (this.cropBaseScale * this.cropZoom));
+                    const sourceY = Math.max(0, -imageTop / (this.cropBaseScale * this.cropZoom));
+                    const sourceSize = Math.min(
+                        image.naturalWidth - sourceX,
+                        image.naturalHeight - sourceY,
+                        stageSize / (this.cropBaseScale * this.cropZoom)
+                    );
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    canvas.width = outputSize;
+                    canvas.height = outputSize;
+                    context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, outputSize, outputSize);
+
+                    let croppedData = canvas.toDataURL('image/png');
+                    if (this.cropImageType === 'image/gif') {
+                        croppedData = croppedData.replace('image/png', 'image/gif');
+                    } else if (this.cropImageType === 'image/jpeg' || this.cropImageType === 'image/jpg') {
+                        croppedData = canvas.toDataURL('image/jpeg', 0.9);
+                    }
+                    this.croppedAvatar = croppedData;
+                    this.avatarPreview = this.croppedAvatar;
+                    this.closeCrop();
+                    this.showMessage('Photo cropped. Continue to save it.', 'success');
+                },
+
+                useOriginal() {
+                    this.croppedAvatar = this.cropImageSrc;
+                    this.avatarPreview = this.cropImageSrc;
+                    this.closeCrop();
+                    this.showMessage('Original GIF selected. Continue to save it.', 'success');
+                },
+
+                showMessage(text, type) {
+                    window.sitesphereSwal.toast({
+                        icon: type === 'error' ? 'error' : 'success',
+                        title: text
+                    });
+                }
+            };
+        }
     </script>
     @vite(['resources/js/auth.js'])
 @endpush
@@ -309,7 +562,7 @@
                 </section>
 
                 <!-- Profile Step -->
-                <section class="flow-step is-hidden" data-step="profile">
+                <section class="flow-step is-hidden" data-step="profile" x-data="editProfilePage({ initial: '?' })" @update-initial.window="initial = $event.detail; bio = ''; croppedAvatar = ''; avatarPreview = ''" @reset-profile.window="bio = ''; croppedAvatar = ''; avatarPreview = ''">
                     <div class="form-heading compact-heading">
                         <p class="section-label">Optional profile</p>
                         <h2>Profile Information</h2>
@@ -317,9 +570,10 @@
                     </div>
 
                     <form id="profileForm" class="flow-form" enctype="multipart/form-data">
+                        <input type="hidden" id="cropped_avatar" name="cropped_avatar" x-model="croppedAvatar" data-cropped-avatar>
                         <div class="field-group">
                             <label for="profile-dob">Date of birth</label>
-                            <input id="profile-dob" name="user_dob" class="plain-input" type="date" />
+                            <input id="profile-dob" name="user_dob" class="plain-input" type="date" max="{{ now()->format('Y-m-d') }}" />
                         </div>
 
                         <div class="field-group">
@@ -332,15 +586,29 @@
 
                         <div class="field-group">
                             <label for="profile-bio">Bio</label>
-                            <textarea id="profile-bio" name="user_bio" class="plain-input textarea-input" placeholder="Short profile bio" rows="3"></textarea>
+                            <textarea id="profile-bio" name="user_bio" class="plain-input textarea-input" placeholder="Short profile bio" rows="3" maxlength="260" x-model="bio"></textarea>
+                            <small id="bio-counter" data-bio-counter x-text="`${bio.length} / 260`"></small>
                         </div>
 
                         <div class="field-group">
-                            <label for="profile-image">Profile image</label>
-                            <input id="profile-image" name="user_image" class="plain-input file-input" type="file" accept="image/*" />
-                            <div class="image-preview is-hidden" id="profileImagePreview">
-                                <img id="profileImageThumb" alt="Profile preview" />
+                            <label>Profile Picture</label>
+
+                            <div class="avatar-container" style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;">
+                                <div class="avatar-frame" style="width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: color-mix(in srgb, var(--accent-color) 12%, transparent); border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent); display: flex; align-items: center; justify-content: center; position: relative;">
+                                    <template x-if="avatarPreview">
+                                        <img :src="avatarPreview" alt="Profile preview" class="avatar" id="avatar-preview" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </template>
+                                    <template x-if="! avatarPreview">
+                                        <span class="avatar-fallback" x-text="initial" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-color);"></span>
+                                    </template>
+                                </div>
+                                <button type="button" class="secondary-button" id="upload-button" @click="choosePhoto" style="padding: 0.5rem 1rem; border-radius: 0.375rem; border: 1px solid var(--accent-color); background: transparent; color: var(--accent-color); cursor: pointer;">
+                                    Choose Photo
+                                </button>
                             </div>
+
+                            <p class="file-info" style="font-size: 0.75rem; color: color-mix(in srgb, var(--text-color) 60%, transparent);">JPG or PNG or Animated GIF up to 1MB.</p>
+                            <input type="file" id="profile-image" name="user_image" class="plain-input file-input" accept="image/png,image/jpeg,image/gif" hidden x-ref="photoInput" @change="handlePhoto" />
                         </div>
 
                         <div class="flow-actions">
@@ -355,6 +623,42 @@
                             </button>
                         </div>
                     </form>
+
+                    <div class="crop-modal" id="crop-modal" x-show="cropOpen" x-cloak x-transition.opacity
+                        role="dialog" aria-modal="true" aria-labelledby="crop-title" @keydown.escape.window="closeCrop" style="position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5);">
+                        <div class="crop-dialog" @click.outside="closeCrop" style="background: var(--background-color); border-radius: 8px; padding: 1.5rem; width: 90%; max-width: 400px; color: var(--text-color); box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                            <div class="crop-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h2 id="crop-title" style="font-size: 1.25rem; font-weight: 700; margin: 0;">Crop Photo</h2>
+                                <button type="button" aria-label="Close" @click="closeCrop" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: inherit; padding: 0; line-height: 1;">&times;</button>
+                            </div>
+                            <div class="crop-body">
+                                <div class="crop-stage" aria-label="Drag photo to reposition crop"
+                                    @pointerdown="startDrag"
+                                    @pointermove="dragCrop"
+                                    @pointerup="stopDrag"
+                                    @pointercancel="stopDrag"
+                                    style="width: 100%; aspect-ratio: 1; overflow: hidden; background: #000; position: relative; border-radius: 4px; touch-action: none; cursor: grab;">
+                                    <img alt="Selected profile preview" class="crop-image" x-ref="cropImage"
+                                        :src="cropImageSrc"
+                                        :style="`position: absolute; left: 50%; top: 50%; width: ${cropImageWidth}px; height: ${cropImageHeight}px; transform: translate(calc(-50% + ${cropX}px), calc(-50% + ${cropY}px)); max-width: none; pointer-events: none;`"
+                                        @load="prepareCropImage">
+                                    <div class="crop-guide" style="position: absolute; inset: 0; box-shadow: 0 0 0 9999px rgba(0,0,0,0.6); pointer-events: none; border: 2px solid #fff; border-radius: 50%;"></div>
+                                </div>
+                                <div class="crop-control" style="margin-top: 1rem; display: flex; align-items: center; gap: 1rem;">
+                                    <label for="crop-zoom" style="font-size: 0.875rem; font-weight: 600;">Zoom</label>
+                                    <input type="range" id="crop-zoom" min="1" max="3" step="0.01"
+                                        x-model.number="cropZoom" @input="syncCropImage" style="flex: 1;">
+                                </div>
+                            </div>
+                            <div class="crop-actions" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+                                <button type="button" class="secondary-button" @click="closeCrop" style="padding: 0.5rem 1rem;">Cancel</button>
+                                <template x-if="cropImageType === 'image/gif'">
+                                    <button type="button" class="primary-button" style="background: transparent; color: var(--accent-color); border: 1px solid var(--accent-color); padding: 0.5rem 1rem;" @click="useOriginal">Use Original</button>
+                                </template>
+                                <button type="button" class="primary-button" @click="applyCrop" style="padding: 0.5rem 1rem;">Apply</button>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Confirm Step -->

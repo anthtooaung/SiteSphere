@@ -1615,7 +1615,6 @@
 /* Review Cards */
 .review-card {
     width: 100%;
-    max-width: 320px;
     height: 100%;
     background: var(--background-color, #ffffff);
     border: 1px solid color-mix(in srgb, var(--accent-color, #6c5ce7) 24%, var(--background-color, #ffffff));

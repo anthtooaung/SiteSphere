@@ -194,9 +194,9 @@
                         <span>anthtooaung2792005@outlook.com</span>
                     </a>
 
-                    <a class="welcome-info-item" href="https://github.com/anthtooaung" target="_blank" rel="noopener noreferrer">
+                    <a class="welcome-info-item" href="https://github.com/anthtooaung/SiteSphere.git" target="_blank" rel="noopener noreferrer">
                         <x-fab-github class="welcome-info-icon" aria-hidden="true" />
-                        <span>github.com/anthtooaung</span>
+                        <span>github.com/anthtooaung/SiteSphere.git</span>
                     </a>
 
                     <a class="welcome-info-item" href="https://www.linkedin.com/in/ant-htoo-aung-460006395" target="_blank" rel="noopener noreferrer">

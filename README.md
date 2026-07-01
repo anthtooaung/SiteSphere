@@ -63,7 +63,38 @@
 </table>
 
 ### Mobile
-*(Mobile screenshots coming soon)*
+<table>
+  <tr>
+    <td align="center"><b>Homepage</b></td>
+    <td align="center"><b>Registration</b></td>
+    <td align="center"><b>Login</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/mobile/User_Home1.jpg" width="250"></td>
+    <td><img src="screenshots/mobile/Registration1.jpg" width="250"></td>
+    <td><img src="screenshots/mobile/Login1.jpg" width="250"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Admin Dashboard</b></td>
+    <td align="center"><b>Admin Reports</b></td>
+    <td align="center"><b>Create Post</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/mobile/Admin_Dashboard1.jpg" width="250"></td>
+    <td><img src="screenshots/mobile/Report1.jpg" width="250"></td>
+    <td><img src="screenshots/mobile/Create_Post1.jpg" width="250"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Security Profile</b></td>
+    <td align="center"><b>Appearance</b></td>
+    <td align="center"><b>Saved Posts</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/mobile/Security.jpg" width="250"></td>
+    <td><img src="screenshots/mobile/Appearance1.jpg" width="250"></td>
+    <td><img src="screenshots/mobile/Saved_Post1.jpg" width="250"></td>
+  </tr>
+</table>
 
 ---
 

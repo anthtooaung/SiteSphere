@@ -332,9 +332,9 @@ return $user->report_count > 0 ? 'warning' : 'safe';
                                             {{ \Illuminate\Support\Str::of($listedUser->name)->explode(' ')->map(fn ($part) => \Illuminate\Support\Str::substr($part, 0, 1))->join('') ?: '?' }}
                                         </span>
                                         @endif
-                                        <span>
-                                            <span class="admin-users-name">{{ $listedUser->name }}</span>
-                                            <span class="admin-users-sub">
+                                        <span class="min-w-0" style="max-width: 150px;">
+                                            <span class="admin-users-name truncate" title="{{ $listedUser->name }}">{{ $listedUser->name }}</span>
+                                            <span class="admin-users-sub truncate" title="{{ $listedUser->trashed() ? 'Restricted account' : 'Active account' }}">
                                                 {{ $listedUser->trashed() ? 'Restricted account' : 'Active account' }}
                                             </span>
                                         </span>

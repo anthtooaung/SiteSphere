@@ -41,9 +41,11 @@
             <x-far-user class="icon" />
         @endif
         <span class="account-text">
-            <span class="verified-label">
-                Verified <x-fas-check-circle class="inline-block size-3" style="color: var(--accent-color);" />
-            </span>
+            @if($user->isUnsecure())
+                <span class="verified-label" style="color: #ef4444;">
+                    Unsecure <x-fas-exclamation-circle class="inline-block size-3" />
+                </span>
+            @endif
             <span class="account-name">{{ $user->name }}</span>
         </span>
     </button>
@@ -165,9 +167,11 @@ class="mobile-account-menu-wrap relative">
     >
         <div class="px-4 py-3 border-b" style="border-color: color-mix(in srgb, var(--text-color) 10%, transparent)">
             <p class="text-sm font-bold truncate">{{ $user->name }}</p>
-            <p class="text-xs flex items-center gap-1 mt-0.5" style="color: color-mix(in srgb, var(--text-color) 60%, transparent)">
-                Verified <x-fas-check-circle class="size-3" style="color: var(--accent-color)" />
-            </p>
+            @if($user->isUnsecure())
+                <p class="text-xs flex items-center gap-1 mt-0.5" style="color: #ef4444;">
+                    Unsecure <x-fas-exclamation-circle class="size-3" />
+                </p>
+            @endif
         </div>
 
         <ul class="account-menu-list">

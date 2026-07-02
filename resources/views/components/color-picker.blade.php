@@ -149,11 +149,47 @@
 
     popupStyle: '',
     _repositionHandler: null,
+    isDraggingPopup: false,
+    dragOffsetX: 0,
+    dragOffsetY: 0,
+    isPopupMoved: false,
+
+    onPopupDragStart(e) {
+        if (e.target.closest('button, input, .color-picker-sv-area, .color-picker-hue-row, .color-picker-palette, .color-picker-popup-close')) return;
+        this.isDraggingPopup = true;
+        this.isPopupMoved = true;
+        const popupEl = e.currentTarget;
+        const rect = popupEl.getBoundingClientRect();
+        this.dragOffsetX = e.clientX - rect.left;
+        this.dragOffsetY = e.clientY - rect.top;
+        
+        document.body.style.userSelect = 'none';
+        popupEl.style.cursor = 'grabbing';
+
+        const moveHandler = (ev) => {
+            if (!this.isDraggingPopup) return;
+            let left = ev.clientX - this.dragOffsetX;
+            let top = ev.clientY - this.dragOffsetY;
+            this.popupStyle = 'position:fixed;top:' + top + 'px;left:' + left + 'px;z-index:10000;';
+        };
+        const upHandler = () => {
+            this.isDraggingPopup = false;
+            document.body.style.userSelect = '';
+            if (popupEl) popupEl.style.cursor = '';
+            window.removeEventListener('pointermove', moveHandler);
+            window.removeEventListener('pointerup', upHandler);
+            window.removeEventListener('pointercancel', upHandler);
+        };
+        window.addEventListener('pointermove', moveHandler);
+        window.addEventListener('pointerup', upHandler);
+        window.addEventListener('pointercancel', upHandler);
+    },
 
     toggle() {
         this.open = !this.open;
         if (this.open) {
             this.showCustom = false;
+            this.isPopupMoved = false;
             this.initPicker();
             this.positionPopup();
             this._repositionHandler = () => { if (this.open) this.positionPopup(); };
@@ -180,6 +216,7 @@
     },
 
     positionPopup() {
+        if (this.isPopupMoved) return;
         this.$nextTick(() => {
             const swatch = this.$refs.swatchBtn;
             if (!swatch) return;
@@ -210,6 +247,8 @@
         <template x-teleport="body">
             <div class="color-picker-popup" :style="popupStyle"
             x-show="open"
+            @pointerdown="onPopupDragStart($event)"
+            :class="{ 'is-dragging': isDraggingPopup }"
             @click.outside="if (! $root.contains($event.target)) closePanel()"
             x-transition:enter="transition ease-out duration-150"
             x-transition:enter-start="opacity-0 scale-95 -translate-y-1"

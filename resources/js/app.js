@@ -22,7 +22,7 @@ const sitesphereSwal = {
     async getSwal() {
         if (window.Swal) return window.Swal;
         try {
-            const module = await import('https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.esm.all.min.js');
+            const module = await import('sweetalert2');
             window.Swal = module.default;
             return window.Swal;
         } catch (error) {

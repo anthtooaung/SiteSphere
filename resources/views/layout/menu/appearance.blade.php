@@ -189,16 +189,6 @@
                     </div>
                 </header>
 
-                @if ($errors->any())
-                    <div class="appearance-errors" role="alert" data-appearance-errors>
-                        <strong>Some appearance settings need attention.</strong>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
 
                 <section class="appearance-card" aria-labelledby="themeModeTitle">
                     <div class="appearance-section-heading">
@@ -383,7 +373,18 @@
                     <script>
                         document.addEventListener('DOMContentLoaded', () => {
                             window.sitesphereSwal.toast({
-                                title: '{{ session('success') }}'
+                                title: "{{ session('success') }}"
+                            });
+                        });
+                    </script>
+                @endif
+
+                @if ($errors->any())
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            window.sitesphereSwal.toast({
+                                icon: 'error',
+                                title: "{{ implode(' ', $errors->all()) }}"
                             });
                         });
                     </script>

@@ -949,7 +949,7 @@
 
 .color-picker-swatch:hover {
     border-color: var(--accent-color);
-    transform: scale(1.05);
+    transform: scale(0.98);
 }
 
 .color-picker-text {

@@ -26,6 +26,7 @@ RUN apt-get update \
         libpng-dev \
         libwebp-dev \
         libzip-dev \
+        supervisor \
         unzip \
     && docker-php-ext-configure gd --with-jpeg --with-webp \
     && docker-php-ext-install \
@@ -56,6 +57,8 @@ RUN composer install \
 
 COPY . .
 COPY --from=assets /app/public/build ./public/build
+
+COPY docker/supervisord.conf /etc/supervisor/conf.d/laravel.conf
 
 RUN composer dump-autoload --optimize \
     && php artisan package:discover --ansi \

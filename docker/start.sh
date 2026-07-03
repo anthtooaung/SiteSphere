@@ -46,8 +46,8 @@ php artisan migrate --force 2>&1 || echo "WARNING: migrate failed"
 echo "=== Running seeders ==="
 php artisan db:seed --force 2>&1 || echo "WARNING: seeders failed"
 
-echo "=== Starting queue worker ==="
-php artisan queue:work --tries=3 &
+echo "=== Starting queue worker via supervisord ==="
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf &
 
 echo "=== Starting Apache on port ${PORT} ==="
 exec apache2-foreground

@@ -20,6 +20,7 @@ WORKDIR /var/www/html
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+        dos2unix \
         git \
         libicu-dev \
         libjpeg62-turbo-dev \
@@ -60,7 +61,8 @@ COPY --from=assets /app/public/build ./public/build
 
 COPY docker/supervisord.conf /etc/supervisor/conf.d/laravel.conf
 
-RUN composer dump-autoload --optimize \
+RUN dos2unix docker/start.sh docker/supervisord.conf \
+    && composer dump-autoload --optimize \
     && php artisan package:discover --ansi \
     && chmod +x docker/start.sh \
     && chown -R www-data:www-data storage bootstrap/cache

@@ -89,7 +89,7 @@
                                 <div class="field-group">
                                     <label for="full-name">Name</label>
                                     <input type="text" id="full-name" name="name" value="{{ old('name', $profileUser->name) }}"
-                                        autocomplete="name" required @class(['is-invalid' => $errors->has('name')])>
+                                        autocomplete="name" maxlength="30" required @class(['is-invalid' => $errors->has('name')])>
                                 </div>
 
                                 <div class="field-group">

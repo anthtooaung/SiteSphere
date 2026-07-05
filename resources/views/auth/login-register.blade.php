@@ -390,7 +390,7 @@
                         </div>
 
                         <!-- Username input field -->
-                        <x-input-field id="reg-name" name="name" label="Username" plain="true" type="text" placeholder="Username" autocomplete="username" required>
+                        <x-input-field id="reg-name" name="name" label="Username" plain="true" type="text" placeholder="Username" autocomplete="username" maxlength="30" required>
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
                                 <path d="M4 20a8 8 0 0 1 16 0" />

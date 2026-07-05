@@ -2397,12 +2397,17 @@ button.saved-post-control {
     display: grid;
     gap: 2px;
     text-align: left;
+    min-width: 0;
+    max-width: 120px;
 }
 
 .account-name {
     font-size: 0.85rem;
     font-weight: 800;
     line-height: 1.1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Mobile Styles */

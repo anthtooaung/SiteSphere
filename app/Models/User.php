@@ -29,12 +29,45 @@ class User extends Authenticatable
         parent::boot();
 
         static::creating(function (User $user): void {
-            $user->slug = Str::slug($user->name);
+            $user->slug = static::generateUniqueSlug($user->name);
         });
 
         static::created(function (User $user): void {
             $user->provisionDefaultPreferences();
         });
+
+        static::updating(function (User $user): void {
+            if ($user->isDirty('name')) {
+                $user->slug = static::generateUniqueSlug($user->name, $user->id);
+            }
+        });
+    }
+
+    /**
+     * Generate a unique slug for the given name, excluding the given user ID.
+     */
+    protected static function generateUniqueSlug(string $name, ?int $excludeId = null): string
+    {
+        $base = Str::slug($name);
+        $slug = $base;
+        $counter = 1;
+
+        $query = static::query()->where('slug', $slug);
+
+        if ($excludeId !== null) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        while ($query->exists()) {
+            $slug = $base.'-'.$counter;
+            $counter++;
+            $query = static::query()->where('slug', $slug);
+            if ($excludeId !== null) {
+                $query->where('id', '!=', $excludeId);
+            }
+        }
+
+        return $slug;
     }
 
     /**

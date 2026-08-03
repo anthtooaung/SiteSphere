@@ -3,9 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\FirebaseStorageService;
 use Database\Seeders\FontsSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Mockery;
 use Tests\TestCase;
 
 class EditProfilePageTest extends TestCase
@@ -21,6 +23,12 @@ class EditProfilePageTest extends TestCase
         parent::setUp();
 
         $this->seed(FontsSeeder::class);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 
     public function test_guests_are_redirected_to_login(): void
@@ -135,9 +143,17 @@ class EditProfilePageTest extends TestCase
             ]);
     }
 
-    public function test_cropped_avatar_data_url_is_stored_on_the_public_disk(): void
+    public function test_cropped_avatar_data_url_is_uploaded_to_firebase(): void
     {
-        Storage::fake('public');
+        $firebaseUrl = 'https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/profile_images%2Ftest-avatar.png?alt=media';
+
+        $mockStorage = Mockery::mock(FirebaseStorageService::class);
+        $mockStorage->shouldReceive('uploadBase64Image')
+            ->once()
+            ->with(self::TINY_PNG_DATA_URL)
+            ->andReturn($firebaseUrl);
+
+        $this->app->instance(FirebaseStorageService::class, $mockStorage);
 
         $user = User::factory()->create();
 
@@ -155,13 +171,20 @@ class EditProfilePageTest extends TestCase
 
         $user->refresh();
 
-        $this->assertStringStartsWith('profile_images/', $user->user_image);
-        Storage::disk('public')->assertExists($user->user_image);
+        $this->assertSame($firebaseUrl, $user->user_image);
     }
 
-    public function test_small_gif_avatar_data_url_is_stored_as_gif(): void
+    public function test_small_gif_avatar_data_url_is_uploaded_to_firebase(): void
     {
-        Storage::fake('public');
+        $firebaseUrl = 'https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/profile_images%2Ftest-avatar.gif?alt=media';
+
+        $mockStorage = Mockery::mock(FirebaseStorageService::class);
+        $mockStorage->shouldReceive('uploadBase64Image')
+            ->once()
+            ->with(self::TINY_GIF_DATA_URL)
+            ->andReturn($firebaseUrl);
+
+        $this->app->instance(FirebaseStorageService::class, $mockStorage);
 
         $user = User::factory()->create();
 
@@ -179,15 +202,11 @@ class EditProfilePageTest extends TestCase
 
         $user->refresh();
 
-        $this->assertStringStartsWith('profile_images/', $user->user_image);
-        $this->assertStringEndsWith('.gif', $user->user_image);
-        Storage::disk('public')->assertExists($user->user_image);
+        $this->assertSame($firebaseUrl, $user->user_image);
     }
 
     public function test_oversized_gif_avatar_data_url_is_rejected(): void
     {
-        Storage::fake('public');
-
         $user = User::factory()->create();
         $oversizedGif = 'data:image/gif;base64,'.base64_encode(str_repeat('A', 1024 * 1024 + 1));
 
@@ -205,13 +224,24 @@ class EditProfilePageTest extends TestCase
         $this->assertNull($user->refresh()->user_image);
     }
 
-    public function test_previous_local_avatar_file_is_deleted_after_replacement(): void
+    public function test_previous_firebase_avatar_is_deleted_after_replacement(): void
     {
-        Storage::fake('public');
-        Storage::disk('public')->put('profile_images/old.png', 'old-image');
+        $oldFirebaseUrl = 'https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/profile_images%2Fold-avatar.png?alt=media';
+        $newFirebaseUrl = 'https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/profile_images%2Fnew-avatar.png?alt=media';
+
+        $mockStorage = Mockery::mock(FirebaseStorageService::class);
+        $mockStorage->shouldReceive('uploadBase64Image')
+            ->once()
+            ->with(self::TINY_PNG_DATA_URL)
+            ->andReturn($newFirebaseUrl);
+        $mockStorage->shouldReceive('delete')
+            ->once()
+            ->with($oldFirebaseUrl);
+
+        $this->app->instance(FirebaseStorageService::class, $mockStorage);
 
         $user = User::factory()->create([
-            'user_image' => 'profile_images/old.png',
+            'user_image' => $oldFirebaseUrl,
         ]);
 
         $this->actingAs($user)
@@ -228,8 +258,36 @@ class EditProfilePageTest extends TestCase
 
         $user->refresh();
 
-        Storage::disk('public')->assertMissing('profile_images/old.png');
-        Storage::disk('public')->assertExists($user->user_image);
+        $this->assertSame($newFirebaseUrl, $user->user_image);
+    }
+
+    public function test_local_profile_image_is_not_deleted_via_firebase(): void
+    {
+        // Local images (profile_images/xxx.png) should NOT be deleted via Firebase
+        $mockStorage = Mockery::mock(FirebaseStorageService::class);
+        $mockStorage->shouldReceive('uploadBase64Image')
+            ->once()
+            ->andReturn('https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/profile_images%2Fnew-avatar.png?alt=media');
+        $mockStorage->shouldReceive('delete')
+            ->never(); // Should NOT delete local images
+
+        $this->app->instance(FirebaseStorageService::class, $mockStorage);
+
+        $user = User::factory()->create([
+            'user_image' => 'profile_images/old-local.png',
+        ]);
+
+        $this->actingAs($user)
+            ->patch(route('edit-profile.update'), [
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_dob' => null,
+                'user_phone' => null,
+                'user_bio' => null,
+                'cropped_avatar' => self::TINY_PNG_DATA_URL,
+            ])
+            ->assertRedirect(route('edit-profile'))
+            ->assertSessionHasNoErrors();
     }
 
     public function test_ajax_profile_fields_update_returns_json_successfully(): void

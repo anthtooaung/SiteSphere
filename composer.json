@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.3",
         "jenssegers/agent": "^2.6",
+        "kreait/laravel-firebase": "*",
         "laravel/framework": "^13.7",
         "laravel/socialite": "^5.27",
         "laravel/tinker": "^3.0",

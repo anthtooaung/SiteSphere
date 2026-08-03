@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateEditProfileRequest;
+use App\Services\FirebaseStorageService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class EditProfileController extends Controller
 {
@@ -19,7 +18,7 @@ class EditProfileController extends Controller
         ]);
     }
 
-    public function update(UpdateEditProfileRequest $request): RedirectResponse|JsonResponse
+    public function update(UpdateEditProfileRequest $request, FirebaseStorageService $storage): RedirectResponse|JsonResponse
     {
         $validated = $request->validated();
         $user = $request->user();
@@ -34,13 +33,14 @@ class EditProfileController extends Controller
         ]);
 
         if (! empty($validated['cropped_avatar'])) {
-            $user->user_image = $this->storeCroppedAvatar($validated['cropped_avatar']);
+            $user->user_image = $storage->uploadBase64Image($validated['cropped_avatar']);
         }
 
         $user->save();
 
-        if ($previousImage && $previousImage !== $user->user_image && $this->isLocalProfileImage($previousImage)) {
-            Storage::disk('public')->delete($previousImage);
+        // Delete previous image from Firebase if it was a Firebase URL
+        if ($previousImage && $previousImage !== $user->user_image && $this->isFirebaseImage($previousImage)) {
+            $storage->delete($previousImage);
         }
 
         if ($request->wantsJson()) {
@@ -55,27 +55,8 @@ class EditProfileController extends Controller
             ->with('success', 'Profile changes saved successfully.');
     }
 
-    private function storeCroppedAvatar(string $dataUrl): string
+    private function isFirebaseImage(string $path): bool
     {
-        preg_match('/^data:image\/(png|jpe?g|gif);base64,/', $dataUrl, $matches);
-
-        $extension = match (strtolower($matches[1] ?? 'png')) {
-            'jpeg', 'jpg' => 'jpg',
-            'gif' => 'gif',
-            default => 'png',
-        };
-
-        $base64 = substr($dataUrl, strpos($dataUrl, ',') + 1);
-        $path = 'profile_images/'.Str::uuid()->toString().'.'.$extension;
-
-        Storage::disk('public')->put($path, base64_decode($base64, true));
-
-        return $path;
-    }
-
-    private function isLocalProfileImage(string $path): bool
-    {
-        return Str::startsWith($path, 'profile_images/')
-            && ! Str::startsWith($path, ['http://', 'https://']);
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 }

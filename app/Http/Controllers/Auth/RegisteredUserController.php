@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\OtpVerificationMail;
 use App\Models\OtpVerifications;
 use App\Models\User;
+use App\Services\FirebaseStorageService;
 use App\Traits\ChecksMailConfiguration;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -221,7 +222,7 @@ class RegisteredUserController extends Controller
     /**
      * Finalize registration and save optional profile info.
      */
-    public function finalize(Request $request): JsonResponse
+    public function finalize(Request $request, FirebaseStorageService $storage): JsonResponse
     {
         $validated = $request->validate([
             'user_dob' => ['nullable', 'date'],
@@ -249,7 +250,7 @@ class RegisteredUserController extends Controller
 
         $profileImagePath = null;
         if ($request->hasFile('user_image')) {
-            $profileImagePath = $request->file('user_image')->store('profile_images', 'public');
+            $profileImagePath = $storage->uploadFile($request->file('user_image'));
         }
 
         $user = User::create([
